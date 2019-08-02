@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 /**
  * column object for a data frame
  * @author logan.collier
@@ -39,7 +40,7 @@ public class Column<T> {
 	public boolean hasValue(T value) {
 		if(this.column.contains(value)) {
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
@@ -96,6 +97,15 @@ public class Column<T> {
 		Set<T> unique = new HashSet<T>(this.column);
 		return unique;
 	}//end uniqueValues
+	
+   /**
+     * Creates a tree set of unique values in the array list.
+     * @return a tree set of unique values.
+     */
+    public Set<T> uniqueValuesTree() {
+        return new TreeSet<T>(this.column);
+    }
+    
 	/**
 	 * uniqueValCnt
 	 * returns a hashmap: keys are each unique value in array list and they point to the number of occurances

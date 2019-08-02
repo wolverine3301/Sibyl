@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
 /**
  * DataFrame
  * the main object for data manipulation, most functions and all models will contructed with his object as input
@@ -24,6 +25,7 @@ public class DataFrame <T>{
 	public DataFrame() {
 		this.dataframe = new ArrayList<Column>();
 	}
+	
 	/**
 	 * loadcsv
 	 * construct a dataframe directly from a csv file, auto assumes there is a header line which it uses as the column names
@@ -63,6 +65,7 @@ public class DataFrame <T>{
         }
 
 	}
+	
 	/**
 	 * getColumn returns a single column from dataframe
 	 * @param name - name of column
@@ -78,7 +81,17 @@ public class DataFrame <T>{
 		}
 		return dataframe.get(index);
 	}
-	/**
+	
+   /**
+     * Returns the column at a specified index.
+     * @param index the index of the column.
+     * @return the column at the index.
+     */
+    public Column<T> getColumn(int index) {
+        return dataframe.get(index);
+    }
+
+    /**
 	 * addColumn - adds a new empty column to dataframe
 	 * @param name
 	 * @param type
@@ -88,6 +101,7 @@ public class DataFrame <T>{
 		dataframe.add(c);
 		
 	}
+	
 	/**
 	 * getColumnNames - returns array of column names
 	 * @return
@@ -95,6 +109,7 @@ public class DataFrame <T>{
 	public String[] getColumnNames() {
 		return columnNames;
 	}
+	
 	/**
 	 * getLength - returns number of rows in dataframe
 	 * @return
