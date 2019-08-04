@@ -12,7 +12,7 @@ import java.util.TreeSet;
  * @param <T>
  */
 public class Column<T> {
-	
+	int test;
 	public String type; //column type
 	public String name; //column name
 	public ArrayList<T> column; //array of data
