@@ -12,7 +12,7 @@ import java.util.TreeSet;
  * @param <T>
  */
 public class Column<T> {
-	int test;
+
 	public String type; //column type
 	public String name; //column name
 	public ArrayList<T> column; //array of data
@@ -77,12 +77,13 @@ public class Column<T> {
 	public T getValue(int index) {
 		return this.column.get(index);
 	}
+	
 	/**
-	 *addArray
-	 *adds an array to column array list 
+	 *concatArray
+	 *adds an array to the end of column array list 
 	 * @param arr
 	 */
-	public void addArray(T arr[]) {
+	public void concatArray(T arr[]) {
 		for(int i = 0; i < arr.length; i++) {
 			this.column.add(arr[i]);
 		}

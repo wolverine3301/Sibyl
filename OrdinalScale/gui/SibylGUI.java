@@ -80,7 +80,7 @@ public class SibylGUI extends JFrame{
         for (int i = 0; i < columnsToUse.length; i++) {
             JPanel currentPanel = new JPanel(new BorderLayout());
             JLabel currentLabel = new JLabel(columnsToUse[i]);
-            TreeSet<String> currentOptions = (TreeSet<String>) dataFrame.getColumn(i).uniqueValuesTree(); //OPTIMIZE 
+            TreeSet<String> currentOptions = (TreeSet<String>) dataFrame.getColumn_byIndex(i).uniqueValuesTree(); //OPTIMIZE 
             if (currentOptions.size() >= 25) {  //TEXT BOX
                 JTextField textInput = new JTextField(10);
                 currentPanel.add(currentLabel, BorderLayout.NORTH);

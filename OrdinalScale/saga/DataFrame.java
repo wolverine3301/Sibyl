@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import java.util.List;
 /**
  * DataFrame
  * the main object for data manipulation, most functions and all models will contructed with his object as input
@@ -15,7 +16,8 @@ import java.util.ArrayList;
  */
 public class DataFrame <T>{
 	
-	public String[] columnNames;
+	public List<String> columnNames;
+	public List<String> columnTypes;
 	public int numRows;
 	public ArrayList<Column> dataframe;
 	
@@ -24,8 +26,9 @@ public class DataFrame <T>{
 	 */
 	public DataFrame() {
 		this.dataframe = new ArrayList<Column>();
+		this.columnNames = new ArrayList<String>();
+		this.columnTypes = new ArrayList<String>();
 	}
-	
 	/**
 	 * loadcsv
 	 * construct a dataframe directly from a csv file, auto assumes there is a header line which it uses as the column names
@@ -41,10 +44,15 @@ public class DataFrame <T>{
         String cvsSplitBy = ",";
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
         	line =  br.readLine(); //get column names
-        	this.columnNames = line.split(cvsSplitBy);
+        	String[] colNames = line.split(cvsSplitBy);
+        	//fill column names and types
+        	for(int i = 0;i < colNames.length;i++) {
+        		columnNames.add(colNames[i]);
+        		columnTypes.add(types[i]);
+        	}
         	// initializing column objects
-            for (int i = 0; i < columnNames.length; i++) {
-            	Column<T> c = new Column<T>(columnNames[i],types[i]);
+            for (int i = 0; i < columnNames.size(); i++) {
+            	Column<T> c = new Column<T>(columnNames.get(i),types[i]);
             	dataframe.add(c);
             } //end initializing
             int count = 0;
@@ -53,7 +61,7 @@ public class DataFrame <T>{
                 // use comma as separator
                 String[] row = line.split(cvsSplitBy);
                 //load data into array list
-                for(int i=0;i<columnNames.length;i++) {
+                for(int i=0;i<columnNames.size();i++) {
                 	dataframe.get(i).add((T) row[i]);
                 }//end for loop
                 count++;
@@ -71,10 +79,10 @@ public class DataFrame <T>{
 	 * @param name - name of column
 	 * @return
 	 */
-	public Column<T> getColumn(String name){
+	public Column<T> getColumn_byName(String name){
 		int index = 0;
-		for(int i = 0; i < columnNames.length; i++) {
-			if(columnNames[i].contentEquals(name)){
+		for(int i = 0; i < columnNames.size(); i++) {
+			if(columnNames.get(i).contentEquals(name)){
 				index = i;
 				break;
 			}
@@ -87,27 +95,49 @@ public class DataFrame <T>{
      * @param index the index of the column.
      * @return the column at the index.
      */
-    public Column<T> getColumn(int index) {
+    public Column<T> getColumn_byIndex(int index) {
         return dataframe.get(index);
+    }
+    /**
+     * add a column from an array
+     * 
+     * @param name
+     * @param type
+     * @param arr
+     */
+    public void addColumnFromArray(String name,String type, T arr[]) {
+    	Column c = new Column(name,type);
+    	c.concatArray(arr);
+
+    	//update list
+    	columnNames.add(name);
+    	columnTypes.add(type);
+    	dataframe.add(c);
     }
 
     /**
-	 * addColumn - adds a new empty column to dataframe
+	 * add_blank_Column - adds a new empty column to dataframe
 	 * @param name
 	 * @param type
 	 */
-	public void addColumn(String name, String type) {
-		Column c = new Column(name,type);
+	public void add_blank_Column(String name, String type) {
+		Column<T> c = new Column<T>(name,type);
+		columnNames.add(name);
+		columnTypes.add(type);
 		dataframe.add(c);
 		
 	}
 	
 	/**
-	 * getColumnNames - returns array of column names
+	 * getColumnNames - returns column names in a string
 	 * @return
 	 */
 	public String[] getColumnNames() {
-		return columnNames;
+		String[] names = new String[columnNames.size()];
+		for(int i = 0; i < columnNames.size();i++) {
+			names[i] = columnNames.get(i);
+		}
+		return names;
 	}
 	
 	/**

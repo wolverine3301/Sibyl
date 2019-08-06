@@ -27,7 +27,7 @@ public class SibylGUIRunner {
 //        });
       dataFrame = new DataFrame();
       String[] types = {"target","numeric","numeric","category","meta","meta"};
-      dataFrame.loadcsv("testfiles/testing.csv", types);
+      dataFrame.loadcsv("testing.csv", types);
       new SibylGUI(dataFrame).start();
     }
 
