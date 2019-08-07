@@ -40,7 +40,7 @@ public class DataFrame <T>{
 	 * for managing which functions to use on which type of column
 	 * 
 	 */
-	public void loadcsv(String file,String[] types) {
+	public void loadcsv(String file) {
         String line = "";
         String cvsSplitBy = ",";
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -49,11 +49,10 @@ public class DataFrame <T>{
         	//fill column names and types
         	for(int i = 0;i < colNames.length;i++) {
         		columnNames.add(colNames[i]);
-        		columnTypes.add(types[i]);
         	}
         	// initializing column objects
             for (int i = 0; i < columnNames.size(); i++) {
-            	Column<T> c = new Column<T>(columnNames.get(i),types[i]);
+            	Column<T> c = new Column<T>(columnNames.get(i));
             	dataframe.add(c);
             } //end initializing
             int count = 0;
@@ -66,7 +65,11 @@ public class DataFrame <T>{
                 	dataframe.get(i).add((T) row[i]);
                 }//end for loop
                 count++;
-        	}//end while
+        	}//end while read lines
+        	
+        	for(int i = 0;i < columnNames.size();i++) {
+            	columnTypes.add(dataframe.get(i).type);
+            }//end for loop
         	this.numRows = count;
         	
         } catch (IOException e) {
@@ -122,13 +125,13 @@ public class DataFrame <T>{
      * @param type
      * @param arr
      */
-    public void addColumnFromArray(String name,String type, T arr[]) {
-    	Column c = new Column(name,type);
-    	c.concatArray(arr);
-
+    public void addColumnFromArray(String name, T arr[]) {
+    	Column c = new Column(name);
+    	c.makeColumn_fromArray(arr);
     	//update list
+    	numRows = c.getLength();
     	columnNames.add(name);
-    	columnTypes.add(type);
+    	columnTypes.add(c.type);
     	dataframe.add(c);
     }
 
@@ -137,10 +140,10 @@ public class DataFrame <T>{
 	 * @param name
 	 * @param type
 	 */
-	public void add_blank_Column(String name, String type) {
-		Column<T> c = new Column<T>(name,type);
+	public void add_blank_Column(String name) {
+		Column<T> c = new Column<T>(name);
 		columnNames.add(name);
-		columnTypes.add(type);
+		columnTypes.add("NAN");
 		dataframe.add(c);
 		
 	}
@@ -163,6 +166,21 @@ public class DataFrame <T>{
 	 */
 	public int getLength() {
 		return numRows;
+	}
+	/**
+	 * print the dataframe
+	 */
+	public void printDataFrame() {
+		for(int i = 0; i < columnNames.size(); i++) {
+			System.out.print(columnNames.get(i) + " ");
+		}
+		System.out.println();
+		for(int z = 0;z < numRows;z++) {
+			for(int j = 0;j < columnNames.size();j++) {
+				System.out.print(dataframe.get(j).getValue(z) + " ");
+			}
+			System.out.println();
+		}
 	}
 
 }

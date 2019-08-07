@@ -52,7 +52,10 @@ public class Column<T> {
         while (columnIterator.hasNext()) //Copy the particles into the column arraylist.
             column.add(new Particle<T>(columnIterator.next()));
 	}
-	
+	/**
+	 * manual override of auto determined type
+	 * @param type
+	 */
 	public void setType(String type) {
 		this.type = type;
 	}
@@ -115,9 +118,20 @@ public class Column<T> {
 	 * @return
 	 */
 	public T getValue(int index) {
-		return (T) column.get(index).value;
+		return (T) values.get(index);
 	}
-	
+	/**
+	 * make new column from array
+	 * @param arr
+	 */
+	public void makeColumn_fromArray(T arr[]) {
+		for(int i = 0; i < arr.length; i++) {
+			Particle tmp = new Particle(arr[i]);
+			this.column.add(tmp);
+			this.type = tmp.type;
+			this.values.add((T) tmp.getValue());
+		}
+	}
 	/**
 	 * adds array to end of column list
 	 * @param arr
@@ -168,8 +182,15 @@ public class Column<T> {
 		return vals;
 
 	}//end uniqueValCnt
-	
-	
+	/**
+	 * print column
+	 */
+	public void printCol() {
+		System.out.println(name +" "+type);
+		for(int i = 0; i < column.size();i++) {
+			System.out.println(column.get(i).value);
+		}
+	}
 	
 	
 	
