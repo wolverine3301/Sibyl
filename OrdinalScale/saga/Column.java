@@ -8,6 +8,7 @@ import java.util.TreeSet;
 /**
  * column object for a data frame
  * @author logan.collier
+ * @param <T>
  *
  * @param <T>
  */
@@ -15,21 +16,31 @@ public class Column<T> {
 
 	public String type; //column type
 	public String name; //column name
-	public ArrayList<T> column; //array of data
+	public ArrayList<Particle> column; //array of data
+	public ArrayList<T> values;
 
 	public Column(String name,String type) {
 		this.name = name;
 		this.type = type;
-		column = new ArrayList<T>();
+		column = new ArrayList<Particle>();
+		values = new ArrayList<T>();
 		
 	}
 	/**
 	 * add
 	 * adds a value to the end of the array list
+	 * @param <T>
 	 * @param value
 	 */
 	public void add(T value) {
-		this.column.add(value);
+		
+		Particle p = new Particle(value);
+		//auto declaration of column type
+		if(column.isEmpty()) {
+			this.type = p.type;
+		}
+		this.column.add(p);
+		this.values.add((T) p.getValue());
 	}
 	/**
 	 * hasValue
@@ -46,7 +57,7 @@ public class Column<T> {
 	}
 	/**
 	 * removeValue
-	 * removes first ocurance of a specific value that may be in the array list 
+	 * removes first occurrence of a specific value that may be in the array list 
 	 * @param value
 	 */
 	public void removeValue(T value) {
@@ -69,46 +80,44 @@ public class Column<T> {
 		return this.column.size();
 	}
 	/**
-	 * getValue
-	 * returns the object at the specified index
+	 * gets value of an object by index
 	 * @param index
 	 * @return
 	 */
 	public T getValue(int index) {
-		return this.column.get(index);
+		return (T) column.get(index).value;
 	}
 	
 	/**
-	 *concatArray
-	 *adds an array to the end of column array list 
+	 * adds array to end of column list
 	 * @param arr
 	 */
 	public void concatArray(T arr[]) {
 		for(int i = 0; i < arr.length; i++) {
-			this.column.add(arr[i]);
+			Particle tmp = new Particle(arr[i]);
+			this.column.add(tmp);
+			this.values.add((T) tmp.getValue());
 		}
 	}
 	/**
-	 * uniqueValues
-	 * returns a set of all unique values in array list
+	 * set of unique values
 	 * @return
 	 */
 	//return all unique items from column
 	public Set<T> uniqueValues(){
-		Set<T> unique = new HashSet<T>(this.column);
+		Set<T> unique = new HashSet<T>(this.values);
 		return unique;
 	}//end uniqueValues
 	
    /**
-     * Creates a tree set of unique values in the array list.
-     * @return a tree set of unique values.
-     */
+    * Creates a tree set of unique values in the array list.
+    * @return
+    */
     public Set<T> uniqueValuesTree() {
-        return new TreeSet<T>(this.column);
+        return new TreeSet<T>(this.values);
     }
     
 	/**
-	 * uniqueValCnt
 	 * returns a hashmap: keys are each unique value in array list and they point to the number of occurances
 	 * @return
 	 */
@@ -123,7 +132,7 @@ public class Column<T> {
 			vals.put(uni[i], 0);
 		}//end for
 		//counting
-		for(T i : this.column) {
+		for(T i : this.values) {
 			vals.replace(i, vals.get(i), vals.get(i)+1);
 		}//end for
 		return vals;

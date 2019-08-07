@@ -57,7 +57,8 @@ public class Particle<T> {
 	 */
 	private boolean isInteger(T strNum) {
 	    try {
-	        Integer d = Integer.parseInt((String) strNum);
+	        @SuppressWarnings("unused")
+			Integer d = Integer.parseInt((String) strNum);
 	    } catch (NumberFormatException | NullPointerException nfe) {
 	        return false;
 	    }
@@ -84,12 +85,21 @@ public class Particle<T> {
 	 */
 	private boolean isNumeric(T strNum) {
 	    try {
-	        double d = Double.parseDouble((String) strNum);
+	        @SuppressWarnings("unused")
+			double d = Double.parseDouble((String) strNum);
 	    } catch (NumberFormatException | NullPointerException nfe) {
 	        return false;
 	    }
 	    return true;
 	}
+	/**
+	 * returns value
+	 * @return
+	 */
+	public T getValue() {
+		return value;
+	}
+	
 	
 
 }
