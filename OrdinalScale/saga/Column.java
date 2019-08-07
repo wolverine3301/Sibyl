@@ -3,6 +3,7 @@ package saga;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 /**
@@ -16,18 +17,46 @@ public class Column<T> {
 
 	public String type; //column type
 	public String name; //column name
-	public ArrayList<Particle> column; //array of data
+	public ArrayList<Particle<T>> column; //array of data
 	public ArrayList<T> values;
 
+	/**
+	 * Creates a column with a given name.
+	 * @param name the name of the column.
+	 */
 	public Column(String name) {
 		this.name = name;
-		column = new ArrayList<Particle>();
+		column = new ArrayList<Particle<T>>();
 		values = new ArrayList<T>();
 		
 	}
+	
+	public Column(String theName, String theType) {
+	    name = theName;
+	    type = theType;
+        column = new ArrayList<Particle<T>>();
+        values = new ArrayList<T>();
+	}
+	
+	/**
+	 * Copy constructor.
+	 * @param theColumn
+	 */
+	@SuppressWarnings("unchecked")
+    public Column(Column<T> theColumn) {
+	    type = theColumn.type;
+	    name = theColumn.name;
+        column = new ArrayList<Particle<T>>();
+        values = (ArrayList<T>) theColumn.values.clone();
+        Iterator<Particle<T>> columnIterator = theColumn.column.iterator();
+        while (columnIterator.hasNext()) //Copy the particles into the column arraylist.
+            column.add(new Particle<T>(columnIterator.next()));
+	}
+	
 	public void setType(String type) {
 		this.type = type;
 	}
+	
 	/**
 	 * add
 	 * adds a value to the end of the array list
@@ -35,8 +64,7 @@ public class Column<T> {
 	 * @param value
 	 */
 	public void add(T value) {
-		
-		Particle p = new Particle(value);
+		Particle<T> p = new Particle<T>(value);
 		//auto declaration of column type
 		if(column.isEmpty()) {
 			this.type = p.type;

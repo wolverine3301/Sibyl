@@ -29,6 +29,7 @@ public class DataFrame <T>{
 		this.columnNames = new ArrayList<String>();
 		this.columnTypes = new ArrayList<String>();
 	}
+	
 	/**
 	 * loadcsv
 	 * construct a dataframe directly from a csv file, auto assumes there is a header line which it uses as the column names
@@ -72,6 +73,22 @@ public class DataFrame <T>{
         	e.printStackTrace();
         }
 
+	}
+	
+	/**
+	 * Creates a new data frame internally from a list of column names.
+	 * @param columnNames the list of column name.
+	 * @return the newly created data frame.
+	 */
+	public DataFrame<T> dataFrameFromColumns(List<String> columnNames) {
+	    DataFrame<T> newDataFrame = new DataFrame<T>();
+	    for (String name : columnNames) {
+	        Column<T> currentColumn = getColumn_byName(name);
+	        newDataFrame.columnNames.add(name);
+	        newDataFrame.columnTypes.add(currentColumn.type);
+	        newDataFrame.dataframe.add(new Column<T>(currentColumn));
+	    }
+	    return newDataFrame;
 	}
 	
 	/**
