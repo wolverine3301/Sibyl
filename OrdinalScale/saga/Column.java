@@ -19,12 +19,14 @@ public class Column<T> {
 	public ArrayList<Particle> column; //array of data
 	public ArrayList<T> values;
 
-	public Column(String name,String type) {
+	public Column(String name) {
 		this.name = name;
-		this.type = type;
 		column = new ArrayList<Particle>();
 		values = new ArrayList<T>();
 		
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	/**
 	 * add
