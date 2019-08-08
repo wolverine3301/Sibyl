@@ -96,13 +96,27 @@ public class DataFrame <T>{
 	 */
 	public DataFrame<T> dataFrameFromColumns(List<String> columnNames) {
 	    DataFrame<T> newDataFrame = new DataFrame<T>();
-	    for (String name : columnNames) {
+	    for (String name : columnNames) { // Create the columns
 	        Column<Particle<T>> currentColumn = getColumn_byName(name);
 	        newDataFrame.columnNames.add(name);
 	        newDataFrame.columnTypes.add(currentColumn.type);
 	        newDataFrame.columns.add(new Column<Particle<T>>(currentColumn));
+	    }	    
+	    newDataFrame.numColumns = newDataFrame.columns.size();
+	    newDataFrame.numRows = newDataFrame.columns.get(0).getLength();
+	    for (int i = 0; i < newDataFrame.numRows; i++) {
+	        Row<Particle<T>> row = new Row<Particle<T>>(); 
+	        for (int j = 0; j < newDataFrame.numColumns; j++) {
+	            row.addToRow(newDataFrame.columns.get(j).getParticle_atIndex(i));
+	        }
+	        newDataFrame.rows.add(row);
 	    }
 	    return newDataFrame;
+	}
+	
+	public void changeParticleValue(int columnIndex, int rowIndex, T newValue) {
+	    Particle<T> temp = (Particle<T>) rows.get(rowIndex).row.get(columnIndex);
+	    temp.changeValue(newValue);
 	}
 	
 	/**
@@ -129,6 +143,7 @@ public class DataFrame <T>{
     public Column<Particle<T>> getColumn_byIndex(int index) {
         return columns.get(index);
     }
+    
     /**
      * add a column from an array
      * 
@@ -137,16 +152,19 @@ public class DataFrame <T>{
      * @param arr
      */
     public void addColumnFromArray(String name, T arr[]) {
-    	Column<Particle<T>> c = new Column<Particle<T>>(name);
-    	for(int i = 0; i < arr.length;i++) {
-    		Particle<T> p = new Particle<T>(arr[i]);
+    	Particle<T> p = new Particle<T>(arr[0]);
+    	Column<Particle<T>> c = new Column<Particle<T>>(name, p.type);
+    	c.addToColumn(p);
+    	rows.get(0).addToRow(p);
+    	for(int i = 1; i < arr.length;i++) {
+    		p = new Particle<T>(arr[i]);
+            rows.get(i).addToRow(p);
     		c.addToColumn(p);
-    		rows.get(i).addToRow(p);
     	}
-    	
     	columnNames.add(name);
     	columnTypes.add(c.type);
     	columns.add(c);
+    	numColumns++;
     }
 
     /**
@@ -181,9 +199,12 @@ public class DataFrame <T>{
 	public int getLength() {
 		return numRows;
 	}
+	
+	
 	public String columnNamesToString() {
 		return columnNames.toString();
 	}
+	
 	/**
 	 * print the dataframe
 	 */

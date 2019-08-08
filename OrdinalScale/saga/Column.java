@@ -31,6 +31,11 @@ public class Column<T> {
 		
 	}
 	
+	/**
+	 * Creates a column with a given name and data type.
+	 * @param theName
+	 * @param theType
+	 */
 	public Column(String theName, String theType) {
 	    name = theName;
 	    type = theType;
@@ -48,10 +53,14 @@ public class Column<T> {
 	    name = theColumn.name;
         column = new ArrayList<Particle<T>>();
         values = (ArrayList<T>) theColumn.values.clone();
-        Iterator<Particle<T>> columnIterator = theColumn.column.iterator();
-        while (columnIterator.hasNext()) //Copy the particles into the column arraylist.
-            column.add(new Particle<T>(columnIterator.next()));
+        for (Particle<T> particle : theColumn.column) 
+            column.add(new Particle<T>(particle));
 	}
+	
+	public Particle<T> getParticle_atIndex(int index) {
+	    return column.get(index);
+	}
+	
 	/**
 	 * manual override of auto determined type
 	 * @param type

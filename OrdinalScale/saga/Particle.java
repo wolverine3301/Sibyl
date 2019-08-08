@@ -116,6 +116,10 @@ public class Particle<T> implements Cloneable{
 	    return type;
 	}
 	
+	public void changeValue(T newValue) {
+	    value = newValue;
+	}
+	
 	/**
 	 * returns value
 	 * @return

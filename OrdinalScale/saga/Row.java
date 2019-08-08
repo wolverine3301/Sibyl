@@ -27,6 +27,9 @@ public class Row<T> {
 		Particle<T> p = new Particle<T>(value);
 		addToRow(p);
 	}
+	
+	
+	
 	/**
 	 * print out row values
 	 */
