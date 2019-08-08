@@ -1,5 +1,5 @@
 package clairvoyance;
 
-public class Spearman {
+public class Spearman extends Distance{
 
 }

@@ -1,5 +1,5 @@
 package clairvoyance;
 
-public class Pearson {
+public class Pearson extends Distance{
 
 }

@@ -1,5 +1,5 @@
 package clairvoyance;
 
-public class Euclidean {
+public class Euclidean extends Distance{
 
 }

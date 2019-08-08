@@ -1,5 +1,5 @@
 package clairvoyance;
 
-public class Jaccard {
+public class Jaccard extends Distance{
 
 }

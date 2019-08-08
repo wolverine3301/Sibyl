@@ -1,5 +1,5 @@
 package clairvoyance;
 
-public class Cosine {
+public class Cosine extends Distance{
 
 }

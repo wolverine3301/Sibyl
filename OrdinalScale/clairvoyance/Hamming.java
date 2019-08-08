@@ -1,5 +1,5 @@
 package clairvoyance;
 
-public class Hamming {
+public class Hamming extends Distance{
 
 }
