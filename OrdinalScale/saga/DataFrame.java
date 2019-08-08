@@ -11,7 +11,7 @@ import java.util.List;
  * Its structure is a array list of column objects which themselves are generic array list representing columns in a table
  * 
  * @author logan.collier
- *
+ * @author Cade Reynoldson
  * @param <T>
  */
 public class DataFrame <T>{
@@ -114,6 +114,12 @@ public class DataFrame <T>{
 	    return newDataFrame;
 	}
 	
+	/**
+	 * NOT WORKING
+	 * @param columnIndex
+	 * @param rowIndex
+	 * @param newValue
+	 */
 	public void changeParticleValue(int columnIndex, int rowIndex, T newValue) {
 	    Particle<T> temp = (Particle<T>) rows.get(rowIndex).row.get(columnIndex);
 	    temp.changeValue(newValue);
