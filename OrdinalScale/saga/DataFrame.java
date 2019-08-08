@@ -18,14 +18,18 @@ public class DataFrame <T>{
 	
 	public List<String> columnNames;
 	public List<String> columnTypes;
+	public ArrayList<Column<Particle<T>>> columns;
+	public ArrayList<Row<Particle<T>>> rows;
 	public int numRows;
-	public ArrayList<Column> dataframe;
+	public int numColumns;
+	
 	
 	/**
 	 * Constructor
 	 */
 	public DataFrame() {
-		this.dataframe = new ArrayList<Column>();
+		this.columns = new ArrayList<Column<Particle<T>>>();
+		this.rows = new ArrayList<Row<Particle<T>>>();
 		this.columnNames = new ArrayList<String>();
 		this.columnTypes = new ArrayList<String>();
 	}
@@ -52,23 +56,30 @@ public class DataFrame <T>{
         	}
         	// initializing column objects
             for (int i = 0; i < columnNames.size(); i++) {
-            	Column<T> c = new Column<T>(columnNames.get(i));
-            	dataframe.add(c);
+            	Column<Particle<T>> c = new Column<Particle<T>>(columnNames.get(i));
+            	columns.add(c);
             } //end initializing
             int count = 0;
             //read lines
         	while ((line = br.readLine()) != null) {
                 // use comma as separator
-                String[] row = line.split(cvsSplitBy);
-                //load data into array list
+                String[] lines = line.split(cvsSplitBy);
+                
+                Row<Particle<T>> row = new Row<Particle<T>>();
+                
+                //load data into columns and rows
                 for(int i=0;i<columnNames.size();i++) {
-                	dataframe.get(i).add((T) row[i]);
+                	Particle<T> p = new Particle<T>( (T) lines[i]);
+                	columns.get(i).addToColumn(p);
+                	row.addToRow(p);
+                	
                 }//end for loop
+                rows.add(row);
                 count++;
         	}//end while read lines
-        	
+        	//fill column types
         	for(int i = 0;i < columnNames.size();i++) {
-            	columnTypes.add(dataframe.get(i).type);
+            	columnTypes.add(columns.get(i).type);
             }//end for loop
         	this.numRows = count;
         	
@@ -86,10 +97,10 @@ public class DataFrame <T>{
 	public DataFrame<T> dataFrameFromColumns(List<String> columnNames) {
 	    DataFrame<T> newDataFrame = new DataFrame<T>();
 	    for (String name : columnNames) {
-	        Column<T> currentColumn = getColumn_byName(name);
+	        Column<Particle<T>> currentColumn = getColumn_byName(name);
 	        newDataFrame.columnNames.add(name);
 	        newDataFrame.columnTypes.add(currentColumn.type);
-	        newDataFrame.dataframe.add(new Column<T>(currentColumn));
+	        newDataFrame.columns.add(new Column<Particle<T>>(currentColumn));
 	    }
 	    return newDataFrame;
 	}
@@ -99,7 +110,7 @@ public class DataFrame <T>{
 	 * @param name - name of column
 	 * @return
 	 */
-	public Column<T> getColumn_byName(String name){
+	public Column<Particle<T>> getColumn_byName(String name){
 		int index = 0;
 		for(int i = 0; i < columnNames.size(); i++) {
 			if(columnNames.get(i).contentEquals(name)){
@@ -107,7 +118,7 @@ public class DataFrame <T>{
 				break;
 			}
 		}
-		return dataframe.get(index);
+		return columns.get(index);
 	}
 	
    /**
@@ -115,8 +126,8 @@ public class DataFrame <T>{
      * @param index the index of the column.
      * @return the column at the index.
      */
-    public Column<T> getColumn_byIndex(int index) {
-        return dataframe.get(index);
+    public Column<Particle<T>> getColumn_byIndex(int index) {
+        return columns.get(index);
     }
     /**
      * add a column from an array
@@ -126,13 +137,16 @@ public class DataFrame <T>{
      * @param arr
      */
     public void addColumnFromArray(String name, T arr[]) {
-    	Column c = new Column(name);
-    	c.makeColumn_fromArray(arr);
-    	//update list
-    	numRows = c.getLength();
+    	Column<Particle<T>> c = new Column<Particle<T>>(name);
+    	for(int i = 0; i < arr.length;i++) {
+    		Particle<T> p = new Particle<T>(arr[i]);
+    		c.addToColumn(p);
+    		rows.get(i).addToRow(p);
+    	}
+    	
     	columnNames.add(name);
     	columnTypes.add(c.type);
-    	dataframe.add(c);
+    	columns.add(c);
     }
 
     /**
@@ -141,10 +155,10 @@ public class DataFrame <T>{
 	 * @param type
 	 */
 	public void add_blank_Column(String name) {
-		Column<T> c = new Column<T>(name);
+		Column<Particle<T>> c = new Column<Particle<T>>(name);
 		columnNames.add(name);
 		columnTypes.add("NAN");
-		dataframe.add(c);
+		columns.add(c);
 		
 	}
 	
@@ -167,6 +181,9 @@ public class DataFrame <T>{
 	public int getLength() {
 		return numRows;
 	}
+	public String columnNamesToString() {
+		return columnNames.toString();
+	}
 	/**
 	 * print the dataframe
 	 */
@@ -176,9 +193,7 @@ public class DataFrame <T>{
 		}
 		System.out.println();
 		for(int z = 0;z < numRows;z++) {
-			for(int j = 0;j < columnNames.size();j++) {
-				System.out.print(dataframe.get(j).getValue(z) + " ");
-			}
+			rows.get(z).printRow();
 			System.out.println();
 		}
 	}

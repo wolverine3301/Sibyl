@@ -17,8 +17,8 @@ public class Column<T> {
 
 	public String type; //column type
 	public String name; //column name
-	public ArrayList<Particle<T>> column; //array of data
-	public ArrayList<T> values;
+	public ArrayList<Particle<T>> column; //array of Particles
+	public ArrayList<T> values; //array of values
 
 	/**
 	 * Creates a column with a given name.
@@ -59,9 +59,16 @@ public class Column<T> {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
 	/**
-	 * add
+	 * adds a particle object to column
+	 * @param p
+	 */
+	public void addToColumn(Particle p) {
+		column.add(p);
+		values.add((T) p.getValue());
+	}
+	/**
+	 * add a raw type to column which will be converted to a particle
 	 * adds a value to the end of the array list
 	 * @param <T>
 	 * @param value
@@ -72,8 +79,7 @@ public class Column<T> {
 		if(column.isEmpty()) {
 			this.type = p.type;
 		}
-		this.column.add(p);
-		this.values.add((T) p.getValue());
+		addToColumn(p);
 	}
 	/**
 	 * hasValue
@@ -94,7 +100,8 @@ public class Column<T> {
 	 * @param value
 	 */
 	public void removeValue(T value) {
-		this.column.remove(value);
+		column.remove(value);
+		values.remove(value);
 	}
 	/**
 	 * removeIndex
@@ -102,7 +109,8 @@ public class Column<T> {
 	 * @param index
 	 */
 	public void removeIndex(int index) {
-		this.column.remove(index);
+		column.remove(index);
+		values.remove(index);
 	}
 	/**
 	 * getLength
