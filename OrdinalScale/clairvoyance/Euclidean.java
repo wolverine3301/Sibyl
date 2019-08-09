@@ -20,12 +20,13 @@ public class Euclidean extends Distance{
 			}
 		}//end for
 		return Math.sqrt(distance);
-		
+
 	}
 
-	@Override
-	public DataFrame distance_matrix() {
-		// TODO Auto-generated method stub
-		return null;
+	public DataFrame distance_matrix(DataFrame df) {
+		DataFrame matrix = new DataFrame();
+		for(int i = 0; i < df.numRows;i++) {
+			
+		}
 	}
 }
