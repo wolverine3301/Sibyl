@@ -1,12 +1,12 @@
 package clairvoyance;
 
-import saga.DataFrame;
+import saga.*;
 
-public abstract class Distance<T> {
+public abstract class Distance{
 
 	// is there an easy way to make this generic and work easily with saga?
 	// such as produce the same results if plugged in either a dataframe or a 2D int[]
-	public abstract double distance(T r1, T r2);
-	public abstract DataFrame<T> distance_matrix();
+	public abstract double distance(Row r1, Row r2);
+	public abstract DataFrame distance_matrix();
 
 }
