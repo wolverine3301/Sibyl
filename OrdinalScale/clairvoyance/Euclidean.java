@@ -26,6 +26,7 @@ public class Euclidean extends Distance{
 	public DataFrame distance_matrix(DataFrame df) {
 		DataFrame matrix = new DataFrame();
 		for(int i = 0; i < df.numRows;i++) {
+			matrix.add_blank_Column(Integer.toString(i));
 			
 		}
 	}
