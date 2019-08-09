@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 public class Particle<T> implements Cloneable{
 	public T value;
 	public String type;
-	
+
 	/**
 	 * particle generic object for dynamic resolving of dtypes
 	 * @param value
