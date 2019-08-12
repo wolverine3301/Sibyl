@@ -169,6 +169,13 @@ public class Column<T> {
 		Set<T> unique = new HashSet<T>(this.values);
 		return unique;
 	}//end uniqueValues
+	/**
+	 * return number of unique values
+	 * @return
+	 */
+	public int numOfUniques() {
+		return uniqueValues().toArray().length;
+	}
 	
    /**
     * Creates a tree set of unique values in the array list.
