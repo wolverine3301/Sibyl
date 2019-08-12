@@ -8,5 +8,8 @@ public class Stats {
 	public static void variance(Column c) {
 		
 	}
+	public static void standardDeviation(Column c) {
+		
+	}
 
 }
