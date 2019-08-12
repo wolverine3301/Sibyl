@@ -32,9 +32,12 @@ public class Stats {
 	}
 	public static double entropy(Column c) {
 		HashMap values = c.uniqueValCnt();
-		double[] probs = new double[c.getLength()];
-		for (Integer value : values.values()) {
-			probs[i] = (int)value / c.getLength();
+		double[] probs = new double[c.numOfUniques()];
+		double ent = 0;
+		int i = 0
+		for (Object value : values.values()) {
+			ent = ent + (((Number)value).intValue() / c.getLength() * math.log);
+			i++;
 		}
 		return 0;
 		
