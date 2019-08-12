@@ -22,13 +22,4 @@ public class Euclidean extends Distance{
 		return Math.sqrt(distance);
 
 	}
-
-	public DataFrame distance_matrix(DataFrame df) {
-		DataFrame matrix = new DataFrame();
-		for(int i = 0; i < df.numRows;i++) {
-			
-			Particle p = new Particle()
-			
-		}
-	}
 }

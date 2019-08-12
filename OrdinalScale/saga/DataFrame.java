@@ -125,6 +125,11 @@ public class DataFrame <T>{
 	    temp.changeValue(newValue);
 	}
 	
+	public Row<Particle<T>> getRow_byIndex(int index) {
+	    return rows.get(index);
+	}
+	
+	
 	/**
 	 * getColumn returns a single column from dataframe
 	 * @param name - name of column
@@ -171,6 +176,19 @@ public class DataFrame <T>{
     	columnTypes.add(c.type);
     	columns.add(c);
     	numColumns++;
+    }
+    
+    public void addRowFromArray(T arr[]) {
+        Particle<T> p = new Particle<T>(arr[0]);
+        Row<Particle<T>> r = new Row<Particle<T>>();
+        r.add(p);
+        columns.get(0).addToColumn(p);
+        for (int i = 1; i < arr.length; i++) {
+            p = new Particle<T>(arr[i]);
+            columns.get(i).addToColumn(p);
+            r.add(p);
+        }
+        rows.add(r);
     }
 
     /**
@@ -219,7 +237,7 @@ public class DataFrame <T>{
 			System.out.print(columnNames.get(i) + " ");
 		}
 		System.out.println();
-		for(int z = 0;z < numRows;z++) {
+		for(int z = 0 ;z < numRows; z++) {
 			rows.get(z).printRow();
 			System.out.println();
 		}

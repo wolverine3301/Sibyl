@@ -8,7 +8,6 @@ public class Row<T> {
 	public Row() {
 		this.row = new ArrayList<Particle<T>>();
 		this.values = new ArrayList<T>();
-		
 		//this.columnNames = new ArrayList<String>();
 	}
 	/**
@@ -41,6 +40,10 @@ public class Row<T> {
 	 */
 	public int getlength() {
 		return row.size();
+	}
+	
+	public ArrayList<Particle<T>> getRow() {
+	    return row;
 	}
 	/**
 	 * print out row values
