@@ -1,5 +1,5 @@
 package saga;
 
-public class ObjectParticle {
+public class ObjectParticle extends Particle{
 
 }
