@@ -18,6 +18,10 @@ public abstract class Particle {
         type = theType;
     }
     
+    public Particle(Particle theParticle) {
+        
+    }
+    
     public String getType() {
         return type;
     }
@@ -27,13 +31,12 @@ public abstract class Particle {
     }
     
     public abstract Object getValue();
+    
     /**
      * Change the value of the particle
      * @param newValue
      */
-    public void changeValue(Object newValue) {
-    	value = newValue;
-    }
+    public abstract void changeValue(Object newValue);
     
     
     
