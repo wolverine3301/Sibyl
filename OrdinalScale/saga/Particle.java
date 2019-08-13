@@ -28,4 +28,6 @@ public abstract class Particle {
     
     public abstract Object getValue();
     
+    
+    
 }
