@@ -15,6 +15,7 @@ public class NANParticle extends Particle{
 	/**
 	 * @return value of string
 	 */
+	@Override
     public String getValue() {
         return (String) super.value;
     }
