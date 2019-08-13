@@ -2,7 +2,7 @@ package saga;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class Particle<T> implements Cloneable{
+public class OldParticle<T> implements Cloneable{
 	public T value;
 	public String type;
 
@@ -10,10 +10,10 @@ public class Particle<T> implements Cloneable{
 	 * particle generic object for dynamic resolving of dtypes
 	 * @param value
 	 */
-	public Particle(T value) {
+	public OldParticle(T value) {
 		resolveType(value);
 	}
-	public Particle(Integer value) {
+	public OldParticle(Integer value) {
 		//resolveType(value);
 	}
 	/**
@@ -21,7 +21,7 @@ public class Particle<T> implements Cloneable{
 	 * @param value the value of the particle.
 	 * @param type the data type of the particle. 
 	 */
-	public Particle(Particle<T> theParticle) {
+	public OldParticle(OldParticle<T> theParticle) {
 	    type = theParticle.type;
 	    value = theParticle.value;
 	    // Tried to force a copy constuctor, didnt work lol
