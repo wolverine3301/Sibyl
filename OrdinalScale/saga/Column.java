@@ -78,16 +78,29 @@ public class Column<T> {
         column.add(p);
     }
     
-    private 
+    /**
+     * 
+     * @param value
+     * @return
+     */
+    private Particle getNewParticle(Object value) {
+        if (value instanceof Integer)
+            return new IntegerParticle((Integer) value);
+        else if (value instanceof Double)
+            return new DoubleParticle((Double) value);
+        else if (value instanceof String)
+            return new StringParticle((String) value);
+        else 
+            return new ObjectParticle(value);
+    }
     
     /**
      * add a raw type to column which will be converted to a particle
      * adds a value to the end of the array list
-     * @param <T>
      * @param value
      */
     public void add(Object value) {
-        Particle p = new Particle(value);
+        Particle p = getNewParticle(value);
         //auto declaration of column type
         if(column.isEmpty()) {
             this.type = p.type;
@@ -139,7 +152,7 @@ public class Column<T> {
      */
     public void makeColumn_fromArray(Object arr[]) {
         for(int i = 0; i < arr.length; i++) {
-            Particle tmp = new Particle(arr[i]);
+            Particle tmp = getNewParticle(arr[i]);
             this.column.add(tmp);
             this.type = tmp.type;
         }
@@ -151,7 +164,7 @@ public class Column<T> {
      */
     public void concatArray(Object arr[]) {
         for(int i = 0; i < arr.length; i++) {
-            Particle tmp = new Particle(arr[i]);
+            Particle tmp = getNewParticle(arr[i]);
             this.column.add(tmp);
         }
     }
