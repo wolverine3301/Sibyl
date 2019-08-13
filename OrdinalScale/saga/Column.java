@@ -17,7 +17,7 @@ public class Column<T> {
 
 	public String type; //column type
 	public String name; //column name
-	public ArrayList<Particle<T>> column; //array of Particles
+	public ArrayList<OldParticle<T>> column; //array of Particles
 	public ArrayList<T> values; //array of values
 
 	/**
@@ -26,7 +26,7 @@ public class Column<T> {
 	 */
 	public Column(String name) {
 		this.name = name;
-		column = new ArrayList<Particle<T>>();
+		column = new ArrayList<OldParticle<T>>();
 		values = new ArrayList<T>();
 		
 	}
@@ -39,7 +39,7 @@ public class Column<T> {
 	public Column(String theName, String theType) {
 	    name = theName;
 	    type = theType;
-        column = new ArrayList<Particle<T>>();
+        column = new ArrayList<OldParticle<T>>();
         values = new ArrayList<T>();
 	}
 	
@@ -51,13 +51,13 @@ public class Column<T> {
     public Column(Column<T> theColumn) {
 	    type = theColumn.type;
 	    name = theColumn.name;
-        column = new ArrayList<Particle<T>>();
+        column = new ArrayList<OldParticle<T>>();
         values = (ArrayList<T>) theColumn.values.clone();
-        for (Particle<T> particle : theColumn.column) 
-            column.add(new Particle<T>(particle));
+        for (OldParticle<T> particle : theColumn.column) 
+            column.add(new OldParticle<T>(particle));
 	}
 	
-	public Particle<T> getParticle_atIndex(int index) {
+	public OldParticle<T> getParticle_atIndex(int index) {
 	    return column.get(index);
 	}
 	
@@ -72,7 +72,7 @@ public class Column<T> {
 	 * adds a particle object to column
 	 * @param p
 	 */
-	public void addToColumn(Particle p) {
+	public void addToColumn(OldParticle p) {
 		column.add(p);
 		values.add((T) p.getValue());
 	}
@@ -83,7 +83,7 @@ public class Column<T> {
 	 * @param value
 	 */
 	public void add(T value) {
-		Particle<T> p = new Particle<T>(value);
+		OldParticle<T> p = new OldParticle<T>(value);
 		//auto declaration of column type
 		if(column.isEmpty()) {
 			this.type = p.type;
@@ -160,7 +160,7 @@ public class Column<T> {
 	 */
 	public void makeColumn_fromArray(T arr[]) {
 		for(int i = 0; i < arr.length; i++) {
-			Particle tmp = new Particle(arr[i]);
+			OldParticle tmp = new OldParticle(arr[i]);
 			this.column.add(tmp);
 			this.type = tmp.type;
 			this.values.add((T) tmp.getValue());
@@ -172,7 +172,7 @@ public class Column<T> {
 	 */
 	public void concatArray(T arr[]) {
 		for(int i = 0; i < arr.length; i++) {
-			Particle tmp = new Particle(arr[i]);
+			OldParticle tmp = new OldParticle(arr[i]);
 			this.column.add(tmp);
 			this.values.add((T) tmp.getValue());
 		}

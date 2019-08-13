@@ -6,8 +6,8 @@ public class Euclidean extends Distance{
 	public double distance(Row r1, Row r2) {
 		double distance = 0;
 		for(int i = 0;i < r1.getlength();i++) {
-			Particle p1 = r1.getParticle(i);
-			Particle p2 = r2.getParticle(i);
+			OldParticle p1 = r1.getParticle(i);
+			OldParticle p2 = r2.getParticle(i);
 			//if the column is a string for categorical variablke
 			if(p1.type.contains("String")) {
 				//if they are the same there is no distance to add

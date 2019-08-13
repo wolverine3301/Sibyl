@@ -2,11 +2,11 @@ package saga;
 import java.util.ArrayList;
 
 public class Row<T> {
-	public ArrayList<Particle<T>> row; //array of data
+	public ArrayList<OldParticle<T>> row; //array of data
 	public ArrayList<T> values;
 	//public ArrayList<String> columnNames;
 	public Row() {
-		this.row = new ArrayList<Particle<T>>();
+		this.row = new ArrayList<OldParticle<T>>();
 		this.values = new ArrayList<T>();
 		//this.columnNames = new ArrayList<String>();
 	}
@@ -14,7 +14,7 @@ public class Row<T> {
 	 * Adds a particle object to list 
 	 * @param p
 	 */
-	public void addToRow(Particle p) {
+	public void addToRow(OldParticle p) {
 		row.add(p);
 		values.add((T) p.getValue());
 	}
@@ -23,7 +23,7 @@ public class Row<T> {
 	 * @param value
 	 */
 	public void add(T value) {
-		Particle<T> p = new Particle<T>(value);
+		OldParticle<T> p = new OldParticle<T>(value);
 		addToRow(p);
 	}
 	/**
@@ -31,7 +31,7 @@ public class Row<T> {
 	 * @param index
 	 * @return
 	 */
-	public Particle getParticle(int index) {
+	public OldParticle getParticle(int index) {
 		return row.get(index);
 	}
 	/**
@@ -42,7 +42,7 @@ public class Row<T> {
 		return row.size();
 	}
 	
-	public ArrayList<Particle<T>> getRow() {
+	public ArrayList<OldParticle<T>> getRow() {
 	    return row;
 	}
 	/**
