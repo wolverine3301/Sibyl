@@ -31,15 +31,15 @@ public class Stats {
 		return Math.sqrt(variance(c));		
 	}
 	public static double entropy(Column c) {
-		HashMap values = c.uniqueValCnt();
-		double[] probs = new double[c.numOfUniques()];
+		HashMap<?,Integer> values = c.uniqueValCnt();
 		double ent = 0;
-		int i = 0
-		for (Object value : values.values()) {
-			ent = ent + (((Number)value).intValue() / c.getLength() * math.log);
-			i++;
+		for (Integer value : values.values()) {
+			System.out.println(1/c.getLength());
+			ent = ent + (value / c.getLength()) * (Math.log10((value / c.getLength())) / Math.log10(2));
 		}
-		return 0;
+		System.out.println(ent);
+		ent = ent * -1;
+		return ent;
 		
 	}
 

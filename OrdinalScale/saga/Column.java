@@ -135,7 +135,7 @@ public class Column<T> {
 	 * @return
 	 */
 	public T getValue(int index) {
-		return (T) values.get(index);
+		return values.get(index);
 	}
 	/**
 	 * make new column from array
