@@ -12,10 +12,17 @@ public class NANParticle extends Particle{
 	public NANParticle(String value) {
 	    super(value, "NAN");
 	}
-
-    @Override
+	/**
+	 * @return value of string
+	 */
     public String getValue() {
         return (String) super.value;
     }
+
+	@Override
+	public void setValue(Object newValue) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

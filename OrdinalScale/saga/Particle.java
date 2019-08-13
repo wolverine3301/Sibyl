@@ -21,7 +21,9 @@ public abstract class Particle {
     public Particle(Particle theParticle) {
         
     }
-    
+    /**
+     * @return the type
+     */
     public String getType() {
         return type;
     }
@@ -36,7 +38,7 @@ public abstract class Particle {
      * Change the value of the particle
      * @param newValue
      */
-    public abstract void changeValue(Object newValue);
+    public abstract void setValue(Object newValue);
     
     
     
