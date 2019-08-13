@@ -17,4 +17,15 @@ public abstract class Particle {
         value = theValue;
         type = theType;
     }
+    
+    public String getType() {
+        return type;
+    }
+    
+    public String toString() {
+        return type + "=" + value;
+    }
+    
+    public abstract Object getValue();
+    
 }

@@ -6,4 +6,11 @@ public class IntegerParticle extends Particle {
 	    super(value, "Integer");
 	}
 
+    @Override
+    public Integer getValue() {
+        return (Integer) super.value;
+    }
+	
+	
+
 }
