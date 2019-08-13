@@ -27,6 +27,13 @@ public abstract class Particle {
     }
     
     public abstract Object getValue();
+    /**
+     * Change the value of the particle
+     * @param newValue
+     */
+    public void changeValue(Object newValue) {
+    	value = newValue;
+    }
     
     
     
