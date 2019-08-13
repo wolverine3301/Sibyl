@@ -127,7 +127,8 @@ public class Column<T> {
 	 * @return
 	 */
 	public int getLength() {
-		return this.column.size();
+		return this.column.size(); 
+		
 	}
 	/**
 	 * gets value of an object by index
@@ -136,6 +137,22 @@ public class Column<T> {
 	 */
 	public T getValue(int index) {
 		return values.get(index);
+	}
+	/**
+	 * get integer value
+	 * @param index
+	 * @return
+	 */
+	public int getIntValue(int index) {
+		return ((Number)values.get(index)).intValue();
+	}
+	/**
+	 * get double value
+	 * @param index
+	 * @return
+	 */
+	public double getDoubleValue(int index) {
+		return ((Number)values.get(index)).doubleValue();
 	}
 	/**
 	 * make new column from array
