@@ -34,7 +34,7 @@ public class Stats {
 		HashMap<?,Integer> values = c.uniqueValCnt();
 		double ent = 0;
 		for (Integer value : values.values()) {
-			System.out.println(1/c.getLength());
+			System.out.println(value/c.getLength());
 			ent = ent + (value / c.getLength()) * (Math.log10((value / c.getLength())) / Math.log10(2));
 		}
 		System.out.println(ent);
