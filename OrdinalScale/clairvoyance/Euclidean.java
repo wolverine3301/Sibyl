@@ -9,17 +9,16 @@ public class Euclidean extends Distance{
 			Particle p1 = r1.getParticle(i);
 			Particle p2 = r2.getParticle(i);
 			//if the column is a string for categorical variablke
-			if(p1.type.contains("Category")) {
+			if(p1.type.contains("String")) {
 				//if they are the same there is no distance to add
 				if(!p1.type.contentEquals(p2.type)) {
 					distance = distance + 1;
 				}
 			}
 			else {
-				distance = distance + Math.pow(((double)p2.getValue() - (double)p1.getValue()),2 );
-			}
+				distance = distance + Math.pow((Double) p2.getValue() - (Double) p1.getValue(),2 );
+			} 
 		}//end for
 		return Math.sqrt(distance);
-
 	}
 }

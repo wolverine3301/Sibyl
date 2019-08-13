@@ -32,6 +32,9 @@ public class DataFrame <T>{
 		this.rows = new ArrayList<Row<Particle<T>>>();
 		this.columnNames = new ArrayList<String>();
 		this.columnTypes = new ArrayList<String>();
+		numRows = 0;
+		numColumns = 0;
+		
 	}
 	
 	/**
@@ -178,17 +181,27 @@ public class DataFrame <T>{
     	numColumns++;
     }
     
+    
+    /**
+     * Adds a row to the data frame from an array. Mostly used by the distance matrix method.
+     * @param arr 
+     */
     public void addRowFromArray(T arr[]) {
+        System.out.print("ROW CREATED: ");
         Particle<T> p = new Particle<T>(arr[0]);
         Row<Particle<T>> r = new Row<Particle<T>>();
-        r.add(p);
+        r.addToRow(p);
         columns.get(0).addToColumn(p);
         for (int i = 1; i < arr.length; i++) {
             p = new Particle<T>(arr[i]);
             columns.get(i).addToColumn(p);
-            r.add(p);
+            r.addToRow(p);
         }
+        System.out.print("ROW CREATED: ");
+        r.printRow();
         rows.add(r);
+        numRows++;
+        
     }
 
     /**
