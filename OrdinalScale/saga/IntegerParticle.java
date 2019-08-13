@@ -1,11 +1,9 @@
 package saga;
 
-public class IntegerParticle extends Particle<Integer>{
-	public int value;
-	public String type = "Integer";
+public class IntegerParticle extends Particle {
 
 	public IntegerParticle(Integer value) {
-	 
+	    super(value, "Integer");
 	}
 
 }

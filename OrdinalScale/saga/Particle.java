@@ -1,5 +1,20 @@
 package saga;
 
 public abstract class Particle {
-
+    
+    /** The value of the Object */
+    public Object value;
+    
+    /** A string representation of the type of object */
+    public String type;
+    
+    /**
+     * Creates a new instance of a particle with a given value and type.
+     * @param theValue
+     * @param theType
+     */
+    public Particle(Object theValue, String theType) {
+        value = theValue;
+        type = theType;
+    }
 }
