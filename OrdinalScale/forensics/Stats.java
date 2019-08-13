@@ -11,7 +11,8 @@ public class Stats {
 			// get sum
 			for(int i = 0;i < c.getLength();i++) {
 
-				sum = sum + ((Number) c.getValue(i)).doubleValue();
+				sum = sum += c.getNumValue(i);
+				
 			}//end sum
 			return sum / c.getLength();	
 		}else {
@@ -23,7 +24,7 @@ public class Stats {
 		double mean = mean(c);
 		double var = 0;
 		for(int i = 0;i < c.getLength();i++) {
-			var = Math.pow((((Number) c.getValue(i)).doubleValue() - mean), 2);
+			var += Math.pow((c.getNumValue(i)- mean), 2);
 		}
 		return var/c.getLength();
 	}

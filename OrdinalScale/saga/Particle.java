@@ -13,7 +13,9 @@ public class Particle<T> implements Cloneable{
 	public Particle(T value) {
 		resolveType(value);
 	}
-	
+	public Particle(Integer value) {
+		//resolveType(value);
+	}
 	/**
 	 * Copy constructor.
 	 * @param value the value of the particle.
