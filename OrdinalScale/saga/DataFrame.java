@@ -19,7 +19,7 @@ public class DataFrame {
 	public List<String> columnNames;
 	public List<String> columnTypes;
 	public ArrayList<Column> columns;
-	public ArrayList<Row<Particle>> rows;
+	public ArrayList<Row> rows;
 	public int numRows;
 	public int numColumns;
 	
@@ -29,7 +29,7 @@ public class DataFrame {
 	 */
 	public DataFrame() {
 		this.columns = new ArrayList<Column>();
-		this.rows = new ArrayList<Row<Particle>>();
+		this.rows = new ArrayList<Row>();
 		this.columnNames = new ArrayList<String>();
 		this.columnTypes = new ArrayList<String>();
 		numRows = 0;
@@ -68,11 +68,11 @@ public class DataFrame {
                 // use comma as separator
                 String[] lines = line.split(cvsSplitBy);
                 
-                Row<Particle> row = new Row<Particle>();
+                Row row = new Row();
                 
                 //load data into columns and rows
                 for(int i=0;i<columnNames.size();i++) {
-                	Particle p = new Particle(lines[i]);
+                	Particle p = resolveType(lines[i]);
                 	columns.get(i).addToColumn(p);
                 	row.addToRow(p);
                 	
@@ -97,8 +97,8 @@ public class DataFrame {
 	 * @param columnNames the list of column name.
 	 * @return the newly created data frame.
 	 */
-	public DataFrame<T> dataFrameFromColumns(List<String> columnNames) {
-	    DataFrame<T> newDataFrame = new DataFrame<T>();
+	public DataFrame dataFrameFromColumns(List<String> columnNames) {
+	    DataFrame newDataFrame = new DataFrame();
 	    for (String name : columnNames) { // Create the columns
 	        Column currentColumn = getColumn_byName(name);
 	        newDataFrame.columnNames.add(name);
@@ -108,7 +108,7 @@ public class DataFrame {
 	    newDataFrame.numColumns = newDataFrame.columns.size();
 	    newDataFrame.numRows = newDataFrame.columns.get(0).getLength();
 	    for (int i = 0; i < newDataFrame.numRows; i++) {
-	        Row<OldParticle<T>> row = new Row<OldParticle<T>>(); 
+	        Row row = new Row(); 
 	        for (int j = 0; j < newDataFrame.numColumns; j++) {
 	            row.addToRow(newDataFrame.columns.get(j).getParticle_atIndex(i));
 	        }
@@ -117,7 +117,7 @@ public class DataFrame {
 	    return newDataFrame;
 	}
 	
-	public Row<Particle> getRow_byIndex(int index) {
+	public Row getRow_byIndex(int index) {
 	    return rows.get(index);
 	}
 	
@@ -154,13 +154,13 @@ public class DataFrame {
      * @param type
      * @param arr
      */
-    public void addColumnFromArray(String name, T arr[]) { //UPDATE
-    	Particle p = new Particle(arr[0]);
-    	Column<OldParticle<T>> c = new Column<OldParticle<T>>(name, p.type);
+    public void addColumnFromArray(String name, Object arr[]) { //UPDATE
+    	Particle p = resolveType(arr[0]);
+    	Column c = new Column(name, p.type);
     	c.addToColumn(p);
     	rows.get(0).addToRow(p);
     	for(int i = 1; i < arr.length;i++) {
-    		p = new OldParticle<T>(arr[i]);
+    		p = resolveType(arr[i]);
             rows.get(i).addToRow(p);
     		c.addToColumn(p);
     	}
@@ -175,14 +175,14 @@ public class DataFrame {
      * Adds a row to the data frame from an array. Mostly used by the distance matrix method.
      * @param arr 
      */
-    public void addRowFromArray(T arr[]) { //UPDATE
+    public void addRowFromArray(Object arr[]) { //UPDATE
         System.out.print("ROW CREATED: ");
-        OldParticle<T> p = new OldParticle<T>(arr[0]);
-        Row<OldParticle<T>> r = new Row<OldParticle<T>>();
+        Particle p = resolveType(arr[0]);
+        Row r = new Row();
         r.addToRow(p);
         columns.get(0).addToColumn(p);
         for (int i = 1; i < arr.length; i++) {
-            p = new OldParticle<T>(arr[i]);
+            p = resolveType(arr[i]);
             columns.get(i).addToColumn(p);
             r.addToRow(p);
         }
@@ -249,6 +249,29 @@ public class DataFrame {
                 newParticle = new NANParticle(value);
             else 
                 newParticle = new StringParticle(value);
+        }
+        return newParticle;
+    }
+	
+   /**
+     * TO DO: UPDATE FOR SUPPORT WITH ORDINAL & OBJECT PARTICLES.
+     * Resolves the type of a value from a string.
+     * @param value 
+     */
+    private Particle resolveType(Object value) {
+        Particle newParticle;
+        if (value instanceof Integer)
+            newParticle = new IntegerParticle((Integer) value);
+        else if (value instanceof Double)
+            newParticle = new DoubleParticle((Double) value);
+        else if (value instanceof String) {
+            String s = (String) value;
+            if(s.isBlank() || s.toUpperCase().contentEquals("NAN") || s.toUpperCase().contentEquals("NULL")) 
+                newParticle = new NANParticle((String) value);
+            else 
+                newParticle = new StringParticle((String) value);
+        } else {
+            return null; //UPDATE FOR ORDINAL, OBJECT AND DISTANCE.
         }
         return newParticle;
     }
