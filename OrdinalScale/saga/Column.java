@@ -10,11 +10,8 @@ import java.util.TreeSet;
  * column object for a data frame
  * @author logan.collier
  * @author Cade Reynoldson
- * @param <T>
- *
- * @param <T>
  */
-public class Column<T> {
+public class Column {
 
     /** The type of data stored within the column. */
     public String type; 
