@@ -18,8 +18,8 @@ public class DataFrame <T>{
 	
 	public List<String> columnNames;
 	public List<String> columnTypes;
-	public ArrayList<Column<OldParticle<T>>> columns;
-	public ArrayList<Row<OldParticle<T>>> rows;
+	public ArrayList<Column<Particle>> columns;
+	public ArrayList<Row<Particle>> rows;
 	public int numRows;
 	public int numColumns;
 	
@@ -28,8 +28,8 @@ public class DataFrame <T>{
 	 * Constructor
 	 */
 	public DataFrame() {
-		this.columns = new ArrayList<Column<OldParticle<T>>>();
-		this.rows = new ArrayList<Row<OldParticle<T>>>();
+		this.columns = new ArrayList<Column<Particle>>();
+		this.rows = new ArrayList<Row<Particle>>();
 		this.columnNames = new ArrayList<String>();
 		this.columnTypes = new ArrayList<String>();
 		numRows = 0;
@@ -59,7 +59,7 @@ public class DataFrame <T>{
         	}
         	// initializing column objects
             for (int i = 0; i < columnNames.size(); i++) {
-            	Column<OldParticle<T>> c = new Column<OldParticle<T>>(columnNames.get(i));
+            	Column<Particle> c = new Column<Particle>(columnNames.get(i));
             	columns.add(c);
             } //end initializing
             int count = 0;
@@ -68,11 +68,11 @@ public class DataFrame <T>{
                 // use comma as separator
                 String[] lines = line.split(cvsSplitBy);
                 
-                Row<OldParticle<T>> row = new Row<OldParticle<T>>();
+                Row<Particle> row = new Row<Particle>();
                 
                 //load data into columns and rows
                 for(int i=0;i<columnNames.size();i++) {
-                	OldParticle<T> p = new OldParticle<T>( (T) lines[i]);
+                	Particle p = new Particle(lines[i]);
                 	columns.get(i).addToColumn(p);
                 	row.addToRow(p);
                 	
@@ -103,7 +103,7 @@ public class DataFrame <T>{
 	        Column<OldParticle<T>> currentColumn = getColumn_byName(name);
 	        newDataFrame.columnNames.add(name);
 	        newDataFrame.columnTypes.add(currentColumn.type);
-	        newDataFrame.columns.add(new Column<OldParticle<T>>(currentColumn));
+	        newDataFrame.columns.add(new Column<Particle>(currentColumn));
 	    }	    
 	    newDataFrame.numColumns = newDataFrame.columns.size();
 	    newDataFrame.numRows = newDataFrame.columns.get(0).getLength();
@@ -124,11 +124,11 @@ public class DataFrame <T>{
 	 * @param newValue
 	 */
 	public void changeParticleValue(int columnIndex, int rowIndex, T newValue) {
-	    OldParticle<T> temp = (OldParticle<T>) rows.get(rowIndex).row.get(columnIndex);
+	    Particle temp = (Particle) rows.get(rowIndex).row.get(columnIndex);
 	    temp.changeValue(newValue);
 	}
 	
-	public Row<OldParticle<T>> getRow_byIndex(int index) {
+	public Row<Particle> getRow_byIndex(int index) {
 	    return rows.get(index);
 	}
 	
@@ -138,7 +138,7 @@ public class DataFrame <T>{
 	 * @param name - name of column
 	 * @return
 	 */
-	public Column<OldParticle<T>> getColumn_byName(String name){
+	public Column<Particle> getColumn_byName(String name){
 		int index = 0;
 		for(int i = 0; i < columnNames.size(); i++) {
 			if(columnNames.get(i).contentEquals(name)){
@@ -154,7 +154,7 @@ public class DataFrame <T>{
      * @param index the index of the column.
      * @return the column at the index.
      */
-    public Column<OldParticle<T>> getColumn_byIndex(int index) {
+    public Column<Particle> getColumn_byIndex(int index) {
         return columns.get(index);
     }
     
@@ -166,7 +166,7 @@ public class DataFrame <T>{
      * @param arr
      */
     public void addColumnFromArray(String name, T arr[]) {
-    	OldParticle<T> p = new OldParticle<T>(arr[0]);
+    	Particle p = new Particle(arr[0]);
     	Column<OldParticle<T>> c = new Column<OldParticle<T>>(name, p.type);
     	c.addToColumn(p);
     	rows.get(0).addToRow(p);
