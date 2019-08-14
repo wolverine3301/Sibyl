@@ -175,9 +175,7 @@ public class Column {
      */
     public int numOfUniques() {
         return uniqueValues().size();
-    }
-    
-    
+    }  
     /**
      * @return set of unique values
      */
@@ -218,8 +216,58 @@ public class Column {
             System.out.println(column.get(i).value);
         }
     }
-	
-	
-	
+    /**
+     * If numeric column
+     * @return sum of values
+     */
+    public double sum() {
+    	Number sum = 0;
+    	if(type.contains("Double")) {
+    		// get sum
+    		for(int i = 0;i < column.size();i++) {
+    			sum.equals(sum.doubleValue() + (Double)column.get(i).getValue());
+    		}//end sum	
+    	}
+    	else if(type.contains("Integer")) {
+    		for(int i = 0;i < column.size();i++) {
+    			sum.equals(sum.intValue() + (Integer)column.get(i).getValue());
+    		}//end sum
+    	}
+    	return sum.doubleValue();
+    }
+    /**
+     * @return mean of column
+     */
+    public double mean() {
+    	return sum() / column.size();	
+    }
+    /**
+     * @return variance of column
+     */
+	public  double variance() {
+		double var = 0.0;
+		for(int i = 0;i < column.size();i++) {
+			var += Math.pow(((Double)column.get(i).getValue()- mean()), 2);
+		}
+		return var /column.size();
+	}
+	/**
+	 * return standard deviation
+	 * @return
+	 */
+	public double standardDeviation() {
+		return Math.sqrt(variance());		
+	}
+	/**
+	 * @return entropy
+	 */
+	public double entropy() {
+		HashMap<Object,Integer> values = uniqueValCnt();
+		double ent = 0;
+		for (Integer value : values.values()) {
+			ent = ent + (value / column.size()) * (Math.log10((value / column.size())) / Math.log10(2));
+		}
+		return ent;
+	}
 
 }
