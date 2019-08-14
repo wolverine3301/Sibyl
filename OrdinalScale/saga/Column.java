@@ -9,6 +9,7 @@ import java.util.TreeSet;
 /**
  * column object for a data frame
  * @author logan.collier
+ * @author Cade Reynoldson
  * @param <T>
  *
  * @param <T>
@@ -23,6 +24,7 @@ public class Column<T> {
     
     /** The array list of particles within the column */
     public ArrayList<Particle> column; 
+    
 
     /**
      * Creates a column with a given name.
@@ -30,8 +32,7 @@ public class Column<T> {
      */
     public Column(String name) {
         this.name = name;
-        column = new ArrayList<Particle>();
-        
+        column = new ArrayList<Particle>(); 
     }
     
     /**
@@ -120,6 +121,8 @@ public class Column<T> {
             return false;
         }
     }
+    
+    // NEED TO UPDATE FOR VALUES
     /**
      * removeValue
      * removes first occurrence of a specific value that may be in the array list 
@@ -174,18 +177,18 @@ public class Column<T> {
      * @return
      */
     public int numOfUniques() {
-        return uniqueValues().toArray().length;
+        return uniqueValues().size();
     }
     
     
-    //UPDATE THESE TWO BELOW
-    
     /**
-     * set of unique values
-     * @return
+     * @return set of unique values
      */
-    public Set<Particle> uniqueValues(){
-        Set<Particle> unique = new HashSet<Particle>(column);
+    public Set<Object> uniqueValues(){
+    	Set<Object> unique = new HashSet<Object>();
+    	for(Particle i : column) {
+    		unique.add(i.getValue());
+    	}	
         return unique;
     }
     
@@ -193,20 +196,19 @@ public class Column<T> {
      * returns a hashmap: keys are each unique value in array list and they point to the number of occurances
      * @return
      */
-    public HashMap<Particle, Integer> uniqueValCnt() {
-        Set<Particle> unique = uniqueValues();
-        @SuppressWarnings("unchecked")
-        Particle[] uni = (Particle[]) unique.toArray(); //get array of uniqe values
+    public HashMap<Object, Integer> uniqueValCnt() {
+        Set<Object> unique = uniqueValues();
+        Object[] uni = unique.toArray(); //get array of uniqe values
         
-        HashMap<Particle, Integer> vals = new HashMap<>();
+        HashMap<Object, Integer> vals = new HashMap<>();
         //initialize map
         for(int i = 0;i < uni.length;i++) {
             vals.put(uni[i], 0);
         }//end for
         //counting
         for(Particle i : column) {
-            vals.replace(i, vals.get(i), vals.get(i)+1);
-        }//end for
+            vals.replace(i.getValue(), vals.get(i), vals.get(i)+1);
+        }//end count
         return vals;
     }//end uniqueValCnt
     
