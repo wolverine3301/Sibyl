@@ -13,10 +13,20 @@ public class ObjectParticle extends Particle{
 	public ObjectParticle(Object value) {
 	    super(value, "Object");
 	}
-
+	/**
+	 * @return the object
+	 */
     @Override
     public Object getValue() {
         return (Object) super.value;
     }
+    /**
+     * Change the object value
+     */
+	@Override
+	public void setValue(Object newValue) {
+		this.value = newValue;
+		
+	}
 
 }

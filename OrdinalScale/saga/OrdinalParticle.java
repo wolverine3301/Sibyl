@@ -15,16 +15,19 @@ public class OrdinalParticle extends Particle{
 	public OrdinalParticle(HashMap<String, Integer> value) {
 	    super(value, "Ordinal");
 	}
-
+	/**
+	 * @return the ordinal value
+	 */
     @Override
     public Integer getValue() {
         return (Integer) super.value;
     }
-
+    /**
+     * change the ordinal value
+     */
 	@Override
 	public void setValue(Object newValue) {
-		// TODO Auto-generated method stub
-		
+		this.value = newValue;
 	}
 
 }

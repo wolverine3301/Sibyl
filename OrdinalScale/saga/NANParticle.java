@@ -19,11 +19,10 @@ public class NANParticle extends Particle{
     public String getValue() {
         return (String) super.value;
     }
-
-	@Override
+	
+    @Override
 	public void setValue(Object newValue) {
-		// TODO Auto-generated method stub
-		
+		this.value = newValue;
 	}
 
 }

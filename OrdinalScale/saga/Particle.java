@@ -31,14 +31,13 @@ public abstract class Particle {
     public String toString() {
         return type + "=" + value;
     }
-    
+    /**
+     * @return the value
+     */
     public abstract Object getValue();
     
-    /**
-     * Change the value of the particle
-     * @param newValue
-     */
     public abstract void setValue(Object newValue);
+
     
     
     

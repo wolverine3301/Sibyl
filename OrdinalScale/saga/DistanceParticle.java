@@ -22,9 +22,8 @@ public class DistanceParticle extends Particle{
     /**
      * Set the value of the particle
      */
-    @Override
 	public void setValue(Object newValue) {
-		this.value = newValue;
+		super.value = (Double) newValue;
 	}
 
 }
