@@ -1,9 +1,14 @@
 package saga;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 /**
@@ -179,7 +184,7 @@ public class Column {
     /**
      * @return set of unique values
      */
-    public Set<Object> uniqueValues(){
+    public Set<Object> uniqueValues(){ 
     	Set<Object> unique = new HashSet<Object>();
     	for(Particle i : column) {
     		unique.add(i.getValue());
@@ -194,7 +199,6 @@ public class Column {
     public HashMap<Object, Integer> uniqueValCnt() {
         Set<Object> unique = uniqueValues();
         Object[] uni = unique.toArray(); //get array of uniqe values
-        
         HashMap<Object, Integer> vals = new HashMap<>();
         //initialize map
         for(int i = 0;i < uni.length;i++) {
@@ -204,6 +208,14 @@ public class Column {
         for(Particle i : column) {
             vals.replace(i.getValue(), vals.get(i), vals.get(i)+1);
         }//end count
+        List<Map.Entry<Object, Integer>> list = new LinkedList<Map.Entry<Object, Integer>>();
+        // Sort the list 
+        Collections.sort(list, new Comparator<Map.Entry<Object, Integer> >() { 
+            public int compare(Map.Entry<Object, Integer> o1,  
+                               Map.Entry<Object, Integer> o2){ 
+                return (o1.getValue()).compareTo(o2.getValue()); 
+            } 
+        }); 
         return vals;
     }//end uniqueValCnt
     
