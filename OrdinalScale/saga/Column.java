@@ -235,6 +235,9 @@ public class Column {
     	}
     	return sum.doubleValue();
     }
+    public Object mode() {
+    	
+    }
     /**
      * @return mean of column
      */
