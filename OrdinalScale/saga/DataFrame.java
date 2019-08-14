@@ -14,11 +14,11 @@ import java.util.List;
  * @author Cade Reynoldson
  * @param <T>
  */
-public class DataFrame <T>{
+public class DataFrame {
 	
 	public List<String> columnNames;
 	public List<String> columnTypes;
-	public ArrayList<Column<Particle>> columns;
+	public ArrayList<Column> columns;
 	public ArrayList<Row<Particle>> rows;
 	public int numRows;
 	public int numColumns;
@@ -28,7 +28,7 @@ public class DataFrame <T>{
 	 * Constructor
 	 */
 	public DataFrame() {
-		this.columns = new ArrayList<Column<Particle>>();
+		this.columns = new ArrayList<Column>();
 		this.rows = new ArrayList<Row<Particle>>();
 		this.columnNames = new ArrayList<String>();
 		this.columnTypes = new ArrayList<String>();
@@ -59,7 +59,7 @@ public class DataFrame <T>{
         	}
         	// initializing column objects
             for (int i = 0; i < columnNames.size(); i++) {
-            	Column<Particle> c = new Column<Particle>(columnNames.get(i));
+            	Column c = new Column(columnNames.get(i));
             	columns.add(c);
             } //end initializing
             int count = 0;
@@ -100,10 +100,10 @@ public class DataFrame <T>{
 	public DataFrame<T> dataFrameFromColumns(List<String> columnNames) {
 	    DataFrame<T> newDataFrame = new DataFrame<T>();
 	    for (String name : columnNames) { // Create the columns
-	        Column<OldParticle<T>> currentColumn = getColumn_byName(name);
+	        Column currentColumn = getColumn_byName(name);
 	        newDataFrame.columnNames.add(name);
 	        newDataFrame.columnTypes.add(currentColumn.type);
-	        newDataFrame.columns.add(new Column<Particle>(currentColumn));
+	        newDataFrame.columns.add(new Column(currentColumn));
 	    }	    
 	    newDataFrame.numColumns = newDataFrame.columns.size();
 	    newDataFrame.numRows = newDataFrame.columns.get(0).getLength();
@@ -117,17 +117,6 @@ public class DataFrame <T>{
 	    return newDataFrame;
 	}
 	
-	/**
-	 * NOT WORKING
-	 * @param columnIndex
-	 * @param rowIndex
-	 * @param newValue
-	 */
-	public void changeParticleValue(int columnIndex, int rowIndex, T newValue) {
-	    Particle temp = (Particle) rows.get(rowIndex).row.get(columnIndex);
-	    temp.changeValue(newValue);
-	}
-	
 	public Row<Particle> getRow_byIndex(int index) {
 	    return rows.get(index);
 	}
@@ -138,7 +127,7 @@ public class DataFrame <T>{
 	 * @param name - name of column
 	 * @return
 	 */
-	public Column<Particle> getColumn_byName(String name){
+	public Column getColumn_byName(String name){
 		int index = 0;
 		for(int i = 0; i < columnNames.size(); i++) {
 			if(columnNames.get(i).contentEquals(name)){
@@ -154,18 +143,18 @@ public class DataFrame <T>{
      * @param index the index of the column.
      * @return the column at the index.
      */
-    public Column<Particle> getColumn_byIndex(int index) {
+    public Column getColumn_byIndex(int index) {
         return columns.get(index);
     }
     
+    
     /**
      * add a column from an array
-     * 
      * @param name
      * @param type
      * @param arr
      */
-    public void addColumnFromArray(String name, T arr[]) {
+    public void addColumnFromArray(String name, T arr[]) { //UPDATE
     	Particle p = new Particle(arr[0]);
     	Column<OldParticle<T>> c = new Column<OldParticle<T>>(name, p.type);
     	c.addToColumn(p);
@@ -186,7 +175,7 @@ public class DataFrame <T>{
      * Adds a row to the data frame from an array. Mostly used by the distance matrix method.
      * @param arr 
      */
-    public void addRowFromArray(T arr[]) {
+    public void addRowFromArray(T arr[]) { //UPDATE
         System.out.print("ROW CREATED: ");
         OldParticle<T> p = new OldParticle<T>(arr[0]);
         Row<OldParticle<T>> r = new Row<OldParticle<T>>();
@@ -210,7 +199,7 @@ public class DataFrame <T>{
 	 * @param type
 	 */
 	public void add_blank_Column(String name) {
-		Column<OldParticle<T>> c = new Column<OldParticle<T>>(name);
+		Column c = new Column(name);
 		columnNames.add(name);
 		columnTypes.add("NAN");
 		columns.add(c);
@@ -243,6 +232,70 @@ public class DataFrame <T>{
 	}
 	
 	/**
+	 * TO DO: UPDATE FOR SUPPORT WITH ORDINAL & OBJECT PARTICLES.
+	 * Resolves the type of a value from a string.
+	 * @param value 
+	 */
+	private Particle resolveType(String value) {
+        Particle newParticle;
+        if(isNumeric(value)) { //If the passed string is numeric.
+            if(isInteger(value))
+                newParticle = new IntegerParticle(Integer.parseInt(value));
+            else
+                newParticle = new DoubleParticle(Double.parseDouble(value));
+        } else { //If the passed string is just a string.
+            String s = (String) value;
+            if(value.isBlank() || value.toUpperCase().contentEquals("NAN") || value.toUpperCase().contentEquals("NULL")) 
+                newParticle = new NANParticle(value);
+            else 
+                newParticle = new StringParticle(value);
+        }
+        return newParticle;
+    }
+	
+	/**
+     * is it an integer
+     * @param strNum
+     * @return
+     */
+    private boolean isInteger(String strNum) {
+        try {
+            Integer.parseInt( strNum);
+        } catch (NumberFormatException | NullPointerException nfe) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * is it a double
+     * @param strNum
+     * @return
+     */
+    private boolean isDouble(String strNum) {
+        try {
+            Double.parseDouble(strNum);
+        } catch (NumberFormatException | NullPointerException nfe) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * is it a number
+     * @param strNum
+     * @return
+     */
+    private boolean isNumeric(String strNum) {
+        try {
+            Double.parseDouble(strNum);
+        } catch (NumberFormatException | NullPointerException nfe) {
+            return false;
+        }
+        return true;
+    }
+	
+	/**
 	 * print the dataframe
 	 */
 	public void printDataFrame() {
@@ -255,5 +308,8 @@ public class DataFrame <T>{
 			System.out.println();
 		}
 	}
+	
+	
+	
 
 }

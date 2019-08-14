@@ -73,6 +73,8 @@ public class OldParticle<T> implements Cloneable{
 		}//end object typs
 		
 	}
+	
+	
 	/**
 	 * is it an integer
 	 * @param strNum

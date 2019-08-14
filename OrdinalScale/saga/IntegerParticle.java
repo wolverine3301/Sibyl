@@ -5,13 +5,15 @@ package saga;
  *
  */
 public class IntegerParticle extends Particle {
-	/**
+	
+    /**
 	 * Constructor
 	 * @param value
 	 */
 	public IntegerParticle(Integer value) {
 	    super(value, "Integer");
 	}
+	
 	/**
 	 * @return the integer value
 	 */
@@ -19,6 +21,7 @@ public class IntegerParticle extends Particle {
     public Integer getValue() {
         return (Integer) super.value;
     }
+    
     /**
      * Set new value
      */
