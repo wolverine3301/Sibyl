@@ -34,9 +34,8 @@ public class DataFrame {
 	/** The number of columns in the data frame */
 	public int numColumns;
 	
-	
 	/**
-	 * Constructor
+	 * Create a new, empty data frame.
 	 */
 	public DataFrame() {
 		this.columns = new ArrayList<Column>();
@@ -49,10 +48,7 @@ public class DataFrame {
 	}
 	
 	/**
-	 * loadcsv
-	 * construct a dataframe directly from a csv file, auto assumes there is a header line which it uses as the column names
-	 * inputs:
-	 *
+	 * Construct a dataframe directly from a csv file, auto assumes there is a header line which it uses as the column names.
 	 * @param file  - csv file name or path
 	 * @param types - an array of strings to set the type attribute of the column, needs work and automization but will be usefully
 	 * for managing which functions to use on which type of column
@@ -64,43 +60,30 @@ public class DataFrame {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
         	line =  br.readLine(); //get column names
         	String[] colNames = line.split(cvsSplitBy);
-        	//fill column names and types
-        	for(int i = 0;i < colNames.length;i++) {
+        	for(int i = 0;i < colNames.length;i++) //Initialize column names.
         		columnNames.add(colNames[i]);
-        	}
-        	// initializing column objects
-            for (int i = 0; i < columnNames.size(); i++) {
+            for (int i = 0; i < columnNames.size(); i++) { // initializing column objects
             	Column c = new Column(columnNames.get(i));
             	columns.add(c);
-            } //end initializing
-            int count = 0;
-            //read lines
-        	while ((line = br.readLine()) != null) {
-                // use comma as separator
+            }
+        	while ((line = br.readLine()) != null) { //Read in each line, create row objects and initialize data.
                 String[] lines = line.split(cvsSplitBy);
-                
                 Row row = new Row();
-                
-                //load data into columns and rows
-                for(int i=0;i<columnNames.size();i++) {
-                	Particle p = resolveType(lines[i]);
+                for(int i=0;i<columnNames.size();i++) { //load data into columns and rows
+                	Particle p = Particle.resolveType(lines[i]);
+                	columns.get(i).type = p.getType();
                 	columns.get(i).addToColumn(p);
                 	row.addToRow(p);
-                	
-                }//end for loop
+                }
                 rows.add(row);
-                count++;
-        	}//end while read lines
-        	//fill column types
-        	for(int i = 0;i < columnNames.size();i++) {
+        	}
+        	for(int i = 0;i < columnNames.size();i++) //Initialize column types.
             	columnTypes.add(columns.get(i).type);
-            }//end for loop
-        	this.numRows = count;
-        	
+        	this.numRows = rows.size();
+        	this.numColumns = columns.size();
         } catch (IOException e) {
         	e.printStackTrace();
         }
-
 	}
 	
 	/**
@@ -128,14 +111,19 @@ public class DataFrame {
 	    return newDataFrame;
 	}
 	
+	/**
+	 * Returns an indexed row from the data frame.
+	 * @param index the index of the row.
+	 * @return A row at a specified index.
+	 */
 	public Row getRow_byIndex(int index) {
 	    return rows.get(index);
 	}
 	
 	
 	/**
-	 * getColumn returns a single column from dataframe
-	 * @param name - name of column
+	 * getColumn returns a single column by name from the dataframe.
+	 * @param name The name of the desired column.
 	 * @return
 	 */
 	public Column getColumn_byName(String name){
@@ -160,18 +148,17 @@ public class DataFrame {
     
     
     /**
-     * add a column from an array
-     * @param name
-     * @param type
-     * @param arr
+     * Add a new column from an array.
+     * @param name The name of the column.
+     * @param arr The array to be added into a column.
      */
-    public void addColumnFromArray(String name, Object arr[]) { //UPDATE
-    	Particle p = resolveType(arr[0]);
+    public void addColumnFromArray(String name, Object arr[]) {
+    	Particle p = Particle.resolveType(arr[0]);
     	Column c = new Column(name, p.type);
     	c.addToColumn(p);
     	rows.get(0).addToRow(p);
     	for(int i = 1; i < arr.length;i++) {
-    		p = resolveType(arr[i]);
+    		p = Particle.resolveType(arr[i]);
             rows.get(i).addToRow(p);
     		c.addToColumn(p);
     	}
@@ -181,19 +168,17 @@ public class DataFrame {
     	numColumns++;
     }
     
-    
     /**
      * Adds a row to the data frame from an array. Mostly used by the distance matrix method.
-     * @param arr 
+     * @param arr the new row to be added. 
      */
-    public void addRowFromArray(Object arr[]) { //UPDATE
-        System.out.print("ROW CREATED: ");
-        Particle p = resolveType(arr[0]);
+    public void addRowFromArray(Object arr[]) { //THIS NEEDS WORK! 
+        Particle p = Particle.resolveType(arr[0]);
         Row r = new Row();
         r.addToRow(p);
         columns.get(0).addToColumn(p);
         for (int i = 1; i < arr.length; i++) {
-            p = resolveType(arr[i]);
+            p = Particle.resolveType(arr[i]);
             columns.get(i).addToColumn(p);
             r.addToRow(p);
         }
@@ -205,21 +190,19 @@ public class DataFrame {
     }
 
     /**
-	 * add_blank_Column - adds a new empty column to dataframe
-	 * @param name
-	 * @param type
+	 * Adds a new empty column to the data frame.
+	 * @param name The name of the new column.
 	 */
 	public void add_blank_Column(String name) {
 		Column c = new Column(name);
 		columnNames.add(name);
 		columnTypes.add("NAN");
 		columns.add(c);
-		
 	}
 	
 	/**
-	 * getColumnNames - returns column names in a string
-	 * @return
+	 * Returns an array of the column names from the data frame.
+	 * @return an array of the column names from the data frame.
 	 */
 	public String[] getColumnNames() {
 		String[] names = new String[columnNames.size()];
@@ -230,115 +213,33 @@ public class DataFrame {
 	}
 	
 	/**
-	 * getLength - returns number of rows in dataframe
-	 * @return
+	 * Returns the amount of rows in the data frame.
+	 * @return the amount of rows in the data frame.
 	 */
 	public int getLength() {
 		return numRows;
 	}
 	
-	
+	/**
+	 * Returns the names of the columns in the data frame in a single string.
+	 * @return the names of the columns in the data frame in a single string.
+	 */
 	public String columnNamesToString() {
 		return columnNames.toString();
 	}
 	
-	/**
-	 * TO DO: UPDATE FOR SUPPORT WITH ORDINAL & OBJECT PARTICLES.
-	 * Resolves the type of a value from a string.
-	 * @param value 
-	 */
-	private Particle resolveType(String value) {
-        Particle newParticle;
-        if(isNumeric(value)) { //If the passed string is numeric.
-            if(isInteger(value))
-                newParticle = new IntegerParticle(Integer.parseInt(value));
-            else
-                newParticle = new DoubleParticle(Double.parseDouble(value));
-        } else { //If the passed string is just a string.
-            if(value.isBlank() || value.toUpperCase().contentEquals("NAN") || value.toUpperCase().contentEquals("NULL")) 
-                newParticle = new NANParticle(value);
-            else 
-                newParticle = new StringParticle(value);
-        }
-        return newParticle;
-    }
-	
-   /**
-     * TO DO: UPDATE FOR SUPPORT WITH ORDINAL & OBJECT PARTICLES.
-     * Resolves the type of a value from a string.
-     * @param value 
+    /**
+     * Prints the data frame.
      */
-    private Particle resolveType(Object value) {
-        Particle newParticle;
-        if (value instanceof Integer)
-            newParticle = new IntegerParticle((Integer) value);
-        else if (value instanceof Double)
-            newParticle = new DoubleParticle((Double) value);
-        else if (value instanceof String) {
-            String s = (String) value;
-            if(s.isBlank() || s.toUpperCase().contentEquals("NAN") || s.toUpperCase().contentEquals("NULL")) 
-                newParticle = new NANParticle((String) value);
-            else 
-                newParticle = new StringParticle((String) value);
-        } else {
-            return null; //UPDATE FOR ORDINAL, OBJECT AND DISTANCE.
+    public void printDataFrame() {
+        for(int i = 0; i < columnNames.size(); i++) {
+            System.out.print(columnNames.get(i) + " ");
         }
-        return newParticle;
-    }
-	
-	/**
-     * is it an integer
-     * @param strNum
-     * @return
-     */
-    private boolean isInteger(String strNum) {
-        try {
-            Integer.parseInt( strNum);
-        } catch (NumberFormatException | NullPointerException nfe) {
-            return false;
+        System.out.println();
+        for(int z = 0 ;z < numRows; z++) {
+            rows.get(z).printRow();
+            System.out.println();
         }
-        return true;
     }
     
-    /**
-     * is it a double
-     * @param strNum
-     * @return
-     */
-    private boolean isDouble(String strNum) {
-        try {
-            Double.parseDouble(strNum);
-        } catch (NumberFormatException | NullPointerException nfe) {
-            return false;
-        }
-        return true;
-    }
-    
-    /**
-     * is it a number
-     * @param strNum
-     * @return
-     */
-    private boolean isNumeric(String strNum) {
-        try {
-            Double.parseDouble(strNum);
-        } catch (NumberFormatException | NullPointerException nfe) {
-            return false;
-        }
-        return true;
-    }
-	
-	/**
-	 * print the dataframe
-	 */
-	public void printDataFrame() {
-		for(int i = 0; i < columnNames.size(); i++) {
-			System.out.print(columnNames.get(i) + " ");
-		}
-		System.out.println();
-		for(int z = 0 ;z < numRows; z++) {
-			rows.get(z).printRow();
-			System.out.println();
-		}
-	}
 }

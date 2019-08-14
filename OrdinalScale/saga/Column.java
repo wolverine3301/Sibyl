@@ -27,7 +27,6 @@ public class Column {
     /** The array list of particles within the column */
     public ArrayList<Particle> column; 
     
-
     /**
      * Creates a column with a given name.
      * @param name the name of the column.
@@ -48,18 +47,17 @@ public class Column {
         column = new ArrayList<Particle>();
     }
     
-//  /**
-//   * Copy constructor.
-//   * @param theColumn
-//   */
-//  @SuppressWarnings("unchecked")
-//    public Column(Column theColumn) {
-//      type = theColumn.type;
-//      name = theColumn.name;
-//        column = new ArrayList<Particle>();
-//        for (Particle particle : theColumn.column) 
-//            column.add(new Particle(particle));
-//  }
+    /**
+     * Copy constructor.
+     * @param theColumn
+     */
+    public Column(Column theColumn) {
+        type = theColumn.type;
+        name = theColumn.name;
+        column = new ArrayList<Particle>();
+        for (Particle particle : theColumn.column) 
+            column.add(Particle.resolveType(particle.value));
+    }
     
     public Particle getParticle_atIndex(int index) {
         return column.get(index);
