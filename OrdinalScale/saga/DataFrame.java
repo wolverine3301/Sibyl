@@ -16,11 +16,22 @@ import java.util.List;
  */
 public class DataFrame {
 	
+    /** The names of the columns */
 	public List<String> columnNames;
+	
+	/** The type of each column */
 	public List<String> columnTypes;
+	
+	/** The ArrayList of columns */
 	public ArrayList<Column> columns;
+	
+	/** The ArrayList of rows */
 	public ArrayList<Row> rows;
+	
+	/** The number of rows in the data frame */
 	public int numRows;
+	
+	/** The number of columns in the data frame */
 	public int numColumns;
 	
 	
@@ -244,7 +255,6 @@ public class DataFrame {
             else
                 newParticle = new DoubleParticle(Double.parseDouble(value));
         } else { //If the passed string is just a string.
-            String s = (String) value;
             if(value.isBlank() || value.toUpperCase().contentEquals("NAN") || value.toUpperCase().contentEquals("NULL")) 
                 newParticle = new NANParticle(value);
             else 
@@ -331,8 +341,4 @@ public class DataFrame {
 			System.out.println();
 		}
 	}
-	
-	
-	
-
 }
