@@ -10,7 +10,6 @@ public abstract class Correlation {
 		
 	}
 	/**
-	 * 
 	 * @return the covariance of 2 columns
 	 */
 	public double covariance() {
@@ -20,5 +19,9 @@ public abstract class Correlation {
 		}
 		return covar/x.getLength();	
 	}
+	/**
+	 * @return the correlation coefficient
+	 */
+	public abstract double correlation();
 
 }

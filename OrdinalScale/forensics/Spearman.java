@@ -1,5 +1,5 @@
 package forensics;
 
-public class Spearman {
+public class Spearman extends Correlation{
 
 }

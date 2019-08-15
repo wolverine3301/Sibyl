@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -182,23 +183,33 @@ public class Column {
         Set<Object> unique = uniqueValues();
         Object[] uni = unique.toArray(); //get array of uniqe values
         HashMap<Object, Integer> vals = new HashMap<>();
+        
         //initialize map
         for(int i = 0;i < uni.length;i++) {
             vals.put(uni[i], 0);
         }//end for
         //counting
-        for(Particle i : column) {
-            vals.replace(i.getValue(), vals.get(i), vals.get(i)+1);
+        for(Particle i : column) { 	
+        	vals.replace(i.getValue(), (Integer)vals.get(i.getValue()) +1);
         }//end count
-        List<Map.Entry<Object, Integer>> list = new LinkedList<Map.Entry<Object, Integer>>();
+     // Create a list from elements of HashMap 
+        List<Map.Entry<Object, Integer>> list = new LinkedList<Map.Entry<Object, Integer> >(vals.entrySet()); 
+  
         // Sort the list 
         Collections.sort(list, new Comparator<Map.Entry<Object, Integer> >() { 
             public int compare(Map.Entry<Object, Integer> o1,  
-                               Map.Entry<Object, Integer> o2){ 
+                               Map.Entry<Object, Integer> o2) 
+            { 
                 return (o1.getValue()).compareTo(o2.getValue()); 
             } 
-        }); 
-        return vals;
+        });
+        Collections.reverse(list);
+        // put data from sorted list to hashmap  
+        HashMap<Object, Integer> temp = new LinkedHashMap<Object, Integer>(); 
+        for (Map.Entry<Object, Integer> aa : list) { 
+            temp.put(aa.getKey(), aa.getValue()); 
+        }
+        return temp;
     }//end uniqueValCnt
     
     /**
@@ -229,14 +240,26 @@ public class Column {
     	}
     	return sum.doubleValue();
     }
+    /**
+     * return most occuring value
+     * @return
+     */
     public Object mode() {
-    	
+    	Object m = null;
+    	for (Map.Entry<Object,Integer> entry : uniqueValCnt().entrySet()) {
+            m = entry.getKey();
+            break;
+    		}
+    	return m; 	
     }
     /**
      * @return mean of column
      */
     public double mean() {
     	return sum() / column.size();	
+    }
+    public double median() {
+    	ArrayList<Object> sorted = Ordering.natural().sortedCopy(unmodifiableList);
     }
     /**
      * @return variance of column
