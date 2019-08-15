@@ -1,7 +1,5 @@
 package clairvoyance;
 
-import java.util.Arrays;
-
 import saga.*;
 
 public abstract class Distance{
@@ -16,18 +14,17 @@ public abstract class Distance{
 	 * @param distanceType
 	 * @return
 	 */
-	public static DataFrame<Double> distance_matrix(DataFrame theDataFrame, Distance distanceType) {
-	    DataFrame<Double> dataFrame = new DataFrame<Double>();
-	    System.out.println("PASSED DATA FRAME ROWS: " + theDataFrame.numRows);
+	public static DataFrame distance_matrix(DataFrame theDataFrame, Distance distanceType) {
+	    DataFrame dataFrame = new DataFrame();
+	    for (int i = 0; i < theDataFrame.numColumns; i++)
+	        dataFrame.add_blank_Column(theDataFrame.columnNames.get(i));
 	    for (int i = 0; i < theDataFrame.numRows; i++) {
 	        Row currentRow = theDataFrame.getRow_byIndex(i);
 	        Double[] tempArray = new Double[currentRow.row.size()];
 	        for (int j = 0; j < theDataFrame.numRows; j++) {
 	            double distance = distanceType.distance(currentRow, theDataFrame.getRow_byIndex(j));
-	            System.out.println(distance);
 	            tempArray[j] = distance;
 	        }
-	        System.out.println(Arrays.toString(tempArray));
 	        dataFrame.addRowFromArray(tempArray);
 	    }
 	    return dataFrame;

@@ -182,8 +182,6 @@ public class DataFrame {
             columns.get(i).addToColumn(p);
             r.addToRow(p);
         }
-        System.out.print("ROW CREATED: ");
-        r.printRow();
         rows.add(r);
         numRows++;
         

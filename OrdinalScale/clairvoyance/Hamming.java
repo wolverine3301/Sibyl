@@ -6,7 +6,7 @@ import saga.Row;
 /**
  * Computes the hamming distance between two given rows.
  * NOTE: All particles or correspoding columns analyzed by this distance method must have the
- * same length, as well as  
+ * same length and data type for best results. 
  * @author Cade Reynoldson
  *
  */
@@ -20,15 +20,23 @@ public class Hamming extends Distance{
             Particle p2 = r2.getParticle(i);
             if(p1.type.contains("String")) { //IF THIS IS CATEGORICAL - UPDATE LATER
                 if(!p1.type.contentEquals(p2.type)) { //IF THEY ARE DIFFERENT
-                    distance = distance + 1;
+                    distance++;
                 }
             }
             else {
-                if (p1 instanceof OrdinalParticle && p2 instanceof OrdinalParticle) {
-                    //ORDINAL HANDLING HERE
-                } else ()
+                String p1ValueStr = String.valueOf(p1.getValue());
+                String p2ValueStr = String.valueOf(p2.getValue());
+                if (p1ValueStr.length() == p2ValueStr.length()) {
+                    int count = 0;
+                    for (int j = 0; i < p1ValueStr.length(); i++) {
+                        if (p1ValueStr.charAt(j) != p2ValueStr.charAt(j))
+                            count++;
+                    } 
+                    distance += count;
+                }
             } 
         }
+        return distance;
     }
 
 }
