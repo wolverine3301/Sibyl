@@ -259,7 +259,12 @@ public class Column {
     	return sum() / column.size();	
     }
     public double median() {
-    	ArrayList<Object> sorted = Ordering.natural().sortedCopy(unmodifiableList);
+    	
+    	List<Object> sorted = new ArrayList<Object>();
+    	for(Particle i : column) {
+    		sorted.add(i.getValue());
+    	}
+    	Collections.sort(sorted);
     }
     /**
      * @return variance of column
