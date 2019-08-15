@@ -18,9 +18,6 @@ public abstract class Particle {
         type = theType;
     }
     
-    public Particle(Particle theParticle) {
-        
-    }
     
     /**
      * @return the type
@@ -106,9 +103,20 @@ public abstract class Particle {
     }
     
     /**
-     * @return the value
+     * Returns the value of the particle.
+     * @return the value of the particle.
      */
     public abstract Object getValue();
     
+    /**
+     * Changes the value of the particle.
+     * @param newValue 
+     */
     public abstract void setValue(Object newValue);
+    
+    /**
+     * Returns a deep copy of a given particle.
+     * @return a deep copy of a given particle.
+     */
+    public abstract Particle deepCopy();
 }

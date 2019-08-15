@@ -25,5 +25,11 @@ public class DistanceParticle extends Particle{
 	public void setValue(Object newValue) {
 		super.value = (Double) newValue;
 	}
+	
+    @Override
+    public Particle deepCopy() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

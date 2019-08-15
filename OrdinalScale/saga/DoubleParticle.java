@@ -5,13 +5,15 @@ package saga;
  *
  */
 public class DoubleParticle extends Particle{
-	/**
+	
+    /**
 	 * Constructor
 	 * @param value
 	 */
 	public DoubleParticle(Double value) {
 	    super(value, "Double");
 	}
+	
 	/**
 	 * @return the double value
 	 */
@@ -19,6 +21,7 @@ public class DoubleParticle extends Particle{
     public Double getValue() {
         return (Double) super.value;
     }
+    
     /**
      * set to new value
      * @param newValue
@@ -27,5 +30,14 @@ public class DoubleParticle extends Particle{
 	public void setValue(Object newValue) {
 		this.value = (Double) newValue;
 	}
+    
+    /**
+     * Returns a deep copy of the double particle.
+     * @return a deep copy of the double particle.
+     */
+    @Override
+    public Particle deepCopy() {
+        return new DoubleParticle((double) value);
+    }
 
 }

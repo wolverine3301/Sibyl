@@ -56,7 +56,7 @@ public class Column {
         name = theColumn.name;
         column = new ArrayList<Particle>();
         for (Particle particle : theColumn.column) 
-            column.add(Particle.resolveType(particle.value));
+            column.add(particle.deepCopy());
     }
     
     public Particle getParticle_atIndex(int index) {
@@ -80,28 +80,12 @@ public class Column {
     }
     
     /**
-     * 
-     * @param value
-     * @return
-     */
-    private Particle getNewParticle(Object value) {
-        if (value instanceof Integer)
-            return new IntegerParticle((Integer) value);
-        else if (value instanceof Double)
-            return new DoubleParticle((Double) value);
-        else if (value instanceof String)
-            return new StringParticle((String) value);
-        else 
-            return new ObjectParticle(value);
-    }
-    
-    /**
      * add a raw type to column which will be converted to a particle
      * adds a value to the end of the array list
      * @param value
      */
     public void add(Object value) {
-        Particle p = getNewParticle(value);
+        Particle p = Particle.resolveType(value);
         //auto declaration of column type
         if(column.isEmpty()) {
             this.type = p.type;
@@ -155,7 +139,7 @@ public class Column {
      */
     public void makeColumn_fromArray(Object arr[]) {
         for(int i = 0; i < arr.length; i++) {
-            Particle tmp = getNewParticle(arr[i]);
+            Particle tmp = Particle.resolveType(arr[i]);
             this.column.add(tmp);
             this.type = tmp.type;
         }
@@ -167,7 +151,7 @@ public class Column {
      */
     public void concatArray(Object arr[]) {
         for(int i = 0; i < arr.length; i++) {
-            Particle tmp = getNewParticle(arr[i]);
+            Particle tmp = Particle.resolveType(arr[i]);
             this.column.add(tmp);
         }
     }

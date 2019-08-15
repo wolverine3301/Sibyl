@@ -27,5 +27,14 @@ public class StringParticle extends Particle{
 		this.value = (String) newValue;
 		
 	}
+	
+	/**
+	 * Returns a deep copy of the string particle.
+	 * @return a deep copy of the string particle.
+	 */
+    @Override
+    public Particle deepCopy() {
+        return new StringParticle((String) value);
+    }
 
 }

@@ -29,5 +29,14 @@ public class OrdinalParticle extends Particle{
 	public void setValue(Object newValue) {
 		this.value = newValue;
 	}
+	
+	/**
+	 * TODO update this.
+	 */
+    @Override
+    public Particle deepCopy() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

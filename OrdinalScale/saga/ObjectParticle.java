@@ -28,5 +28,11 @@ public class ObjectParticle extends Particle{
 		this.value = newValue;
 		
 	}
+	
+    @Override
+    public Particle deepCopy() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }
