@@ -95,15 +95,19 @@ public class DataFrame {
 	public DataFrame dataFrameFromColumns_DeepCopy(List<String> columnNames) {
 	    DataFrame newDataFrame = new DataFrame();
 	    for (String name : columnNames) { // Create the columns
-	        newDataFrame.addColumn(new Column(getColumn_byName(name)));
-	    }	    
+	        Column c = new Column(getColumn_byName(name));
+	        newDataFrame.columnNames.add(c.name);
+	        newDataFrame.columnTypes.add(c.type);
+	        newDataFrame.numColumns++;
+	        newDataFrame.columns.add(new Column(getColumn_byName(name)));
+	    }
+	    newDataFrame.numRows = newDataFrame.columns.get(0).getLength();
 	    for (int i = 0; i < newDataFrame.numRows; i++) { // Initialize row pointers
 	        Row row = new Row(); 
 	        for (int j = 0; j < newDataFrame.numColumns; j++) {
 	            row.addToRow(newDataFrame.columns.get(j).getParticle_atIndex(i));
 	        }
 	        newDataFrame.rows.add(row);
-	        numRows++;
 	    }
 	    return newDataFrame;
 	}
@@ -116,16 +120,19 @@ public class DataFrame {
 	public DataFrame dataFrameFromColumns_ShallowCopy(List<String> columnNames) {
 	    DataFrame newDataFrame = new DataFrame();
 	    for (String name : columnNames) {
-	        Column currentColumn = getColumn_byName(name);
-	        newDataFrame.addColumn(currentColumn);
+	        Column c = getColumn_byName(name);
+            newDataFrame.columnNames.add(c.name);
+            newDataFrame.columnTypes.add(c.type);
+            newDataFrame.numColumns++;
+	        newDataFrame.columns.add(c);
 	    }
-//	    for (int i = 0; i < newDataFrame.numRows; i++) {
-//	        Row row = new Row();
-//	        for (int j = 0; j < newDataFrame.numColumns; j++)
-//	            row.addToRow(newDataFrame.columns.get(j).getParticle_atIndex(i));
-//	        newDataFrame.rows.add(row);
-//	        numRows++;
-//	    }
+	    newDataFrame.numRows = newDataFrame.columns.get(0).getLength();
+	    for (int i = 0; i < newDataFrame.numRows; i++) {
+	        Row row = new Row();
+	        for (int j = 0; j < newDataFrame.numColumns; j++)
+	            row.addToRow(newDataFrame.columns.get(j).getParticle_atIndex(i));
+	        newDataFrame.rows.add(row);
+	    }
 	    return newDataFrame;
 	}
 	
@@ -140,11 +147,12 @@ public class DataFrame {
 	        newDataFrame.add_blank_Column(c.name, c.type);
 	    }
 	    for (Integer rowIndex : rowIndexes) {
-	        Row row = new Row(rows.get(rowIndex));
-	        newDataFrame.addRow(row);
+	        Row r = new Row(rows.get(rowIndex));
+	        newDataFrame.rows.add(r);
+	        for (int i = 0; i < r.getlength(); i++)
+	            newDataFrame.columns.get(i).addToColumn(r.getParticle(i));
 	    }
-	    newDataFrame.numColumns = newDataFrame.columns.size();
-	    newDataFrame.numRows = newDataFrame.rows.size();
+	    newDataFrame.numRows = rowIndexes.size();
 	    return newDataFrame;
 	}
 	
@@ -157,10 +165,14 @@ public class DataFrame {
 	    DataFrame newDataFrame = new DataFrame();
 	    for (Column c : columns) 
 	        newDataFrame.add_blank_Column(c.name, c.type);
-	    for (Integer rowIndex : rowIndexes) 
-	        newDataFrame.addRow(rows.get(rowIndex));
-	    newDataFrame.numColumns = newDataFrame.columns.size();
-	    newDataFrame.numRows = newDataFrame.rows.size();
+	    for (Integer rowIndex : rowIndexes) {
+	        Row r = rows.get(rowIndex);
+	        newDataFrame.rows.add(r);
+	        for (int i = 0; i < r.getlength(); i++) {
+	            newDataFrame.columns.get(i).addToColumn(r.getParticle(i));
+	        }
+	    }
+	    newDataFrame.numRows = rowIndexes.size();
 	    return newDataFrame;
 	    
 	}
@@ -300,6 +312,7 @@ public class DataFrame {
 		columnNames.add(name);
 		columnTypes.add("NAN");
 		columns.add(c);
+		numColumns++;
 	}
 	
 	public void add_blank_Column(String name, String dataType) {
@@ -307,6 +320,7 @@ public class DataFrame {
 	    columnNames.add(name);
 	    columnTypes.add(dataType);
 	    columns.add(c);
+	    numColumns++;
 	}
 	/**
 	 * Returns an array of the column names from the data frame.
@@ -344,7 +358,7 @@ public class DataFrame {
             System.out.print(columnNames.get(i) + " ");
         }
         System.out.println();
-        for(int z = 0 ;z < numRows; z++) {
+        for(int z = 0 ; z < numRows; z++) {
             rows.get(z).printRow();
             System.out.println();
         }
