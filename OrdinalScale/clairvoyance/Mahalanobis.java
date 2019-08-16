@@ -11,7 +11,7 @@ public class Mahalanobis extends Distance{
         for (int i = 0; i < r1.getlength(); i++) {
             Particle p1 = r1.getParticle(i);
             Particle p2 = r2.getParticle(i);
-            
+            if (p1 instanceof )
         }
     }
 

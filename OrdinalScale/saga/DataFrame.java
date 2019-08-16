@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.Set;
 /**
  * DataFrame
  * the main object for data manipulation, most functions and all models will contructed with his object as input
@@ -87,29 +88,83 @@ public class DataFrame {
 	}
 	
 	/**
-	 * Creates a new data frame internally from a list of column names.
+	 * Creates a new deep copied data frame internally from a list of column names.
 	 * @param columnNames the list of column name.
 	 * @return the newly created data frame.
 	 */
-	public DataFrame dataFrameFromColumns(List<String> columnNames) {
+	public DataFrame dataFrameFromColumns_DeepCopy(List<String> columnNames) {
 	    DataFrame newDataFrame = new DataFrame();
 	    for (String name : columnNames) { // Create the columns
-	        Column currentColumn = getColumn_byName(name);
-	        newDataFrame.columnNames.add(name);
-	        newDataFrame.columnTypes.add(currentColumn.type);
-	        newDataFrame.columns.add(new Column(currentColumn));
+	        newDataFrame.addColumn(new Column(getColumn_byName(name)));
 	    }	    
-	    newDataFrame.numColumns = newDataFrame.columns.size();
-	    newDataFrame.numRows = newDataFrame.columns.get(0).getLength();
-	    for (int i = 0; i < newDataFrame.numRows; i++) {
+	    for (int i = 0; i < newDataFrame.numRows; i++) { // Initialize row pointers
 	        Row row = new Row(); 
 	        for (int j = 0; j < newDataFrame.numColumns; j++) {
 	            row.addToRow(newDataFrame.columns.get(j).getParticle_atIndex(i));
 	        }
 	        newDataFrame.rows.add(row);
+	        numRows++;
 	    }
 	    return newDataFrame;
 	}
+	
+	/**
+	 * Creates a new shallow copied data frame internally from a list of column names.
+	 * @param columnNames the names of the columns to be added to the new data frame
+	 * @return a new DataFrame consisting of the columns passed to the method.
+	 */
+	public DataFrame dataFrameFromColumns_ShallowCopy(List<String> columnNames) {
+	    DataFrame newDataFrame = new DataFrame();
+	    for (String name : columnNames) {
+	        Column currentColumn = getColumn_byName(name);
+	        newDataFrame.addColumn(currentColumn);
+	    }
+//	    for (int i = 0; i < newDataFrame.numRows; i++) {
+//	        Row row = new Row();
+//	        for (int j = 0; j < newDataFrame.numColumns; j++)
+//	            row.addToRow(newDataFrame.columns.get(j).getParticle_atIndex(i));
+//	        newDataFrame.rows.add(row);
+//	        numRows++;
+//	    }
+	    return newDataFrame;
+	}
+	
+	/**
+	 * Creates a new deep copied data frame internally from a list of row indexes.
+	 * @param rowIndexes the set of row indexes to create a new data frame with.
+	 * @return a new DataFrame consisting of the rows passed to the method.
+	 */
+	public DataFrame dataFrameFromRows_DeepCopy(Set<Integer> rowIndexes) {
+	    DataFrame newDataFrame = new DataFrame();
+	    for (Column c : columns) { //Initialize blank columns in new data frame.
+	        newDataFrame.add_blank_Column(c.name, c.type);
+	    }
+	    for (Integer rowIndex : rowIndexes) {
+	        Row row = new Row(rows.get(rowIndex));
+	        newDataFrame.addRow(row);
+	    }
+	    newDataFrame.numColumns = newDataFrame.columns.size();
+	    newDataFrame.numRows = newDataFrame.rows.size();
+	    return newDataFrame;
+	}
+	
+	/**
+	 * Creates a new shallow copied data frame internally from a list of row indexes.
+	 * @param rowIndexes the set for row indexes to create a new data frame with.
+	 * @return a new DataFrame consisting of the rows passed to the method.
+	 */
+	public DataFrame dataFrameFromRows_ShallowCopy(Set<Integer> rowIndexes) {
+	    DataFrame newDataFrame = new DataFrame();
+	    for (Column c : columns) 
+	        newDataFrame.add_blank_Column(c.name, c.type);
+	    for (Integer rowIndex : rowIndexes) 
+	        newDataFrame.addRow(rows.get(rowIndex));
+	    newDataFrame.numColumns = newDataFrame.columns.size();
+	    newDataFrame.numRows = newDataFrame.rows.size();
+	    return newDataFrame;
+	    
+	}
+	
 	//versitility function
 	//need to define argumets that allow selection of rows based on the value in a column
 	// for example acquire({"column A" , "<" ,"2"} will return a dataframe of all rows where their A value is less
@@ -208,6 +263,33 @@ public class DataFrame {
         numRows++;
         
     }
+    
+    /**
+     * Adds a row to the data frame.
+     * @param r the row to be added.
+     */
+    public void addRow(Row r) {
+        rows.add(r);
+        numRows++;
+        for (int i = 0; i < r.getlength(); i++) { //initialize position in column.
+            columns.get(i).add(r.row.get(i));
+        }
+    }
+    
+    /**
+     * Adds a column to the data frame.
+     * @param c the column to be added.
+     */
+    public void addColumn(Column c) {
+        columns.add(c);
+        columnNames.add(c.name);
+        columnTypes.add(c.type);
+        numColumns++;
+        for (int i = 0; i < c.getLength(); i++) {
+            rows.get(i).addToRow(c.getParticle_atIndex(i));;
+        }
+        
+    }
 
     /**
 	 * Adds a new empty column to the data frame.
@@ -220,6 +302,12 @@ public class DataFrame {
 		columns.add(c);
 	}
 	
+	public void add_blank_Column(String name, String dataType) {
+	    Column c = new Column(name, dataType);
+	    columnNames.add(name);
+	    columnTypes.add(dataType);
+	    columns.add(c);
+	}
 	/**
 	 * Returns an array of the column names from the data frame.
 	 * @return an array of the column names from the data frame.

@@ -8,6 +8,17 @@ public class Row {
 		this.row = new ArrayList<Particle>();
 		//this.columnNames = new ArrayList<String>();
 	}
+	
+	/**
+	 * Copy constructor, creates a new row from an existing row (Deep copy).
+	 * @param theRow the row to "clone"
+	 */
+	public Row(Row theRow) {
+	    row = new ArrayList<Particle>();
+	    for (Particle p : theRow.row)
+	        row.add(p.deepCopy());
+	}
+	
 	/**
 	 * Adds a particle object to list 
 	 * @param p
