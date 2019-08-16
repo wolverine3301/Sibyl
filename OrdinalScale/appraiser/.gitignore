@@ -3,3 +3,5 @@
 /ConfusionMatrix.class
 /ROC.class
 /CrossValidation.class
+/Score.class
+/MeanAbsoluteError.class
