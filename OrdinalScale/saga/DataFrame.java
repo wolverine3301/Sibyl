@@ -110,6 +110,28 @@ public class DataFrame {
 	    }
 	    return newDataFrame;
 	}
+	//versitility function
+	//need to define argumets that allow selection of rows based on the value in a column
+	// for example acquire({"column A" , "<" ,"2"} will return a dataframe of all rows where their A value is less
+	// than 2. We should also extend later to include multiple args like:
+	// acquire({"column A", "==","2","and", "column B" , "<", "3"})
+	public DataFrame acquire(String[] args) {
+		
+		return null;
+		
+	}
+	public DataFrame[] split(int n) {
+		int interval = Math.floorDiv(numRows, n);
+		DataFrame[] partitions = new DataFrame[n];
+		int c = 0;
+		for (int i = 0; i < numRows; i += interval-1) {
+			for(int j = i;j < i+interval-1; j++) {
+				System.out.println(getRow_byIndex(j));
+			}
+			c++;
+		}
+		return partitions;
+	}
 	
 	/**
 	 * Returns an indexed row from the data frame.
