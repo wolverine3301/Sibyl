@@ -3,7 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 /**
@@ -190,11 +190,17 @@ public class DataFrame {
 	public DataFrame[] split(int n) {
 		int interval = Math.floorDiv(numRows, n);
 		DataFrame[] partitions = new DataFrame[n];
+		Set<Integer> set = new HashSet<Integer>();
 		int c = 0;
 		for (int i = 0; i < numRows; i += interval-1) {
-			for(int j = i;j < i+interval-1; j++) {
-				System.out.println(getRow_byIndex(j));
+			set.clear();
+			for(int j = i;j < i+interval; j++) {
+				if(j > numRows) {
+					break;
+				}
+				set.add(j);	
 			}
+			partitions[c] = dataFrameFromRows_ShallowCopy(set);
 			c++;
 		}
 		return partitions;
