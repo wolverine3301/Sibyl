@@ -188,19 +188,18 @@ public class DataFrame {
 		
 	}
 	public DataFrame[] split(int n) {
-		int interval = Math.floorDiv(numRows, n);
-		DataFrame[] partitions = new DataFrame[n];
+		int interval = Math.floorDiv(numRows, n-1);
+		DataFrame[] partitions = new DataFrame[n-1];
 		Set<Integer> set = new HashSet<Integer>();
+		
 		int c = 0;
-		for (int i = 0; i < numRows; i += interval-1) {
+		for (int i = 0; i < numRows-1; i += interval-1) {
 			set.clear();
-			for(int j = i;j < i+interval; j++) {
-				if(j > numRows) {
-					break;
-				}
+			for(int j = i;j < i+interval-1; j++) {
 				set.add(j);	
+				System.out.println(j);
 			}
-			partitions[c] = dataFrameFromRows_ShallowCopy(set);
+			System.out.println(dataFrameFromRows_ShallowCopy(set));
 			c++;
 		}
 		return partitions;
