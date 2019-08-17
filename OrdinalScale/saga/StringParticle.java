@@ -36,5 +36,11 @@ public class StringParticle extends Particle{
     public Particle deepCopy() {
         return new StringParticle((String) value);
     }
+    @Override
+    public int compareTo(Particle p) {
+        return ((String) value).compareTo((String) p.value);
+    }
+    
+    
 
 }

@@ -1,6 +1,6 @@
 package saga;
 
-public abstract class Particle {
+public abstract class Particle implements Comparable<Particle>{
     
     /** The value of the Object */
     public Object value;
@@ -119,4 +119,7 @@ public abstract class Particle {
      * @return a deep copy of a given particle.
      */
     public abstract Particle deepCopy();
+    
+    
+    public abstract int compareTo(Particle p);
 }

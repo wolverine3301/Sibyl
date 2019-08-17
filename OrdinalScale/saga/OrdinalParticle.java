@@ -38,5 +38,10 @@ public class OrdinalParticle extends Particle{
         // TODO Auto-generated method stub
         return null;
     }
+    @Override
+    public int compareTo(Particle p) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
 }

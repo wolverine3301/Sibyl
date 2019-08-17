@@ -38,4 +38,10 @@ public class NANParticle extends Particle{
         return new NANParticle((String) value);
     }
 
+    @Override
+    public int compareTo(Particle p) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
 }

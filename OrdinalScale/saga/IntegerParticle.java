@@ -39,4 +39,9 @@ public class IntegerParticle extends Particle {
         return new IntegerParticle((int) value);
     }
 
+    @Override
+    public int compareTo(Particle p) {
+        return Integer.compare((Integer) value, (Integer) p.value);
+    }
+
 }

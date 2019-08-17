@@ -40,4 +40,9 @@ public class DoubleParticle extends Particle{
         return new DoubleParticle((double) value);
     }
 
+    @Override
+    public int compareTo(Particle p) {
+        return Double.compare((Double) value, (Double) p.value);
+    }
+
 }

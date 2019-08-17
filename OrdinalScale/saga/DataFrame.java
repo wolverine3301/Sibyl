@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 /**
  * DataFrame
  * the main object for data manipulation, most functions and all models will contructed with his object as input
@@ -177,16 +178,54 @@ public class DataFrame {
 	    
 	}
 	
-	//versitility function
-	//need to define argumets that allow selection of rows based on the value in a column
-	// for example acquire({"column A" , "<" ,"2"} will return a dataframe of all rows where their A value is less
-	// than 2. We should also extend later to include multiple args like:
-	// acquire({"column A", "==","2","and", "column B" , "<", "3"})
-	public DataFrame acquire(String[] args) {
-		
-		return null;
-		
-	}
+	/**
+	 * Versitility function, arguments in the string array passed to the method will be parsed, and a shallow copy of the data frame with rows
+	 * that meet the specified arguments will be returned, can take multiple arguments.
+	 * ARGUMENT REQUIREMENTS: Should be in groups of three indexes, with index 0 being the name of the specified column, index 1 being the 
+	 * specified logical operator, and index 2 being the object to make comparisons on, which can then be parsed and have it's own particle created
+	 * (refer to particle heiarchy). 
+	 * Example arguments: 
+	 * One total argument will consist of: {"ColumnName", "LogicalOperator", "ObjectToCompare"} or {"Column A", "<", "40"}.
+	 * Two arguments will conisit of:  {"ColumnName1", "LogicalOperator1", "ObjectToCompare1", "ColumnName2", "LogicalOperator2", "ObjectToCompare2"}
+	 * @param args the arguments for the function ({"ColumnName", "LogicalOperator", ObjectToCompare"}). 
+	 * @return a new data frame with rows fitting the arguments.
+	 */
+    public DataFrame acquire(String[] args) {
+        Set<Integer> rowIndexes = new TreeSet<Integer>();
+        for (int i = 0; i < args.length; i += 3) {
+            Column column = getColumn_byName(args[i]);
+            String operator = args[i + 1];
+            Particle particle = Particle.resolveType(args[i + 2]);
+            for (int j = 0; j < column.getLength(); j++) {
+                int compare = column.getParticle_atIndex(j).compareTo(particle);
+                switch (operator) {
+                    case "<":
+                        if (compare < 0)
+                            rowIndexes.add(j);
+                        break;
+                    case "<=":
+                        if (compare <= 0)
+                            rowIndexes.add(j);
+                        break;
+                    case ">":
+                        if (compare > 0)
+                            rowIndexes.add(j);
+                        break;
+                    case ">=":
+                        if (compare >= 0)
+                            rowIndexes.add(j);
+                        break;
+                    case "==":
+                        if (compare == 0)
+                            rowIndexes.add(j);
+                        break;
+                }
+            }
+        }
+        return dataFrameFromRows_ShallowCopy(rowIndexes);
+    }
+    
+    
 	public DataFrame[] split(int n) {
 		int interval = Math.floorDiv(numRows, n-1);
 		DataFrame[] partitions = new DataFrame[n-1];
