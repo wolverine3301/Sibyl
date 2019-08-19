@@ -2,3 +2,7 @@
 /Correlation.class
 /Pearson.class
 /Spearman.class
+/Chi2.class
+/InformationGain.class
+/GainRatio.class
+/GiniIndex.class
