@@ -328,7 +328,7 @@ public class DataFrame {
         rows.add(r);
         numRows++;
         for (int i = 0; i < r.getlength(); i++) { //initialize position in column.
-            columns.get(i).add(r.row.get(i));
+            columns.get(i).addToColumn(r.getParticle(i));
         }
     }
     
@@ -408,6 +408,16 @@ public class DataFrame {
 		}
 		getColumn_byIndex(index).setType(newType);
 		columnTypes.set(index, newType);
+	}
+	
+	public boolean isSquare() {
+	    Set<Integer> rowLengths = new TreeSet<Integer>();
+	    Set<Integer> columnLengths = new TreeSet<Integer>();
+	    for (int i = 0; i < numRows; i++)
+	        rowLengths.add(rows.get(i).rowLength);
+	    for (int i = 0; i < numColumns; i++)
+	        columnLengths.add(columns.get(i).columnLength);
+	    return (rowLengths.equals(columnLengths)) && numRows == numColumns;
 	}
 	
     /**

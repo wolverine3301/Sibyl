@@ -28,6 +28,8 @@ public class Column {
     /** The array list of particles within the column */
     public ArrayList<Particle> column; 
     
+    /** The length of the column (the amount of particles stored in the column) */
+    public int columnLength;
     /**
      * Creates a column with a given name.
      * @param name the name of the column.
@@ -35,6 +37,7 @@ public class Column {
     public Column(String name) {
         this.name = name;
         column = new ArrayList<Particle>(); 
+        columnLength = 0;
     }
     
     /**
@@ -46,6 +49,7 @@ public class Column {
         name = theName;
         type = theType;
         column = new ArrayList<Particle>();
+        columnLength = 0;
     }
     
     /**
@@ -55,6 +59,7 @@ public class Column {
     public Column(Column theColumn) {
         type = theColumn.type;
         name = theColumn.name;
+        columnLength = theColumn.columnLength;
         column = new ArrayList<Particle>();
         for (Particle particle : theColumn.column) 
             column.add(particle.deepCopy());
@@ -78,6 +83,7 @@ public class Column {
      */
     public void addToColumn(Particle p) {
         column.add(p);
+        columnLength++;
     }
     
     /**
@@ -92,7 +98,9 @@ public class Column {
             this.type = p.type;
         }
         addToColumn(p);
+        columnLength++;
     }
+    
     /**
      * hasValue
      * returns true if specified value is in array list else returns false
@@ -115,6 +123,7 @@ public class Column {
      */
     public void removeValue(Object value) {
         column.remove(value);
+        columnLength--;
     }
     /**
      * removeIndex
@@ -123,6 +132,7 @@ public class Column {
      */
     public void removeIndex(int index) {
         column.remove(index);
+        columnLength--;
     }
     /**
      * getLength
@@ -130,7 +140,7 @@ public class Column {
      * @return
      */
     public int getLength() {
-        return this.column.size(); 
+        return columnLength; 
         
     }
 

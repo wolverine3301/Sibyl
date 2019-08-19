@@ -16,18 +16,18 @@ public abstract class Distance{
 	 */
 	public static DataFrame distance_matrix(DataFrame theDataFrame, Distance distanceType) {
 	    DataFrame dataFrame = new DataFrame();
-	    for (int i = 0; i < theDataFrame.numColumns; i++)
+	    for (int i = 0; i < theDataFrame.numColumns; i++) //Initializes the columns of the new data frame. 
 	        dataFrame.add_blank_Column(theDataFrame.columnNames.get(i));
 	    for (int i = 0; i < theDataFrame.numRows; i++) {
 	        Row currentRow = theDataFrame.getRow_byIndex(i);
-	        Double[] tempArray = new Double[currentRow.row.size()];
+	        Row newRow = new Row();
 	        for (int j = 0; j < theDataFrame.numRows; j++) {
 	            double distance = distanceType.distance(currentRow, theDataFrame.getRow_byIndex(j));
-	            tempArray[j] = distance;
+	            newRow.addToRow(new DistanceParticle(distance));
 	        }
-	        dataFrame.addRowFromArray(tempArray);
+	        dataFrame.addRow(newRow);
 	    }
 	    return dataFrame;
 	}
-
+	
 }

@@ -2,10 +2,16 @@ package saga;
 import java.util.ArrayList;
 
 public class Row {
-	public ArrayList<Particle> row; //array of data
+    
+    /** An array list of particles, represents a row. */
+	public ArrayList<Particle> row;
+	
+	/** The length of the row (how many particles are stored in this row */
+	public int rowLength;
 	//public ArrayList<String> columnNames;
 	public Row() {
 		this.row = new ArrayList<Particle>();
+		rowLength = 0;
 		//this.columnNames = new ArrayList<String>();
 	}
 	
@@ -15,6 +21,7 @@ public class Row {
 	 */
 	public Row(Row theRow) {
 	    row = new ArrayList<Particle>();
+	    rowLength = theRow.rowLength;
 	    for (Particle p : theRow.row)
 	        row.add(p.deepCopy());
 	}
@@ -25,6 +32,7 @@ public class Row {
 	 */
 	public void addToRow(Particle p) {
 		row.add(p);
+		rowLength++;
 	}
 	/**
 	 * return a particle object from list
@@ -39,18 +47,27 @@ public class Row {
 	 * @return
 	 */
 	public int getlength() {
-		return row.size();
+		return rowLength;
 	}
 	
 	public ArrayList<Particle> getRow() {
 	    return row;
 	}
+	
+	public String toString() {
+	    String s = "";
+	    for(int i = 0;i < row.size();i++) {
+            s += row.get(i).toString()+ " ";
+        }
+	    return s;
+	}
+	
 	/**
 	 * print out row values
 	 */
 	public void printRow() {
 		for(int i = 0;i < row.size();i++) {
-			System.out.print(row.get(i).getValue()+ " ");
+			System.out.print(row.get(i).getValue() + " ");
 		}
 	}
 	
