@@ -393,6 +393,22 @@ public class DataFrame {
 	public String columnNamesToString() {
 		return columnNames.toString();
 	}
+	/**
+	 * set column to certain type
+	 * @param columnName
+	 * @param newType
+	 */
+	public void setColumnType(String columnName, String newType) {
+		int index = 0;
+		for(int i = 0; i < columnNames.size(); i++) {
+			if(columnNames.get(i).contentEquals(columnName)){
+				index = i;
+				break;
+			}
+		}
+		getColumn_byIndex(index).setType(newType);
+		columnTypes.set(index, newType);
+	}
 	
     /**
      * Prints the data frame.
