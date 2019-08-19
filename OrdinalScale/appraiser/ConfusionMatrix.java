@@ -71,23 +71,31 @@ public class ConfusionMatrix {
 					for(Object x : trueNegative.get(targets.get(cnt1).name).keySet()) {
 						if(x.equals(j)) {
 							continue;
-						}
+						}else {
+						
 						trueNegative.get(targets.get(cnt1).name).replace(x, trueNegative.get(targets.get(cnt1).name).get(x)+1);
+						
+						}
 					}
 				}
 				//if its prediction isnt right
 				else if(!j.equals(targets.get(cnt1).getParticle_atIndex(cnt2).getValue())) {
 					//update false positive count
 					falsePositive.get(targets.get(cnt1).name).replace(j, falsePositive.get(targets.get(cnt1).name).get(j)+1);
+					
 					for(Object x : falseNegative.get(targets.get(cnt1).name).keySet()) {
+						
 						if(x.equals(targets.get(cnt1).getParticle_atIndex(cnt2).getValue())) {
 							falseNegative.get(targets.get(cnt1).name).replace(x, falseNegative.get(targets.get(cnt1).name).get(x)+1);
+							
 							continue;
 						}
-						else if(x.equals(j)) {
+						else if(x.equals(j)){
+							
 							continue;
 						}else {
-							trueNegative.get(targets.get(cnt1).name).replace(x, falseNegative.get(targets.get(cnt1).name).get(x)+1);
+							
+							trueNegative.get(targets.get(cnt1).name).replace(x, trueNegative.get(targets.get(cnt1).name).get(x)+1);
 						}
 					}
 				}
@@ -95,10 +103,15 @@ public class ConfusionMatrix {
 			}
 			cnt1++;
 		}
-		System.out.println(truePositive.toString());
-		System.out.println(falsePositive.toString());
-		System.out.println(trueNegative.toString());
-		System.out.println(falseNegative.toString());
+		
+	}
+	public void print_matrix() {
+		
+		System.out.println("True Positives: "+ truePositive.toString());
+		System.out.println("False Positives: " + falsePositive.toString());
+		System.out.println("True Negatives: " + trueNegative.toString());
+		System.out.println("False Negatives: " + falseNegative.toString());
+		
 	}
 
 	
