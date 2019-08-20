@@ -14,7 +14,6 @@ import java.util.TreeSet;
  * 
  * @author logan.collier
  * @author Cade Reynoldson
- * @param <T>
  */
 public class DataFrame {
 	
@@ -225,21 +224,21 @@ public class DataFrame {
         return dataFrameFromRows_ShallowCopy(rowIndexes);
     }
     
-    
+    /**
+     * Split dataframe into n equal sections
+     * @param n - number of new dataframes 
+     * @return dataframe[] of shallow copiesshallow copies
+     */
 	public DataFrame[] split(int n) {
 		int interval = Math.floorDiv(numRows, n-1);
 		DataFrame[] partitions = new DataFrame[n-1];
 		Set<Integer> set = new HashSet<Integer>();
-		
-		int c = 0;
 		for (int i = 0; i < numRows-1; i += interval-1) {
 			set.clear();
-			for(int j = i;j < i+interval-1; j++) {
+			for(int j = i+1;j <= i+interval-1; j++) {
+				if(i == 0) {set.add(0);}
 				set.add(j);	
-				System.out.println(j);
 			}
-			System.out.println(dataFrameFromRows_ShallowCopy(set));
-			c++;
 		}
 		return partitions;
 	}
