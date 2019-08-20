@@ -418,7 +418,34 @@ public class DataFrame {
 	        columnLengths.add(columns.get(i).columnLength);
 	    return (rowLengths.equals(columnLengths)) && numRows == numColumns;
 	}
-	
+	/**
+	 * Method to get a dataframe with only specified types
+	 * @param List<String> types
+	 * @return shallow copy
+	 */
+	public DataFrame include(List<String> types) {
+		List<String> cols = new ArrayList<String>();
+		for(Column i : columns) {
+			if(types.contains(i.type)) {
+				cols.add(i.name);
+			}
+		}
+		return dataFrameFromColumns_ShallowCopy(cols);
+	}
+	/**
+	 * returns a list of columns of the specified type
+	 * @param String type
+	 * @return List<Column>
+	 */
+	public List<Column> getColumnByTypes(String type){
+		List<Column> cols = new ArrayList<Column>();
+		for(Column i : columns) {
+			if(i.type == type) {
+				cols.add(i);
+			}
+		}
+		return cols;
+	}
     /**
      * Prints the data frame.
      */
