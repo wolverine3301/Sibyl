@@ -102,6 +102,15 @@ public class Column {
     }
     
     /**
+     * Changes the value of a particle in the data frame.
+     * @param index the index to be changed.
+     * @param p the particle to be replaced.
+     */
+    public void changeValue(int index, Particle p) {
+        column.set(index, p);
+    }
+    
+    /**
      * hasValue
      * returns true if specified value is in array list else returns false
      * @param value

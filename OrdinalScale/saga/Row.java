@@ -50,6 +50,10 @@ public class Row {
 		return rowLength;
 	}
 	
+	public void changeValue(int index, Particle p) {
+	    row.set(index, p);
+	}
+	
 	public ArrayList<Particle> getRow() {
 	    return row;
 	}

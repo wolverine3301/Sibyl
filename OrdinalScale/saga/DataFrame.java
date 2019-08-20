@@ -92,18 +92,16 @@ public class DataFrame {
 	 * be converted to the most occouring value in the data frame.
 	 */
 	public void convertNANS_mean() {
-	    for (Column c : columns) { //Iterate through columns
-	        for (Particle p : c.column) { //Iterate through particles
-	            if (p instanceof NANParticle) {
-	                if (c.type.contains("Integer"))
-	                    p = new IntegerParticle((int) Math.round(c.mean()));
-	                else if (c.type.contains("Double"))
-	                    p = new DoubleParticle(c.mean());
-	                else
-	                    p = new StringParticle((String) c.mode());
-	            }
-	        }
-	    }
+        for (int i = 0; i < numColumns; i++) {
+            for (int j = 0; j < numRows; j++) {
+                Particle p = getColumn_byIndex(i).getParticle_atIndex(j);
+                if (p instanceof NANParticle) {
+                    p = Particle.resolveType(getColumn_byIndex(i).mode());
+                    getColumn_byIndex(i).changeValue(j, p);
+                    getRow_byIndex(j).changeValue(i, p);
+                }
+            }
+        }
 	}
 	
 	/**
@@ -112,9 +110,12 @@ public class DataFrame {
 	public void convertNANS_mode() {
 	    for (int i = 0; i < numColumns; i++) {
 	        for (int j = 0; j < numRows; j++) {
-	            Particle p = get
-	            if ( instanceof NANParticle) 
-                    p = Particle.resolveType(c.mode());
+	            Particle p = getColumn_byIndex(i).getParticle_atIndex(j);
+	            if (p instanceof NANParticle) {
+	                p = Particle.resolveType(getColumn_byIndex(i).mode());
+	                getColumn_byIndex(i).changeValue(j, p);
+	                getRow_byIndex(j).changeValue(i, p);
+	            }
 	        }
 	    }
 	}
