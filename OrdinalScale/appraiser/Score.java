@@ -24,6 +24,7 @@ public class Score {
 		F1 = new HashMap<String, HashMap<Object, Double>>();
 		mcc = new HashMap<String, HashMap<Object, Double>>();
 		matrix = new ConfusionMatrix(df, predictions);
+		
 		intitallize();
 		score();
 		
@@ -35,12 +36,14 @@ public class Score {
 		double mccS;
 		int cnt;
 		for(String i : matrix.truePositive.keySet()) {
+			
 			recallS = 0;
 			precisionS = 0;
 			F1S = 0;
 			mccS = 0;
 			cnt = 0;
 			for(Object j : matrix.truePositive.get(i).keySet()) {
+				
 				recall.get(i).replace(j,recall(matrix.truePositive.get(i).get(j), matrix.falseNegative.get(i).get(j)));
 				precision.get(i).replace(j, precision(matrix.truePositive.get(i).get(j), matrix.falsePositive.get(i).get(j)));
 				F1.get(i).replace(j, F1(matrix.truePositive.get(i).get(j), 
@@ -51,8 +54,8 @@ public class Score {
 						matrix.falsePositive.get(i).get(j),
 						matrix.falseNegative.get(i).get(j)));
 				//sums for average over classes
+				
 				recallS = recallS + recall.get(i).get(j);
-				precisionS = precisionS + precision.get(i).get(j);
 				F1S = F1S + F1.get(i).get(j);
 				mccS = mccS + mcc.get(i).get(j);
 				cnt++;
@@ -77,14 +80,17 @@ public class Score {
 		return(2* (precision(tp,fp) * recall(tp,fn)) / (precision(tp,fp) + recall(tp,fn)));	
 	}
 	public double precision(int tp, int fp) {
-		if(fp == 0) {
+		if(fp == 0 && tp == 0) {	
 			return 0;
 		}
-		return (tp/(tp+fp));
+		else if(fp == 0 && tp != 0) {
+			return 1;
+		}
+		return ((double)tp/(tp+fp));
 	}
 	public double recall(int tp, int fn) {
 		if(fn == 0) {
-			return 0;
+			return 1;
 		}
 		return (tp/(tp+fn));	
 	}
@@ -92,7 +98,6 @@ public class Score {
 	 * initializing scores
 	 */
 	private void intitallize() {
-		int cnt = 0;
 		for(int i = 0; i < df.numColumns;i++) {
 			//get target columns
 			if(df.columnTypes.get(i) == "target") {
@@ -100,7 +105,7 @@ public class Score {
 				HashMap<Object,Double> arr1 = new HashMap<Object,Double>();
 				HashMap<Object,Double> arr2 = new HashMap<Object,Double>();
 				HashMap<Object,Double> arr3 = new HashMap<Object,Double>();
-				for(Object j : df.getColumn_byIndex(cnt).uniqueValues()) {
+				for(Object j : df.getColumn_byIndex(i).uniqueValues()) {
 					arr0.put(j, 0.0);
 					arr1.put(j, 0.0);
 					arr2.put(j, 0.0);
@@ -114,6 +119,12 @@ public class Score {
 				mcc.put(df.columnNames.get(i),arr3);
 			}
 		}
+	}
+	public void printScore() {
+		System.out.println("Recall: " + recall.toString());
+		System.out.println("Precision: " + precision.toString());
+		System.out.println("F1: " + F1.toString());
+		System.out.println("MCC: " + mcc.toString());
 	}
 }
 
