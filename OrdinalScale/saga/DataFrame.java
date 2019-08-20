@@ -88,6 +88,38 @@ public class DataFrame {
 	}
 	
 	/**
+	 * Converts all NANS in the data frame to their mean value, excluding non numeric values, which will
+	 * be converted to the most occouring value in the data frame.
+	 */
+	public void convertNANS_mean() {
+	    for (Column c : columns) { //Iterate through columns
+	        for (Particle p : c.column) { //Iterate through particles
+	            if (p instanceof NANParticle) {
+	                if (c.type.contains("Integer"))
+	                    p = new IntegerParticle((int) Math.round(c.mean()));
+	                else if (c.type.contains("Double"))
+	                    p = new DoubleParticle(c.mean());
+	                else
+	                    p = new StringParticle((String) c.mode());
+	            }
+	        }
+	    }
+	}
+	
+	/**
+	 * Converts all NANS in the data frame to their mode value.
+	 */
+	public void convertNANS_mode() {
+	    for (int i = 0; i < numColumns; i++) {
+	        for (int j = 0; j < numRows; j++) {
+	            Particle p = get
+	            if ( instanceof NANParticle) 
+                    p = Particle.resolveType(c.mode());
+	        }
+	    }
+	}
+	
+	/**
 	 * Creates a new deep copied data frame internally from a list of column names.
 	 * @param columnNames the list of column name.
 	 * @return the newly created data frame.
