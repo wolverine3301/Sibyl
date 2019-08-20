@@ -311,7 +311,8 @@ public class Column {
 		HashMap<Object,Integer> values = uniqueValCnt();
 		double ent = 0;
 		for (Integer value : values.values()) {
-			ent = ent + (value / column.size()) * (Math.log10((value / column.size())) / Math.log10(2));
+			
+			ent = ent + (-1)* ((double)value / column.size()) * ( Math.log10(((double)value / column.size())) / Math.log10(2));
 		}
 		return ent;
 	}
