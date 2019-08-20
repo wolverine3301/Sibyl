@@ -268,6 +268,8 @@ public class Column {
     public double mean() {
     	return sum() / column.size();	
     }
+    
+    //NEEDS WORK
     public double median() {
     	
     	List<Object> sorted = new ArrayList<Object>();
