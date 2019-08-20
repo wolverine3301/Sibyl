@@ -78,6 +78,21 @@ public class Column {
     }
     
     /**
+     * Resolves the type of the column.
+     */
+    public void resolveType() {
+        for (int i = 0; i < columnLength - 2; i++) {
+            String s1 = column.get(i).type;
+            String s2 = column.get(i + 1).type;
+            String s3 = column.get(i + 2).type;
+            if (s1.equals(s2) && s1.equals(s3)) {
+                setType(s1);
+                break;
+            }
+        }
+    }
+    
+    /**
      * adds a particle object to column
      * @param p
      */
@@ -245,19 +260,21 @@ public class Column {
      * @return sum of values
      */
     public double sum() {
-    	Number sum = 0;
+    	double sum = 0;
     	if(type.contains("Double")) {
     		// get sum
     		for(int i = 0;i < column.size();i++) {
-    			sum.equals(sum.doubleValue() + (Double)column.get(i).getValue());
+    		    if (column.get(i) instanceof DoubleParticle)
+    		        sum += (Double) column.get(i).getValue();
     		}//end sum	
     	}
     	else if(type.contains("Integer")) {
     		for(int i = 0;i < column.size();i++) {
-    			sum.equals(sum.intValue() + (Integer)column.get(i).getValue());
+    		    if (column.get(i) instanceof IntegerParticle)
+    		        sum += (Integer)column.get(i).getValue();
     		}//end sum
     	}
-    	return sum.doubleValue();
+    	return sum;
     }
     /**
      * return most occuring value
@@ -275,7 +292,7 @@ public class Column {
      * @return mean of column
      */
     public double mean() {
-    	return sum() / column.size();	
+    	return sum() / (double) column.size();	
     }
     
     //NEEDS WORK

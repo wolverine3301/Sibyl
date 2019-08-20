@@ -78,8 +78,10 @@ public class DataFrame {
                 }
                 rows.add(row);
         	}
-        	for(int i = 0;i < columnNames.size();i++) //Initialize column types.
-            	columnTypes.add(columns.get(i).type);
+        	for(int i = 0;i < columnNames.size();i++) {
+        	    getColumn_byIndex(i).resolveType();
+                columnTypes.add(columns.get(i).type);
+        	}
         	this.numRows = rows.size();
         	this.numColumns = columns.size();
         } catch (IOException e) {
@@ -96,7 +98,12 @@ public class DataFrame {
             for (int j = 0; j < numRows; j++) {
                 Particle p = getColumn_byIndex(i).getParticle_atIndex(j);
                 if (p instanceof NANParticle) {
-                    p = Particle.resolveType(getColumn_byIndex(i).mode());
+                    if (getColumn_byIndex(i).type.equals("Integer"))
+                        p = Particle.resolveType((int) Math.round(getColumn_byIndex(i).mean()));
+                    else if (getColumn_byIndex(i).type.equals("Double"))
+                        p = Particle.resolveType(getColumn_byIndex(i).mean());
+                    else
+                        p = Particle.resolveType(getColumn_byIndex(i).mode());
                     getColumn_byIndex(i).changeValue(j, p);
                     getRow_byIndex(j).changeValue(i, p);
                 }
