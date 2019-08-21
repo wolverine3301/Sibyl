@@ -35,13 +35,11 @@ public class Column {
      * Creates a column with a given name.
      * @param name the name of the column.
      */
-    public HashMap<Object, Double> feature_stats;
+    public HashMap<Object, Double> feature_stats = new HashMap<Object, Double>();;
     public Column(String name) {
         this.name = name;
         column = new ArrayList<Particle>(); 
         columnLength = 0;
-        feature_stats = new HashMap<Object, Double>();
-        setFeatureStats();
         
     }
     
@@ -341,7 +339,7 @@ public class Column {
 	/**
 	 * sets the features of proportion each value has in the column
 	 */
-	private void setFeatureStats() {
+	public void setFeatureStats() {
 		HashMap<Object, Integer> a = uniqueValCnt();
 		for(Entry<Object, Integer> i : a.entrySet()) {
 			feature_stats.put(i.getKey(), (double)i.getValue()/column.size());

@@ -33,12 +33,23 @@ public class InformationGain {
 	 * @return
 	 */
 	public void gain(int index) {
+		
+		// first keys are the values that are in the target column,
+		// second keys are column names
+		// third keys are unique vals in the column that point to count of occuances with a specific target variable
+		
 		HashMap<Object, HashMap<String, HashMap<Object,Integer>>> joint_info = new HashMap<Object, HashMap<String, HashMap<Object,Integer>>>();
 		Set<Object> target_info = targets.get(index).uniqueValues();
 		Set<Object> attribute_info;
 		//entropies
-		double target_e = entropy((Integer[])targets.get(index).uniqueValCnt().values().toArray());
-		HashMap<String, HashMap<Object,Double>> columns_p = new HashMap<String, HashMap<Object,Double>>();
+		Object[] tmp = targets.get(index).uniqueValCnt().values().toArray();
+		Integer[] te = new Integer[tmp.length];
+		for(int i = 0; i < tmp.length; i++) {
+			te[i] = (Integer) tmp[i];
+		}
+		
+		double target_e = entropy(te);
+		
 		//Initialize
 		HashMap<String , HashMap<Object, Integer>> col;
 		HashMap<Object, Integer> vals;
@@ -62,46 +73,50 @@ public class InformationGain {
 		}
 		//fill
 		HashMap<String,HashMap<Object,Integer>> column_cnt = new HashMap<String,HashMap<Object,Integer>>();
-		HashMap<Object,Double> val_prob;
+		HashMap<String, HashMap<Object,Double>> columns_p = new HashMap<String, HashMap<Object,Double>>();
+		
 		
 		for(Column c : df.columns) {
 			if(c.type.contains("target")) {
 				continue;
 			}
-			val_prob = new HashMap<Object,Double>();
-			HashMap<Object, Integer> val_cnt = c.uniqueValCnt();
-			//calculate value probs
-			for(Entry<Object, Integer> i : val_cnt.entrySet()) {
-				val_prob.put(i.getKey(), (double)i.getValue()/c.getLength());
-			}
-			columns_p.put(c.name, val_prob);
+			c.setFeatureStats();
+			column_cnt.put(c.name,c.uniqueValCnt());
+			columns_p.put(c.name, c.feature_stats);
+			
 			for(int j = 0; j < c.getLength();j++) {		
 				joint_info.get(targets.get(index).getParticle_atIndex(j).getValue()).get(c.name).replace(c.getParticle_atIndex(j).getValue(), joint_info.get(targets.get(index).getParticle_atIndex(j).getValue()).get(c.name).get(c.getParticle_atIndex(j).getValue())+1);
 				
 			}
-	
 		}
 		HashMap<String, Double> column_e = new HashMap<String,Double>();
-		double GAIN;
+		Integer[] classes = new Integer[joint_info.keySet().size()];
+		
+		int cnt = 0;
 		for(Column c : df.columns) {
 			if(c.type.contains("target")) {
 				continue;
 			}
-			GAIN = 0; 
-			for(Object key1 : joint_info.keySet()) {
-				GAIN = GAIN + (-1) * 
+			double GAIN = 0; 
+			for( Object i : columns_p.get(c.name).keySet()) {
+				cnt = 0;
+
+				for(Object key1 : joint_info.keySet()) {
+					classes[cnt] = joint_info.get(key1).get(c.name).get(i);
+					System.out.println(classes[cnt]);
+					cnt++;
+				}
+				System.out.println();
+				GAIN = GAIN + ((-1) * columns_p.get(c.name).get(i)) * entropy(classes);
 				
-				
-				
-				
-			
 			}
+			
+			GAIN = target_e - GAIN;
+			column_e.put(c.name, GAIN);
 		}
+		System.out.println(column_e);
 	}
-	public double gaincol(Column c, int index) {
-		double target_e = entropy((Integer[])targets.get(index).uniqueValCnt().values().toArray());
-		
-	}
+	
 	public double entropy(Integer[] p) {
 		double e = 0;
 		int sum =0;
