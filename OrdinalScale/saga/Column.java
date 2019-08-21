@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 /**
@@ -34,10 +35,14 @@ public class Column {
      * Creates a column with a given name.
      * @param name the name of the column.
      */
+    public HashMap<Object, Double> feature_stats;
     public Column(String name) {
         this.name = name;
         column = new ArrayList<Particle>(); 
         columnLength = 0;
+        feature_stats = new HashMap<Object, Double>();
+        setFeatureStats();
+        
     }
     
     /**
@@ -332,6 +337,15 @@ public class Column {
 			ent = ent + (-1)* ((double)value / column.size()) * ( Math.log10(((double)value / column.size())) / Math.log10(2));
 		}
 		return ent;
+	}
+	/**
+	 * sets the features of proportion each value has in the column
+	 */
+	private void setFeatureStats() {
+		HashMap<Object, Integer> a = uniqueValCnt();
+		for(Entry<Object, Integer> i : a.entrySet()) {
+			feature_stats.put(i.getKey(), (double)i.getValue()/column.size());
+		}
 	}
 
 }
