@@ -103,10 +103,8 @@ public class InformationGain {
 
 				for(Object key1 : joint_info.keySet()) {
 					classes[cnt] = joint_info.get(key1).get(c.name).get(i);
-					System.out.println(classes[cnt]);
 					cnt++;
 				}
-				System.out.println();
 				GAIN = GAIN + ((-1) * columns_p.get(c.name).get(i)) * entropy(classes);
 				
 			}
