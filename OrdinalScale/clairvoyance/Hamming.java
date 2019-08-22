@@ -12,6 +12,10 @@ import saga.Row;
  */
 public class Hamming extends Distance{
 
+    public Hamming() {
+        super("Hamming");
+    }
+    
     @Override
     public double distance(Row r1, Row r2) {
         double distance = 0;

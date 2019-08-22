@@ -85,7 +85,8 @@ public class InformationGain {
 			columns_p.put(c.name, c.feature_stats);
 			
 			for(int j = 0; j < c.getLength();j++) {		
-				joint_info.get(targets.get(index).getParticle_atIndex(j).getValue()).get(c.name).replace(c.getParticle_atIndex(j).getValue(), joint_info.get(targets.get(index).getParticle_atIndex(j).getValue()).get(c.name).get(c.getParticle_atIndex(j).getValue())+1);
+				joint_info.get(targets.get(index).getParticle_atIndex(j).getValue()).get(c.name).replace(c.getParticle_atIndex(j).getValue(), 
+				        joint_info.get(targets.get(index).getParticle_atIndex(j).getValue()).get(c.name).get(c.getParticle_atIndex(j).getValue())+1);
 				
 			}
 		}

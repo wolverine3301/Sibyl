@@ -5,6 +5,10 @@ import saga.Row;
 
 public class Mahalanobis extends Distance{
 
+    public Mahalanobis() {
+        super("Mahalanobis");
+    }
+    
     @Override
     public double distance(Row r1, Row r2) {
         double distance = 0;

@@ -8,6 +8,10 @@ import saga.StringParticle;
 
 public class Manhattan extends Distance{
 
+    public Manhattan() {
+        super("Manhattan");
+    }
+    
     /**
      * Calculates the manhattan distance of two rows.
      */

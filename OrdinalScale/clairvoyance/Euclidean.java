@@ -3,7 +3,13 @@ package clairvoyance;
 import saga.*;
 
 public class Euclidean extends Distance{
-	public double distance(Row r1, Row r2) {
+    
+	public Euclidean() {
+        super("Euclidean");
+        // TODO Auto-generated constructor stub
+    }
+
+    public double distance(Row r1, Row r2) {
 		double distance = 0;
 		for(int i = 0;i < r2.getlength();i++) {
 			Particle p1 = r1.getParticle(i);

@@ -6,14 +6,23 @@ import java.util.List;
 import saga.*;
 
 public abstract class Model {
-	public List<Object[]> predictions;
+	
+    public List<Object[]> predictions;
+	
 	public List<HashMap<Object,Double>> probabilities;
+	
+	public DataFrame trainingDataFrame;
+	
+	public Model(DataFrame theDataFrame) {
+	    trainingDataFrame = theDataFrame;
+	}
 	
 	/**
 	 * Returns the probabilities of a row being a part of each class
 	 * @return
 	 */
 	public abstract HashMap<Object,Double> probability(Row row);
+	
 	/**
 	 * Make a prediction on a row of data
 	 * @param row

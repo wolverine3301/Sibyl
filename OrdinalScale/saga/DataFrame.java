@@ -472,6 +472,37 @@ public class DataFrame {
 		}
 		return dataFrameFromColumns_ShallowCopy(cols);
 	}
+	
+	
+	/**
+	 * Method to get a data frame with all columns excluding the specified column indexes in the parameter's list.
+	 * Uses a set (prefferably treeset) for nlog(n) element access time (contains()).
+	 * @param columnIndex the list of column indexes to exclude.
+	 * @return a new (shallow copied) data frame with the specified columns excluded.
+	 */
+	public DataFrame exclude(Set<Integer> columnIndexes) {
+	    List<String> columnNames = new ArrayList<String>();
+	    for (int i = 0; i < numColumns; i++) {
+	        if (!columnIndexes.contains(i))
+	            columnNames.add(columns.get(i).name);
+	    }
+	    return dataFrameFromColumns_ShallowCopy(columnNames);
+	}
+	
+   /**
+     * Method to get a data frame with all columns excluding the specified column index.
+     * @param columnIndex the list of column indexe to exclude.
+     * @return a new (shallow copied) data frame with the specified column excluded.
+     */
+    public DataFrame exclude(int columnIndex) {
+        List<String> columnNames = new ArrayList<String>();
+        for (int i = 0; i < numColumns; i++) {
+            if (i != columnIndex)
+                columnNames.add(columns.get(i).name);
+        }
+        return dataFrameFromColumns_ShallowCopy(columnNames);
+    }
+    
 	/**
 	 * returns a list of columns of the specified type
 	 * @param String type
