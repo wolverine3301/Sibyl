@@ -1,8 +1,14 @@
 package forensics;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import saga.*;
@@ -18,7 +24,7 @@ public class Chi2 {
 	public Chi2(DataFrame df){
 		this.df = df;
 		targets = new ArrayList<Column>();
-		
+		setTargets();
 	}
 	/**
 	 * calculate degrees of freedom
@@ -44,7 +50,24 @@ public class Chi2 {
 				}
 				tmp.put(i.name, chi2Independents(target,i));
 			}
-			ranks.put(target.name, tmp);		
+			
+	        List<Map.Entry<String, Double>> list = new LinkedList<Map.Entry<String, Double> >(tmp.entrySet()); 
+	        
+	        // Sort the list 
+	        Collections.sort(list, new Comparator<Map.Entry<String, Double> >() { 
+
+				@Override
+				public int compare(Entry<String, Double> o1, Entry<String, Double> o2) {
+					// TODO Auto-generated method stub
+					return (o1.getValue()).compareTo(o2.getValue()); 
+				} 
+	        });
+	        // put data from sorted list to hashmap  
+	        HashMap<String, Double> temp = new LinkedHashMap<String, Double>(); 
+	        for (Map.Entry<String, Double> aa : list) { 
+	            temp.put(aa.getKey(), aa.getValue()); 
+	        }
+			ranks.put(target.name, temp);		
 		}
 		return ranks;
 	}
@@ -67,9 +90,10 @@ public class Chi2 {
 				sum = sum + Math.pow((observed.get(key1).get(key2) - expected.get(key1).get(key2)), 2) / expected.get(key1).get(key2) ;
 			}
 		}
-		return sum;
+		System.out.println(degreesFreedom(target,col));
+		System.out.println(sum);
+		return p_value(sum, degreesFreedom(target,col));
 	}
-	
 	/**
 	 * makes a contegency table of 2 columns expected values
 	 * @param target
@@ -123,7 +147,7 @@ public class Chi2 {
 	 * get p-value of chi2 distribution
 	 * @param chi2
 	 * @param df
-	 * @return
+	 * @return double
 	 */
 	public double p_value(double chi2, int df) {
 		return (Math.pow(chi2, (df/2)-1) * Math.pow(Math.E,(-1)*(chi2/2))) / (Math.pow(2, (df/2)) * gamma((double)df/2));
