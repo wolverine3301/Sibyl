@@ -3,7 +3,6 @@ package machinations;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.PriorityQueue;
-import java.util.TreeSet;
 
 import clairvoyance.Distance;
 import saga.DataFrame;
@@ -35,10 +34,41 @@ public class KNN extends Model {
         k = theK;
     }
     
+    /**
+     * Uses KNN to calculate / estimate the missing value of a passed row, and returns the probability of a value in a hashmap, 
+     * formatted as 50.0 for 50% probability, and so on. The row passed MUST contain one less entry than the test data frame's rows; with the 
+     * missing entry being the desired prediction variable. The name of the column to be predicted MUST have its column type marked as "target".
+     * @param row The row, or set of values on which predictions will be based on.
+     * @return A hashmap of predictions and probabilities, with the key of the hashmap being the prediction, and the value being it's given probability.
+     */
     @Override
     public HashMap<Object, Double> probability(Row row) {
-        // TODO Auto-generated method stub
-        return null;
+        int taggedColumnIndex = findTaggedColumnIndex();
+        if (taggedColumnIndex == -1)
+            throw new IllegalArgumentException("No tagged column was detected.");
+        DataFrame knnFrame = trainingDataFrame.exclude(taggedColumnIndex);
+        PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(knnFrame.numRows, new Comparator<DistanceParticle>() {
+            @Override
+            public int compare(DistanceParticle p1, DistanceParticle p2) {
+                return Double.compare(p1.getValue(), p2.getValue());
+            }
+        });
+        for (int i = 0; i < knnFrame.numRows; i++)
+            neighbors.add(new DistanceParticle(distanceFunction.distance(row, knnFrame.getRow_byIndex(i)), i, distanceFunction.distanceType));
+        HashMap<Object, Double> probabilityMap = new HashMap<Object, Double>();
+        HashMap<Object, Double> objectCount = new HashMap<Object, Double>();
+        for (int i = 0; i < k; i++) { //load predictions into temporary hash map
+            Object currentPrediction = trainingDataFrame.getColumn_byIndex(taggedColumnIndex).getParticle_atIndex(neighbors.remove().distanceToIndex).getValue();
+            if (objectCount.containsKey(currentPrediction)) {
+                double currentValue = objectCount.get(currentPrediction);
+                objectCount.put(currentPrediction, currentValue + 1.0);
+            } else {
+                objectCount.put(currentPrediction, 1.0);
+            }
+        }
+        for (Object key : objectCount.keySet())  // loop through predictions and calculate percent probablility of each prediction
+            probabilityMap.put(key, (objectCount.get(key) / k) * 100.0);
+        return probabilityMap;
     }
 
     /**
@@ -46,7 +76,7 @@ public class KNN extends Model {
      * on which computations will be calculated on, with the missing entry being the desired prediction variable, since this allows for proper
      * distance measuring between rows. The name of the column to be predicted MUST have it's column type marked as "target".
      * @param row The row used for prediction.
-     * @return an array of predictions, with the lowest index being the most likely, and highest index being the least likey.
+     * @return an array of predictions, with the lowest index being the most likely, and highest index being the least likey (based on the given k value).
      */
     @Override
     public Object predict(Row row) {
