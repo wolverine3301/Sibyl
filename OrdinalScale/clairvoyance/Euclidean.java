@@ -30,4 +30,10 @@ public class Euclidean extends Distance{
 		}//end for
 		return Math.sqrt(distance);
 	}
+    
+    /**
+     * Used by K means algorithm. Returns 
+     * @return
+     */
+    public double distanceSquared()
 }
