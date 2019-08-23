@@ -14,6 +14,7 @@ import saga.*;
 public class Chi2 {
 	private DataFrame df;
 	private List<Column> targets;
+	
 	public Chi2(DataFrame df){
 		this.df = df;
 		targets = new ArrayList<Column>();
@@ -27,6 +28,25 @@ public class Chi2 {
 	 */
 	public int degreesFreedom(Column col1, Column col2) {
 		return (col1.numOfUniques()-1)* (col2.numOfUniques()-1);
+	}
+	/**
+	 * Perform a chi2 test on all columns on all targets
+	 * @return HashMap<String, HashMap<String, Double>>
+	 */
+	public HashMap<String, HashMap<String, Double>> chi2IndependentsAll(){
+		HashMap<String, HashMap<String, Double>> ranks = new HashMap<String, HashMap<String, Double>>();
+		HashMap<String, Double> tmp;
+		for(Column target : targets) {
+			tmp = new HashMap<String,Double>();
+			for(Column i : df.columns) {
+				if(i.type.contains("target")) {
+					continue;
+				}
+				tmp.put(i.name, chi2Independents(target,i));
+			}
+			ranks.put(target.name, tmp);		
+		}
+		return ranks;
 	}
 	/**
 	 * Given 2 categorical variables ,this is used to test wheather there is a significant
