@@ -15,11 +15,16 @@ import saga.*;
 public class NaiveBayes extends Model{
 	
 	private List<Column> targets;
+	
+	public HashMap<String , HashMap<Object, HashMap<String, Double[]>>> cont_Naive_Bayes;
+	public HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>> cat_Naive_Bayes;
+	
 	public NaiveBayes(DataFrame df) {
 		super(df);
 		targets = new ArrayList<Column>();
 		setTargets();
-		
+		cont_Naive_Bayes = continuous_naive_bayes();
+		cat_Naive_Bayes = categorical_naive_bayes();
 		
 	}
 	/**
@@ -180,9 +185,10 @@ public class NaiveBayes extends Model{
 			}
 		}
 	}
+	
 	@Override
 	public HashMap<Object, Double> probability(Row row) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 	@Override
