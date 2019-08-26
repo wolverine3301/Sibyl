@@ -32,10 +32,16 @@ public class KMeans {
      * @return a hashmap consisting of keys that are the centroid means, and an array list of particles corresponding to the centroids cluster.
      */
     public HashMap<Double, ArrayList<Row>> cluster() {
-        TreeSet<Row> centroids = new TreeSet<Row>();
-        while (initialCentroids.size() != k) {
+        TreeSet<Cluster> centroids = new TreeSet<Cluster>();
+        TreeSet<Integer> initialCentroidIndexes = new TreeSet<Integer>();
+        while (centroids.size() != k) {
             Random ran = new Random();
-        }
+            int tempIndex = ran.nextInt(trainingData.numRows);
+            if (!initialCentroidIndexes.contains(tempIndex)) {
+                centroids.add(new Cluster(new Row(trainingData.getRow_byIndex(tempIndex))));
+                initialCentroidIndexes.add(tempIndex);
+            }
+        } 
         //Choose a random row 
         
         //For each row in training data, assign point to cluster
@@ -67,5 +73,23 @@ public class KMeans {
             }
         }
         return distance;
+    }
+    
+    private class Cluster {
+        
+        private Row centroid;
+        
+        private ArrayList<Row> clusterMembers;
+        
+        private ArrayList<Row> clusterMemberIndexes;
+        
+        public Cluster(Row theCentroid) {
+            centroid = theCentroid;
+            clusterMembers = new ArrayList<Row>();
+        }
+        
+        public void addMember(Row theRow, int theIndex) {
+            clusterMembers.add(theRow);
+        }
     }
 }
