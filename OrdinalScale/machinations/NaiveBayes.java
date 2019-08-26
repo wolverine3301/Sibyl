@@ -18,11 +18,93 @@ public class NaiveBayes extends Model{
 	public NaiveBayes(DataFrame df) {
 		super(df);
 		targets = new ArrayList<Column>();
+		setTargets();
+		
 		
 	}
-	public HashMap<Object, HashMap<String, HashMap<Object, Double>>> naivebayes(){
+	/**
+	 * construct continuous Naive Bayes for all target columns
+	 * @return
+	 */
+	public HashMap<String , HashMap<Object, HashMap<String, Double[]>>> continuous_naive_bayes(){
+		HashMap<String , HashMap<Object, HashMap<String, Double[]>>> NaiveBayes =
+				new HashMap<String , HashMap<Object, HashMap<String, Double[]>>>();
+		for(int i = 0; i < targets.size(); i++) {
+			NaiveBayes.put(targets.get(i).name, cont_naivebayes_i(i));	
+		}
+		return NaiveBayes;
+	}
+	/**
+	 * Construct categorical Naive Bayes for all target columns
+	 * @return Naive Bayes
+	 */
+	public HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>> categorical_naive_bayes(){
+		HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>> NaiveBayes =
+				new HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>>();
+		for(int i = 0; i < targets.size(); i++) {
+			NaiveBayes.put(targets.get(i).name, cat_naivebayes_i(i));	
+		}
+		return NaiveBayes;
+	}
+	/**
+	 * naive bayes probability table for continuous columns
+	 * @param targetNum
+	 * @return
+	 */
+	public  HashMap<Object, HashMap<String, Double[]>> cont_naivebayes_i(int targetNum){
+		HashMap<Object , HashMap<String , Double[]>> naive_bayes = new HashMap<Object , HashMap<String , Double[]>>();
+		DataFrame[] classes = classes(targetNum);
+		DataFrame continuous;
+		
+		List<String> numerics = new ArrayList<String>();
+		//supported types
+		numerics.add("Numerical");
+		for(int i = 0; i < classes.length; i++) {
+			continuous = classes[i].include(numerics);
+			naive_bayes.put(classes[i].getColumn_byName(targets.get(targetNum).name).getParticle_atIndex(0).value,
+					continuous_ProbabilityTable(continuous));
+		}
+		return naive_bayes;
+	}
+	/**
+	 * naive bayes probability table for categorical columns
+	 * @param targetNum
+	 * @return
+	 */
+	public HashMap<Object, HashMap<String, HashMap<Object, Double>>> cat_naivebayes_i(int targetNum){
+		HashMap<Object, HashMap<String, HashMap<Object, Double>>> naive_bayes = new HashMap<Object, HashMap<String, HashMap<Object, Double>>>();
+		DataFrame[] classes = classes(targetNum);
+		DataFrame categorical;
+		
+		List<String> categories = new ArrayList<String>();
+		//supported types
+		categories.add("categorical");
+		categories.add("String");
+		for(int i = 0; i < classes.length; i++) {
+			categorical = classes[i].include(categories);
+			
+			naive_bayes.put(classes[i].getColumn_byName(targets.get(targetNum).name).getParticle_atIndex(0).value,
+					categorical_ProbabilityTable(categorical));
+		}
+		return naive_bayes;
 		
 	}
+	/**
+	 * set table of information of continuous columns and being in Class k
+	 * @param df_i - dataframe of only Class k
+	 * @return HashMap<String, Double[]>
+	 */
+	private HashMap<String, Double[]> continuous_ProbabilityTable(DataFrame df_i){
+		HashMap<String, Double[]> cont_columns_probabilities = new HashMap<String, Double[]>();
+		for(Column i : df_i.columns) {
+			if(i.type.contains("target")) {
+				continue;
+			}
+			cont_columns_probabilities.put(i.name, set_continuousColumnProbability(i));
+		}
+		return cont_columns_probabilities;
+	}
+	
 	/**
 	 * sets table of probabilities of categorical columns and being Class k
 	 * @param df_i - dataframe of only Class k
@@ -55,10 +137,10 @@ public class NaiveBayes extends Model{
 	 * and variance of it when associated with a particular target variable to calculate its exact 
 	 * probability.
 	 * @param c - column in Class k
-	 * @return double[] with mean and variance
+	 * @return Double[] with mean and variance
 	 */
-	private double[] set_continuousColumnProbability(Column c) {
-		double[] meanVar = {c.mean() , c.variance()};
+	private Double[] set_continuousColumnProbability(Column c) {
+		Double[] meanVar = {c.mean() , c.variance()};
 		return meanVar;
 	}
 	/**
@@ -74,7 +156,7 @@ public class NaiveBayes extends Model{
 	 * @param targetNum the target column
 	 * @return DataFrame[]
 	 */
-	private DataFrame[] setClasses(int targetNum){
+	private DataFrame[] classes(int targetNum){
 		Object[] targetClasses = targets.get(targetNum).uniqueValues().toArray();
 		DataFrame[] classes = new DataFrame[targetClasses.length];
 		String[] arg =new String[3];
