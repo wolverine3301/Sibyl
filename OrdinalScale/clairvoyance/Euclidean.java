@@ -35,5 +35,7 @@ public class Euclidean extends Distance{
      * Used by K means algorithm. Returns 
      * @return
      */
-    public double distanceSquared()
+    public double distanceSquared() {
+        
+    }
 }

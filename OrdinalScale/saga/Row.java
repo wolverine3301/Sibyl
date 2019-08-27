@@ -60,7 +60,7 @@ public class Row {
 	
 	public String toString() {
 	    String s = "";
-	    for(int i = 0;i < row.size();i++) {
+	    for(int i = 0; i < row.size(); i++) {
             s += row.get(i).toString()+ " ";
         }
 	    return s;

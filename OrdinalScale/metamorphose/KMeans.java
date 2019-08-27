@@ -13,16 +13,29 @@ import saga.DoubleParticle;
 import saga.IntegerParticle;
 import saga.Particle;
 import saga.Row;
-import saga.StringParticle;
 
+/**
+ * KMeans class. Runs on a passed DataFrame, and groups the DataFrame's rows into clusters, specifically K clusters (parameterized in the constructor).
+ * @author Cade Reynoldson
+ * @version 1.0
+ */
 public class KMeans {
     
+    /** The amount of clusters to generate */
     private int k;
     
+    /** The distance formula for distance calculations. */
     private Distance distanceType;
     
+    /** The data set to be clustered */
     private DataFrame trainingData;
     
+    /**
+     * Creates a new instance of the class, used to initialize the parameters of the algorithm.
+     * @param theK the amount of clusters to generate.
+     * @param theDistanceType the type of distance formula to use for calculation.
+     * @param theTrainingData the data set to group into clusters.
+     */
     public KMeans(int theK, Distance theDistanceType, DataFrame theTrainingData) {
         k = theK;
         distanceType = theDistanceType;
@@ -36,7 +49,7 @@ public class KMeans {
      * @return a hashmap consisting of keys that are the centroid means, and an array list of particles corresponding to the centroids cluster.
      */
     public ArrayList<Set<Row>> cluster() {
-        ArrayList<Cluster> centroids = new ArrayList<Cluster>();
+        ArrayList<Cluster> centroids = new ArrayList<Cluster>(); //The clusters
         TreeSet<Integer> initialCentroidIndexes = new TreeSet<Integer>();
         while (centroids.size() != k) { //Initialize Centroids
             Random ran = new Random();
@@ -47,16 +60,15 @@ public class KMeans {
             }
         }
         int changeCount = -1;
-        //For each row in training data, assign point to cluster, continue to do this until no further changes are made.
-        while (changeCount != 0) {
+        while (changeCount != 0) { //For each row in training data, assign point to cluster, continue to do this until no further changes are made.
             changeCount = 0;
             for (int i = 0; i < trainingData.numRows; i++) { //for each row, findNearestCentroid
                 Row currentRow = trainingData.getRow_byIndex(i);
-                double d = centroids.get(0).distanceFrom(currentRow);
-                int nearestCentroidIndex = 0;
-                for (int j = 1; j < centroids.size(); j++) { //loop through centroid collection
+                double d = Double.MAX_VALUE; // Temporary double value, makes sure any calculated distance will be less than this for initial calculation.
+                int nearestCentroidIndex = -1;
+                for (int j = 0; j < centroids.size(); j++) { //loop through centroid collection, calculate distances to each, and store smallest distance & index.
                     double distanceToCentroid = centroids.get(j).distanceFrom(currentRow);
-                    if (d < distanceToCentroid) {
+                    if (d > distanceToCentroid) {
                         d = distanceToCentroid;
                         nearestCentroidIndex = j;
                     }
@@ -72,63 +84,53 @@ public class KMeans {
                     }
                 }
             }
-            for (int i = 0; i < centroids.size(); i++) 
+            for (int i = 0; i < centroids.size(); i++) //Update the mean centroid values. 
                 centroids.get(i).updateCentroidValues();
         }
-        ArrayList<Set<Row>> finalClusters = new ArrayList<Set<Row>>();
+        ArrayList<Set<Row>> finalClusters = new ArrayList<Set<Row>>(); //Convert the final calculated clusters into an array list of sets.
         for (Cluster c : centroids) {
             finalClusters.add(c.getMembers());
         }
         return finalClusters;
     }
     
-    /**
-     * Special variation of euclidean distance, removes the square root to make for more accurate clustering, and to avoid non-convergence.
-     * @param r1 Row 1 for euclidean distance calculation.
-     * @param r2 Row 2 for euclidean distance calculation.
-     * @return the euclidean distance between the two rows.
-     */
-    private double EuclideanSquared(Row r1, Row r2) {
-        double distance = 0;
-        for(int i = 0;i < r2.getlength();i++) {
-            Particle p1 = r1.getParticle(i);
-            Particle p2 = r2.getParticle(i);
-            //if the column is a string for categorical variablke
-            if(p1 instanceof StringParticle && p2 instanceof StringParticle) {
-                //if they are the same there is no distance to add
-                if(!p1.type.contentEquals(p2.type)) {
-                    distance = distance + 1;
-                }
-            } else if (p1 instanceof DoubleParticle && p2 instanceof DoubleParticle){
-                distance = distance + Math.pow((Double) p2.getValue() - (Double) p1.getValue(),2 );
-            } else if (p1 instanceof IntegerParticle && p2 instanceof IntegerParticle) {
-                int int1 = (int) p1.getValue();
-                int int2 = (int) p2.getValue();
-                distance = distance + Math.pow((double) int1 - (double) int2, 2);
-            }
-        }
-        return distance;
-    }
-    
     private class Cluster {
         
+        /** The centroid of the cluster */
         private Row centroid;
         
+        /** The cluster members with their distances to the centroid. */
         private HashMap<Row, Double> clusterMembers;
         
+        /** The indexes of the cluster members in the original data frame. */
         private TreeSet<Integer> clusterMemberIndexes;
         
+        /**
+         * Creates a new cluster with a given row as the centroid. 
+         * @param theCentroid the row to be the centroid of the cluster.
+         */
         public Cluster(Row theCentroid) {
             centroid = theCentroid;
             clusterMembers = new HashMap<Row, Double>();
             clusterMemberIndexes = new TreeSet<Integer>();
         }
         
+        /**
+         * Adds a new member to the cluster.
+         * @param theRow The row, or member to be added.
+         * @param theDistance the distance of the member to the centroid.
+         * @param theIndex the index of the row in the original data frame.
+         */
         public void addMember(Row theRow, double theDistance, int theIndex) {
             clusterMembers.put(theRow, theDistance);
             clusterMemberIndexes.add(theIndex);
         }
         
+        /**
+         * Returns the distance of the row from the centroid of the cluster.
+         * @param theRow the row to calculate the distance from the centroid of the cluster.
+         * @return the row's distance from the centroid of the cluster.
+         */
         public double distanceFrom(Row theRow) {
             return distanceType.distance(centroid, theRow);
         }
@@ -155,18 +157,63 @@ public class KMeans {
         public void updateCentroidValues() {
             for (int i = 0; i < trainingData.numColumns; i++) {
                 Column tempColumn = trainingData.getColumn_byIndex(i);
-                if (tempColumn.type.contains("Double") || tempColumn.type.contains("Integer")) {
+                if (tempColumn.type.contains("Double")) 
                     centroid.changeValue(i, new DoubleParticle(tempColumn.meanOfIndexes(clusterMemberIndexes)));
-                }
+                else if (tempColumn.type.contains("Integer"))
+                    centroid.changeValue(i, new IntegerParticle((int) tempColumn.meanOfIndexes(clusterMemberIndexes)));
             }
         }
         
+        /**
+         * Returns whether the cluster contains a row.
+         * @param r the row to check for containment in the cluster.
+         * @return true / false if the row is contained.
+         */
         public boolean containsMember(Row r) {
             return clusterMembers.containsKey(r);
         }
         
+        /**
+         * Returns a set of the members contained in the cluster.
+         * @return a set of the members contained in the cluster.
+         */
         public Set<Row> getMembers() {
             return clusterMembers.keySet();
         }
+        
+        /**
+         * Returns a string representation of the cluster.
+         * @return a string representation of the cluster.
+         */
+        @Override
+        public String toString() {
+            String str = "Centroid: " + centroid.toString() + "\nMembers: ";
+            for (Row r : clusterMembers.keySet()) {
+                str += "\n" + r.toString() + "Distance: " + clusterMembers.get(r);
+            }
+            return str;
+        }
+    }
+    
+    /**
+     * Special variation of euclidean distance, removes the square root to make for more accurate clustering, and to avoid non-convergence.
+     * @param r1 Row 1 for euclidean distance calculation.
+     * @param r2 Row 2 for euclidean distance calculation.
+     * @return the euclidean distance between the two rows.
+     */
+    private double EuclideanSquared(Row r1, Row r2) {
+        double distance = 0;
+        for(int i = 0;i < r2.getlength();i++) {
+            Particle p1 = r1.getParticle(i);
+            Particle p2 = r2.getParticle(i);
+            if (p1 instanceof DoubleParticle && p2 instanceof DoubleParticle){
+                distance = distance + Math.pow((Double) p2.getValue() - (Double) p1.getValue(),2 );
+            } else if (p1 instanceof IntegerParticle && p2 instanceof IntegerParticle) {
+                int int1 = (int) p1.getValue();
+                int int2 = (int) p2.getValue();
+                distance = distance + Math.pow((double) int1 - (double) int2, 2);
+            }
+        }
+        return distance;
     }
 }
