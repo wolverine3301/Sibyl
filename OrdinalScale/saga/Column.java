@@ -298,6 +298,38 @@ public class Column {
     	return sum() / (double) column.size();	
     }
     
+    /**
+     * Returns the mean of a given set of indexes.
+     * @param indexes the set of indexes.
+     * @return the sum of a given set of indexes.
+     */
+    public double meanOfIndexes(Set<Integer> indexes) {
+        double sum = sumOfIndexes(indexes);
+        return sum / indexes.size();
+    }
+    
+    /**
+     * Returns the sum of a given set of indexes.
+     * @param indexes the set of indexes.
+     * @return the sum of a given set of indexes.
+     */
+    public double sumOfIndexes(Set<Integer> indexes) {
+        double sum = 0; 
+        if(type.contains("Double")) {
+            for (Integer i : indexes) {
+                if (column.get(i) instanceof DoubleParticle)
+                    sum += (Double)column.get(i).getValue();
+            }
+        }
+        else if(type.contains("Integer")) {
+            for (Integer i : indexes) {
+                if (column.get(i) instanceof IntegerParticle)
+                    sum += (Integer)column.get(i).getValue();
+            }//end sum
+        }
+        return sum;
+    }
+    
     //NEEDS WORK
     public double median() {
     	
