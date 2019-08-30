@@ -1,7 +1,9 @@
 package metamorphose;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
@@ -11,7 +13,6 @@ import saga.Column;
 import saga.DataFrame;
 import saga.DoubleParticle;
 import saga.IntegerParticle;
-import saga.Particle;
 import saga.Row;
 
 /**
@@ -42,11 +43,9 @@ public class KMeans {
         trainingData = theTrainingData;
     }
     
-    //TODO: Update distance methods or add a new distance method which ONLY takes numeric values into account!
-    
     /**
-     * Uses random initial centroid choice to compute KMeans
-     * @return a hashmap consisting of keys that are the centroid means, and an array list of particles corresponding to the centroids cluster.
+     * Uses random initial centroid choice to compute KMeans. (Non-optimized initial centroid choice implementation).
+     * @return An array list (each index representing a cluster) of sets of rows, with rows representing cluster members.
      */
     public ArrayList<Set<Row>> cluster() {
         ArrayList<Cluster> centroids = new ArrayList<Cluster>(); //The clusters
@@ -59,10 +58,65 @@ public class KMeans {
                 initialCentroidIndexes.add(tempIndex);
             }
         }
+        return kMeans(centroids);
+    }
+    
+    /**
+     * Uses optimized initial centroid choices to calculate kmeans.
+     * @return An array list (each index representing a cluster) of sets of rows, with rows representing cluster members.
+     */
+    public ArrayList<Set<Row>> clusterOptimized() {
+        ArrayList<Cluster> centroids = new ArrayList<Cluster>();
+        TreeSet<Integer> initialCentroidIndexes = new TreeSet<Integer>();
+        centroids.add(new Cluster(trainingData.getRow_byIndex(0)));
+        initialCentroidIndexes.add(0);
+        for (int i = 1; i < k; i++) {
+            PriorityQueue<DistanceData> distances = calculateFarthestNeighbors(centroids.get(centroids.size() - 1).centroid); //fetch the last initialized centroid.
+            DistanceData d = distances.remove();
+            while (initialCentroidIndexes.contains(d.rowIndex)) { //If farthest centroid is contained, get second farthest, and so on.
+                d = distances.remove();
+            }
+            centroids.add(new Cluster(trainingData.getRow_byIndex(d.rowIndex))); //Add selected centroid to the 
+            initialCentroidIndexes.add(d.rowIndex);
+        }
+        System.out.println("INITIAL CENTROIDS: ");
+        for (int i = 0; i < centroids.size(); i++) {
+            System.out.println("Centroid " + i + ": " + centroids.get(i).centroid.toString());
+        }
+        return kMeans(centroids);
+    }
+    
+    /**
+     * Returns a max heap (priority queue) of distance calculations and their corresponding row distances. 
+     * @param r The row to find the farthest neighbors of.
+     * @return a max heap of distance calculations. 
+     */
+    private PriorityQueue<DistanceData> calculateFarthestNeighbors(Row r) {
+        PriorityQueue<DistanceData> distances = new PriorityQueue<DistanceData>(trainingData.numRows, new Comparator<DistanceData>() {
+            public int compare(DistanceData o1, DistanceData o2) {
+                if (o1.distanceTo > o2.distanceTo)
+                    return -1;
+                else if (o1.distanceTo < o2.distanceTo)
+                    return 1;
+                else
+                    return 0;
+            }
+        });
+        for (int i = 0; i < trainingData.numRows; i++) 
+            distances.add(new DistanceData(i, distanceType.distance(r, trainingData.getRow_byIndex(i))));
+        return distances;
+    }
+    
+    /**
+     * Calculates KMeans on a passed arraylist of clusters. 
+     * @param centroids The centroids/clusters to calculate KMeans on.
+     * @return all rows from the training data set put into clusters.
+     */
+    private ArrayList<Set<Row>> kMeans(ArrayList<Cluster> centroids) {
         int changeCount = -1;
         while (changeCount != 0) { //For each row in training data, assign point to cluster, continue to do this until no further changes are made.
             changeCount = 0;
-            for (int i = 0; i < trainingData.numRows; i++) { //for each row, findNearestCentroid
+            for (int i = 0; i < trainingData.numRows; i++) { //for each row, find nearest centroid
                 Row currentRow = trainingData.getRow_byIndex(i);
                 double d = Double.MAX_VALUE; // Temporary double value, makes sure any calculated distance will be less than this for initial calculation.
                 int nearestCentroidIndex = -1;
@@ -76,7 +130,7 @@ public class KMeans {
                 if (!centroids.get(nearestCentroidIndex).containsMember(currentRow)) { //If centroid chosen doesn't contain the member
                     centroids.get(nearestCentroidIndex).addMember(currentRow, d, i);
                     changeCount++;
-                    for (int j = 0; j < centroids.size(); j++) { //Remove cluster membership from the other cluster which contains the row.
+                    for (int j = 0; j < centroids.size(); j++) { //Remove cluster membership from the other cluster which contains the row. //TODO: OPTIMIZE!
                         if (j != nearestCentroidIndex) {
                             if (centroids.get(j).removeMember(currentRow, i))
                                 break;
@@ -94,6 +148,11 @@ public class KMeans {
         return finalClusters;
     }
     
+    /**
+     * Represents a cluster of rows. Stores all possible needed data for future calculations & expansion on KMeans based algorithms.
+     * @author Cade Reynoldson  
+     * @version 1.0
+     */
     private class Cluster {
         
         /** The centroid of the cluster */
@@ -110,7 +169,7 @@ public class KMeans {
          * @param theCentroid the row to be the centroid of the cluster.
          */
         public Cluster(Row theCentroid) {
-            centroid = theCentroid;
+            centroid = new Row(theCentroid);
             clusterMembers = new HashMap<Row, Double>();
             clusterMemberIndexes = new TreeSet<Integer>();
         }
@@ -196,24 +255,31 @@ public class KMeans {
     }
     
     /**
-     * Special variation of euclidean distance, removes the square root to make for more accurate clustering, and to avoid non-convergence.
-     * @param r1 Row 1 for euclidean distance calculation.
-     * @param r2 Row 2 for euclidean distance calculation.
-     * @return the euclidean distance between the two rows.
+     * Used by kmeans++ to properly optimize initial centroid placement.
+     * @author Cade Reynoldson
+     * @version 1.0
      */
-    private double EuclideanSquared(Row r1, Row r2) {
-        double distance = 0;
-        for(int i = 0;i < r2.getlength();i++) {
-            Particle p1 = r1.getParticle(i);
-            Particle p2 = r2.getParticle(i);
-            if (p1 instanceof DoubleParticle && p2 instanceof DoubleParticle){
-                distance = distance + Math.pow((Double) p2.getValue() - (Double) p1.getValue(),2 );
-            } else if (p1 instanceof IntegerParticle && p2 instanceof IntegerParticle) {
-                int int1 = (int) p1.getValue();
-                int int2 = (int) p2.getValue();
-                distance = distance + Math.pow((double) int1 - (double) int2, 2);
-            }
+    private class DistanceData {
+        /** The index of the row the distance was calculated to */
+        private int rowIndex;
+        
+        /** The distance to the row index */
+        private double distanceTo;
+        
+        /** Initializes the fields */
+        public DistanceData(int theRowIndex, double theDistanceTo) {
+            rowIndex = theRowIndex;
+            distanceTo = theDistanceTo;
         }
-        return distance;
+        
+        /**
+         * Returns a string representation of the distance data. Mainly used for debugging.
+         * @return a string representation of the distance data.
+         */
+        @Override
+        public String toString() {
+            return "Distance to row " + rowIndex + ": " + distanceTo;
+        }
+        
     }
 }
