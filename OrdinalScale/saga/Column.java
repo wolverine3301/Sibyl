@@ -5,14 +5,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
 /**
  * column object for a data frame
  * @author logan.collier
@@ -331,14 +329,19 @@ public class Column {
     }
     
     //NEEDS WORK
-    public double median() {
-    	
-    	List<Object> sorted = new ArrayList<Object>();
-    	for(Particle i : column) {
-    		sorted.add(i.getValue());
-    	}
-    	Collections.sort(sorted);
+    public Object median() {
+        if (type.contains("Double") || type.contains("Integer")) {
+            List<Particle> sorted = new ArrayList<Particle>();
+            for (Particle p : column) {
+                sorted.add(p.deepCopy());
+            }
+            Collections.sort(sorted);
+            return sorted.get(sorted.size() / 2);
+        } else {
+            return mode();
+        }
     }
+    
     /**
      * @return variance of column
      */

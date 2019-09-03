@@ -1,4 +1,5 @@
 package metamorphose;
+
 /**
  * Louvain modularity clustering
  * @author logan.collier

@@ -405,6 +405,27 @@ public class DataFrame {
 	    columns.add(c);
 	    numColumns++;
 	}
+	
+	/**
+	 * Replaces a particle at a given row index (position in row) and column index (position in column).
+	 * @param rowIndex the position of the particle in the row being replaced.
+	 * @param columnIndex the position of the particle in the column being replaced.
+	 * @param p the new particle to be inserted.
+	 */
+	public void replace(int rowIndex, int columnIndex, Particle p) {
+	    if ((rowIndex >= numColumns) || (rowIndex < 0) || ((columnIndex >= numRows) || (columnIndex < 0)))
+	        throw new IllegalArgumentException("Invalid indexes to be replaced - \nRow Index: " + rowIndex + 
+	                        "\nLength of rows: " + numColumns + "\nColumn Index: " + columnIndex + "Length of columns: " + numRows);
+	    else if ((p instanceof DoubleParticle || p instanceof IntegerParticle)
+	            && (columns.get(columnIndex).type.contains("Integer") || columns.get(columnIndex).type.contains("Double"))) {
+	        rows.get(columnIndex).changeValue(rowIndex, p);
+	        columns.get(rowIndex).changeValue(columnIndex, p);
+	    } else if (columns.get(columnIndex).type.contains(p.type)) {
+	        throw new IllegalArgumentException("Particle to be replaced does not match the column's type.\nColumn type: " 
+	                            + columns.get(rowIndex).type + "\nParticle Type: " + p.type);
+	    } 
+	}
+	
 	/**
 	 * Returns an array of the column names from the data frame.
 	 * @return an array of the column names from the data frame.
