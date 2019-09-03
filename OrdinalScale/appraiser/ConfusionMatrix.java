@@ -57,6 +57,9 @@ public class ConfusionMatrix {
 			}
 		}
 	}
+	/**
+	 * finds true positives and negatives
+	 */
 	private void test_score() {
 		int cnt1 = 0;
 		int cnt2;
