@@ -12,8 +12,9 @@ public class Stats {
 		for(int i = 0;i < x.getLength(); i++) {
 			covar = covar + (((double)x.getParticle_atIndex(i).getValue() - x.mean()) * ((double)y.getParticle_atIndex(i).getValue() - y.mean()));
 		}
-		return covar/x.getLength();	
+		return covar/x.getLength()-1;	
 	}
+	
 
 	
 
