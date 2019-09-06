@@ -47,7 +47,7 @@ public class KMeans {
      * Uses random initial centroid choice to compute KMeans. (Non-optimized initial centroid choice implementation).
      * @return An array list (each index representing a cluster) of sets of rows, with rows representing cluster members.
      */
-    public ArrayList<Set<Row>> cluster() {
+    public ArrayList<Set<Row>> cluster(int k, Distance distanceType, DataFrame trainingData) {
         ArrayList<Cluster> centroids = new ArrayList<Cluster>(); //The clusters
         TreeSet<Integer> initialCentroidIndexes = new TreeSet<Integer>();
         while (centroids.size() != k) { //Initialize Centroids

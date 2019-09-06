@@ -54,6 +54,18 @@ public class Row {
 	    row.set(index, p);
 	}
 	
+	public boolean equals(Row r) {
+	    if (rowLength == r.rowLength) {
+	        for (int i = 0; i < rowLength; i++) {
+	            if (!row.get(i).equals(r.row.get(i)))
+	                return false;
+	        }
+	        return true;
+	    }
+	    else 
+	        return false;
+	}
+	
 	public ArrayList<Particle> getRow() {
 	    return row;
 	}

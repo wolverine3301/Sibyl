@@ -30,6 +30,13 @@ public abstract class Particle implements Comparable<Particle>{
         return type + "=" + value;
     }
     
+    public boolean equals(Particle p) {
+        if (value.equals(p.value) && type.equals(p))
+            return true;
+        else
+            return false;
+    }
+    
     /**
      * TO DO: UPDATE FOR SUPPORT WITH ORDINAL & OBJECT PARTICLES.
      * Resolves the type of a value from a string.

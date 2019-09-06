@@ -18,6 +18,10 @@ import saga.Row;
  */
 public class Cluster {
     
+    public static int numberOfClusters = 0;
+    
+    public int clusterId;
+    
     /** The centroid of the cluster */
     Row centroid;
     
@@ -27,14 +31,40 @@ public class Cluster {
     /** The indexes of the cluster members in the original data frame. */
     private TreeSet<Integer> clusterMemberIndexes;
     
+    /** Referece to a child of the cluster, used by hierarchical for tree structuring */
+    private Cluster child1;
+    
+    /** Reference to a child of the cluster, used by hierarchical for tree structuring */
+    private Cluster child2;
+    
     /**
      * Creates a new cluster with a given row as the centroid. 
      * @param theCentroid the row to be the centroid of the cluster.
      */
     public Cluster(Row theCentroid) {
+        numberOfClusters++;
+        clusterId = numberOfClusters;
         centroid = new Row(theCentroid);
         clusterMembers = new HashMap<Row, Double>();
         clusterMemberIndexes = new TreeSet<Integer>();
+        child1 = null;
+        child2 = null;
+    }
+    
+    /**
+     * Creates a new cluster with a given row as the centroid. 
+     * @param theCentroid the row to be the centroid of the cluster.
+     * @param theChild1 one of the children of the cluster.
+     * @param theChild2 one of the childrean of the cluster.
+     */
+    public Cluster(Row theCentroid, Cluster theChild1, Cluster theChild2) {
+        numberOfClusters++;
+        clusterId = numberOfClusters;
+        centroid = new Row(theCentroid);
+        clusterMembers = new HashMap<Row, Double>();
+        clusterMemberIndexes = new TreeSet<Integer>();
+        child1 = theChild1;
+        child2 = theChild2;
     }
     
     /**
@@ -48,6 +78,20 @@ public class Cluster {
         clusterMemberIndexes.add(theIndex);
     }
     
+    public void merge(Cluster c2, DataFrame trainingData) {
+        for (Row r : c2.clusterMembers.keySet()) {
+            clusterMembers.put(r, c2.clusterMembers.get(r));
+        }
+        clusterMemberIndexes.addAll(c2.clusterMemberIndexes);
+        updateCentroidValues(trainingData);
+    }
+    
+    public void updateMemberDistances(Distance distanceType) {
+        for (Row r : clusterMembers.keySet()) {
+            clusterMembers.put(r, distanceType.distance(centroid, r));
+        }
+    }
+    
     /**
      * Returns the distance of the row from the centroid of the cluster.
      * @param theRow the row to calculate the distance from the centroid of the cluster.
@@ -55,6 +99,16 @@ public class Cluster {
      */
     public double distanceFrom(Row theRow, Distance distanceType) {
         return distanceType.distance(centroid, theRow);
+    }
+    
+    /**
+     * Returns the distance of this cluster from another cluster.
+     * @param theCluster the cluster to calculate the distance to.
+     * @param distanceType the distance type to be used for calculation.
+     * @return the distance of this cluster to another cluster.
+     */
+    public double distanceFrom(Cluster theCluster, Distance distanceType) {
+        return distanceType.distance(centroid, theCluster.centroid);
     }
     
     /**
@@ -109,11 +163,44 @@ public class Cluster {
      */
     @Override
     public String toString() {
-        String str = "Centroid: " + centroid.toString() + "\nMembers: ";
+        String str = "Cluster " + clusterId + ":\nCentroid: "  + centroid.toString() + "\nMembers: ";
         for (Row r : clusterMembers.keySet()) {
-            str += "\n" + r.toString() + "Distance: " + clusterMembers.get(r);
+            str += "\n" + r.toString() + "Distance: " + clusterMembers.get(r) + "\n";
         }
         return str;
     }
+    
+    /**
+     * Returns true if two clusters are identical, false otherwise.
+     * @param c1 the cluster to compare with.
+     * @return true if the two clusters are identical, false otherwise.
+     */
+    public boolean equals(Cluster c1) {
+        if (centroid.equals(c1.centroid) && clusterMembers.equals(c1.clusterMembers)
+                && clusterMemberIndexes.equals(c1.clusterMemberIndexes))
+            return true;
+        else
+            return false;
+    }
+    
+    /**
+     * Merges two clusters into one.
+     * @param c1 cluster one to merge.
+     * @param c2 cluster two to merge.
+     * @param trainingData the original data set in which these clusters are comprised of.
+     * @param distanceType the type of distance formula in which these clusters will be compared with.
+     * @return a new cluster which is a product of two clusters.
+     */
+    public static Cluster merge(Cluster c1, Cluster c2, DataFrame trainingData, Distance distanceType) {
+        Cluster c = new Cluster(c1.centroid, c1, c2);
+        c.clusterMembers.putAll(c1.clusterMembers);
+        c.clusterMembers.putAll(c2.clusterMembers);
+        c.clusterMemberIndexes.addAll(c1.clusterMemberIndexes);
+        c.clusterMemberIndexes.addAll(c2.clusterMemberIndexes);
+        c.updateCentroidValues(trainingData);
+        c.updateMemberDistances(distanceType);
+        return c;
+    }
+    
 }   
 
