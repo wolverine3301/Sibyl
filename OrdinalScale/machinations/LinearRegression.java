@@ -2,10 +2,12 @@ package machinations;
 
 import java.util.HashMap;
 
+import forensics.Pearson;
 import saga.DataFrame;
 import saga.Row;
 
 public class LinearRegression extends Model{
+	
 	/**
 	 * simple linear regression
 	 * @param theDataFrame
@@ -14,11 +16,21 @@ public class LinearRegression extends Model{
 		super(theDataFrame);
 		
 	}
-	private double[] optimization_scalar() {
-		double[] corr = new double[]
-		for(int i = 0; i < super.trainingDataFrame.numColumns; i++) {
-			
+	/**
+	 * optimizing start scalar for linear decomposition
+	 * @return
+	 */
+	private double[] optimization_scalar_y() {
+		Pearson pearsonCorr = new Pearson(null, null);
+		double[] corr = pearsonCorr.correlationMatrix();
+	}
+	
+	private double optimization_scalar_x(double[] means) {
+		double sum = 0;
+		for(int i = 0; i < means.length; i++) {
+			sum += means[i];
 		}
+		return Math.sqrt(sum);
 	}
 	
 
