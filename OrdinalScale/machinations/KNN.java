@@ -46,7 +46,7 @@ public class KNN extends Model {
         int taggedColumnIndex = findTaggedColumnIndex();
         if (taggedColumnIndex == -1)
             throw new IllegalArgumentException("No tagged column was detected.");
-        DataFrame knnFrame = trainingDataFrame.exclude(taggedColumnIndex);
+        DataFrame knnFrame = trainDF.exclude(taggedColumnIndex);
         PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(knnFrame.numRows, new Comparator<DistanceParticle>() {
             @Override
             public int compare(DistanceParticle p1, DistanceParticle p2) {
@@ -58,7 +58,7 @@ public class KNN extends Model {
         HashMap<Object, Double> probabilityMap = new HashMap<Object, Double>();
         HashMap<Object, Double> objectCount = new HashMap<Object, Double>();
         for (int i = 0; i < k; i++) { //load predictions into temporary hash map
-            Object currentPrediction = trainingDataFrame.getColumn_byIndex(taggedColumnIndex).getParticle_atIndex(neighbors.remove().distanceToIndex).getValue();
+            Object currentPrediction = trainDF.getColumn_byIndex(taggedColumnIndex).getParticle_atIndex(neighbors.remove().distanceToIndex).getValue();
             if (objectCount.containsKey(currentPrediction)) {
                 double currentValue = objectCount.get(currentPrediction);
                 objectCount.put(currentPrediction, currentValue + 1.0);
@@ -83,7 +83,7 @@ public class KNN extends Model {
         int taggedColumnIndex = findTaggedColumnIndex();
         if (taggedColumnIndex == -1)
             throw new IllegalArgumentException("No tagged column was detected.");
-        DataFrame knnFrame = trainingDataFrame.exclude(taggedColumnIndex);
+        DataFrame knnFrame = trainDF.exclude(taggedColumnIndex);
         PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(knnFrame.numRows, new Comparator<DistanceParticle>() {
             @Override
             public int compare(DistanceParticle p1, DistanceParticle p2) {
@@ -94,7 +94,7 @@ public class KNN extends Model {
             neighbors.add(new DistanceParticle(distanceFunction.distance(row, knnFrame.getRow_byIndex(i)), i, distanceFunction.distanceType));
         Object[] predictions = new Object[k];
         for (int i = 0; i < k; i++) {
-            predictions[i] = trainingDataFrame.getColumn_byIndex(taggedColumnIndex).getParticle_atIndex(neighbors.remove().distanceToIndex);
+            predictions[i] = trainDF.getColumn_byIndex(taggedColumnIndex).getParticle_atIndex(neighbors.remove().distanceToIndex);
         }
         return predictions;
     } 
@@ -104,8 +104,8 @@ public class KNN extends Model {
      * @return the index of the tagged column for prediction.
      */
     private int findTaggedColumnIndex() {
-        for (int i = 0; i < trainingDataFrame.numColumns; i++) {
-            if (trainingDataFrame.getColumn_byIndex(i).type.toLowerCase().equals("target")) {
+        for (int i = 0; i < trainDF.numColumns; i++) {
+            if (trainDF.getColumn_byIndex(i).type.toLowerCase().equals("target")) {
                 return i;
             }
         }

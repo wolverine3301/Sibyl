@@ -1,7 +1,7 @@
 package transmute;
 
 import saga.*;
-
+import forensics.Stats;
 /**
  * Principal Component Analysis
  * 
@@ -18,23 +18,43 @@ import saga.*;
  *
  */
 public class PCA {
-	private DataFrame df;
 	
+	private DataFrame df;
+	private Stats stat = new Stats();
+	private Standardize standard;
 	public PCA(DataFrame df) {
 		this.df = df;
+		standard = new Standardize(this.df);
 		covariance_matrix();
 	}
-	
-	public void covariance_matrix() {
-		DataFrame cov = new DataFrame();
-	    for (int i = 0; i < df.numColumns; i++) { //Initializes the columns of covariance matrix.
+	/**
+	 * produces a covariance matrix of all column combinations
+	 * the diagonal of the matrix is simply var(columnK) because covar(colK,colK) = var(columnK)
+	 * thus this matrix is orthogonal
+	 * @return
+	 */
+	public double[][] covariance_matrix() {
+		standard.zeroMean_df();
+		double[][] covar = new double[df.numColumns][df.numColumns];
+		//fill the columns of covariance matrix.
+	    for (int i = 0; i < df.numColumns; i++) { 
+	    	covar[i][i] = df.getColumn_byIndex(i).variance();
 	    	for(int j = i+1; j < df.numColumns; j++) {
-	    		cov.add_blank_Column(df.columnNames.get(i) +" "+ df.columnNames.get(j));
-	    		System.out.println(df.columnNames.get(i) +" "+ df.columnNames.get(j));
+	    		covar[i][j] = stat.covariance(df.getColumn_byIndex(i), df.getColumn_byIndex(j));
+	    		covar[j][i] = stat.covariance(df.getColumn_byIndex(j), df.getColumn_byIndex(i));
 	    	}
 	    }
-	        
-		
+	    return covar;
 	}
+	public double sum_of_squares(double[] vals) {
+		double sum = 0;
+		for(double i : vals) {
+			sum += i * i;
+		}
+		return sum;
+	}
+	
+	
+	
 
 }

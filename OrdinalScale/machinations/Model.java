@@ -11,10 +11,10 @@ public abstract class Model {
 	
 	public List<HashMap<Object,Double>> probabilities;
 	
-	public DataFrame trainingDataFrame;
+	public DataFrame trainDF;
 	
 	public Model(DataFrame theDataFrame) {
-	    trainingDataFrame = theDataFrame;
+	    trainDF = theDataFrame;
 	}
 	
 	/**

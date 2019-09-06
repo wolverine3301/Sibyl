@@ -35,6 +35,32 @@ public class Standardize {
 		}
 	}
 	/**
+	 * Zero mean for all of data frame
+	 */
+	public void zeroMean_df() {
+		for(Column i : df.columns) {
+			zeroMean_col(i);
+		}
+	}
+	/**
+	 * zero the mean of a column
+	 * @param c
+	 */
+	public void zeroMean_col(Column c) {
+		for(int i = 0; i < c.getLength(); i++) {
+			c.getParticle_atIndex(i).setValue(zeroMean(c.mean(),(double)c.getParticle_atIndex(i).getValue()));
+		}
+	}
+	/**
+	 * make data have a mean of zero
+	 * @param mean
+	 * @param x
+	 * @return
+	 */
+	private double zeroMean(double mean, double x) {
+		return x-mean;
+	}
+	/**
 	 * compute z score
 	 * @param mean
 	 * @param std
