@@ -4,6 +4,7 @@ import saga.*;
 public abstract class Correlation {
 	Column x;
 	Column y;
+	Stats stat = new Stats();
 	public Correlation(Column x, Column y) {
 		this.x = x;
 		this.y = y;

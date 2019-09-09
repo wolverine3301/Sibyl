@@ -12,7 +12,7 @@ public class Pearson extends Correlation{
 	 */
 	@Override
 	public double correlation() {
-		return covariance()/(x.mean() * y.mean());
+		return Stats.covariance(x,y)/(x.mean() * y.mean());
 	}
 
 }
