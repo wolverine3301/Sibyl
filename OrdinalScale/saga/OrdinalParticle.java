@@ -13,7 +13,7 @@ public class OrdinalParticle extends Particle{
 	 * @param value
 	 */
 	public OrdinalParticle(HashMap<String, Integer> value) {
-	    super(value, "Ordinal");
+	    super(value, 'O');
 	}
 	/**
 	 * @return the ordinal value

@@ -11,7 +11,7 @@ public class DoubleParticle extends Particle{
 	 * @param value
 	 */
 	public DoubleParticle(Double value) {
-	    super(value, "Double");
+	    super(value, 'd');
 	}
 	
 	/**

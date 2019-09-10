@@ -11,7 +11,7 @@ public class NANParticle extends Particle{
 	 * @param value
 	 */
 	public NANParticle(String value) {
-	    super(value, "NAN");
+	    super(value, 'n');
 	}
 	
 	/**

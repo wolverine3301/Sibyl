@@ -11,7 +11,7 @@ public class IntegerParticle extends Particle {
 	 * @param value
 	 */
 	public IntegerParticle(Integer value) {
-	    super(value, "Integer");
+	    super(value, 'i');
 	}
 	
 	/**

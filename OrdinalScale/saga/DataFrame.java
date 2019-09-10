@@ -21,7 +21,7 @@ public class DataFrame {
 	public List<String> columnNames;
 	
 	/** The type of each column */
-	public List<String> columnTypes;
+	public List<Character> columnTypes;
 	
 	/** The ArrayList of columns */
 	public ArrayList<Column> columns;
@@ -42,7 +42,7 @@ public class DataFrame {
 		this.columns = new ArrayList<Column>();
 		this.rows = new ArrayList<Row>();
 		this.columnNames = new ArrayList<String>();
-		this.columnTypes = new ArrayList<String>();
+		this.columnTypes = new ArrayList<Character>();
 		numRows = 0;
 		numColumns = 0;
 		
@@ -98,9 +98,9 @@ public class DataFrame {
             for (int j = 0; j < numRows; j++) {
                 Particle p = getColumn_byIndex(i).getParticle_atIndex(j);
                 if (p instanceof NANParticle) {
-                    if (getColumn_byIndex(i).type.equals("Integer"))
+                    if (getColumn_byIndex(i).type == 'i')
                         p = Particle.resolveType((int) Math.round(getColumn_byIndex(i).mean()));
-                    else if (getColumn_byIndex(i).type.equals("Double"))
+                    else if (getColumn_byIndex(i).type == 'd')
                         p = Particle.resolveType(getColumn_byIndex(i).mean());
                     else
                         p = Particle.resolveType(getColumn_byIndex(i).mode());
@@ -393,12 +393,17 @@ public class DataFrame {
 	public void add_blank_Column(String name) {
 		Column c = new Column(name);
 		columnNames.add(name);
-		columnTypes.add("NAN");
+		columnTypes.add('n');
 		columns.add(c);
 		numColumns++;
 	}
 	
-	public void add_blank_Column(String name, String dataType) {
+	/**
+	 * Adds a new empty column of a certain data type to the data frame.
+	 * @param name the name of the new column.
+	 * @param dataType the data type of the new column.
+	 */
+	public void add_blank_Column(String name, char dataType) {
 	    Column c = new Column(name, dataType);
 	    columnNames.add(name);
 	    columnTypes.add(dataType);
@@ -417,10 +422,10 @@ public class DataFrame {
 	        throw new IllegalArgumentException("Invalid indexes to be replaced - \nRow Index: " + rowIndex + 
 	                        "\nLength of rows: " + numColumns + "\nColumn Index: " + columnIndex + "Length of columns: " + numRows);
 	    else if ((p instanceof DoubleParticle || p instanceof IntegerParticle)
-	            && (columns.get(columnIndex).type.contains("Integer") || columns.get(columnIndex).type.contains("Double"))) {
+	            && (columns.get(columnIndex).type == 'i') || columns.get(columnIndex).type == 'd') {
 	        rows.get(columnIndex).changeValue(rowIndex, p);
 	        columns.get(rowIndex).changeValue(columnIndex, p);
-	    } else if (columns.get(columnIndex).type.contains(p.type)) {
+	    } else if (columns.get(columnIndex).type == p.type) {
 	        throw new IllegalArgumentException("Particle to be replaced does not match the column's type.\nColumn type: " 
 	                            + columns.get(rowIndex).type + "\nParticle Type: " + p.type);
 	    } 
@@ -453,12 +458,13 @@ public class DataFrame {
 	public String columnNamesToString() {
 		return columnNames.toString();
 	}
+	
 	/**
-	 * set column to certain type
-	 * @param columnName
-	 * @param newType
+	 * Set column to certain type given the column's name.
+	 * @param columnName the name of the column.
+	 * @param newType the new data type of the column.
 	 */
-	public void setColumnType(String columnName, String newType) {
+	public void setColumnType(String columnName, char newType) {
 		int index = 0;
 		for(int i = 0; i < columnNames.size(); i++) {
 			if(columnNames.get(i).contentEquals(columnName)){
@@ -470,6 +476,20 @@ public class DataFrame {
 		columnTypes.set(index, newType);
 	}
 	
+	/**
+	 * Set a column at a specified index's data type. 
+	 * @param columnIndex the index of the column.
+	 * @param newType the new data type of the column.
+	 */
+	public void setColumnType(int columnIndex, char newType) {
+        getColumn_byIndex(columnIndex).setType(newType);
+        columnTypes.set(columnIndex, newType);
+    }
+	
+	/**
+	 * Loops through the entire data frame to check if the data frame is square (could be optimized).
+	 * @return true if the data frame is "square" (n x n), false otherwise.
+	 */
 	public boolean isSquare() {
 	    Set<Integer> rowLengths = new TreeSet<Integer>();
 	    Set<Integer> columnLengths = new TreeSet<Integer>();
@@ -484,7 +504,7 @@ public class DataFrame {
 	 * @param List<String> types
 	 * @return shallow copy
 	 */
-	public DataFrame include(List<String> types) {
+	public DataFrame include(List<Character> types) {
 		List<String> cols = new ArrayList<String>();
 		for(Column i : columns) {
 			if(types.contains(i.type)) {
@@ -493,7 +513,6 @@ public class DataFrame {
 		}
 		return dataFrameFromColumns_ShallowCopy(cols);
 	}
-	
 	
 	/**
 	 * Method to get a data frame with all columns excluding the specified column indexes in the parameter's list.
@@ -529,7 +548,7 @@ public class DataFrame {
 	 * @param String type
 	 * @return List<Column>
 	 */
-	public List<Column> getColumnByTypes(String type){
+	public List<Column> getColumnByTypes(char type){
 		List<Column> cols = new ArrayList<Column>();
 		for(Column i : columns) {
 			if(i.type == type) {
@@ -538,6 +557,7 @@ public class DataFrame {
 		}
 		return cols;
 	}
+	
     /**
      * Prints the data frame.
      */

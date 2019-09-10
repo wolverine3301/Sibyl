@@ -1,19 +1,34 @@
 package saga;
-
+/**
+ * Particle abstract class, represents various types of data to be stored in the data frame. 
+ * 
+ * TYPE CHARACTERS:
+ * 'i' : Integer
+ * 'd' : Double
+ * 's' : String
+ * 'n' : Nan/Null
+ * 'o' : Object
+ * 'D' : Distance
+ * 'O' : Object
+ * 
+ * @author Logan Collier
+ * @author Cade Reynoldson
+ * 
+ */
 public abstract class Particle implements Comparable<Particle>{
     
     /** The value of the Object */
     public Object value;
     
     /** A string representation of the type of object */
-    public String type;
+    public char type;
     
     /**
      * Creates a new instance of a particle with a given value and type.
      * @param theValue
      * @param theType
      */
-    public Particle(Object theValue, String theType) {
+    public Particle(Object theValue, char theType) {
         value = theValue;
         type = theType;
     }
@@ -22,7 +37,7 @@ public abstract class Particle implements Comparable<Particle>{
     /**
      * @return the type
      */
-    public String getType() {
+    public char getType() {
         return type;
     }
     
@@ -31,7 +46,7 @@ public abstract class Particle implements Comparable<Particle>{
     }
     
     public boolean equals(Particle p) {
-        if (value.equals(p.value) && type.equals(p))
+        if (value.equals(p.value) && type == p.type)
             return true;
         else
             return false;

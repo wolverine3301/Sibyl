@@ -11,7 +11,7 @@ public class ObjectParticle extends Particle{
 	 * @param value
 	 */
 	public ObjectParticle(Object value) {
-	    super(value, "Object");
+	    super(value, 'o');
 	}
 	/**
 	 * @return the object

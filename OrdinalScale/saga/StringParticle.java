@@ -10,7 +10,7 @@ public class StringParticle extends Particle{
 	 * @param value
 	 */
 	public StringParticle(String value) {
-	    super(value, "String");
+	    super(value, 's');
 	}
 	/**
 	 * return the string value

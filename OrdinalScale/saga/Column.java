@@ -19,7 +19,7 @@ import java.util.Set;
 public class Column {
 
     /** The type of data stored within the column. */
-    public String type; 
+    public char type; 
     
     /** The name of the column */
     public String name; 
@@ -46,7 +46,7 @@ public class Column {
      * @param theName
      * @param theType
      */
-    public Column(String theName, String theType) {
+    public Column(String theName, char theType) {
         name = theName;
         type = theType;
         column = new ArrayList<Particle>();
@@ -74,7 +74,7 @@ public class Column {
      * manual override of auto determined type
      * @param type
      */
-    public void setType(String type) {
+    public void setType(char type) {
         this.type = type;
     }
     
@@ -83,10 +83,10 @@ public class Column {
      */
     public void resolveType() {
         for (int i = 0; i < columnLength - 2; i++) {
-            String s1 = column.get(i).type;
-            String s2 = column.get(i + 1).type;
-            String s3 = column.get(i + 2).type;
-            if (s1.equals(s2) && s1.equals(s3)) {
+            char s1 = column.get(i).type;
+            char s2 = column.get(i + 1).type;
+            char s3 = column.get(i + 2).type;
+            if (s1 == s2 && s1 == s3) {
                 setType(s1);
                 break;
             }
@@ -262,14 +262,14 @@ public class Column {
      */
     public double sum() {
     	double sum = 0;
-    	if(type.contains("Double")) {
+    	if(type == 'd') {
     		// get sum
     		for(int i = 0;i < column.size();i++) {
     		    if (column.get(i) instanceof DoubleParticle)
     		        sum += (Double) column.get(i).getValue();
     		}//end sum	
     	}
-    	else if(type.contains("Integer")) {
+    	else if(type == 'i') {
     		for(int i = 0;i < column.size();i++) {
     		    if (column.get(i) instanceof IntegerParticle)
     		        sum += (Integer)column.get(i).getValue();
@@ -313,13 +313,13 @@ public class Column {
      */
     public double sumOfIndexes(Set<Integer> indexes) {
         double sum = 0; 
-        if(type.contains("Double")) {
+        if(type == 'd') {
             for (Integer i : indexes) {
                 if (column.get(i) instanceof DoubleParticle)
                     sum += (Double)column.get(i).getValue();
             }
         }
-        else if(type.contains("Integer")) {
+        else if(type == 'i') {
             for (Integer i : indexes) {
                 if (column.get(i) instanceof IntegerParticle)
                     sum += (Integer)column.get(i).getValue();
@@ -330,7 +330,7 @@ public class Column {
     
     //NEEDS WORK
     public Object median() {
-        if (type.contains("Double") || type.contains("Integer")) {
+        if (type == 'd' || type == 'i') {
             List<Particle> sorted = new ArrayList<Particle>();
             for (Particle p : column) {
                 sorted.add(p.deepCopy());

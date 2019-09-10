@@ -18,12 +18,12 @@ public class DistanceParticle extends Particle{
 	 * @param value
 	 */
 	public DistanceParticle(Double value) {
-	    super(value, "Distance");
+	    super(value, 'D');
 	    distanceToIndex = -1;
 	}
 	
 	public DistanceParticle(Double value, int theDistanceTo, String theDistanceType) {
-	    super(value, "Distance");
+	    super(value, 'D');
 	    distanceToIndex = theDistanceTo;
 	    distanceType = theDistanceType;
 	}
