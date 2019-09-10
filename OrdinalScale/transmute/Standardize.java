@@ -12,11 +12,14 @@ import saga.*;
 public class Standardize {
 	
 	private DataFrame df;
+	
 	public Standardize(DataFrame df) {
-		List<String> nums = new ArrayList<String>();
-		nums.add("Numeric");
+		List<Character> nums = new ArrayList<Character>();
+		nums.add('d');
+		nums.add('i');
 		this.df = df.include(nums);
 	}
+	
 	/**
 	 * standardize whole dataframe
 	 */

@@ -20,18 +20,18 @@ public class LogTransform {
     public static DataFrame transformBase10(DataFrame dataFrame) {
         for (int i = 0; i < dataFrame.numColumns; i++) {
             Column c = dataFrame.getColumn_byIndex(i);
-            if (c.type.contains("Double")) {
+            if (c.type == 'd') {
                 for (int j = 0; j < dataFrame.numRows; j++) {
                     Particle p = new DoubleParticle(Math.log10((Double) c.getParticle_atIndex(j).value));
                     dataFrame.replace(i, j, p);
                 }
-            } else if (c.type.contains("Integer")) {
+            } else if (c.type == 'i') {
                 for (int j = 0; j < dataFrame.numRows; j++) {
                     int integer = (Integer) c.getParticle_atIndex(j).value;
                     Particle p = new DoubleParticle(Math.log10((double) integer));
                     dataFrame.replace(i, j, p);
                 }
-                c.type = "Double";
+                c.type = 'd';
             }
         }
         return dataFrame;
@@ -45,18 +45,18 @@ public class LogTransform {
     public static DataFrame transformNaturalLog(DataFrame dataFrame) {
         for (int i = 0; i < dataFrame.numColumns; i++) {
             Column c = dataFrame.getColumn_byIndex(i);
-            if (c.type.contains("Double")) {
+            if (c.type == 'd') {
                 for (int j = 0; j < dataFrame.numRows; j++) {
                     Particle p = new DoubleParticle(Math.log((Double) c.getParticle_atIndex(j).value));
                     dataFrame.replace(i, j, p);
                 }
-            } else if (c.type.contains("Integer")) {
+            } else if (c.type == 'i') {
                 for (int j = 0; j < dataFrame.numRows; j++) {
                     int integer = (Integer) c.getParticle_atIndex(j).value;
                     Particle p = new DoubleParticle(Math.log((double) integer));
                     dataFrame.replace(i, j, p);
                 }
-                c.type = "Double";
+                c.type = 'd';
             }
         }
         return dataFrame;

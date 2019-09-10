@@ -1,4 +1,5 @@
 package saga;
+
 /**
  * Particle abstract class, represents various types of data to be stored in the data frame. 
  * 
@@ -8,6 +9,7 @@ package saga;
  * 's' : String
  * 'n' : Nan/Null
  * 'o' : Object
+ * 'c' : Categorical
  * 'D' : Distance
  * 'O' : Object
  * 
@@ -32,8 +34,7 @@ public abstract class Particle implements Comparable<Particle>{
         value = theValue;
         type = theType;
     }
-    
-    
+     
     /**
      * @return the type
      */

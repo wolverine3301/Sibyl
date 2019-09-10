@@ -133,9 +133,9 @@ public class Cluster {
     public void updateCentroidValues(DataFrame trainingData) {
         for (int i = 0; i < trainingData.numColumns; i++) {
             Column tempColumn = trainingData.getColumn_byIndex(i);
-            if (tempColumn.type.contains("Double")) 
+            if (tempColumn.type == 'd') 
                 centroid.changeValue(i, new DoubleParticle(tempColumn.meanOfIndexes(clusterMemberIndexes)));
-            else if (tempColumn.type.contains("Integer"))
+            else if (tempColumn.type == 'i')
                 centroid.changeValue(i, new IntegerParticle((int) tempColumn.meanOfIndexes(clusterMemberIndexes)));
         }
     }

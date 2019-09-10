@@ -22,8 +22,8 @@ public class Hamming extends Distance{
         for(int i = 0;i < r1.getlength();i++) {
             Particle p1 = r1.getParticle(i);
             Particle p2 = r2.getParticle(i);
-            if(p1.type.contains("String")) { //IF THIS IS CATEGORICAL - UPDATE LATER
-                if(!p1.type.contentEquals(p2.type)) { //IF THEY ARE DIFFERENT
+            if(p1.type == 'c') { //IF THIS IS CATEGORICAL - UPDATE LATER
+                if(p1.type != p2.type) { //IF THEY ARE DIFFERENT
                     distance++;
                 }
             }

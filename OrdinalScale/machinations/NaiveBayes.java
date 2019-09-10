@@ -61,9 +61,10 @@ public class NaiveBayes extends Model{
 		DataFrame[] classes = classes(targetNum);
 		DataFrame continuous;
 		
-		List<String> numerics = new ArrayList<String>();
+		List<Character> numerics = new ArrayList<Character>();
 		//supported types
-		numerics.add("Numerical");
+		numerics.add('i');
+		numerics.add('d');
 		for(int i = 0; i < classes.length; i++) {
 			continuous = classes[i].include(numerics);
 			naive_bayes.put(classes[i].getColumn_byName(targets.get(targetNum).name).getParticle_atIndex(0).value,
@@ -81,10 +82,10 @@ public class NaiveBayes extends Model{
 		DataFrame[] classes = classes(targetNum);
 		DataFrame categorical;
 		
-		List<String> categories = new ArrayList<String>();
+		List<Character> categories = new ArrayList<Character>();
 		//supported types
-		categories.add("categorical");
-		categories.add("String");
+		categories.add('c');
+		categories.add('s');
 		for(int i = 0; i < classes.length; i++) {
 			categorical = classes[i].include(categories);
 			

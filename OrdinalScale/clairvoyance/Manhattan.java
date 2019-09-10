@@ -24,7 +24,7 @@ public class Manhattan extends Distance{
             //if the column is a string for categorical variablke
             if(p1 instanceof StringParticle && p2 instanceof StringParticle) {
                 //if they are the same there is no distance to add
-                if(!p1.type.contentEquals(p2.type)) {
+                if(p1.type != p2.type) {
                     distance = distance + 1;
                 }
             } else if (p1 instanceof DoubleParticle && p2 instanceof DoubleParticle){
