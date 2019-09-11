@@ -2,17 +2,13 @@ package metamorphose;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
 import clairvoyance.Distance;
-import saga.Column;
 import saga.DataFrame;
-import saga.DoubleParticle;
-import saga.IntegerParticle;
 import saga.Row;
 
 /**
@@ -79,32 +75,7 @@ public class KMeans {
             centroids.add(new Cluster(trainingData.getRow_byIndex(d.rowIndex))); //Add selected centroid to the 
             initialCentroidIndexes.add(d.rowIndex);
         }
-        System.out.println("INITIAL CENTROIDS: ");
-        for (int i = 0; i < centroids.size(); i++) {
-            System.out.println("Centroid " + i + ": " + centroids.get(i).centroid.toString());
-        }
         return kMeans(centroids);
-    }
-    
-    /**
-     * Returns a max heap (priority queue) of distance calculations and their corresponding row distances. 
-     * @param r The row to find the farthest neighbors of.
-     * @return a max heap of distance calculations. 
-     */
-    private PriorityQueue<DistanceData> calculateFarthestNeighbors(Row r) {
-        PriorityQueue<DistanceData> distances = new PriorityQueue<DistanceData>(trainingData.numRows, new Comparator<DistanceData>() {
-            public int compare(DistanceData o1, DistanceData o2) {
-                if (o1.distanceTo > o2.distanceTo)
-                    return -1;
-                else if (o1.distanceTo < o2.distanceTo)
-                    return 1;
-                else
-                    return 0;
-            }
-        });
-        for (int i = 0; i < trainingData.numRows; i++) 
-            distances.add(new DistanceData(i, distanceType.distance(r, trainingData.getRow_byIndex(i))));
-        return distances;
     }
     
     /**
@@ -130,7 +101,7 @@ public class KMeans {
                 if (!centroids.get(nearestCentroidIndex).containsMember(currentRow)) { //If centroid chosen doesn't contain the member
                     centroids.get(nearestCentroidIndex).addMember(currentRow, d, i);
                     changeCount++;
-                    for (int j = 0; j < centroids.size(); j++) { //Remove cluster membership from the other cluster which contains the row. //TODO: OPTIMIZE!
+                    for (int j = 0; j < centroids.size(); j++) { //Remove cluster membership from the other cluster which contains the row.
                         if (j != nearestCentroidIndex) {
                             if (centroids.get(j).removeMember(currentRow, i))
                                 break;
@@ -149,18 +120,44 @@ public class KMeans {
     }
     
     /**
+     * Returns a max heap (priority queue) of distance calculations and their corresponding row distances, calculating the farthest neighbors from a cluster. 
+     * @param r The row to find the farthest neighbors of.
+     * @return a max heap of distance calculations. 
+     */
+    private PriorityQueue<DistanceData> calculateFarthestNeighbors(Row r) {
+        PriorityQueue<DistanceData> distances = new PriorityQueue<DistanceData>(trainingData.numRows, new Comparator<DistanceData>() {
+            public int compare(DistanceData o1, DistanceData o2) {
+                if (o1.distanceTo > o2.distanceTo)
+                    return -1;
+                else if (o1.distanceTo < o2.distanceTo)
+                    return 1;
+                else
+                    return 0;
+            }
+        });
+        for (int i = 0; i < trainingData.numRows; i++) 
+            distances.add(new DistanceData(i, distanceType.distance(r, trainingData.getRow_byIndex(i))));
+        return distances;
+    }
+    
+    /**
      * Used by kmeans++ to properly optimize initial centroid placement.
      * @author Cade Reynoldson
      * @version 1.0
      */
     private class DistanceData {
+        
         /** The index of the row the distance was calculated to */
         private int rowIndex;
         
         /** The distance to the row index */
         private double distanceTo;
         
-        /** Initializes the fields */
+        /**
+         * Initializes the fields. ITS CALLED A CONSTRUCTOR FOR A REASON 
+         * @param theRowIndex The row index of the calculated distance.
+         * @param theDistanceTo The distance to that row index.
+         */
         public DistanceData(int theRowIndex, double theDistanceTo) {
             rowIndex = theRowIndex;
             distanceTo = theDistanceTo;

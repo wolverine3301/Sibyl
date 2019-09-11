@@ -18,8 +18,10 @@ import saga.Row;
  */
 public class Cluster {
     
+    /** The number of clusters created. */
     public static int numberOfClusters = 0;
     
+    /** The ID of the cluster instance. */
     public int clusterId;
     
     /** The centroid of the cluster */
@@ -169,6 +171,35 @@ public class Cluster {
         }
         return str;
     }
+    
+    /**
+     * Returns child 1 of the cluster.
+     * @return child 1 of the cluster.
+     */
+    public Cluster getChild1() {
+        return child1;
+    }
+    
+    /**
+     * Returns child 2 of the cluster.
+     * @return child 2 of the cluster.
+     */
+    public Cluster getChild2() {
+        return child2;
+    }
+    
+    
+    /**
+     * Prints the children of the cluster.
+     */
+    public void printChildren() {
+        if (child1 != null && child2 != null) {
+            child1.printChildren();
+            child2.printChildren();
+        }
+        System.out.println(toString());
+    }
+    
     
     /**
      * Returns true if two clusters are identical, false otherwise.

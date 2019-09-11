@@ -2,7 +2,7 @@ package metamorphose;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.HashSet;
 import java.util.TreeSet;
 
 import clairvoyance.Distance;
@@ -28,57 +28,101 @@ public class Hierarchical {
 
     /**
      * Clusters a given data frame using a bottom up hierarchical approach. Returns an array list of arraylists, with each representing a layer of clusters.
-     * These clusters also contain references to the clusters which were merged to create them, creating an underlying tree structure.
+     * These clusters also contain references to the clusters which were merged to create them, creating an underlying tree structure. The returned list will have
+     * one cluster at the highest index of the outerlying arraylist, the second highest having two, and so on for each row of the main data frame.
      * @return An arraylist of arraylists, with each level of the outer array list representing a layer of cluster hierarchy.
      */
     public ArrayList<ArrayList<Cluster>> cluster() {
+        ArrayList<Cluster> currentLevel = initializeClusters();
+        TreeSet<DistanceData> distances = calculateDistances(currentLevel);
+        return hierarchical(1, currentLevel, distances);
+    }
+    
+    /**
+     * Clusters a given data frame using a bottom up hierarchical approach. Returns an array list of arraylists, with each representing a layer of clusters.
+     * These clusters also contain references to the clusters which were merged to create them, creating an underlying tree structure. The returned list will have
+     * k cluster(s) at the highest index of the outerlying arraylist, the second highest having k - 1 cluster, and so on for each row of the main data frame.
+     * @return An arraylist of arraylists, with each level of the outer array list representing a layer of cluster hierarchy.
+     */
+    public ArrayList<ArrayList<Cluster>> cluster(int k) {
+        ArrayList<Cluster> currentLevel = initializeClusters();
+        TreeSet<DistanceData> distances = calculateDistances(currentLevel);
+        return hierarchical(k, currentLevel, distances);
+    }
+    
+    /**
+     * Does all of the while loop based computations of the hierarchical algorithm, producing k contained clusters in the highest heirarchy.
+     * @param k the length of the top cluster list of the hierarchy.
+     * @param currentLevel the array list of current levels
+     * @param distances
+     * @return
+     */
+    private ArrayList<ArrayList<Cluster>> hierarchical(int k, ArrayList<Cluster> currentLevel, TreeSet<DistanceData> distances) {
         ArrayList<ArrayList<Cluster>> clusters = new ArrayList<ArrayList<Cluster>>();
+        clusters.add(currentLevel);
         int clusterLevel = 0;
-        ArrayList<Cluster> currentLevel = new ArrayList<Cluster>();
+        while (clusters.get(clusterLevel).size() != k) {                        //Merge closest pairs of clusters until all clusters are contained in one.
+            currentLevel = new ArrayList<Cluster>();                            //Make a new blank array list for the next level of heirarchy.
+            DistanceData closestClusters = distances.first();                   //Remove the distance data containing the closest clusters from the tree.
+            Cluster mergedCluster = Cluster.merge                               //create merged cluster from the closest clusters.
+                    (closestClusters.c1, closestClusters.c2, trainingData, distanceType);                                    //add the newly created cluster to the next level of the heiarchy.
+            distances.remove(closestClusters);                                  //remove the distance data of the two clusters.
+            ArrayList<DistanceData> toRemove = new ArrayList<DistanceData>();
+            ArrayList<DistanceData> toAdd = new ArrayList<DistanceData>();
+            HashSet<Cluster> currentLevelSet = new HashSet<Cluster>();
+            for(DistanceData d : distances) {                                   //Update all distance data that contains references to the newly merged clusters
+                if (d.containsClusterID(closestClusters.c1.clusterId)) {        //Calculate new distances to cluster, and add all looped over clusters to a hash set.
+                    toRemove.add(d);
+                    toAdd.add(new DistanceData(d.excludeCluster(closestClusters.c1.clusterId), mergedCluster));
+                    currentLevelSet.add(d.excludeCluster(closestClusters.c1.clusterId));
+                } else if (d.containsClusterID(closestClusters.c2.clusterId)) {
+                    toRemove.add(d);
+                    toAdd.add(new DistanceData(d.excludeCluster(closestClusters.c2.clusterId), mergedCluster));
+                    currentLevelSet.add(d.excludeCluster(closestClusters.c2.clusterId));
+                } 
+            }
+            currentLevel.addAll(currentLevelSet);   //Add all "Placeholder" clusters to the newly created "current level"
+            currentLevel.add(mergedCluster);        //Add the merged cluster to the end of the list.
+            distances.removeAll(toRemove);          //Remove all the distance data which contain references to the two merged clusters.
+            distances.addAll(toAdd);                //Add the new distance data to the distance tree.
+            clusters.add(currentLevel);             //Add the new cluster level to the main cluster heirarchy data structure
+            clusterLevel++;
+        }
+        return clusters;
+    }
+    
+    /**
+     * Converts every row in the data frame into their own cluster.
+     * @return an array list of containing a cluster for every row in the data frame.
+     */
+    private ArrayList<Cluster> initializeClusters() {
+        ArrayList<Cluster> initialLevel = new ArrayList<Cluster>();
         for (int i = 0; i < trainingData.numRows; i++) { //Initialize original cluster level, with all clusters being rows of the data frame
             Cluster c = new Cluster(trainingData.getRow_byIndex(i));
             c.addMember(trainingData.getRow_byIndex(i), 0, i);
-            currentLevel.add(c);
+            initialLevel.add(c);
         }
-        clusters.add(currentLevel); //Add this level to the bottom of the cluster hierarchy.
+        return initialLevel;
+    }
+    
+    /**
+     * Used to initialize the distance tree. This calculates the distance between every cluster in the parameterized array list of clusters.
+     * @param clusters the clusters to calculate the distance between.
+     * @return a tree set of distance calculations.
+     */
+    private TreeSet<DistanceData> calculateDistances(ArrayList<Cluster> clusters) {
         TreeSet<DistanceData> distances = new TreeSet<DistanceData>(new Comparator<DistanceData>() { //data structure to hold the distance data
             @Override
             public int compare(DistanceData d1, DistanceData d2) {
                 return Double.compare(d1.distance, d2.distance);
             }
         });
-        for (int i = 0; i < clusters.get(clusterLevel).size(); i++) { //initialize distances in the distance tree.
-            for (int j = i + 1; j < clusters.get(clusterLevel).size(); j++) {
-                distances.add(new DistanceData(clusters.get(clusterLevel).get(i), clusters.get(clusterLevel).get(j),
-                        distanceType.distance(clusters.get(clusterLevel).get(i).centroid, clusters.get(clusterLevel).get(j).centroid)));
+        for (int i = 0; i < clusters.size(); i++) { //initialize distances in the distance tree.
+            for (int j = i + 1; j < clusters.size(); j++) {
+                distances.add(new DistanceData(clusters.get(i), clusters.get(j)));
             }
         }
-        while (clusters.get(clusterLevel).size() != 1) {                        //Merge closest pairs of clusters until all clusters are contained in one.
-            currentLevel = new ArrayList<Cluster>();                            //Make a new blank array list for the next level of heirarchy.
-            DistanceData closestClusters = distances.first();                   //Remove the distance data containing the closest clusters from the tree.
-            distances.remove(closestClusters);                                  //remove the distance data of the two clusters.
-            Cluster mergedCluster = Cluster.merge                               //create merged cluster from the closest clusters.
-                    (closestClusters.c1, closestClusters.c2, trainingData, distanceType);
-            currentLevel.add(mergedCluster);                                    //add the newly created cluster to the next level of the heiarchy.
-            ArrayList<DistanceData> toRemove = new ArrayList<DistanceData>();
-            for(DistanceData d : distances) {                                   //Remove all distance data that contains references to the newly merged clusters.
-                if (d.containsClusterID(closestClusters.c1.clusterId) || d.containsClusterID(closestClusters.c2.clusterId)) {
-                    toRemove.add(d);
-                } 
-            }
-            distances.removeAll(toRemove);
-            for (int i = 0; i < clusters.get(clusterLevel).size(); i++) {        //Add new distance references to the newly added cluster, and create the new layer of clusters.
-                Cluster currentCluster = clusters.get(clusterLevel).get(i);
-                if (!closestClusters.containsClusterID(currentCluster.clusterId)) {
-                    currentLevel.add(currentCluster);
-                    distances.add(new DistanceData(mergedCluster, currentCluster, //Add new distance reference to distance tree.
-                            distanceType.distance(mergedCluster.centroid, currentCluster.centroid)));
-                }
-            }
-            clusters.add(currentLevel);
-            clusterLevel++;
-        }
-        return clusters;
+        return distances;
     }
     
     /**
@@ -103,10 +147,24 @@ public class Hierarchical {
          * @param theC2 cluster 2
          * @param theDistance the distance between cluster 1 and cluster 2/
          */
-        public DistanceData (Cluster theC1, Cluster theC2, double theDistance) {
+        public DistanceData (Cluster theC1, Cluster theC2) {
             c1 = theC1;
             c2 = theC2;
-            distance = theDistance;
+            distance = distanceType.distance(c1.centroid, c2.centroid);
+        }
+        
+        /**
+         * Retruns the cluster whos ID was not passed to the method.
+         * @param theClusterId the cluster id of the cluster not to return.
+         * @return the cluster whos ID was not passed to the method.
+         */
+        public Cluster excludeCluster(int theClusterId) {
+            if (c1.clusterId == theClusterId)
+                return c2;
+            else if (c2.clusterId == theClusterId)
+                return c1;
+            else
+                return null;  
         }
         
         /**
