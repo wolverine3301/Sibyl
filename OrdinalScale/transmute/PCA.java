@@ -46,6 +46,17 @@ public class PCA {
 	    }
 	    return covar;
 	}
+
+	/**
+	 * Singular value decomposition
+	 * Calculate regression slope
+	 * @param target
+	 * @param x
+	 * @return
+	 */
+	private double regression_slopeM(Column x, Column y) {
+		return (stat.comean(x, y)  - (x.mean() * y.mean())) / (stat.squareMean(y) - Math.pow(y.mean(),2));
+	}
 	public double sum_of_squares(double[] vals) {
 		double sum = 0;
 		for(double i : vals) {

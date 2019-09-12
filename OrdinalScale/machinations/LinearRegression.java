@@ -79,7 +79,7 @@ public class LinearRegression extends Model{
 		return target.mean() - (slope * x.mean());
 	}
 	/**
-	 * Calculate regression slope
+	 * Calculate regression slope with Singular value decomposition
 	 * @param target
 	 * @param x
 	 * @return
