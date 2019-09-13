@@ -18,7 +18,16 @@ import java.util.Set;
  */
 public class Column {
 
-    /** The type of data stored within the column. */
+    /** The code for type of data stored within the column.
+     * Accepted values are:
+     * 'T' - a target column
+     * 'M' - a meta column (one that isnt to be used in learning such as ID numbers)
+     * 'C' - a category column (such as red or blue)
+     * 'G' - a custom object column
+     * 'O' - a ordinal column (Ordered categorys such as A,B, and C grades)
+     * 'N' - a numerical column
+     *  
+     *  */
     public char type; 
     
     /** The name of the column */

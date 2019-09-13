@@ -7,29 +7,33 @@ import java.util.List;
 import saga.*;
 
 public abstract class Model {
-	
-	protected List<Column> targets;
-	
+
     public List<Object[]> predictions;
 	
 	public List<HashMap<Object,Double>> probabilities;
 	
-	public DataFrame trainDF;
+	public DataFrame trainDF_targets;
+	public DataFrame trainDF_variables;
 	
 	public Model(DataFrame theDataFrame) {
-	    trainDF = theDataFrame;
-	    targets = new ArrayList<Column>();
-	    set_targets();
+	    trainDF_targets = theDataFrame.include(set_targets());
+	    trainDF_variables = theDataFrame.include(set_variables());    
 	}
 	/**
 	 * sets target list
 	 */
-	private void set_targets() {
-		for(Column i : trainDF.columns) {
-			if(i.type.contentEquals("target")) {
-				targets.add(i);
-			}
-		}
+	private List<Character> set_targets() {
+		List<Character> target = new ArrayList<Character>();
+		target.add('T');
+		return target;
+	}
+	private List<Character> set_variables() {
+		List<Character> vars = new ArrayList<Character>();
+		vars.add('C');
+		vars.add('G');
+		vars.add('O');
+		vars.add('N');
+		return vars;
 	}
 	/**
 	 * Returns the probabilities of a row being a part of each class
