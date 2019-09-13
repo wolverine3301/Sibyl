@@ -14,6 +14,13 @@ public class Stats {
 		}
 		return covar/x.getLength()-1;	
 	}
+	public double sumMultiple_Columns(Column x, Column y) {
+		double sum = 0;
+		for(int i = 0; i < x.getLength();i++) {
+			sum = sum + ((double)x.getParticle_atIndex(i).getValue() * (double)y.getParticle_atIndex(i).getValue());
+		}
+		return sum;
+	}
 	/**
 	 * return coaverage of 2 columns
 	 * @param x
@@ -21,11 +28,7 @@ public class Stats {
 	 * @return
 	 */
 	public double comean(Column x, Column y) {
-		double sum = 0;
-		for(int i = 0; i < x.getLength();i++) {
-			sum = sum + ((double)x.getParticle_atIndex(i).getValue() * (double)y.getParticle_atIndex(i).getValue());
-		}
-		return sum / x.getLength();
+		return sumMultiple_Columns(x, y) / x.getLength();
 	}
 	/**
 	 * return square mean of a column

@@ -8,6 +8,11 @@ import saga.Column;
 import saga.DataFrame;
 import saga.Row;
 
+/**
+ * Linear regression with single value decompesition
+ * @author logan.collier
+ *
+ */
 public class LinearRegression extends Model{
 	private Stats stat = new Stats();
 	/**
@@ -41,17 +46,16 @@ public class LinearRegression extends Model{
 	 * @return
 	 */
 	private double[] multi_regression_slope(Column target) {
-		double[] slope = new double[super.trainDF.numColumns-super.targets.size()];
+		
+		double[] slope = new double[super.trainDF_variables.numColumns-super.trainDF_targets.numColumns];
 		int cnt = 0;
-		for(Column i : super.trainDF.columns) {
-			if(i.type.contentEquals("target")) {
-				continue;
-			}
+		for(Column i : super.trainDF_variables.columns) {
 			slope[cnt] = regression_slopeM(target, i);
 			cnt++;
 		}
 		return slope;
 	}
+	
 	/**
 	 * average slope intercept
 	 * @param target
@@ -61,13 +65,11 @@ public class LinearRegression extends Model{
 	private double multi_regreesion_intercept(Column target, double[] slopes) {
 		double b = 0;
 		int cnt = 0;
-		for(Column i : super.trainDF.columns) {
-			if(i.type.contentEquals("target")) {
-				continue;
-			}
+		for(Column i : super.trainDF_variables.columns) {
 			b = b + regression_interceptB(target, i , slopes[cnt]);
+			cnt++;
 		}
-		return b / slopes.length;
+		return b                                   ;
 	}
 	/**
 	 * Calculate slope intercept
@@ -76,7 +78,8 @@ public class LinearRegression extends Model{
 	 * @return
 	 */
 	private double regression_interceptB(Column target, Column x,double slope) {
-		return target.mean() - (slope * x.mean());
+		return ((target.sum() * stat.squareMean(x)) - (x.sum() * stat.sumMultiple_Columns(target, x) )) / 
+				((x.getLength() * stat.squareMean(x)) - Math.pow(x.sum(),2));
 	}
 	/**
 	 * Calculate regression slope with Singular value decomposition
@@ -85,7 +88,8 @@ public class LinearRegression extends Model{
 	 * @return
 	 */
 	private double regression_slopeM(Column target, Column x) {
-		return (stat.comean(target, x)  - (target.mean() * x.mean())) / (stat.squareMean(x) - Math.pow(x.mean(),2));
+		return ((x.getLength() * stat.sumMultiple_Columns(target, x)) - (target.sum() * x.sum())) /
+				( (x.getLength() * stat.squareMean(x)) - Math.pow(x.sum(), 2));
 	}
 	@Override
 	public HashMap<Object, Double> probability(Row row) {
