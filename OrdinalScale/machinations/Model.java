@@ -15,6 +15,10 @@ public abstract class Model {
 	public DataFrame trainDF_targets;
 	public DataFrame trainDF_variables;
 	
+	/**
+	 * Abstract model constructor
+	 * @param theDataFrame
+	 */
 	public Model(DataFrame theDataFrame) {
 	    trainDF_targets = theDataFrame.include(set_targets());
 	    trainDF_variables = theDataFrame.include(set_variables());    

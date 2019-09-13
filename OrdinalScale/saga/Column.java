@@ -337,6 +337,7 @@ public class Column {
         return sum;
     }
     
+    
     //NEEDS WORK
     public Object median() {
         if (type == 'd' || type == 'i') {
