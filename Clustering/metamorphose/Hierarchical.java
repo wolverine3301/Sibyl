@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.TreeSet;
 
-import clairvoyance.Distance;
-import saga.DataFrame;
+import dataframe.DataFrame;
+import distances.Distance;
 
 public class Hierarchical {
     

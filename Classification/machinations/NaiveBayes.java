@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import dataframe.Column;
+import dataframe.DataFrame;
+import dataframe.Row;
 import saga.*;
 /**
  * Naive Bayes Classifier

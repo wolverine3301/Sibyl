@@ -4,10 +4,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
-import clairvoyance.Distance;
-import saga.DataFrame;
-import saga.DistanceParticle;
-import saga.Row;
+import dataframe.DataFrame;
+import dataframe.Row;
+import distances.Distance;
+import particles.DistanceParticle;
 
 /**
  * KNN class, contains the algorithm and data needed to compute k nearest neighbors of a given row.

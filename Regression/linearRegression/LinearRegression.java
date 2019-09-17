@@ -3,11 +3,11 @@ package linearRegression;
 import java.util.HashMap;
 
 import correlation.Pearson;
+import dataframe.Column;
+import dataframe.DataFrame;
+import dataframe.Row;
 import forensics.Stats;
 import machinations.Model;
-import saga.Column;
-import saga.DataFrame;
-import saga.Row;
 
 /**
  * Linear regression with single value decompesition

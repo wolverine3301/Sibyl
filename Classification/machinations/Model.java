@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import dataframe.DataFrame;
+import dataframe.Row;
 import saga.*;
 
 public abstract class Model {

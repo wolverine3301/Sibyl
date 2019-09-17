@@ -11,5 +11,8 @@
 	<classpathentry kind="src" path="Regression"/>
 	<classpathentry kind="src" path="Clustering"/>
 	<classpathentry kind="src" path="Classification"/>
+	<classpathentry kind="src" path="Saga"/>
+	<classpathentry kind="src" path="Evaluation"/>
+	<classpathentry kind="src" path="GUI"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

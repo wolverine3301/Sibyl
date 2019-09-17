@@ -7,9 +7,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
-import clairvoyance.Distance;
-import saga.DataFrame;
-import saga.Row;
+import dataframe.DataFrame;
+import dataframe.Row;
+import distances.Distance;
 
 /**
  * KMeans class. Runs on a passed DataFrame, and groups the DataFrame's rows into clusters, specifically K clusters (parameterized in the constructor).

@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
 
-import clairvoyance.Distance;
-import saga.Column;
-import saga.DataFrame;
-import saga.DoubleParticle;
-import saga.IntegerParticle;
-import saga.Row;
+import dataframe.Column;
+import dataframe.DataFrame;
+import dataframe.Row;
+import distances.Distance;
+import particles.DoubleParticle;
+import particles.IntegerParticle;
 
 /**
  * Represents a cluster of rows. Stores all possible needed data for future calculations & expansion on KMeans based algorithms.

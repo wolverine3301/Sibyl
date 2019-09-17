@@ -9,6 +9,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import dataframe.Column;
+import dataframe.DataFrame;
+
 import java.util.Set;
 
 import saga.*;
