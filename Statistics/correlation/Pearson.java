@@ -1,5 +1,6 @@
-package forensics;
+package correlation;
 
+import forensics.Stats;
 import saga.Column;
 
 public class Pearson extends Correlation{

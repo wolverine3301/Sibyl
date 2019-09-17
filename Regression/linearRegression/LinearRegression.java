@@ -1,9 +1,10 @@
-package machinations;
+package linearRegression;
 
 import java.util.HashMap;
 
-import forensics.Pearson;
+import correlation.Pearson;
 import forensics.Stats;
+import machinations.Model;
 import saga.Column;
 import saga.DataFrame;
 import saga.Row;

@@ -1,4 +1,4 @@
-package forensics;
+package correlation;
 
 public class Spearman extends Correlation{
 

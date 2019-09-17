@@ -7,5 +7,9 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
 	<classpathentry kind="src" path="OrdinalScale"/>
+	<classpathentry kind="src" path="Statistics"/>
+	<classpathentry kind="src" path="Regression"/>
+	<classpathentry kind="src" path="Clustering"/>
+	<classpathentry kind="src" path="Classification"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

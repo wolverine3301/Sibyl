@@ -1,4 +1,4 @@
-package machinations;
+package logrithmicRegression;
 
 public class LogRegression {
 

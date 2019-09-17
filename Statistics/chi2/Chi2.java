@@ -1,4 +1,4 @@
-package forensics;
+package chi2;
 
 import java.util.ArrayList;
 import java.util.Collections;

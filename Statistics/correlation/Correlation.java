@@ -1,4 +1,5 @@
-package forensics;
+package correlation;
+import forensics.Stats;
 import saga.*;
 
 public abstract class Correlation {
