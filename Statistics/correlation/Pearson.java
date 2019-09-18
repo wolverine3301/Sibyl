@@ -9,7 +9,7 @@ public class Pearson extends Correlation{
 		super(x, y);
 	}
 	/**
-	 * Pearson correlation
+	 * Pearson correlation coefficient 
 	 */
 	@Override
 	public double correlation() {
