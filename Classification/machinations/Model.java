@@ -3,10 +3,11 @@ package machinations;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 import dataframe.DataFrame;
 import dataframe.Row;
-import saga.*;
+import particles.Particle;
 
 public abstract class Model {
 
@@ -22,19 +23,25 @@ public abstract class Model {
 	 * @param theDataFrame
 	 */
 	public Model(DataFrame theDataFrame) {
-	    trainDF_targets = theDataFrame.include(set_targets());
-	    trainDF_variables = theDataFrame.include(set_variables());    
+	    trainDF_targets = theDataFrame.dataFrameFromColumns_ShallowCopy(set_targets());
+	    trainDF_variables = theDataFrame.dataFrameFromColumns_ShallowCopy(set_variables());    
+	    System.out.println("Targets: ");
+	    trainDF_targets.printDataFrame();
+	    System.out.println("Training Data: ");
+	    trainDF_variables.printDataFrame();
 	}
+	
 	/**
 	 * sets target list
 	 */
-	private List<Character> set_targets() {
-		List<Character> target = new ArrayList<Character>();
+	private TreeSet<Character> set_targets() {
+		TreeSet<Character> target = new TreeSet<Character>();
 		target.add('T');
 		return target;
 	}
-	private List<Character> set_variables() {
-		List<Character> vars = new ArrayList<Character>();
+	
+	private TreeSet<Character> set_variables() {
+		TreeSet<Character> vars = new TreeSet<Character>();
 		vars.add('C');
 		vars.add('G');
 		vars.add('O');
@@ -52,6 +59,6 @@ public abstract class Model {
 	 * @param row
 	 * @return
 	 */
-	public abstract Object predict(Row row);
+	public abstract ArrayList<ArrayList<Particle>> predict(Row row);
 
 }

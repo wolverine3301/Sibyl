@@ -3,16 +3,6 @@ package particles;
 /**
  * Particle abstract class, represents various types of data to be stored in the data frame. 
  * 
- * TYPE CHARACTERS:
- * 'i' : Integer
- * 'd' : Double
- * 's' : String
- * 'n' : Nan/Null
- * 'o' : Object
- * 'c' : Categorical
- * 'D' : Distance
- * 'O' : Object
- * 
  * @author Logan Collier
  * @author Cade Reynoldson
  * 
@@ -22,7 +12,17 @@ public abstract class Particle implements Comparable<Particle>{
     /** The value of the Object */
     public Object value;
     
-    /** A string representation of the type of object */
+    /** A string representation of the type of object 
+     * TYPE CHARACTERS:
+     * 'i' : Integer
+     * 'd' : Double
+     * 's' : String
+     * 'n' : Nan/Null
+     * 'o' : Object
+     * 'c' : Categorical
+     * 'e' : Distance
+     * 'g' : Object
+     * */
     public char type;
     
     /**
@@ -142,7 +142,6 @@ public abstract class Particle implements Comparable<Particle>{
      * @return a deep copy of a given particle.
      */
     public abstract Particle deepCopy();
-    
     
     public abstract int compareTo(Particle p);
 }

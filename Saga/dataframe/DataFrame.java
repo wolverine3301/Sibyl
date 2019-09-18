@@ -181,6 +181,35 @@ public class DataFrame {
 	    return newDataFrame;
 	}
 	
+	   /**
+     * Creates a new shallow copied data frame internally from a list of column names.
+     * @param columnNames the names of the columns to be added to the new data frame
+     * @return a new DataFrame consisting of the columns passed to the method.
+     */
+    public DataFrame dataFrameFromColumns_ShallowCopy(TreeSet<Character> columnTypes) {
+        DataFrame newDataFrame = new DataFrame();
+        for (Column c : columns) {
+            if (columnTypes.contains(c.type)) {
+                newDataFrame.columnNames.add(c.name);
+                newDataFrame.columnTypes.add(c.type);
+                newDataFrame.numColumns++;
+                newDataFrame.columns.add(c);
+                if (newDataFrame.numRows == 0) 
+                    newDataFrame.numRows = c.getLength();
+                
+            }
+        }
+        for (int i = 0; i < newDataFrame.numColumns; i++)
+            System.out.println("COLUMN LENGTH " + newDataFrame.columns.get(i).getLength() + "\n" + newDataFrame.getColumn_byIndex(i).toString());
+        for (int i = 0; i < newDataFrame.numRows; i++) {
+            Row row = new Row();
+            for (int j = 0; j < newDataFrame.numColumns; j++)
+                row.addToRow(newDataFrame.columns.get(j).getParticle_atIndex(i));
+            newDataFrame.rows.add(row);
+        }
+        return newDataFrame;
+    }
+	
 	/**
 	 * Creates a new deep copied data frame internally from a list of row indexes.
 	 * @param rowIndexes the set of row indexes to create a new data frame with.

@@ -30,7 +30,6 @@ public class Column {
      * 'G' - a custom object column
      * 'O' - a ordinal column (Ordered categorys such as A,B, and C grades)
      * 'N' - a numerical column
-     *  
      *  */
     public char type; 
     
@@ -42,11 +41,13 @@ public class Column {
     
     /** The length of the column (the amount of particles stored in the column) */
     public int columnLength;
+    
     /**
      * Creates a column with a given name.
      * @param name the name of the column.
      */
     public HashMap<Object, Double> feature_stats = new HashMap<Object, Double>();;
+    
     public Column(String name) {
         this.name = name;
         column = new ArrayList<Particle>(); 
@@ -100,10 +101,19 @@ public class Column {
             char s2 = column.get(i + 1).type;
             char s3 = column.get(i + 2).type;
             if (s1 == s2 && s1 == s3) {
-                setType(s1);
+                setType(particleTypeToColumnType(s1));
                 break;
             }
         }
+    }
+    
+    public char particleTypeToColumnType(char pType) {
+        if (pType == 'i' || pType == 'd')
+            return 'N';
+        else if (pType == 'o')
+            return 'G';
+        else
+            return 'M';
     }
     
     /**
@@ -385,6 +395,7 @@ public class Column {
 		}
 		return ent;
 	}
+	
 	/**
 	 * sets the features of proportion each value has in the column
 	 */
@@ -393,6 +404,14 @@ public class Column {
 		for(Entry<Object, Integer> i : a.entrySet()) {
 			feature_stats.put(i.getKey(), (double)i.getValue()/column.size());
 		}
+	}
+	
+	@Override
+	public String toString() {
+	    String str = "Column Name: " + name + "\nColumn Type: " + type + "\n";
+	    for (Particle p : column)
+	        str += p.toString() + "\n";
+	    return str;
 	}
 
 }

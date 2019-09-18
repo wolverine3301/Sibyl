@@ -1,5 +1,6 @@
 package machinations;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.PriorityQueue;
@@ -8,6 +9,7 @@ import dataframe.DataFrame;
 import dataframe.Row;
 import distances.Distance;
 import particles.DistanceParticle;
+import particles.Particle;
 
 /**
  * KNN class, contains the algorithm and data needed to compute k nearest neighbors of a given row.
@@ -72,29 +74,29 @@ public class KNN extends Model {
     }
 
     /**
-     * KNN algorithm. Returns k predictions in the form of an object array. The row passed MUST contain one less entry than the test data frame
-     * on which computations will be calculated on, with the missing entry being the desired prediction variable, since this allows for proper
-     * distance measuring between rows. The name of the column to be predicted MUST have it's column type marked as "target".
+     * KNN algorithm. Returns k predictions in the form of an ArrayList of ArrayLists. The row passed MUST contain n-less entries than the test data frame
+     * on which computations will be calculated on, with the missing entries being the desired prediction variable, since this allows for proper
+     * distance measuring between rows. The name of the column to be predicted MUST have it's column type marked as "T".
      * @param row The row used for prediction.
      * @return an array of predictions, with the lowest index being the most likely, and highest index being the least likey (based on the given k value).
      */
     @Override
-    public Object predict(Row row) {
-        int taggedColumnIndex = findTaggedColumnIndex();
-        if (taggedColumnIndex == -1)
-            throw new IllegalArgumentException("No tagged column was detected.");
-        DataFrame knnFrame = trainDF.exclude(taggedColumnIndex);
-        PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(knnFrame.numRows, new Comparator<DistanceParticle>() {
-            @Override
-            public int compare(DistanceParticle p1, DistanceParticle p2) {
-                return Double.compare(p1.getValue(), p2.getValue());
+    public ArrayList<ArrayList<Particle>> predict(Row row) {
+        ArrayList<ArrayList<Particle>> predictions = new ArrayList<ArrayList<Particle>>();
+        for (int i = 0; i < trainDF_targets.numColumns; i++ ) {
+            PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(trainDF_variables.numRows, new Comparator<DistanceParticle>() {
+                @Override
+                public int compare(DistanceParticle p1, DistanceParticle p2) {
+                    return Double.compare(p1.getValue(), p2.getValue());
+                }
+            });
+            for (int j = 0; j < trainDF_variables.numRows; j++)
+                neighbors.add(new DistanceParticle(distanceFunction.distance(row, trainDF_variables.getRow_byIndex(j)), j, distanceFunction.distanceType));
+            ArrayList<Particle> currPredictions = new ArrayList<Particle>(k);
+            for (int j = 0; i < k; i++) {
+                currPredictions.add(trainDF_variables.getColumn_byIndex(j).getParticle_atIndex(neighbors.remove().distanceToIndex));
             }
-        });
-        for (int i = 0; i < knnFrame.numRows; i++)
-            neighbors.add(new DistanceParticle(distanceFunction.distance(row, knnFrame.getRow_byIndex(i)), i, distanceFunction.distanceType));
-        Object[] predictions = new Object[k];
-        for (int i = 0; i < k; i++) {
-            predictions[i] = trainDF.getColumn_byIndex(taggedColumnIndex).getParticle_atIndex(neighbors.remove().distanceToIndex);
+            predictions.add(currPredictions);
         }
         return predictions;
     } 
