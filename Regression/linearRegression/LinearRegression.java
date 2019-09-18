@@ -92,17 +92,6 @@ public class LinearRegression extends Model{
 		return ((x.getLength() * stat.sumMultiple_Columns(target, x)) - (target.sum() * x.sum())) /
 				( (x.getLength() * stat.squareMean(x)) - Math.pow(x.sum(), 2));
 	}
-	@Override
-	public HashMap<Object, Double> probability(Row row) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object predict(Row row) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 
 }

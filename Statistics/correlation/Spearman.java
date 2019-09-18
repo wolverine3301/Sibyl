@@ -2,6 +2,11 @@ package correlation;
 
 import dataframe.Column;
 
+/**
+ * @author logan.collier
+ * is a measure of how well the relationship between two variables can be described by a monotonic function.
+ *
+ */
 public class Spearman extends Correlation{
 
 	public Spearman(Column x, Column y) {
