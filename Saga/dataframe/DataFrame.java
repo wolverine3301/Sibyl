@@ -23,22 +23,22 @@ import particles.Particle;
 public class DataFrame {
 	
     /** The names of the columns */
-	public List<String> columnNames;
+	private ArrayList<String> columnNames;
 	
 	/** The type of each column */
-	public List<Character> columnTypes;
+	private ArrayList<Character> columnTypes;
 	
 	/** The ArrayList of columns */
-	public ArrayList<Column> columns;
+	private ArrayList<Column> columns;
 	
 	/** The ArrayList of rows */
-	public ArrayList<Row> rows;
+	private ArrayList<Row> rows;
 	
 	/** The number of rows in the data frame */
-	public int numRows;
+	private int numRows;
 	
 	/** The number of columns in the data frame */
-	public int numColumns;
+	private int numColumns;
 	
 	/**
 	 * Create a new, empty data frame.
@@ -199,8 +199,6 @@ public class DataFrame {
                 
             }
         }
-        for (int i = 0; i < newDataFrame.numColumns; i++)
-            System.out.println("COLUMN LENGTH " + newDataFrame.columns.get(i).getLength() + "\n" + newDataFrame.getColumn_byIndex(i).toString());
         for (int i = 0; i < newDataFrame.numRows; i++) {
             Row row = new Row();
             for (int j = 0; j < newDataFrame.numColumns; j++)
@@ -251,6 +249,13 @@ public class DataFrame {
 	    
 	}
 	
+	public ArrayList<Column> getColumns() {
+	    return columns;
+	}
+	
+	public ArrayList<Row> getRows() {
+	    return rows;
+	}
 	/**
 	 * Versitility function, arguments in the string array passed to the method will be parsed, and a shallow copy of the data frame with rows
 	 * that meet the specified arguments will be returned, can take multiple arguments.
@@ -296,6 +301,18 @@ public class DataFrame {
             }
         }
         return dataFrameFromRows_ShallowCopy(rowIndexes);
+    }
+    
+    /**
+     * Updates the number of rows in this column. Note: this does not create new rows when changing the size.
+     */
+    public void updateNumRows() {
+        if (numRows == rows.size())
+            return;
+        else if (numRows < rows.size())
+            numRows = rows.size();
+        else if (numRows == 0 && numColumns != 0)
+            numRows = getColumn_byIndex(0).getLength();
     }
     
     /**
@@ -374,6 +391,20 @@ public class DataFrame {
     	numColumns++;
     }
     
+    public void addColumnName(String name) {
+        if (columnNames.size() == columns.size() - 1)
+            columnNames.add(name);
+        else
+            throw new IllegalArgumentException("Addition of new column name would cause uneven column names length vs column length.");
+    }
+    
+    public void addColumnType(char type) {
+        if (columnTypes.size() == columns.size() - 1)
+            columnTypes.add(type);
+        else
+            throw new IllegalArgumentException("Addition of new column name would cause uneven column types length vs column length.");
+    }
+    
     /**
      * Adds a row to the data frame from an array. Mostly used by the distance matrix method.
      * @param arr the new row to be added. 
@@ -400,9 +431,6 @@ public class DataFrame {
     public void addRow(Row r) {
         rows.add(r);
         numRows++;
-        for (int i = 0; i < r.getlength(); i++) { //initialize position in column.
-            columns.get(i).addToColumn(r.getParticle(i));
-        }
     }
     
     /**
@@ -414,10 +442,6 @@ public class DataFrame {
         columnNames.add(c.name);
         columnTypes.add(c.type);
         numColumns++;
-        for (int i = 0; i < c.getLength(); i++) {
-            rows.get(i).addToRow(c.getParticle_atIndex(i));;
-        }
-        
     }
 
     /**
@@ -469,20 +493,20 @@ public class DataFrame {
 	 * Returns an array of the column names from the data frame.
 	 * @return an array of the column names from the data frame.
 	 */
-	public String[] getColumnNames() {
-		String[] names = new String[columnNames.size()];
-		for(int i = 0; i < columnNames.size();i++) {
-			names[i] = columnNames.get(i);
-		}
-		return names;
+	public ArrayList<String> getColumnNames() {
+		return columnNames;
 	}
 	
 	/**
 	 * Returns the amount of rows in the data frame.
 	 * @return the amount of rows in the data frame.
 	 */
-	public int getLength() {
+	public int getNumRows() {
 		return numRows;
+	}
+	
+	public int getNumColumns() {
+	    return numColumns;
 	}
 	
 	/**
