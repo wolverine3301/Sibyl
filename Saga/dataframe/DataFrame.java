@@ -216,7 +216,7 @@ public class DataFrame {
 	public DataFrame dataFrameFromRows_DeepCopy(Set<Integer> rowIndexes) {
 	    DataFrame newDataFrame = new DataFrame();
 	    for (Column c : columns) { //Initialize blank columns in new data frame.
-	        newDataFrame.add_blank_Column(c.name, c.type);
+	        newDataFrame.addBlankColumn(c.name, c.type);
 	    }
 	    for (Integer rowIndex : rowIndexes) {
 	        Row r = new Row(rows.get(rowIndex));
@@ -236,7 +236,7 @@ public class DataFrame {
 	public DataFrame dataFrameFromRows_ShallowCopy(Set<Integer> rowIndexes) {
 	    DataFrame newDataFrame = new DataFrame();
 	    for (Column c : columns) 
-	        newDataFrame.add_blank_Column(c.name, c.type);
+	        newDataFrame.addBlankColumn(c.name, c.type);
 	    for (Integer rowIndex : rowIndexes) {
 	        Row r = rows.get(rowIndex);
 	        newDataFrame.rows.add(r);
@@ -256,52 +256,6 @@ public class DataFrame {
 	public ArrayList<Row> getRows() {
 	    return rows;
 	}
-	/**
-	 * Versitility function, arguments in the string array passed to the method will be parsed, and a shallow copy of the data frame with rows
-	 * that meet the specified arguments will be returned, can take multiple arguments.
-	 * ARGUMENT REQUIREMENTS: Should be in groups of three indexes, with index 0 being the name of the specified column, index 1 being the 
-	 * specified logical operator, and index 2 being the object to make comparisons on, which can then be parsed and have it's own particle created
-	 * (refer to particle heiarchy). 
-	 * Example arguments: 
-	 * One total argument will consist of: {"ColumnName", "LogicalOperator", "ObjectToCompare"} or {"Column A", "<", "40"}.
-	 * Two arguments will conisit of:  {"ColumnName1", "LogicalOperator1", "ObjectToCompare1", "ColumnName2", "LogicalOperator2", "ObjectToCompare2"}
-	 * @param args the arguments for the function ({"ColumnName", "LogicalOperator", ObjectToCompare"}). 
-	 * @return a new data frame with rows fitting the arguments.
-	 */
-    public DataFrame acquire(String[] args) {
-        Set<Integer> rowIndexes = new TreeSet<Integer>();
-        for (int i = 0; i < args.length; i += 3) {
-            Column column = getColumn_byName(args[i]);
-            String operator = args[i + 1];
-            Particle particle = Particle.resolveType(args[i + 2]);
-            for (int j = 0; j < column.getLength(); j++) {
-                int compare = column.getParticle_atIndex(j).compareTo(particle);
-                switch (operator) {
-                    case "<":
-                        if (compare < 0)
-                            rowIndexes.add(j);
-                        break;
-                    case "<=":
-                        if (compare <= 0)
-                            rowIndexes.add(j);
-                        break;
-                    case ">":
-                        if (compare > 0)
-                            rowIndexes.add(j);
-                        break;
-                    case ">=":
-                        if (compare >= 0)
-                            rowIndexes.add(j);
-                        break;
-                    case "==":
-                        if (compare == 0)
-                            rowIndexes.add(j);
-                        break;
-                }
-            }
-        }
-        return dataFrameFromRows_ShallowCopy(rowIndexes);
-    }
     
     /**
      * Updates the number of rows in this column. Note: this does not create new rows when changing the size.
@@ -315,25 +269,6 @@ public class DataFrame {
             numRows = getColumn_byIndex(0).getLength();
     }
     
-    /**
-     * Split dataframe into n equal sections
-     * @param n - number of new dataframes 
-     * @return dataframe[] of shallow copiesshallow copies
-     */
-	public DataFrame[] split(int n) {
-		int interval = Math.floorDiv(numRows, n-1);
-		DataFrame[] partitions = new DataFrame[n-1];
-		Set<Integer> set = new HashSet<Integer>();
-		for (int i = 0; i < numRows-1; i += interval-1) {
-			set.clear();
-			for(int j = i+1;j <= i+interval-1; j++) {
-				if(i == 0) {set.add(0);}
-				set.add(j);	
-			}
-		}
-		return partitions;
-	}
-	
 	/**
 	 * Returns an indexed row from the data frame.
 	 * @param index the index of the row.
@@ -459,7 +394,7 @@ public class DataFrame {
 	 * Adds a new empty column to the data frame.
 	 * @param name The name of the new column.
 	 */
-	public void add_blank_Column(String name) {
+	public void addBlankColumn(String name) {
 		Column c = new Column(name);
 		columnNames.add(name);
 		columnTypes.add('n');
@@ -472,7 +407,7 @@ public class DataFrame {
 	 * @param name the name of the new column.
 	 * @param dataType the data type of the new column.
 	 */
-	public void add_blank_Column(String name, char dataType) {
+	public void addBlankColumn(String name, char dataType) {
 	    Column c = new Column(name, dataType);
 	    columnNames.add(name);
 	    columnTypes.add(dataType);

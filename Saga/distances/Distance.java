@@ -25,7 +25,7 @@ public abstract class Distance{
 	public static DataFrame distance_matrix(DataFrame theDataFrame, Distance distanceFunction) {
 	    DataFrame dataFrame = new DataFrame();
 	    for (int i = 0; i < theDataFrame.numRows; i++) //Initializes the columns of the new data frame. 
-	        dataFrame.add_blank_Column("R" + i);
+	        dataFrame.addBlankColumn("R" + i);
 	    for (int i = 0; i < theDataFrame.numRows; i++) {
 	        Row currentRow = theDataFrame.getRow_byIndex(i);
 	        Row newRow = new Row();

@@ -118,7 +118,7 @@ public final class DataFrameTools {
     public static DataFrame deepCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes) {
         DataFrame newDataFrame = new DataFrame();
         for (Column c : theDataFrame.getColumns()) { //Initialize blank columns in new data frame.
-            newDataFrame.add_blank_Column(c.name, c.type);
+            newDataFrame.addBlankColumn(c.name, c.type);
         }
         for (Integer rowIndex : rowIndexes) {
             newDataFrame.addRow(new Row(theDataFrame.getRow_byIndex(rowIndex)));
@@ -209,7 +209,7 @@ public final class DataFrameTools {
     public static DataFrame shallowCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes) {
         DataFrame newDataFrame = new DataFrame();
         for (Column c : theDataFrame.getColumns()) 
-            newDataFrame.add_blank_Column(c.name, c.type);
+            newDataFrame.addBlankColumn(c.name, c.type);
         for (Integer rowIndex : rowIndexes) {
             newDataFrame.addRow(theDataFrame.getRow_byIndex(rowIndex));
         }
