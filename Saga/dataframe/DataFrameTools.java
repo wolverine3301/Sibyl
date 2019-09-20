@@ -1,8 +1,7 @@
 package dataframe;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -60,8 +59,23 @@ public final class DataFrameTools {
                 }
             }
         }
-        return DataFrameTools.dataFrameFromRows_ShallowCopy(theDataFrame, rowIndexes);
+        return DataFrameTools.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
     }
+    
+    
+    /**
+     * Creates a new shallow copied data frame internally from a list of column names.
+     * @param theDataFrame the data frame to copy.
+     * @param columnNames the names of the columns to be added to the new data frame
+     * @return a new DataFrame consisting of the columns passed to the method.
+     */
+     public static DataFrame deepCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
+         DataFrame newDataFrame = new DataFrame();
+         for (Integer i : columnIndexes) {
+             newDataFrame.addColumn(new Column(theDataFrame.getColumn_byIndex(i)));
+         }
+         return newDataFrame;
+     }
     
     /**
      * Creates a new deep copied data frame internally from a list of column names.
@@ -69,20 +83,12 @@ public final class DataFrameTools {
      * @param columnNames the list of column name.
      * @return the newly created data frame.
      */
-    public static DataFrame dataFrameFromColumns_DeepCopy(DataFrame theDataFrame, List<String> columnNames) {
+    public static DataFrame deepCopy_columnNames(DataFrame theDataFrame, Collection<String> columnNames) {
         DataFrame newDataFrame = new DataFrame();
         for (String name : columnNames) { // Create the columns
             Column c = new Column(theDataFrame.getColumn_byName(name));
             newDataFrame.addColumn(c);
         }
-        newDataFrame.updateNumRows();
-        for (int i = 0; i < newDataFrame.getNumRows(); i++) { // Initialize row pointers
-            Row row = new Row(); 
-            for (int j = 0; j < newDataFrame.getNumColumns(); j++) {
-                row.addToRow(newDataFrame.getColumn_byIndex(j).getParticle_atIndex(i));
-            }
-            newDataFrame.addRow(row);
-        }
         return newDataFrame;
     }
     
@@ -92,65 +98,16 @@ public final class DataFrameTools {
      * @param columnNames the names of the columns to be added to the new data frame
      * @return a new DataFrame consisting of the columns passed to the method.
      */
-    public static DataFrame dataFrameFromColumns_ShallowCopy(DataFrame theDataFrame, List<String> columnNames) {
-        DataFrame newDataFrame = new DataFrame();
-        for (String name : columnNames) {
-            Column c = theDataFrame.getColumn_byName(name);
-            newDataFrame.addColumn(c);
-        }
-        newDataFrame.updateNumRows();
-        for (int i = 0; i < newDataFrame.getNumRows(); i++) {
-            Row row = new Row();
-            for (int j = 0; j < newDataFrame.getNumColumns(); j++)
-                row.addToRow(newDataFrame.getColumn_byIndex(j).getParticle_atIndex(i));
-            newDataFrame.addRow(row);
-        }
-        return newDataFrame;
-    }
-    
-   /**
-     * Creates a new shallow copied data frame internally from a list of column names.
-     * @param theDataFrame the data frame to copy.
-     * @param columnNames the names of the columns to be added to the new data frame
-     * @return a new DataFrame consisting of the columns passed to the method.
-     */
-    public static DataFrame dataFrameFromColumns_ShallowCopy(DataFrame theDataFrame, TreeSet<Character> columnTypes) {
+    public static DataFrame deepCopy_columnTypes(DataFrame theDataFrame, Collection<Character> columnTypes) {
         DataFrame newDataFrame = new DataFrame();
         for (Column c : theDataFrame.getColumns()) {
             if (columnTypes.contains(c.type)) {
-                newDataFrame.addColumn(c);
+                newDataFrame.addColumn(new Column(c));
             }
-        }
-        newDataFrame.updateNumRows();
-        for (int i = 0; i < newDataFrame.getNumRows(); i++) {
-            Row row = new Row();
-            for (int j = 0; j < newDataFrame.getNumColumns(); j++)
-                row.addToRow(newDataFrame.getColumn_byIndex(j).getParticle_atIndex(i));
-            newDataFrame.addRow(row);
         }
         return newDataFrame;
     }
     
-    /**
-     * Creates a new shallow copied data frame internally from a list of column names.
-     * @param theDataFrame the data frame to copy.
-     * @param columnNames the names of the columns to be added to the new data frame
-     * @return a new DataFrame consisting of the columns passed to the method.
-     */
-     public static DataFrame dataFrameFromColumns_ShallowCopy(DataFrame theDataFrame, List<Integer> columnInedexes) {
-         DataFrame newDataFrame = new DataFrame();
-         for (Integer i : columnIndexes) {
-             
-         }
-         newDataFrame.updateNumRows();
-         for (int i = 0; i < newDataFrame.getNumRows(); i++) {
-             Row row = new Row();
-             for (int j = 0; j < newDataFrame.getNumColumns(); j++)
-                 row.addToRow(newDataFrame.getColumn_byIndex(j).getParticle_atIndex(i));
-             newDataFrame.addRow(row);
-         }
-         return newDataFrame;
-     }
     
     /**
      * Creates a new deep copied data frame internally from a list of row indexes.
@@ -158,18 +115,88 @@ public final class DataFrameTools {
      * @param rowIndexes the set of row indexes to create a new data frame with.
      * @return a new DataFrame consisting of the rows passed to the method.
      */
-    public static DataFrame dataFrameFromRows_DeepCopy(DataFrame theDataFrame, Set<Integer> rowIndexes) {
+    public static DataFrame deepCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes) {
         DataFrame newDataFrame = new DataFrame();
         for (Column c : theDataFrame.getColumns()) { //Initialize blank columns in new data frame.
             newDataFrame.add_blank_Column(c.name, c.type);
         }
         for (Integer rowIndex : rowIndexes) {
-            Row r = new Row(theDataFrame.getRow_byIndex(rowIndex));
-            newDataFrame.getRows().add(r);
-            for (int i = 0; i < r.getlength(); i++)
-                newDataFrame.getColumn_byIndex(i).addToColumn(r.getParticle(i));
+            newDataFrame.addRow(new Row(theDataFrame.getRow_byIndex(rowIndex)));
         }
-        newDataFrame.updateNumRows();
+        return newDataFrame;
+    }
+    
+    /**
+     * Method to get a data frame with all columns excluding the specified column indexes in the parameter's list.
+     * Uses a set (prefferably treeset) for nlog(n) element access time (contains()).
+     * @param columnIndex the list of column indexes to exclude.
+     * @return a new (shallow copied) data frame with the specified columns excluded.
+     */
+    public static DataFrame exclude(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
+        Set<Integer> indexSet = new TreeSet<Integer>();
+        for (int i = 0; i < theDataFrame.getNumColumns(); i++) {
+            if (!columnIndexes.contains(i))
+                  indexSet.add(i);
+          }
+        return shallowCopy_columnIndexes(theDataFrame, indexSet);
+    }
+     
+    /**
+      * Method to get a data frame with all columns excluding the specified column index.
+      * @param columnIndex the list of column indexe to exclude.
+      * @return a new (shallow copied) data frame with the specified column excluded.
+      */
+    public DataFrame exclude(DataFrame theDataFrame, int columnIndex) {
+        Set<Integer> indexSet = new TreeSet<Integer>();
+        for (int i = 0; i < theDataFrame.getNumColumns(); i++) {
+            if (i != columnIndex)
+                indexSet.add(i);
+        }
+        return shallowCopy_columnIndexes(theDataFrame, indexSet);
+    }
+    
+    /**
+     * Creates a new shallow copied data frame internally from a list of column names.
+     * @param theDataFrame the data frame to copy.
+     * @param columnNames the names of the columns to be added to the new data frame
+     * @return a new DataFrame consisting of the columns passed to the method.
+     */
+    public static DataFrame shallowCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
+        DataFrame newDataFrame = new DataFrame();
+        for (Integer i : columnIndexes) {
+            newDataFrame.addColumn(theDataFrame.getColumn_byIndex(i));
+        }
+        return newDataFrame;
+    }
+    
+    /**
+     * Creates a new shallow copied data frame internally from a list of column names.
+     * @param theDataFrame the data frame to copy.
+     * @param columnNames the names of the columns to be added to the new data frame
+     * @return a new DataFrame consisting of the columns passed to the method.
+     */
+    public static DataFrame shallowCopy_columnNames(DataFrame theDataFrame, Collection<String> columnNames) {
+        DataFrame newDataFrame = new DataFrame();
+        for (String name : columnNames) {
+            Column c = theDataFrame.getColumn_byName(name);
+            newDataFrame.addColumn(c);
+        }
+        return newDataFrame;
+    }
+    
+    /**
+      * Creates a new shallow copied data frame internally from a list of column names.
+      * @param theDataFrame the data frame to copy.
+      * @param columnNames the names of the columns to be added to the new data frame
+      * @return a new DataFrame consisting of the columns passed to the method.
+      */
+    public static DataFrame shallowCopy_columnTypes(DataFrame theDataFrame, Collection<Character> columnTypes) {
+        DataFrame newDataFrame = new DataFrame();
+        for (Column c : theDataFrame.getColumns()) {
+            if (columnTypes.contains(c.type)) {
+                newDataFrame.addColumn(c);
+            }
+        }
         return newDataFrame;
     }
     
@@ -179,50 +206,16 @@ public final class DataFrameTools {
      * @param rowIndexes the set for row indexes to create a new data frame with.
      * @return a new DataFrame consisting of the rows passed to the method.
      */
-    public static DataFrame dataFrameFromRows_ShallowCopy(DataFrame theDataFrame, Set<Integer> rowIndexes) {
+    public static DataFrame shallowCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes) {
         DataFrame newDataFrame = new DataFrame();
         for (Column c : theDataFrame.getColumns()) 
             newDataFrame.add_blank_Column(c.name, c.type);
         for (Integer rowIndex : rowIndexes) {
-            Row r = theDataFrame.getRow_byIndex(rowIndex);
-            newDataFrame.getRows().add(r);
-            for (int i = 0; i < r.getlength(); i++) {
-                newDataFrame.getColumn_byIndex(i).addToColumn(r.getParticle(i));
-            }
+            newDataFrame.addRow(theDataFrame.getRow_byIndex(rowIndex));
         }
         newDataFrame.updateNumRows();
         return newDataFrame;
-    }
-    
-    
-    /**
-     * Method to get a data frame with all columns excluding the specified column indexes in the parameter's list.
-     * Uses a set (prefferably treeset) for nlog(n) element access time (contains()).
-     * @param columnIndex the list of column indexes to exclude.
-     * @return a new (shallow copied) data frame with the specified columns excluded.
-     */
-    public static DataFrame exclude(DataFrame theDataFrame, Set<Integer> columnIndexes) {
-        Set<Integer> columnNames = new TreeSet<Integer>();
-        for (int i = 0; i < theDataFrame.getNumColumns(); i++) {
-            if (!columnIndexes.contains(i))
-                columnNames.add(columns.get(i).name);
-        }
-        return dataFrameFromColumns_ShallowCopy(theDataFrame, columnNames);
-    }
-    
-   /**
-     * Method to get a data frame with all columns excluding the specified column index.
-     * @param columnIndex the list of column indexe to exclude.
-     * @return a new (shallow copied) data frame with the specified column excluded.
-     */
-    public DataFrame exclude(int columnIndex) {
-        List<String> columnNames = new ArrayList<String>();
-        for (int i = 0; i < numColumns; i++) {
-            if (i != columnIndex)
-                columnNames.add(columns.get(i).name);
-        }
-        return dataFrameFromColumns_ShallowCopy(columnNames);
-    }
+    } 
     
     /**
      * Split dataframe into n equal sections

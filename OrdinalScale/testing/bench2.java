@@ -3,11 +3,13 @@ package testing;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import dataframe.DataFrameTools;
 import dataframe.Row;
 import distances.Distance;
 import distances.Euclidean;
@@ -25,18 +27,19 @@ public class bench2 {
     public static void main(String[] args) {
         DataFrame df = new DataFrame();
         df.loadcsv("testfiles/distancetesting.csv");
-        df.getColumn_byIndex(3).setType('T');
-        Model knn = new KNN(df, new Manhattan(), 2);
-        Row testRow = new Row();
-        testRow.addToRow(Particle.resolveType("T"));
-        testRow.addToRow(Particle.resolveType(44));
-        testRow.addToRow(Particle.resolveType(6.666));
-        testRow.addToRow(Particle.resolveType("FAT BOI"));
-        testRow.addToRow(Particle.resolveType("5"));
-        ArrayList<ArrayList<Particle>> pred = knn.predict(testRow);
-        for (int i = 0; i < pred.size(); i++) {
-            System.out.println("Predictions: " + pred.get(i).toString());
-        }
+        df.printDataFrame();
+//        df.getColumn_byIndex(3).setType('T');
+//        Model knn = new KNN(df, new Manhattan(), 2);
+//        Row testRow = new Row();
+//        testRow.addToRow(Particle.resolveType("T"));
+//        testRow.addToRow(Particle.resolveType(44));
+//        testRow.addToRow(Particle.resolveType(6.666));
+//        testRow.addToRow(Particle.resolveType("FAT BOI"));
+//        testRow.addToRow(Particle.resolveType("5"));
+//        ArrayList<ArrayList<Particle>> pred = knn.predict(testRow);
+//        for (int i = 0; i < pred.size(); i++) {
+//            System.out.println("Predictions: " + pred.get(i).toString());
+//        }
 //        HashMap<Object, Double> map = knn.probability(testRow);
 //        System.out.println("PREDICTIONS FOR ROW: " + testRow.toString());
 //        System.out.println(map.toString());
@@ -59,6 +62,11 @@ public class bench2 {
 //                System.out.println(c.get(i).get(j));
 //            }
 //        }
-            
+        Set<Integer> indexes = new TreeSet<Integer>();
+        indexes.add(1);
+        indexes.add(2);
+        indexes.add(3);
+        DataFrame d = DataFrameTools.deepCopy_rowIndexes(df, indexes);
+        d.printDataFrame();
     }
 }

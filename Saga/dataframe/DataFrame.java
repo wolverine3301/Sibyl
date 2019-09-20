@@ -425,12 +425,14 @@ public class DataFrame {
     }
     
     /**
-     * Adds a row to the data frame.
+     * Adds a row to the data frame. Assumes columns for the row to initialize have already been created.
      * @param r the row to be added.
      */
     public void addRow(Row r) {
         rows.add(r);
         numRows++;
+        for (int i = 0; i < r.getlength(); i++) 
+            columns.get(i).addToColumn(r.getParticle(i));
     }
     
     /**
@@ -442,6 +444,15 @@ public class DataFrame {
         columnNames.add(c.name);
         columnTypes.add(c.type);
         numColumns++;
+        for (int i = 0; i < c.getLength(); i++) {
+            try {
+                rows.get(i).addToRow(c.getParticle_atIndex(i));
+            } catch (Exception e) {
+                rows.add(new Row());
+                numRows++;
+                rows.get(i).addToRow(c.getParticle_atIndex(i));
+            }
+        }
     }
 
     /**
