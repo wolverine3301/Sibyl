@@ -11,6 +11,7 @@ import machinations.Model;
 
 /**
  * Linear regression with single value decompesition
+ * https://www.varsitytutors.com/hotmath/hotmath_help/topics/line-of-best-fit
  * @author logan.collier
  *
  */
