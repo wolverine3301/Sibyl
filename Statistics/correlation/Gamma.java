@@ -9,6 +9,7 @@ import dataframe.Column;
  *  to +1 (100% positive association, or perfect agreement). A value of zero indicates the absence of association.
  *  
  *  is a measure of rank correlation, i.e., the similarity of the orderings of the data when ranked by each of the quantities.
+ *  
  *
  */
 public class Gamma extends Correlation{
