@@ -28,7 +28,7 @@ public class Stats {
 	 * @param y
 	 * @return
 	 */
-	public double comean(Column x, Column y) {
+	public static double comean(Column x, Column y) {
 		return sumMultiple_Columns(x, y) / x.getLength();
 	}
 	/**
@@ -36,7 +36,7 @@ public class Stats {
 	 * @param x
 	 * @return
 	 */
-	public double squareMean(Column x) {
+	public static double squareMean(Column x) {
 		double s = 0;
 		for(int i = 0; i < x.getLength(); i++) {
 			s = s + Math.pow((double)x.getParticle_atIndex(i).getValue(),2);
