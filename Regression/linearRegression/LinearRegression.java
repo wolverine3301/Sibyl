@@ -14,31 +14,15 @@ import machinations.Model;
  * @author logan.collier
  *
  */
-public class LinearRegression extends Model{
+public class LinearRegression{
 	private Stats stat = new Stats();
 	/**
 	 * simple linear regression
 	 * @param theDataFrame
 	 */
 	public LinearRegression(DataFrame theDataFrame) {
-		super(theDataFrame);
 		
-	}
-	/**
-	 * optimizing start scalar for linear decomposition
-	 * @return
-	 */
-	private double[] optimization_scalar_y() {
-		Pearson pearsonCorr = new Pearson(null, null);
-		double[] corr = pearsonCorr.correlationMatrix();
-	}
-	
-	private double optimization_scalar_x(double[] means) {
-		double sum = 0;
-		for(int i = 0; i < means.length; i++) {
-			sum += means[i];
-		}
-		return Math.sqrt(sum);
+		
 	}
 	
 	/**
@@ -88,10 +72,21 @@ public class LinearRegression extends Model{
 	 * @param x
 	 * @return
 	 */
-	private double regression_slopeM(Column target, Column x) {
-		return ((x.getLength() * stat.sumMultiple_Columns(target, x)) - (target.sum() * x.sum())) /
+	private double regression_slopeM(Column y, Column x) {
+		return ((x.getLength() * stat.sumMultiple_Columns(y, x)) - (y.sum() * x.sum())) /
 				( (x.getLength() * stat.squareMean(x)) - Math.pow(x.sum(), 2));
 	}
-	
+	/**
+	 * least squares method
+	 * @param y
+	 * @param x
+	 * @return
+	 */
+	private double regression_slopeM2(Column y, Column x) {
+		return stat.zeroSumMultiple_Columns(x, y) / stat.zeroSquaredSum(x);
+	}
+	private double regression_interceptB2(Column y, Column x,double slope) {
+		return y.mean() - regression_slopeM2(y,x) * x.mean();
+	}
 
 }

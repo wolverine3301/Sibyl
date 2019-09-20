@@ -58,13 +58,7 @@ public class PCA {
 	private double regression_slopeM(Column x, Column y) {
 		return (stat.comean(x, y)  - (x.mean() * y.mean())) / (stat.squareMean(y) - Math.pow(y.mean(),2));
 	}
-	public double sum_of_squares(double[] vals) {
-		double sum = 0;
-		for(double i : vals) {
-			sum += i * i;
-		}
-		return sum;
-	}
+
 	
 	
 	

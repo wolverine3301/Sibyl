@@ -5,6 +5,14 @@ import saga.*;
 
 public class Stats {
 	
+	public static double zeroSquaredSum(Column x) {
+		double sum = 0;
+		for(int i = 0; i < x.getLength(); i++) {
+			sum = sum + Math.pow( ((double)x.getParticle_atIndex(i).getValue()- x.mean() ), 2);
+		}
+		return sum;
+	}
+	
 	/**
 	 * @return the covariance of 2 columns
 	 */
@@ -15,7 +23,27 @@ public class Stats {
 		}
 		return covar/x.getLength()-1;	
 	}
-	public double sumMultiple_Columns(Column x, Column y) {
+	/**
+	 * returns zero sum multiple of 2 columns , E (x_i - x_mean) * (y_i - y_mean)
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public static double zeroSumMultiple_Columns(Column x, Column y) {
+		double sum = 0;
+		for(int i = 0; i < x.getLength();i++) {
+			sum = sum + ( ((double)x.getParticle_atIndex(i).getValue() - x.mean()) * ((double)y.getParticle_atIndex(i).getValue() - y.mean()));
+		}
+		return sum;
+	}
+
+	/**
+	 * returns the sum of x * y , E x_i * y_i
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public static double sumMultiple_Columns(Column x, Column y) {
 		double sum = 0;
 		for(int i = 0; i < x.getLength();i++) {
 			sum = sum + ((double)x.getParticle_atIndex(i).getValue() * (double)y.getParticle_atIndex(i).getValue());
@@ -32,7 +60,7 @@ public class Stats {
 		return sumMultiple_Columns(x, y) / x.getLength();
 	}
 	/**
-	 * return square mean of a column
+	 * return square mean of a column , E (x_i)^2 / n
 	 * @param x
 	 * @return
 	 */
