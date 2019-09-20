@@ -1,7 +1,7 @@
 package correlation;
+
 import dataframe.Column;
 import forensics.Stats;
-import saga.*;
 
 public abstract class Correlation {
 	Column x;
@@ -9,8 +9,7 @@ public abstract class Correlation {
 	Stats stat = new Stats();
 	public Correlation(Column x, Column y) {
 		this.x = x;
-		this.y = y;
-		
+		this.y = y;	
 	}
 
 	/**
