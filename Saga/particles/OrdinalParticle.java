@@ -9,7 +9,7 @@ import java.util.HashMap;
  */
 public class OrdinalParticle extends Particle{
 	/**
-	 * Constructor
+	 * Constructor - hashmap< symbol/ category, rank >
 	 * @param value
 	 */
 	public OrdinalParticle(HashMap<String, Integer> value) {

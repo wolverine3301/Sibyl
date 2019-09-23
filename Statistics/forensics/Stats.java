@@ -5,6 +5,10 @@ import saga.*;
 
 public class Stats {
 	
+	//TODO
+	public static double standardError() {
+		return 0;
+	}
 	public static double zeroSquaredSum(Column x) {
 		double sum = 0;
 		for(int i = 0; i < x.getLength(); i++) {

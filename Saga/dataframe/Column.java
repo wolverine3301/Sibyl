@@ -32,16 +32,12 @@ public class Column {
      * 'N' - a numerical column
      *  */
     public char type; 
-    
     /** The name of the column */
     public String name; 
-    
     /** The array list of particles within the column */
-    public ArrayList<Particle> column; 
-    
+    public ArrayList<Particle> column;
     /** The length of the column (the amount of particles stored in the column) */
     public int columnLength;
-    
     /**
      * Creates a column with a given name.
      * @param name the name of the column.
@@ -137,7 +133,6 @@ public class Column {
             this.type = p.type;
         }
         addToColumn(p);
-        columnLength++;
     }
     
     /**
