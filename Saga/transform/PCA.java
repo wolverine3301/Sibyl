@@ -22,7 +22,7 @@ import linearRegression.Multi_LinearRegression;
 public class PCA {
 	
 	private DataFrame df;
-	Multi_LinearRegression[] regressions;
+	private Multi_LinearRegression regressions;
 	/**
 	 * 
 	 * @param df
@@ -31,24 +31,16 @@ public class PCA {
 		Standardize standard = new Standardize(df);
 		standard.zeroMean_df();
 		this.df = df;
-		regressions = new Multi_LinearRegression[df.getNumColumns()];
+
 	}
 	private void setRegressions() {
 		
 		Column[] cols = new Column[df.getNumColumns()-1];
-		int cnt = 0;
-		//y column
-		for(Column i : df.getColumns()) {
-			//x columns
-			for(int j = 0; j < df.getNumColumns()-1; j++) {
-				if(df.getColumn_byIndex(j) == i) {
-					continue;
-				}else {
-					cols[j] = df.getColumn_byIndex(j);
-				}
-			}
-			regressions[cnt] = new Multi_LinearRegression(cols, i);
+		//x columns
+		for(int j = 1; j < df.getNumColumns(); j++) {
+			cols[j] = df.getColumn_byIndex(j);
 		}
+		regressions= new Multi_LinearRegression(cols, df.getColumn_byIndex(0));
 	}
 	
 

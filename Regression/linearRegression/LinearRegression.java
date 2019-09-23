@@ -21,6 +21,8 @@ public class LinearRegression{
 	private Column y;
 	public double slope;
 	public double intercept;
+	public double SST; //total sum of squares
+	public double RSS; //residual sum of squares
 	
 	/**
 	 * simple linear regression
