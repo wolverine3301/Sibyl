@@ -3,6 +3,7 @@ package transform;
 import dataframe.Column;
 import dataframe.DataFrame;
 import forensics.Stats;
+import linearRegression.Multi_LinearRegression;
 /**
  * Principal Component Analysis
  * 
@@ -21,46 +22,35 @@ import forensics.Stats;
 public class PCA {
 	
 	private DataFrame df;
-	private Stats stat = new Stats();
-	private Standardize standard;
+	Multi_LinearRegression[] regressions;
+	/**
+	 * 
+	 * @param df
+	 */
 	public PCA(DataFrame df) {
-		this.df = df;
-		standard = new Standardize(this.df);
-		covariance_matrix();
-	}
-	/**
-	 * produces a covariance matrix of all column combinations
-	 * the diagonal of the matrix is simply var(columnK) because covar(colK,colK) = var(columnK)
-	 * thus this matrix is orthogonal
-	 * @return
-	 */
-	public double[][] covariance_matrix() {
+		Standardize standard = new Standardize(df);
 		standard.zeroMean_df();
-		double[][] covar = new double[df.numColumns][df.numColumns];
-		//fill the columns of covariance matrix.
-	    for (int i = 0; i < df.numColumns; i++) { 
-	    	covar[i][i] = df.getColumn_byIndex(i).variance();
-	    	for(int j = i+1; j < df.numColumns; j++) {
-	    		covar[i][j] = stat.covariance(df.getColumn_byIndex(i), df.getColumn_byIndex(j));
-	    		covar[j][i] = stat.covariance(df.getColumn_byIndex(j), df.getColumn_byIndex(i));
-	    	}
-	    }
-	    return covar;
+		this.df = df;
+		regressions = new Multi_LinearRegression[df.getNumColumns()];
 	}
-
-	/**
-	 * Singular value decomposition
-	 * Calculate regression slope
-	 * @param target
-	 * @param x
-	 * @return
-	 */
-	private double regression_slopeM(Column x, Column y) {
-		return (stat.comean(x, y)  - (x.mean() * y.mean())) / (stat.squareMean(y) - Math.pow(y.mean(),2));
+	private void setRegressions() {
+		
+		Column[] cols = new Column[df.getNumColumns()-1];
+		int cnt = 0;
+		//y column
+		for(Column i : df.getColumns()) {
+			//x columns
+			for(int j = 0; j < df.getNumColumns()-1; j++) {
+				if(df.getColumn_byIndex(j) == i) {
+					continue;
+				}else {
+					cols[j] = df.getColumn_byIndex(j);
+				}
+			}
+			regressions[cnt] = new Multi_LinearRegression(cols, i);
+		}
 	}
+	
 
-	
-	
-	
 
 }

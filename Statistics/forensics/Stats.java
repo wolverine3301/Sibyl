@@ -1,7 +1,9 @@
 package forensics;
 
 import dataframe.Column;
+import dataframe.DataFrame;
 import saga.*;
+import transform.Standardize;
 
 public class Stats {
 	
@@ -75,7 +77,26 @@ public class Stats {
 		}
 		return s / x.getLength();
 	}
-
+	/**
+	 * produces a covariance matrix of all column combinations
+	 * the diagonal of the matrix is simply var(columnK) because covar(colK,colK) = var(columnK)
+	 * thus this matrix is orthogonal
+	 * @return
+	 */
+	public double[][] covariance_matrix(DataFrame df) {
+		Standardize standard = new Standardize(df);
+		standard.zeroMean_df();
+		double[][] covar = new double[df.getNumColumns()][df.getNumColumns()];
+		//fill the columns of covariance matrix.
+	    for (int i = 0; i < df.getNumColumns(); i++) { 
+	    	covar[i][i] = df.getColumn_byIndex(i).variance();
+	    	for(int j = i+1; j < df.getNumColumns(); j++) {
+	    		covar[i][j] = covariance(df.getColumn_byIndex(i), df.getColumn_byIndex(j));
+	    		covar[j][i] = covariance(df.getColumn_byIndex(j), df.getColumn_byIndex(i));
+	    	}
+	    }
+	    return covar;
+	}
 	
 
 }
