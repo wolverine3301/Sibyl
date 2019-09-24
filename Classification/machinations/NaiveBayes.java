@@ -70,7 +70,7 @@ public class NaiveBayes extends Model{
 		numerics.add('d');
 		for(int i = 0; i < classes.length; i++) {
 			continuous = classes[i].include(numerics);
-			naive_bayes.put(classes[i].getColumn_byName(targets.get(targetNum).name).getParticle_atIndex(0).value,
+			naive_bayes.put(classes[i].getColumn_byName(targets.get(targetNum).name).getParticle(0).value,
 					continuous_ProbabilityTable(continuous));
 		}
 		return naive_bayes;
@@ -92,7 +92,7 @@ public class NaiveBayes extends Model{
 		for(int i = 0; i < classes.length; i++) {
 			categorical = classes[i].include(categories);
 			
-			naive_bayes.put(classes[i].getColumn_byName(targets.get(targetNum).name).getParticle_atIndex(0).value,
+			naive_bayes.put(classes[i].getColumn_byName(targets.get(targetNum).name).getParticle(0).value,
 					categorical_ProbabilityTable(categorical));
 		}
 		return naive_bayes;

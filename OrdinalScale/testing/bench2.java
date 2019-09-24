@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import dataframe.Column;
+import dataframe.ColumnTools;
 import dataframe.DataFrame;
 import dataframe.DataFrameTools;
 import dataframe.Row;
@@ -29,6 +30,8 @@ public class bench2 {
         DataFrame df = new DataFrame();
         df.loadcsv("testfiles/distancetesting.csv");
         df.printDataFrame();
+        System.out.println(ColumnTools.uniqueValCnt(df.getColumn_byIndex(0)));
+        
 //        df.getColumn_byIndex(3).setType('T');
 //        Model knn = new KNN(df, new Manhattan(), 2);
 //        Row testRow = new Row();
@@ -63,11 +66,5 @@ public class bench2 {
 //                System.out.println(c.get(i).get(j));
 //            }
 //        }
-        Set<Integer> indexes = new TreeSet<Integer>();
-        indexes.add(1);
-        indexes.add(2);
-        indexes.add(3);
-        System.out.println("\n\n\n\n Computation Complete: \n\n");
-        System.out.println("Result: Theodore is getting the best head.");
     }
 }

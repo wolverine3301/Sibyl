@@ -60,7 +60,7 @@ public class KNN extends Model {
         HashMap<Object, Double> probabilityMap = new HashMap<Object, Double>();
         HashMap<Object, Double> objectCount = new HashMap<Object, Double>();
         for (int i = 0; i < k; i++) { //load predictions into temporary hash map
-            Object currentPrediction = trainDF.getColumn_byIndex(taggedColumnIndex).getParticle_atIndex(neighbors.remove().distanceToIndex).getValue();
+            Object currentPrediction = trainDF.getColumn_byIndex(taggedColumnIndex).getParticle(neighbors.remove().distanceToIndex).getValue();
             if (objectCount.containsKey(currentPrediction)) {
                 double currentValue = objectCount.get(currentPrediction);
                 objectCount.put(currentPrediction, currentValue + 1.0);
@@ -94,7 +94,7 @@ public class KNN extends Model {
                 neighbors.add(new DistanceParticle(distanceFunction.distance(row, trainDF_variables.getRow_byIndex(j)), j, distanceFunction.distanceType));
             ArrayList<Particle> currPredictions = new ArrayList<Particle>(k);
             for (int j = 0; i < k; i++) {
-                currPredictions.add(trainDF_variables.getColumn_byIndex(j).getParticle_atIndex(neighbors.remove().distanceToIndex));
+                currPredictions.add(trainDF_variables.getColumn_byIndex(j).getParticle(neighbors.remove().distanceToIndex));
             }
             predictions.add(currPredictions);
         }

@@ -71,7 +71,7 @@ public class ConfusionMatrix {
 			//for each prediction for a column
 			for (Object j : i) {
 				//if the predicted value matches the actual
-				if(j.equals(targets.get(cnt1).getParticle_atIndex(cnt2).getValue())) {
+				if(j.equals(targets.get(cnt1).getParticle(cnt2).getValue())) {
 					truePositive.get(targets.get(cnt1).name).replace(j, truePositive.get(targets.get(cnt1).name).get(j)+1);
 					for(Object x : trueNegative.get(targets.get(cnt1).name).keySet()) {
 						if(x.equals(j)) {
@@ -84,13 +84,13 @@ public class ConfusionMatrix {
 					}
 				}
 				//if its prediction isnt right
-				else if(!j.equals(targets.get(cnt1).getParticle_atIndex(cnt2).getValue())) {
+				else if(!j.equals(targets.get(cnt1).getParticle(cnt2).getValue())) {
 					//update false positive count
 					falsePositive.get(targets.get(cnt1).name).replace(j, falsePositive.get(targets.get(cnt1).name).get(j)+1);
 					
 					for(Object x : falseNegative.get(targets.get(cnt1).name).keySet()) {
 						
-						if(x.equals(targets.get(cnt1).getParticle_atIndex(cnt2).getValue())) {
+						if(x.equals(targets.get(cnt1).getParticle(cnt2).getValue())) {
 							falseNegative.get(targets.get(cnt1).name).replace(x, falseNegative.get(targets.get(cnt1).name).get(x)+1);
 							
 							continue;

@@ -34,9 +34,9 @@ public class LogRegression {
 	}
 	private void setVars() {
 		for(int i = 0; i < x.getLength(); i++) {	
-			sum_ylnx = sum_ylnx + (double)y.getParticle_atIndex(i).getValue() * Math.log((double) x.getParticle_atIndex(i).getValue());
-			sum_lnx = sum_lnx + Math.log((double) x.getParticle_atIndex(i).getValue());
-			sum_lnx_squared = sum_lnx_squared + Math.pow(Math.log((double) x.getParticle_atIndex(i).getValue()), 2);
+			sum_ylnx = sum_ylnx + (double)y.getParticle(i).getValue() * Math.log((double) x.getParticle(i).getValue());
+			sum_lnx = sum_lnx + Math.log((double) x.getParticle(i).getValue());
+			sum_lnx_squared = sum_lnx_squared + Math.pow(Math.log((double) x.getParticle(i).getValue()), 2);
 		}
 	}
 

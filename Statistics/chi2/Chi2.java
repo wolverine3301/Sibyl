@@ -143,7 +143,7 @@ public class Chi2 {
 		}
 		//fill
 		for(int j = 0; j < target.getLength();j++) {
-			table.get(target.getParticle_atIndex(j).getValue()).replace(col.getParticle_atIndex(j).getValue(), table.get(target.getParticle_atIndex(j).getValue()).get(col.getParticle_atIndex(j).getValue())+1);
+			table.get(target.getParticle(j).getValue()).replace(col.getParticle(j).getValue(), table.get(target.getParticle(j).getValue()).get(col.getParticle(j).getValue())+1);
 		}
 		return table;
 	}

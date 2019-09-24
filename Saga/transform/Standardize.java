@@ -35,7 +35,7 @@ public class Standardize {
 	 */
 	public void standardize_col(Column c) {
 		for(int i = 0; i < c.getLength(); i++) {
-			c.getParticle_atIndex(i).setValue(zscore(c.mean(),c.standardDeviation(),(double)c.getParticle_atIndex(i).getValue()));
+			c.getParticle(i).setValue(zscore(c.mean(),c.standardDeviation(),(double)c.getParticle(i).getValue()));
 		}
 	}
 	/**
@@ -52,7 +52,7 @@ public class Standardize {
 	 */
 	public void zeroMean_col(Column c) {
 		for(int i = 0; i < c.getLength(); i++) {
-			c.getParticle_atIndex(i).setValue(zeroMean(c.mean(),(double)c.getParticle_atIndex(i).getValue()));
+			c.getParticle(i).setValue(zeroMean(c.mean(),(double)c.getParticle(i).getValue()));
 		}
 	}
 	/**

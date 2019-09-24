@@ -34,7 +34,7 @@ public final class DataFrameTools {
             String operator = args[i + 1];
             Particle particle = Particle.resolveType(args[i + 2]);
             for (int j = 0; j < column.getLength(); j++) {
-                int compare = column.getParticle_atIndex(j).compareTo(particle);
+                int compare = column.getParticle(j).compareTo(particle);
                 switch (operator) {
                     case "<":
                         if (compare < 0)

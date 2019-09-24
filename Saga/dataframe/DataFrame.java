@@ -101,7 +101,7 @@ public class DataFrame {
 	public void convertNANS_mean() {
         for (int i = 0; i < numColumns; i++) {
             for (int j = 0; j < numRows; j++) {
-                Particle p = getColumn_byIndex(i).getParticle_atIndex(j);
+                Particle p = getColumn_byIndex(i).getParticle(j);
                 if (p instanceof NANParticle) {
                     if (getColumn_byIndex(i).type == 'i')
                         p = Particle.resolveType((int) Math.round(getColumn_byIndex(i).mean()));
@@ -122,7 +122,7 @@ public class DataFrame {
 	public void convertNANS_mode() {
 	    for (int i = 0; i < numColumns; i++) {
 	        for (int j = 0; j < numRows; j++) {
-	            Particle p = getColumn_byIndex(i).getParticle_atIndex(j);
+	            Particle p = getColumn_byIndex(i).getParticle(j);
 	            if (p instanceof NANParticle) {
 	                p = Particle.resolveType(getColumn_byIndex(i).mode());
 	                getColumn_byIndex(i).changeValue(j, p);
@@ -150,7 +150,7 @@ public class DataFrame {
 	    for (int i = 0; i < newDataFrame.numRows; i++) { // Initialize row pointers
 	        Row row = new Row(); 
 	        for (int j = 0; j < newDataFrame.numColumns; j++) {
-	            row.addToRow(newDataFrame.columns.get(j).getParticle_atIndex(i));
+	            row.addToRow(newDataFrame.columns.get(j).getParticle(i));
 	        }
 	        newDataFrame.rows.add(row);
 	    }
@@ -175,7 +175,7 @@ public class DataFrame {
 	    for (int i = 0; i < newDataFrame.numRows; i++) {
 	        Row row = new Row();
 	        for (int j = 0; j < newDataFrame.numColumns; j++)
-	            row.addToRow(newDataFrame.columns.get(j).getParticle_atIndex(i));
+	            row.addToRow(newDataFrame.columns.get(j).getParticle(i));
 	        newDataFrame.rows.add(row);
 	    }
 	    return newDataFrame;
@@ -202,7 +202,7 @@ public class DataFrame {
         for (int i = 0; i < newDataFrame.numRows; i++) {
             Row row = new Row();
             for (int j = 0; j < newDataFrame.numColumns; j++)
-                row.addToRow(newDataFrame.columns.get(j).getParticle_atIndex(i));
+                row.addToRow(newDataFrame.columns.get(j).getParticle(i));
             newDataFrame.rows.add(row);
         }
         return newDataFrame;
@@ -381,11 +381,11 @@ public class DataFrame {
         numColumns++;
         for (int i = 0; i < c.getLength(); i++) {
             try {
-                rows.get(i).addToRow(c.getParticle_atIndex(i));
+                rows.get(i).addToRow(c.getParticle(i));
             } catch (Exception e) {
                 rows.add(new Row());
                 numRows++;
-                rows.get(i).addToRow(c.getParticle_atIndex(i));
+                rows.get(i).addToRow(c.getParticle(i));
             }
         }
     }

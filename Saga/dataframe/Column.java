@@ -76,7 +76,7 @@ public class Column {
             column.add(particle.deepCopy());
     }
     
-    public Particle getParticle_atIndex(int index) {
+    public Particle getParticle(int index) {
         return column.get(index);
     }
     
@@ -86,6 +86,10 @@ public class Column {
      */
     public void setType(char type) {
         this.type = type;
+    }
+    
+    public char getType() {
+        return type;
     }
     
     /**
