@@ -1,9 +1,10 @@
-package transform;
+package pca;
 
 import dataframe.Column;
 import dataframe.DataFrame;
 import forensics.Stats;
 import linearRegression.Multi_LinearRegression;
+import transform.Standardize;
 /**
  * Principal Component Analysis
  * 
@@ -20,9 +21,8 @@ import linearRegression.Multi_LinearRegression;
  *
  */
 public class PCA {
-	
+	private double[] EIGEN_VECTORS;
 	private DataFrame df;
-	private Multi_LinearRegression regressions;
 	/**
 	 * 
 	 * @param df
@@ -33,14 +33,25 @@ public class PCA {
 		this.df = df;
 
 	}
-	private void setRegressions() {
+	private Multi_LinearRegression getRegressions() {
 		
 		Column[] cols = new Column[df.getNumColumns()-1];
 		//x columns
 		for(int j = 1; j < df.getNumColumns(); j++) {
 			cols[j] = df.getColumn_byIndex(j);
 		}
-		regressions= new Multi_LinearRegression(cols, df.getColumn_byIndex(0));
+		Multi_LinearRegression regress = new Multi_LinearRegression(cols, df.getColumn_byIndex(0));
+		return regress;
+	}
+	/**
+	 * set the eigen vector slopes
+	 */
+	private void setEgienVectors() {
+		Multi_LinearRegression regress = getRegressions();
+		for(int i = 0; i < regress.x_vars.length;i++) {
+			
+		}
+		
 	}
 	
 
