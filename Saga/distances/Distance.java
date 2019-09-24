@@ -24,12 +24,12 @@ public abstract class Distance{
 	 */
 	public static DataFrame distance_matrix(DataFrame theDataFrame, Distance distanceFunction) {
 	    DataFrame dataFrame = new DataFrame();
-	    for (int i = 0; i < theDataFrame.numRows; i++) //Initializes the columns of the new data frame. 
+	    for (int i = 0; i < theDataFrame.getNumRows(); i++) //Initializes the columns of the new data frame. 
 	        dataFrame.addBlankColumn("R" + i);
-	    for (int i = 0; i < theDataFrame.numRows; i++) {
+	    for (int i = 0; i < theDataFrame.getNumRows(); i++) {
 	        Row currentRow = theDataFrame.getRow_byIndex(i);
 	        Row newRow = new Row();
-	        for (int j = 0; j < theDataFrame.numRows; j++) {
+	        for (int j = 0; j < theDataFrame.getNumRows(); j++) {
 	            double distance = distanceFunction.distance(currentRow, theDataFrame.getRow_byIndex(j));
 	            newRow.addToRow(new DistanceParticle(distance, j, distanceFunction.distanceType));
 	        }

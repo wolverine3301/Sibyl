@@ -45,22 +45,18 @@ public class KNN extends Model {
      */
     @Override
     public HashMap<Object, Double> probability(Row row) {
-        int taggedColumnIndex = findTaggedColumnIndex();
-        if (taggedColumnIndex == -1)
-            throw new IllegalArgumentException("No tagged column was detected.");
-        DataFrame knnFrame = trainDF.exclude(taggedColumnIndex);
-        PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(knnFrame.numRows, new Comparator<DistanceParticle>() {
+        PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(trainDF_variables.getNumRows(), new Comparator<DistanceParticle>() {
             @Override
             public int compare(DistanceParticle p1, DistanceParticle p2) {
                 return Double.compare(p1.getValue(), p2.getValue());
             }
         });
-        for (int i = 0; i < knnFrame.numRows; i++)
-            neighbors.add(new DistanceParticle(distanceFunction.distance(row, knnFrame.getRow_byIndex(i)), i, distanceFunction.distanceType));
+        for (int i = 0; i < trainDF_variables.getNumRows(); i++)
+            neighbors.add(new DistanceParticle(distanceFunction.distance(row, trainDF_variables.getRow_byIndex(i)), i, distanceFunction.distanceType));
         HashMap<Object, Double> probabilityMap = new HashMap<Object, Double>();
         HashMap<Object, Double> objectCount = new HashMap<Object, Double>();
         for (int i = 0; i < k; i++) { //load predictions into temporary hash map
-            Object currentPrediction = trainDF.getColumn_byIndex(taggedColumnIndex).getParticle(neighbors.remove().distanceToIndex).getValue();
+            Object currentPrediction = trainDF_targets.getColumn_byIndex(0).getParticle(neighbors.remove().distanceToIndex).getValue(); //Update in future for ArrayLists of hashmaps?
             if (objectCount.containsKey(currentPrediction)) {
                 double currentValue = objectCount.get(currentPrediction);
                 objectCount.put(currentPrediction, currentValue + 1.0);
@@ -83,14 +79,14 @@ public class KNN extends Model {
     @Override
     public ArrayList<ArrayList<Particle>> predict(Row row) {
         ArrayList<ArrayList<Particle>> predictions = new ArrayList<ArrayList<Particle>>();
-        for (int i = 0; i < trainDF_targets.numColumns; i++ ) {
-            PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(trainDF_variables.numRows, new Comparator<DistanceParticle>() {
+        for (int i = 0; i < trainDF_targets.getNumColumns(); i++ ) {
+            PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(trainDF_variables.getNumRows(), new Comparator<DistanceParticle>() {
                 @Override
                 public int compare(DistanceParticle p1, DistanceParticle p2) {
                     return Double.compare(p1.getValue(), p2.getValue());
                 }
             });
-            for (int j = 0; j < trainDF_variables.numRows; j++)
+            for (int j = 0; j < trainDF_variables.getNumRows(); j++)
                 neighbors.add(new DistanceParticle(distanceFunction.distance(row, trainDF_variables.getRow_byIndex(j)), j, distanceFunction.distanceType));
             ArrayList<Particle> currPredictions = new ArrayList<Particle>(k);
             for (int j = 0; i < k; i++) {
@@ -100,17 +96,4 @@ public class KNN extends Model {
         }
         return predictions;
     } 
-    
-    /**
-     * Returns the index of the tagged column for prediction.
-     * @return the index of the tagged column for prediction.
-     */
-    private int findTaggedColumnIndex() {
-        for (int i = 0; i < trainDF.numColumns; i++) {
-            if (trainDF.getColumn_byIndex(i).type.toLowerCase().equals("target")) {
-                return i;
-            }
-        }
-        return -1;
-    }
 }

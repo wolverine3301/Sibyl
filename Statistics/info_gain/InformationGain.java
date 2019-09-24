@@ -1,16 +1,14 @@
 package info_gain;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 import dataframe.Column;
+import dataframe.ColumnTools;
 import dataframe.DataFrame;
 
 import java.util.Set;
 
-import saga.*;
 
 public class InformationGain {
 	private DataFrame df;
@@ -29,7 +27,7 @@ public class InformationGain {
 	 * set target variables
 	 */
 	private void setTargets() {
-		targets = df.getColumnByTypes("target");
+		targets = df.getColumnByTypes('T');
 	}
 	/**
 	 * 
@@ -43,10 +41,10 @@ public class InformationGain {
 		// third keys are unique vals in the column that point to count of occuances with a specific target variable
 		
 		HashMap<Object, HashMap<String, HashMap<Object,Integer>>> joint_info = new HashMap<Object, HashMap<String, HashMap<Object,Integer>>>();
-		Set<Object> target_info = targets.get(index).uniqueValues();
+		Set<Object> target_info = ColumnTools.uniqueValues(targets.get(index));
 		Set<Object> attribute_info;
 		//entropies
-		Object[] tmp = targets.get(index).uniqueValCnt().values().toArray();
+		Object[] tmp = ColumnTools.uniqueValCnt(targets.get(index)).values().toArray();
 		Integer[] te = new Integer[tmp.length];
 		for(int i = 0; i < tmp.length; i++) {
 			te[i] = (Integer) tmp[i];
@@ -60,18 +58,19 @@ public class InformationGain {
 		for(Object key1 : target_info) {
 			//columns
 			col = new HashMap<String, HashMap<Object,Integer>>();
-			for(Column c : df.columns) {
-				if(c.type.contains("target")) {
+			for(int i = 0; i < df.getNumColumns(); i++) {
+			    Column c = df.getColumn_byIndex(i);
+				if(c.getType() == 'T') {
 					continue;
 				}
 				
 				//values in column
 				vals = new HashMap<Object,Integer>();
-				attribute_info = c.uniqueValues();
+				attribute_info = ColumnTools.uniqueValues(c);
 				for(Object key2 : attribute_info) {					
 					vals.put(key2, 0);
 				}
-				col.put(c.name,vals);
+				col.put(c.getName(),vals);
 			}	
 			joint_info.put(key1, col);		
 		}
@@ -80,17 +79,18 @@ public class InformationGain {
 		HashMap<String, HashMap<Object,Double>> columns_p = new HashMap<String, HashMap<Object,Double>>();
 		
 		
-		for(Column c : df.columns) {
-			if(c.type.contains("target")) {
+		for(int i = 0; i < df.getNumColumns(); i++) {
+		    Column c = df.getColumn_byIndex(i);
+			if(c.getType() == 'T') {
 				continue;
 			}
 			c.setFeatureStats();
-			column_cnt.put(c.name,c.uniqueValCnt());
-			columns_p.put(c.name, c.feature_stats);
+			column_cnt.put(c.getName(), ColumnTools.uniqueValCnt(c));
+			columns_p.put(c.getName(), c.getFeatureStats());
 			
 			for(int j = 0; j < c.getLength();j++) {		
-				joint_info.get(targets.get(index).getParticle(j).getValue()).get(c.name).replace(c.getParticle(j).getValue(), 
-				        joint_info.get(targets.get(index).getParticle(j).getValue()).get(c.name).get(c.getParticle(j).getValue())+1);
+				joint_info.get(targets.get(index).getParticle(j).getValue()).get(c.getName()).replace(c.getParticle(j).getValue(), 
+				        joint_info.get(targets.get(index).getParticle(j).getValue()).get(c.getName()).get(c.getParticle(j).getValue())+1);
 				
 			}
 		}
@@ -98,24 +98,25 @@ public class InformationGain {
 		Integer[] classes = new Integer[joint_info.keySet().size()];
 		
 		int cnt = 0;
-		for(Column c : df.columns) {
-			if(c.type.contains("target")) {
+		for(int i = 0; i < df.getNumColumns(); i++) {
+		    Column c = df.getColumn_byIndex(i);
+			if(c.getType() == 'T') {
 				continue;
 			}
 			double GAIN = 0; 
-			for( Object i : columns_p.get(c.name).keySet()) {
+			for(Object j : columns_p.get(c.getName()).keySet()) {
 				cnt = 0;
 
 				for(Object key1 : joint_info.keySet()) {
-					classes[cnt] = joint_info.get(key1).get(c.name).get(i);
+					classes[cnt] = joint_info.get(key1).get(c.getName()).get(i);
 					cnt++;
 				}
-				GAIN = GAIN + ((-1) * columns_p.get(c.name).get(i)) * entropy(classes);
+				GAIN = GAIN + ((-1) * columns_p.get(c.getName()).get(i)) * entropy(classes);
 				
 			}
 			
 			GAIN = target_e - GAIN;
-			column_e.put(c.name, GAIN);
+			column_e.put(c.getName(), GAIN);
 		}
 		System.out.println(column_e);
 	}

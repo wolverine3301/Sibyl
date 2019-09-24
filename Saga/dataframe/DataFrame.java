@@ -97,15 +97,16 @@ public class DataFrame {
 	 */
 	public void convertNANS_mean() {
         for (int i = 0; i < numColumns; i++) {
+            Column c = getColumn_byIndex(i);
             for (int j = 0; j < numRows; j++) {
-                Particle p = getColumn_byIndex(i).getParticle(j);
+                Particle p = c.getParticle(j);
                 if (p instanceof NANParticle) {
-                    if (getColumn_byIndex(i).getType() == 'i')
-                        p = Particle.resolveType((int) Math.round(getColumn_byIndex(i).mean()));
+                    if (c.getType() == 'i')
+                        p = Particle.resolveType((int) Math.round(ColumnTools.mean(c)));
                     else if (getColumn_byIndex(i).getType() == 'd')
-                        p = Particle.resolveType(getColumn_byIndex(i).mean());
+                        p = Particle.resolveType(ColumnTools.mean(c));
                     else
-                        p = Particle.resolveType(getColumn_byIndex(i).mode());
+                        p = Particle.resolveType(ColumnTools.mode(c));
                     getColumn_byIndex(i).changeValue(j, p);
                     getRow_byIndex(j).changeValue(i, p);
                 }
@@ -121,7 +122,7 @@ public class DataFrame {
 	        for (int j = 0; j < numRows; j++) {
 	            Particle p = getColumn_byIndex(i).getParticle(j);
 	            if (p instanceof NANParticle) {
-	                p = Particle.resolveType(getColumn_byIndex(i).mode());
+	                p = Particle.resolveType(ColumnTools.mode(getColumn_byIndex(i)));
 	                getColumn_byIndex(i).changeValue(j, p);
 	                getRow_byIndex(j).changeValue(i, p);
 	            }

@@ -48,7 +48,7 @@ public class KMeans {
         TreeSet<Integer> initialCentroidIndexes = new TreeSet<Integer>();
         while (centroids.size() != k) { //Initialize Centroids
             Random ran = new Random();
-            int tempIndex = ran.nextInt(trainingData.numRows);
+            int tempIndex = ran.nextInt(trainingData.getNumRows());
             if (!initialCentroidIndexes.contains(tempIndex)) {
                 centroids.add(new Cluster(new Row(trainingData.getRow_byIndex(tempIndex))));
                 initialCentroidIndexes.add(tempIndex);
@@ -87,7 +87,7 @@ public class KMeans {
         int changeCount = -1;
         while (changeCount != 0) { //For each row in training data, assign point to cluster, continue to do this until no further changes are made.
             changeCount = 0;
-            for (int i = 0; i < trainingData.numRows; i++) { //for each row, find nearest centroid
+            for (int i = 0; i < trainingData.getNumRows(); i++) { //for each row, find nearest centroid
                 Row currentRow = trainingData.getRow_byIndex(i);
                 double d = Double.MAX_VALUE; // Temporary double value, makes sure any calculated distance will be less than this for initial calculation.
                 int nearestCentroidIndex = -1;
@@ -125,7 +125,7 @@ public class KMeans {
      * @return a max heap of distance calculations. 
      */
     private PriorityQueue<DistanceData> calculateFarthestNeighbors(Row r) {
-        PriorityQueue<DistanceData> distances = new PriorityQueue<DistanceData>(trainingData.numRows, new Comparator<DistanceData>() {
+        PriorityQueue<DistanceData> distances = new PriorityQueue<DistanceData>(trainingData.getNumRows(), new Comparator<DistanceData>() {
             public int compare(DistanceData o1, DistanceData o2) {
                 if (o1.distanceTo > o2.distanceTo)
                     return -1;
@@ -135,7 +135,7 @@ public class KMeans {
                     return 0;
             }
         });
-        for (int i = 0; i < trainingData.numRows; i++) 
+        for (int i = 0; i < trainingData.getNumRows(); i++) 
             distances.add(new DistanceData(i, distanceType.distance(r, trainingData.getRow_byIndex(i))));
         return distances;
     }

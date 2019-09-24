@@ -7,6 +7,7 @@ import java.util.Set;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import dataframe.DataFrameTools;
 import dataframe.Row;
 import saga.*;
 /**
@@ -38,7 +39,7 @@ public class NaiveBayes extends Model{
 		HashMap<String , HashMap<Object, HashMap<String, Double[]>>> NaiveBayes =
 				new HashMap<String , HashMap<Object, HashMap<String, Double[]>>>();
 		for(int i = 0; i < targets.size(); i++) {
-			NaiveBayes.put(targets.get(i).name, cont_naivebayes_i(i));	
+			NaiveBayes.put(targets.get(i).getName(), cont_naivebayes_i(i));	
 		}
 		return NaiveBayes;
 	}
@@ -50,7 +51,7 @@ public class NaiveBayes extends Model{
 		HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>> NaiveBayes =
 				new HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>>();
 		for(int i = 0; i < targets.size(); i++) {
-			NaiveBayes.put(targets.get(i).name, cat_naivebayes_i(i));	
+			NaiveBayes.put(targets.get(i).getName(), cat_naivebayes_i(i));	
 		}
 		return NaiveBayes;
 	}
@@ -69,8 +70,8 @@ public class NaiveBayes extends Model{
 		numerics.add('i');
 		numerics.add('d');
 		for(int i = 0; i < classes.length; i++) {
-			continuous = classes[i].include(numerics);
-			naive_bayes.put(classes[i].getColumn_byName(targets.get(targetNum).name).getParticle(0).value,
+			continuous = DataFrameTools.shallowCopy_columnTypes(classes[i], numerics);
+			naive_bayes.put(classes[i].getColumn_byName(targets.get(targetNum).getName()).getParticle(0).value,
 					continuous_ProbabilityTable(continuous));
 		}
 		return naive_bayes;
@@ -90,9 +91,10 @@ public class NaiveBayes extends Model{
 		categories.add('c');
 		categories.add('s');
 		for(int i = 0; i < classes.length; i++) {
-			categorical = classes[i].include(categories);
+		    
+			categorical = DataFrameTools.shallowCopy_columnTypes(classes[i], categories);
 			
-			naive_bayes.put(classes[i].getColumn_byName(targets.get(targetNum).name).getParticle(0).value,
+			naive_bayes.put(classes[i].getColumn_byName(targets.get(targetNum).getName()).getParticle(0).value,
 					categorical_ProbabilityTable(categorical));
 		}
 		return naive_bayes;

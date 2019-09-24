@@ -9,8 +9,8 @@ import particles.Particle;
 
 /**
  * Static class for performing various operations with a data frame.
- * @author Cade
- *
+ * @author Cade Reynoldson
+ * @version 1.0
  */
 public final class DataFrameTools {
     

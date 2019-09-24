@@ -1,6 +1,7 @@
 package forensics;
 
 import dataframe.Column;
+import dataframe.ColumnTools;
 import dataframe.DataFrame;
 import transform.Standardize;
 
@@ -13,7 +14,7 @@ public class Stats {
 	public static double zeroSquaredSum(Column x) {
 		double sum = 0;
 		for(int i = 0; i < x.getLength(); i++) {
-			sum = sum + Math.pow( ((double)x.getParticle(i).getValue()- x.mean() ), 2);
+			sum = sum + Math.pow(((double)x.getParticle(i).getValue() - ColumnTools.mean(x)), 2);
 		}
 		return sum;
 	}
@@ -24,7 +25,7 @@ public class Stats {
 	public static double covariance(Column x, Column y) {
 		double covar = 0;
 		for(int i = 0;i < x.getLength(); i++) {
-			covar = covar + (((double)x.getParticle(i).getValue() - x.mean()) * ((double)y.getParticle(i).getValue() - y.mean()));
+			covar = covar + (((double)x.getParticle(i).getValue() - ColumnTools.mean(x)) * ((double)y.getParticle(i).getValue() - ColumnTools.mean(y)));
 		}
 		return covar/x.getLength()-1;	
 	}
@@ -37,7 +38,7 @@ public class Stats {
 	public static double zeroSumMultiple_Columns(Column x, Column y) {
 		double sum = 0;
 		for(int i = 0; i < x.getLength();i++) {
-			sum = sum + ( ((double)x.getParticle(i).getValue() - x.mean()) * ((double)y.getParticle(i).getValue() - y.mean()));
+			sum = sum + (((double)x.getParticle(i).getValue() - ColumnTools.mean(x)) * ((double) y.getParticle(i).getValue() - ColumnTools.mean(y)));
 		}
 		return sum;
 	}
@@ -88,7 +89,7 @@ public class Stats {
 		double[][] covar = new double[df.getNumColumns()][df.getNumColumns()];
 		//fill the columns of covariance matrix.
 	    for (int i = 0; i < df.getNumColumns(); i++) { 
-	    	covar[i][i] = df.getColumn_byIndex(i).variance();
+	    	covar[i][i] = ColumnTools.variance(df.getColumn_byIndex(i));
 	    	for(int j = i+1; j < df.getNumColumns(); j++) {
 	    		covar[i][j] = covariance(df.getColumn_byIndex(i), df.getColumn_byIndex(j));
 	    		covar[j][i] = covariance(df.getColumn_byIndex(j), df.getColumn_byIndex(i));

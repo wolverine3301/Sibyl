@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import dataframe.DataFrame;
+import dataframe.DataFrameTools;
 import dataframe.Row;
 import particles.Particle;
 
@@ -15,16 +16,19 @@ public abstract class Model {
 	
 	public List<HashMap<Object,Double>> probabilities;
 	
+	/** The target data for the data frame. */
 	public DataFrame trainDF_targets;
+	
+	/** The training data used by predictive models. */
 	public DataFrame trainDF_variables;
 	
 	/**
-	 * Abstract model constructor
+	 * Abstract model constructor.
 	 * @param theDataFrame
 	 */
 	public Model(DataFrame theDataFrame) {
-	    trainDF_targets = theDataFrame.dataFrameFromColumns_ShallowCopy(set_targets());
-	    trainDF_variables = theDataFrame.dataFrameFromColumns_ShallowCopy(set_variables());    
+	    trainDF_targets = DataFrameTools.shallowCopy_columnTypes(theDataFrame, set_targets());
+	    trainDF_variables = DataFrameTools.shallowCopy_columnTypes(theDataFrame, set_variables());    
 	    System.out.println("Targets: ");
 	    trainDF_targets.printDataFrame();
 	    System.out.println("Training Data: ");
@@ -32,7 +36,8 @@ public abstract class Model {
 	}
 	
 	/**
-	 * sets target list
+	 * Sets the targets list.
+	 * @return a tree set of targets to predict.
 	 */
 	private TreeSet<Character> set_targets() {
 		TreeSet<Character> target = new TreeSet<Character>();
@@ -40,6 +45,10 @@ public abstract class Model {
 		return target;
 	}
 	
+	/**
+	 * Sets the variables list.
+	 * @return a tree set of the variables used to train data.
+	 */
 	private TreeSet<Character> set_variables() {
 		TreeSet<Character> vars = new TreeSet<Character>();
 		vars.add('C');

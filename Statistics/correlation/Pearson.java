@@ -1,6 +1,7 @@
 package correlation;
 
 import dataframe.Column;
+import dataframe.ColumnTools;
 import forensics.Stats;
 
 public class Pearson extends Correlation{
@@ -13,7 +14,7 @@ public class Pearson extends Correlation{
 	 */
 	@Override
 	public double correlation() {
-		return Stats.covariance(x,y)/(x.mean() * y.mean());
+		return Stats.covariance(x,y)/(ColumnTools.mean(x) * ColumnTools.mean(y));
 	}
 
 }

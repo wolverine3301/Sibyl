@@ -11,11 +11,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import dataframe.Column;
+import dataframe.ColumnTools;
 import dataframe.DataFrame;
 
 import java.util.Set;
 
-import saga.*;
 /**
  * Chi^2 statistics
  * @author logan.collier
@@ -48,13 +48,11 @@ public class Chi2 {
 		HashMap<String, Double> tmp;
 		for(Column target : targets) {
 			tmp = new HashMap<String,Double>();
-			for(Column i : df.columns) {
-				if(i.type.contains("target")) {
-					continue;
-				}
-				tmp.put(i.name, chi2Independents(target,i));
+			for (int i = 0; i < df.getNumColumns(); i++) {
+			    if (df.getColumn_byIndex(i).getType() == 'T')
+			        continue;
+			    tmp.put(df.getColumn_byIndex(i).getName(), chi2Independents(target, df.getColumn_byIndex(i)));
 			}
-			
 	        List<Map.Entry<String, Double>> list = new LinkedList<Map.Entry<String, Double> >(tmp.entrySet()); 
 	        
 	        // Sort the list 
@@ -71,7 +69,7 @@ public class Chi2 {
 	        for (Map.Entry<String, Double> aa : list) { 
 	            temp.put(aa.getKey(), aa.getValue()); 
 	        }
-			ranks.put(target.name, temp);		
+			ranks.put(target.getName(), temp);		
 		}
 		return ranks;
 	}
@@ -106,8 +104,8 @@ public class Chi2 {
 	 */
 	public HashMap<Object, HashMap<Object, Double>> exp_contegencyTable(Column target, Column col){
 		HashMap<Object, HashMap<Object, Double>> table = new HashMap<Object, HashMap<Object, Double>>();
-		HashMap<Object, Integer> target_info = target.uniqueValCnt();
-		HashMap<Object, Integer> col_info = col.uniqueValCnt();
+		HashMap<Object, Integer> target_info = ColumnTools.uniqueValCnt(target);
+		HashMap<Object, Integer> col_info = ColumnTools.uniqueValCnt(col);
 		//Initialize and fill
 		HashMap<Object, Double> vals;
 		for(Object key1 : target_info.keySet()) {
@@ -128,8 +126,8 @@ public class Chi2 {
 	 */
 	public HashMap<Object, HashMap<Object, Integer>> obs_contegencyTable(Column target, Column col){
 		HashMap<Object, HashMap<Object, Integer>> table = new HashMap<Object, HashMap<Object, Integer>>();
-		Set<Object> target_info = target.uniqueValues();
-		Set<Object> col_info = col.uniqueValues();
+		Set<Object> target_info = ColumnTools.uniqueValues(target);
+		Set<Object> col_info = ColumnTools.uniqueValues(col);
 		
 		//Initialize
 		HashMap<Object, Integer> vals;
@@ -172,9 +170,9 @@ public class Chi2 {
 	 * set target variables
 	 */
 	private void setTargets() {
-		for(Column c : df.columns) {
-			if( c.type.contains("target")) {
-				targets.add(c);
+		for(int i = 0; i < df.getNumColumns(); i++) {
+			if(df.getColumn_byIndex(i).getType() == 'T') {
+				targets.add(df.getColumn_byIndex(i));
 			}
 		}
 	}

@@ -1,13 +1,8 @@
 package linearRegression;
 
-import java.util.HashMap;
-
-import correlation.Pearson;
 import dataframe.Column;
-import dataframe.DataFrame;
-import dataframe.Row;
+import dataframe.ColumnTools;
 import forensics.Stats;
-import machinations.Model;
 
 /**
  * Linear regression with least squared distance
@@ -51,7 +46,7 @@ public class LinearRegression{
 	 * @param slope
 	 */
 	private void setRegression_interceptB() {
-		this.intercept = y.mean() - slope * x.mean();
+		this.intercept = ColumnTools.mean(y) - slope * ColumnTools.mean(x);
 	}
 
 }

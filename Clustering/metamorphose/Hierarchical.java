@@ -97,7 +97,7 @@ public class Hierarchical {
      */
     private ArrayList<Cluster> initializeClusters() {
         ArrayList<Cluster> initialLevel = new ArrayList<Cluster>();
-        for (int i = 0; i < trainingData.numRows; i++) { //Initialize original cluster level, with all clusters being rows of the data frame
+        for (int i = 0; i < trainingData.getNumRows(); i++) { //Initialize original cluster level, with all clusters being rows of the data frame
             Cluster c = new Cluster(trainingData.getRow_byIndex(i));
             c.addMember(trainingData.getRow_byIndex(i), 0, i);
             initialLevel.add(c);

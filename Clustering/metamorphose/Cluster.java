@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import dataframe.Column;
+import dataframe.ColumnTools;
 import dataframe.DataFrame;
 import dataframe.Row;
 import distances.Distance;
@@ -133,12 +134,12 @@ public class Cluster {
      * Updates the centroid's values to the mean values of the assigned cluster members if the cluster values are numeric.
      */
     public void updateCentroidValues(DataFrame trainingData) {
-        for (int i = 0; i < trainingData.numColumns; i++) {
-            Column tempColumn = trainingData.getColumn_byIndex(i);
-            if (tempColumn.type == 'd') 
-                centroid.changeValue(i, new DoubleParticle(tempColumn.meanOfIndexes(clusterMemberIndexes)));
-            else if (tempColumn.type == 'i')
-                centroid.changeValue(i, new IntegerParticle((int) tempColumn.meanOfIndexes(clusterMemberIndexes)));
+        for (int i = 0; i < trainingData.getNumColumns(); i++) {
+            Column c = trainingData.getColumn_byIndex(i);
+            if (c.getType() == 'd') 
+                centroid.changeValue(i, new DoubleParticle(ColumnTools.meanOfIndexes(c, clusterMemberIndexes)));
+            else if (c.getType() == 'i')
+                centroid.changeValue(i, new IntegerParticle((int) ColumnTools.meanOfIndexes(c, clusterMemberIndexes)));
         }
     }
     

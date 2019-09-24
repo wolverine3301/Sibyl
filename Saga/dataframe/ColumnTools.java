@@ -17,8 +17,8 @@ import particles.Particle;
 
 /**
  * Contains static methods for preforming various operations on a given column.
- * @author Cade
- *
+ * @author Cade Reynoldson
+ * @version 1.0
  */
 public class ColumnTools {
     
