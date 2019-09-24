@@ -3,10 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import particles.DoubleParticle;
 import particles.IntegerParticle;
@@ -77,15 +74,15 @@ public class DataFrame {
                 Row row = new Row();
                 for(int i=0;i<columnNames.size();i++) { //load data into columns and rows
                 	Particle p = Particle.resolveType(lines[i]);
-                	columns.get(i).type = p.getType();
-                	columns.get(i).addToColumn(p);
+                	columns.get(i).setType(p.getType());
+                	columns.get(i).add(p);
                 	row.addToRow(p);
                 }
                 rows.add(row);
         	}
         	for(int i = 0;i < columnNames.size();i++) {
         	    getColumn_byIndex(i).resolveType();
-                columnTypes.add(columns.get(i).type);
+                columnTypes.add(columns.get(i).getType());
         	}
         	this.numRows = rows.size();
         	this.numColumns = columns.size();
@@ -103,9 +100,9 @@ public class DataFrame {
             for (int j = 0; j < numRows; j++) {
                 Particle p = getColumn_byIndex(i).getParticle(j);
                 if (p instanceof NANParticle) {
-                    if (getColumn_byIndex(i).type == 'i')
+                    if (getColumn_byIndex(i).getType() == 'i')
                         p = Particle.resolveType((int) Math.round(getColumn_byIndex(i).mean()));
-                    else if (getColumn_byIndex(i).type == 'd')
+                    else if (getColumn_byIndex(i).getType() == 'd')
                         p = Particle.resolveType(getColumn_byIndex(i).mean());
                     else
                         p = Particle.resolveType(getColumn_byIndex(i).mode());
@@ -130,131 +127,6 @@ public class DataFrame {
 	            }
 	        }
 	    }
-	}
-	
-	/**
-	 * Creates a new deep copied data frame internally from a list of column names.
-	 * @param columnNames the list of column name.
-	 * @return the newly created data frame.
-	 */
-	public DataFrame dataFrameFromColumns_DeepCopy(List<String> columnNames) {
-	    DataFrame newDataFrame = new DataFrame();
-	    for (String name : columnNames) { // Create the columns
-	        Column c = new Column(getColumn_byName(name));
-	        newDataFrame.columnNames.add(c.name);
-	        newDataFrame.columnTypes.add(c.type);
-	        newDataFrame.numColumns++;
-	        newDataFrame.columns.add(new Column(getColumn_byName(name)));
-	    }
-	    newDataFrame.numRows = newDataFrame.columns.get(0).getLength();
-	    for (int i = 0; i < newDataFrame.numRows; i++) { // Initialize row pointers
-	        Row row = new Row(); 
-	        for (int j = 0; j < newDataFrame.numColumns; j++) {
-	            row.addToRow(newDataFrame.columns.get(j).getParticle(i));
-	        }
-	        newDataFrame.rows.add(row);
-	    }
-	    return newDataFrame;
-	}
-	
-	/**
-	 * Creates a new shallow copied data frame internally from a list of column names.
-	 * @param columnNames the names of the columns to be added to the new data frame
-	 * @return a new DataFrame consisting of the columns passed to the method.
-	 */
-	public DataFrame dataFrameFromColumns_ShallowCopy(List<String> columnNames) {
-	    DataFrame newDataFrame = new DataFrame();
-	    for (String name : columnNames) {
-	        Column c = getColumn_byName(name);
-            newDataFrame.columnNames.add(c.name);
-            newDataFrame.columnTypes.add(c.type);
-            newDataFrame.numColumns++;
-	        newDataFrame.columns.add(c);
-	    }
-	    newDataFrame.numRows = newDataFrame.columns.get(0).getLength();
-	    for (int i = 0; i < newDataFrame.numRows; i++) {
-	        Row row = new Row();
-	        for (int j = 0; j < newDataFrame.numColumns; j++)
-	            row.addToRow(newDataFrame.columns.get(j).getParticle(i));
-	        newDataFrame.rows.add(row);
-	    }
-	    return newDataFrame;
-	}
-	
-	   /**
-     * Creates a new shallow copied data frame internally from a list of column names.
-     * @param columnNames the names of the columns to be added to the new data frame
-     * @return a new DataFrame consisting of the columns passed to the method.
-     */
-    public DataFrame dataFrameFromColumns_ShallowCopy(TreeSet<Character> columnTypes) {
-        DataFrame newDataFrame = new DataFrame();
-        for (Column c : columns) {
-            if (columnTypes.contains(c.type)) {
-                newDataFrame.columnNames.add(c.name);
-                newDataFrame.columnTypes.add(c.type);
-                newDataFrame.numColumns++;
-                newDataFrame.columns.add(c);
-                if (newDataFrame.numRows == 0) 
-                    newDataFrame.numRows = c.getLength();
-                
-            }
-        }
-        for (int i = 0; i < newDataFrame.numRows; i++) {
-            Row row = new Row();
-            for (int j = 0; j < newDataFrame.numColumns; j++)
-                row.addToRow(newDataFrame.columns.get(j).getParticle(i));
-            newDataFrame.rows.add(row);
-        }
-        return newDataFrame;
-    }
-	
-	/**
-	 * Creates a new deep copied data frame internally from a list of row indexes.
-	 * @param rowIndexes the set of row indexes to create a new data frame with.
-	 * @return a new DataFrame consisting of the rows passed to the method.
-	 */
-	public DataFrame dataFrameFromRows_DeepCopy(Set<Integer> rowIndexes) {
-	    DataFrame newDataFrame = new DataFrame();
-	    for (Column c : columns) { //Initialize blank columns in new data frame.
-	        newDataFrame.addBlankColumn(c.name, c.type);
-	    }
-	    for (Integer rowIndex : rowIndexes) {
-	        Row r = new Row(rows.get(rowIndex));
-	        newDataFrame.rows.add(r);
-	        for (int i = 0; i < r.getlength(); i++)
-	            newDataFrame.columns.get(i).addToColumn(r.getParticle(i));
-	    }
-	    newDataFrame.numRows = rowIndexes.size();
-	    return newDataFrame;
-	}
-	
-	/**
-	 * Creates a new shallow copied data frame internally from a list of row indexes.
-	 * @param rowIndexes the set for row indexes to create a new data frame with.
-	 * @return a new DataFrame consisting of the rows passed to the method.
-	 */
-	public DataFrame dataFrameFromRows_ShallowCopy(Set<Integer> rowIndexes) {
-	    DataFrame newDataFrame = new DataFrame();
-	    for (Column c : columns) 
-	        newDataFrame.addBlankColumn(c.name, c.type);
-	    for (Integer rowIndex : rowIndexes) {
-	        Row r = rows.get(rowIndex);
-	        newDataFrame.rows.add(r);
-	        for (int i = 0; i < r.getlength(); i++) {
-	            newDataFrame.columns.get(i).addToColumn(r.getParticle(i));
-	        }
-	    }
-	    newDataFrame.numRows = rowIndexes.size();
-	    return newDataFrame;
-	    
-	}
-	
-	public ArrayList<Column> getColumns() {
-	    return columns;
-	}
-	
-	public ArrayList<Row> getRows() {
-	    return rows;
 	}
     
     /**
@@ -313,15 +185,15 @@ public class DataFrame {
     public void addColumnFromArray(String name, Object arr[]) {
     	Particle p = Particle.resolveType(arr[0]);
     	Column c = new Column(name, p.type);
-    	c.addToColumn(p);
+    	c.add(p);
     	rows.get(0).addToRow(p);
     	for(int i = 1; i < arr.length;i++) {
     		p = Particle.resolveType(arr[i]);
             rows.get(i).addToRow(p);
-    		c.addToColumn(p);
+    		c.add(p);
     	}
     	columnNames.add(name);
-    	columnTypes.add(c.type);
+    	columnTypes.add(c.getType());
     	columns.add(c);
     	numColumns++;
     }
@@ -348,10 +220,10 @@ public class DataFrame {
         Particle p = Particle.resolveType(arr[0]);
         Row r = new Row();
         r.addToRow(p);
-        columns.get(0).addToColumn(p);
+        columns.get(0).add(p);
         for (int i = 1; i < arr.length; i++) {
             p = Particle.resolveType(arr[i]);
-            columns.get(i).addToColumn(p);
+            columns.get(i).add(p);
             r.addToRow(p);
         }
         rows.add(r);
@@ -366,8 +238,8 @@ public class DataFrame {
     public void addRow(Row r) {
         rows.add(r);
         numRows++;
-        for (int i = 0; i < r.getlength(); i++) 
-            columns.get(i).addToColumn(r.getParticle(i));
+        for (int i = 0; i < r.getLength(); i++) 
+            columns.get(i).add(r.getParticle(i));
     }
     
     /**
@@ -376,8 +248,8 @@ public class DataFrame {
      */
     public void addColumn(Column c) {
         columns.add(c);
-        columnNames.add(c.name);
-        columnTypes.add(c.type);
+        columnNames.add(c.getName());
+        columnTypes.add(c.getType());
         numColumns++;
         for (int i = 0; i < c.getLength(); i++) {
             try {
@@ -426,12 +298,12 @@ public class DataFrame {
 	        throw new IllegalArgumentException("Invalid indexes to be replaced - \nRow Index: " + rowIndex + 
 	                        "\nLength of rows: " + numColumns + "\nColumn Index: " + columnIndex + "Length of columns: " + numRows);
 	    else if ((p instanceof DoubleParticle || p instanceof IntegerParticle)
-	            && (columns.get(columnIndex).type == 'i') || columns.get(columnIndex).type == 'd') {
+	            && (columns.get(columnIndex).getType() == 'i') || columns.get(columnIndex).getType() == 'd') {
 	        rows.get(columnIndex).changeValue(rowIndex, p);
 	        columns.get(rowIndex).changeValue(columnIndex, p);
-	    } else if (columns.get(columnIndex).type == p.type) {
+	    } else if (columns.get(columnIndex).getType() == p.type) {
 	        throw new IllegalArgumentException("Particle to be replaced does not match the column's type.\nColumn type: " 
-	                            + columns.get(rowIndex).type + "\nParticle Type: " + p.type);
+	                            + columns.get(rowIndex).getType() + "\nParticle Type: " + p.type);
 	    } 
 	}
 	
@@ -451,6 +323,10 @@ public class DataFrame {
 		return numRows;
 	}
 	
+	/**
+	 * Returns the number of columns in the data frame.
+	 * @return the amount of columns in the data frame.
+	 */
 	public int getNumColumns() {
 	    return numColumns;
 	}
@@ -489,63 +365,6 @@ public class DataFrame {
         getColumn_byIndex(columnIndex).setType(newType);
         columnTypes.set(columnIndex, newType);
     }
-	
-	/**
-	 * Loops through the entire data frame to check if the data frame is square (could be optimized).
-	 * @return true if the data frame is "square" (n x n), false otherwise.
-	 */
-	public boolean isSquare() {
-	    Set<Integer> rowLengths = new TreeSet<Integer>();
-	    Set<Integer> columnLengths = new TreeSet<Integer>();
-	    for (int i = 0; i < numRows; i++)
-	        rowLengths.add(rows.get(i).rowLength);
-	    for (int i = 0; i < numColumns; i++)
-	        columnLengths.add(columns.get(i).columnLength);
-	    return (rowLengths.equals(columnLengths)) && numRows == numColumns;
-	}
-	/**
-	 * Method to get a dataframe with only specified types
-	 * @param List<String> types
-	 * @return shallow copy
-	 */
-	public DataFrame include(List<Character> types) {
-		List<String> cols = new ArrayList<String>();
-		for(Column i : columns) {
-			if(types.contains(i.type)) {
-				cols.add(i.name);
-			}
-		}
-		return dataFrameFromColumns_ShallowCopy(cols);
-	}
-	
-	/**
-	 * Method to get a data frame with all columns excluding the specified column indexes in the parameter's list.
-	 * Uses a set (prefferably treeset) for nlog(n) element access time (contains()).
-	 * @param columnIndex the list of column indexes to exclude.
-	 * @return a new (shallow copied) data frame with the specified columns excluded.
-	 */
-	public DataFrame exclude(Set<Integer> columnIndexes) {
-	    List<String> columnNames = new ArrayList<String>();
-	    for (int i = 0; i < numColumns; i++) {
-	        if (!columnIndexes.contains(i))
-	            columnNames.add(columns.get(i).name);
-	    }
-	    return dataFrameFromColumns_ShallowCopy(columnNames);
-	}
-	
-   /**
-     * Method to get a data frame with all columns excluding the specified column index.
-     * @param columnIndex the list of column indexe to exclude.
-     * @return a new (shallow copied) data frame with the specified column excluded.
-     */
-    public DataFrame exclude(int columnIndex) {
-        List<String> columnNames = new ArrayList<String>();
-        for (int i = 0; i < numColumns; i++) {
-            if (i != columnIndex)
-                columnNames.add(columns.get(i).name);
-        }
-        return dataFrameFromColumns_ShallowCopy(columnNames);
-    }
     
 	/**
 	 * returns a list of columns of the specified type
@@ -555,7 +374,7 @@ public class DataFrame {
 	public List<Column> getColumnByTypes(char type){
 		List<Column> cols = new ArrayList<Column>();
 		for(Column i : columns) {
-			if(i.type == type) {
+			if(i.getType() == type) {
 				cols.add(i);
 			}
 		}

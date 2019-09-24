@@ -48,7 +48,7 @@ public class Row {
 	 * return length of row
 	 * @return
 	 */
-	public int getlength() {
+	public int getLength() {
 		return rowLength;
 	}
 	

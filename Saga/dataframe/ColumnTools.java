@@ -37,19 +37,6 @@ public class ColumnTools {
     }
     
     /**
-     * Adds an array to a column. 
-     * @param theColumn the column to preform calculations on.
-     * @param arr the array to add to the column.
-     */
-    public static void concatArray(Column theColumn, Object arr[]) {
-        for(int i = 0; i < arr.length; i++) {
-            Particle tmp = Particle.resolveType(arr[i]);
-            theColumn.add(tmp);
-        }
-    }
-    
-    
-    /**
      * Calculates the sum of a numeric column. Returns 0 if column is non numeric.
      * @param theColumn the column to preform calculations on.
      * @return the sum of a numeric column.

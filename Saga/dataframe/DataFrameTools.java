@@ -100,9 +100,9 @@ public final class DataFrameTools {
      */
     public static DataFrame deepCopy_columnTypes(DataFrame theDataFrame, Collection<Character> columnTypes) {
         DataFrame newDataFrame = new DataFrame();
-        for (Column c : theDataFrame.getColumns()) {
-            if (columnTypes.contains(c.type)) {
-                newDataFrame.addColumn(new Column(c));
+        for (int i = 0; i < theDataFrame.getNumColumns(); i++) {
+            if (columnTypes.contains(theDataFrame.getColumn_byIndex(i).getType())) {
+                newDataFrame.addColumn(new Column(theDataFrame.getColumn_byIndex(i)));
             }
         }
         return newDataFrame;
@@ -117,8 +117,9 @@ public final class DataFrameTools {
      */
     public static DataFrame deepCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes) {
         DataFrame newDataFrame = new DataFrame();
-        for (Column c : theDataFrame.getColumns()) { //Initialize blank columns in new data frame.
-            newDataFrame.addBlankColumn(c.name, c.type);
+        for (int i = 0; i < theDataFrame.getNumColumns(); i++) { //Initialize blank columns in new data frame.
+            newDataFrame.addBlankColumn(theDataFrame.getColumn_byIndex(i).getName(), 
+                    theDataFrame.getColumn_byIndex(i).getType());
         }
         for (Integer rowIndex : rowIndexes) {
             newDataFrame.addRow(new Row(theDataFrame.getRow_byIndex(rowIndex)));
@@ -154,6 +155,22 @@ public final class DataFrameTools {
         }
         return shallowCopy_columnIndexes(theDataFrame, indexSet);
     }
+    
+    /**
+     * Loops through the entire data frame to check if the data frame is square (could be optimized).
+     * @return true if the data frame is "square" (n x n), false otherwise.
+     */
+    public static boolean isSquare(DataFrame theDataFrame) {
+        Set<Integer> rowLengths = new TreeSet<Integer>();
+        Set<Integer> columnLengths = new TreeSet<Integer>();
+        for (int i = 0; i < theDataFrame.getNumRows(); i++)
+            rowLengths.add(theDataFrame.getRow_byIndex(i).getLength());
+        for (int i = 0; i < theDataFrame.getNumColumns(); i++)
+            columnLengths.add(theDataFrame.getColumn_byIndex(i).getLength());
+        return (rowLengths.equals(columnLengths)) && theDataFrame.getNumRows() == theDataFrame.getNumColumns();
+    }
+    
+
     
     /**
      * Creates a new shallow copied data frame internally from a list of column names.
@@ -192,9 +209,9 @@ public final class DataFrameTools {
       */
     public static DataFrame shallowCopy_columnTypes(DataFrame theDataFrame, Collection<Character> columnTypes) {
         DataFrame newDataFrame = new DataFrame();
-        for (Column c : theDataFrame.getColumns()) {
-            if (columnTypes.contains(c.type)) {
-                newDataFrame.addColumn(c);
+        for (int i = 0; i < theDataFrame.getNumColumns(); i++) {
+            if (columnTypes.contains(theDataFrame.getColumn_byIndex(i).getType())) {
+                newDataFrame.addColumn(theDataFrame.getColumn_byIndex(i));
             }
         }
         return newDataFrame;
@@ -208,8 +225,9 @@ public final class DataFrameTools {
      */
     public static DataFrame shallowCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes) {
         DataFrame newDataFrame = new DataFrame();
-        for (Column c : theDataFrame.getColumns()) 
-            newDataFrame.addBlankColumn(c.name, c.type);
+        for (int i = 0; i < theDataFrame.getNumColumns(); i++) 
+            newDataFrame.addBlankColumn(theDataFrame.getColumn_byIndex(i).getName(),
+                    theDataFrame.getColumn_byIndex(i).getType());
         for (Integer rowIndex : rowIndexes) {
             newDataFrame.addRow(theDataFrame.getRow_byIndex(rowIndex));
         }

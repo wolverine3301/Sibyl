@@ -31,24 +31,29 @@ public class Column {
      * 'O' - a ordinal column (Ordered categorys such as A,B, and C grades)
      * 'N' - a numerical column
      *  */
-    public char type; 
+    private char type; 
+    
     /** The name of the column */
-    public String name; 
+    private String name; 
+    
     /** The array list of particles within the column */
-    public ArrayList<Particle> column;
+    private ArrayList<Particle> column;
+    
     /** The length of the column (the amount of particles stored in the column) */
-    public int columnLength;
+    private int columnLength;
+    
+    /** The feature stats of the column. */
+    private HashMap<Object, Double> featureStats;
+    
     /**
      * Creates a column with a given name.
      * @param name the name of the column.
      */
-    public HashMap<Object, Double> feature_stats = new HashMap<Object, Double>();;
-    
     public Column(String name) {
         this.name = name;
         column = new ArrayList<Particle>(); 
         columnLength = 0;
-        
+        featureStats = new HashMap<Object, Double>();
     }
     
     /**
@@ -81,15 +86,27 @@ public class Column {
     }
     
     /**
-     * manual override of auto determined type
-     * @param type
+     * Manual override of auto determined type.
+     * @param type the new type of the column.
      */
     public void setType(char type) {
         this.type = type;
     }
     
+    /**
+     * Returns the type of the column.
+     * @return the type of the column.
+     */
     public char getType() {
         return type;
+    }
+    
+    /**
+     * Returns the name of the column.
+     * @return the name of the column.
+     */
+    public String getName() {
+        return name;
     }
     
     /**
@@ -101,26 +118,17 @@ public class Column {
             char s2 = column.get(i + 1).type;
             char s3 = column.get(i + 2).type;
             if (s1 == s2 && s1 == s3) {
-                setType(particleTypeToColumnType(s1));
+                setType(ColumnTools.particleTypeToColumnType(s1));
                 break;
             }
         }
-    }
-    
-    public char particleTypeToColumnType(char pType) {
-        if (pType == 'i' || pType == 'd')
-            return 'N';
-        else if (pType == 'o')
-            return 'G';
-        else
-            return 'M';
     }
     
     /**
      * adds a particle object to column
      * @param p
      */
-    public void addToColumn(Particle p) {
+    public void add(Particle p) {
         column.add(p);
         columnLength++;
     }
@@ -136,7 +144,7 @@ public class Column {
         if(column.isEmpty()) {
             this.type = p.type;
         }
-        addToColumn(p);
+        add(p);
     }
     
     /**
@@ -162,7 +170,6 @@ public class Column {
         }
     }
     
-    // NEED TO UPDATE FOR VALUES
     /**
      * removeValue
      * removes first occurrence of a specific value that may be in the array list 
@@ -219,56 +226,8 @@ public class Column {
      * @return
      */
     public int numOfUniques() {
-        return uniqueValues().size();
+        return ColumnTools.uniqueValues(this).size();
     }  
-    /**
-     * @return set of unique values
-     */
-    public Set<Object> uniqueValues(){ 
-    	Set<Object> unique = new HashSet<Object>();
-    	for(Particle i : column) {
-    		unique.add(i.getValue());
-    	}	
-        return unique;
-    }
-    
-    /**
-     * returns a hashmap: keys are each unique value in array list and they point to the number of occurances
-     * @return
-     */
-    public HashMap<Object, Integer> uniqueValCnt() {
-        Set<Object> unique = uniqueValues();
-        Object[] uni = unique.toArray(); //get array of uniqe values
-        HashMap<Object, Integer> vals = new HashMap<>();
-        
-        //initialize map
-        for(int i = 0;i < uni.length;i++) {
-            vals.put(uni[i], 0);
-        }//end for
-        //counting
-        for(Particle i : column) { 	
-        	vals.replace(i.getValue(), (Integer)vals.get(i.getValue()) +1);
-        }//end count
-     // Create a list from elements of HashMap 
-        List<Map.Entry<Object, Integer>> list = new LinkedList<Map.Entry<Object, Integer> >(vals.entrySet()); 
-  
-        // Sort the list 
-        Collections.sort(list, new Comparator<Map.Entry<Object, Integer> >() { 
-            public int compare(Map.Entry<Object, Integer> o1,  
-                               Map.Entry<Object, Integer> o2) 
-            { 
-                return (o1.getValue()).compareTo(o2.getValue()); 
-            } 
-        });
-        Collections.reverse(list);
-        // put data from sorted list to hashmap  
-        HashMap<Object, Integer> temp = new LinkedHashMap<Object, Integer>(); 
-        for (Map.Entry<Object, Integer> aa : list) { 
-            temp.put(aa.getKey(), aa.getValue()); 
-        }
-        return temp;
-    }//end uniqueValCnt
-    
     /**
      * Print column
      */
@@ -278,133 +237,21 @@ public class Column {
             System.out.println(column.get(i).value);
         }
     }
-    /**
-     * If numeric column
-     * @return sum of values
-     */
-    public double sum() {
-    	double sum = 0;
-    	if(type == 'd') {
-    		// get sum
-    		for(int i = 0;i < column.size();i++) {
-    		    if (column.get(i) instanceof DoubleParticle)
-    		        sum += (Double) column.get(i).getValue();
-    		}//end sum	
-    	}
-    	else if(type == 'i') {
-    		for(int i = 0;i < column.size();i++) {
-    		    if (column.get(i) instanceof IntegerParticle)
-    		        sum += (Integer)column.get(i).getValue();
-    		}//end sum
-    	}
-    	return sum;
-    }
-    /**
-     * return most occuring value
-     * @return
-     */
-    public Object mode() {
-    	Object m = null;
-    	for (Map.Entry<Object,Integer> entry : uniqueValCnt().entrySet()) {
-            m = entry.getKey();
-            break;
-    		}
-    	return m; 	
-    }
-    /**
-     * @return mean of column
-     */
-    public double mean() {
-    	return sum() / (double) column.size();	
-    }
-    
-    /**
-     * Returns the mean of a given set of indexes.
-     * @param indexes the set of indexes.
-     * @return the sum of a given set of indexes.
-     */
-    public double meanOfIndexes(Set<Integer> indexes) {
-        double sum = sumOfIndexes(indexes);
-        return sum / indexes.size();
-    }
-    
-    /**
-     * Returns the sum of a given set of indexes.
-     * @param indexes the set of indexes.
-     * @return the sum of a given set of indexes.
-     */
-    public double sumOfIndexes(Set<Integer> indexes) {
-        double sum = 0; 
-        if(type == 'd') {
-            for (Integer i : indexes) {
-                if (column.get(i) instanceof DoubleParticle)
-                    sum += (Double)column.get(i).getValue();
-            }
-        }
-        else if(type == 'i') {
-            for (Integer i : indexes) {
-                if (column.get(i) instanceof IntegerParticle)
-                    sum += (Integer)column.get(i).getValue();
-            }//end sum
-        }
-        return sum;
-    }
-    
-    
-    //NEEDS WORK
-    public Object median() {
-        if (type == 'd' || type == 'i') {
-            List<Particle> sorted = new ArrayList<Particle>();
-            for (Particle p : column) {
-                sorted.add(p.deepCopy());
-            }
-            Collections.sort(sorted);
-            return sorted.get(sorted.size() / 2);
-        } else {
-            return mode();
-        }
-    }
-    
-    /**
-     * @return variance of column
-     */
-	public  double variance() {
-		double var = 0.0;
-		for(int i = 0;i < column.size();i++) {
-			var += Math.pow(((Double)column.get(i).getValue()- mean()), 2);
-		}
-		return var /column.size();
-	}
-	/**
-	 * return standard deviation
-	 * @return
-	 */
-	public double standardDeviation() {
-		return Math.sqrt(variance());		
-	}
-	/**
-	 * @return entropy
-	 */
-	public double entropy() {
-		HashMap<Object,Integer> values = uniqueValCnt();
-		double ent = 0;
-		for (Integer value : values.values()) {
-			
-			ent = ent + (-1)* ((double)value / column.size()) * ( Math.log10(((double)value / column.size())) / Math.log10(2));
-		}
-		return ent;
-	}
 	
 	/**
 	 * sets the features of proportion each value has in the column
 	 */
 	public void setFeatureStats() {
-		HashMap<Object, Integer> a = uniqueValCnt();
+		HashMap<Object, Integer> a = ColumnTools.uniqueValCnt(this);
 		for(Entry<Object, Integer> i : a.entrySet()) {
-			feature_stats.put(i.getKey(), (double)i.getValue()/column.size());
+			featureStats.put(i.getKey(), (double)i.getValue()/column.size());
 		}
 	}
 	
+	/**
+	 * Creates a string representing the column.
+	 * @return a string representing the column.
+	 */
 	@Override
 	public String toString() {
 	    String str = "Column Name: " + name + "\nColumn Type: " + type + "\n";
