@@ -28,9 +28,10 @@ import transform.LogTransform;
 public class bench2 {
     public static void main(String[] args) {
         DataFrame df = new DataFrame();
-        df.loadcsv("testfiles/distancetesting.csv");
+        df.loadcsv("testfiles/testing.csv");
         df.printDataFrame();
-        System.out.println(ColumnTools.uniqueValCnt(df.getColumn_byIndex(0)));
+        DataFrameTools.sortByColumn(df, 1);
+        df.printDataFrame();
         
 //        df.getColumn_byIndex(3).setType('T');
 //        Model knn = new KNN(df, new Manhattan(), 2);

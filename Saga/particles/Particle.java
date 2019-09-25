@@ -25,6 +25,9 @@ public abstract class Particle implements Comparable<Particle>{
      * */
     public char type;
     
+    /** The next particle, acting as a linked list of rows. */
+    public Particle nextParticle;
+    
     /**
      * Creates a new instance of a particle with a given value and type.
      * @param theValue
@@ -33,6 +36,7 @@ public abstract class Particle implements Comparable<Particle>{
     public Particle(Object theValue, char theType) {
         value = theValue;
         type = theType;
+        nextParticle = null;
     }
      
     /**
@@ -41,6 +45,15 @@ public abstract class Particle implements Comparable<Particle>{
     public char getType() {
         return type;
     }
+    
+    /**
+     * Links this particle another particle.
+     * @param p the particle to link to.
+     */
+    public void linkTo(Particle p) {
+        nextParticle = p;
+    }
+    
     
     public String toString() {
         return type + "=" + value;

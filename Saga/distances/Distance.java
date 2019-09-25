@@ -31,7 +31,7 @@ public abstract class Distance{
 	        Row newRow = new Row();
 	        for (int j = 0; j < theDataFrame.getNumRows(); j++) {
 	            double distance = distanceFunction.distance(currentRow, theDataFrame.getRow_byIndex(j));
-	            newRow.addToRow(new DistanceParticle(distance, j, distanceFunction.distanceType));
+	            newRow.add(new DistanceParticle(distance, j, distanceFunction.distanceType));
 	        }
 	        dataFrame.addRow(newRow);
 	    }

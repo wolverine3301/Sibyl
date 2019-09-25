@@ -32,10 +32,14 @@ public class Row {
 	 * Adds a particle object to list 
 	 * @param p
 	 */
-	public void addToRow(Particle p) {
-		row.add(p);
+	public void add(Particle p) {
+	    if (!row.isEmpty()) {
+	        row.get(row.size() - 1).linkTo(p);
+	    } 
+	    row.add(p);
 		rowLength++;
 	}
+	
 	/**
 	 * return a particle object from list
 	 * @param index

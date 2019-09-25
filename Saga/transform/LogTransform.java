@@ -23,7 +23,7 @@ public class LogTransform {
             if (c.getType() == 'N') {
                 for (int j = 0; j < dataFrame.getNumRows(); j++) {
                     Particle p = new DoubleParticle(Math.log10((Double) c.getParticle(j).value));
-                    dataFrame.replace(i, j, p);
+                    dataFrame.replaceParticle(i, j, p);
                 }
             }
         }
@@ -41,7 +41,7 @@ public class LogTransform {
             if (c.getType() == 'N') {
                 for (int j = 0; j < dataFrame.getNumRows(); j++) {
                     Particle p = new DoubleParticle(Math.log((Double) c.getParticle(j).value));
-                    dataFrame.replace(i, j, p);
+                    dataFrame.replaceParticle(i, j, p);
                 }
             }
         }

@@ -76,7 +76,7 @@ public class DataFrame {
                 	Particle p = Particle.resolveType(lines[i]);
                 	columns.get(i).setType(p.getType());
                 	columns.get(i).add(p);
-                	row.addToRow(p);
+                	row.add(p);
                 }
                 rows.add(row);
         	}
@@ -127,6 +127,18 @@ public class DataFrame {
 	                getRow_byIndex(j).changeValue(i, p);
 	            }
 	        }
+	    }
+	}
+	
+	/**
+	 * Replaces a row in the data frame.
+	 * @param index the index of the row to be replaced
+	 * @param row the row to be added in place of the row at the passed index.
+	 */
+	public void replaceRow(int index, Row row) {
+	    rows.set(index, row);
+	    for (int i = 0; i < row.getLength(); i++) {
+	        columns.get(i).changeValue(index, row.getParticle(i));
 	    }
 	}
     
@@ -187,10 +199,10 @@ public class DataFrame {
     	Particle p = Particle.resolveType(arr[0]);
     	Column c = new Column(name, p.type);
     	c.add(p);
-    	rows.get(0).addToRow(p);
+    	rows.get(0).add(p);
     	for(int i = 1; i < arr.length;i++) {
     		p = Particle.resolveType(arr[i]);
-            rows.get(i).addToRow(p);
+            rows.get(i).add(p);
     		c.add(p);
     	}
     	columnNames.add(name);
@@ -220,12 +232,12 @@ public class DataFrame {
     public void addRowFromArray(Object arr[]) { //THIS NEEDS WORK! 
         Particle p = Particle.resolveType(arr[0]);
         Row r = new Row();
-        r.addToRow(p);
+        r.add(p);
         columns.get(0).add(p);
         for (int i = 1; i < arr.length; i++) {
             p = Particle.resolveType(arr[i]);
             columns.get(i).add(p);
-            r.addToRow(p);
+            r.add(p);
         }
         rows.add(r);
         numRows++;
@@ -254,11 +266,11 @@ public class DataFrame {
         numColumns++;
         for (int i = 0; i < c.getLength(); i++) {
             try {
-                rows.get(i).addToRow(c.getParticle(i));
+                rows.get(i).add(c.getParticle(i));
             } catch (Exception e) {
                 rows.add(new Row());
                 numRows++;
-                rows.get(i).addToRow(c.getParticle(i));
+                rows.get(i).add(c.getParticle(i));
             }
         }
     }
@@ -294,7 +306,7 @@ public class DataFrame {
 	 * @param columnIndex the position of the particle in the column being replaced.
 	 * @param p the new particle to be inserted.
 	 */
-	public void replace(int rowIndex, int columnIndex, Particle p) {
+	public void replaceParticle(int rowIndex, int columnIndex, Particle p) {
 	    if ((rowIndex >= numColumns) || (rowIndex < 0) || ((columnIndex >= numRows) || (columnIndex < 0)))
 	        throw new IllegalArgumentException("Invalid indexes to be replaced - \nRow Index: " + rowIndex + 
 	                        "\nLength of rows: " + numColumns + "\nColumn Index: " + columnIndex + "Length of columns: " + numRows);

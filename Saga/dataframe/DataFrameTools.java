@@ -1,7 +1,9 @@
 package dataframe;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -234,6 +236,24 @@ public final class DataFrameTools {
         newDataFrame.updateNumRows();
         return newDataFrame;
     } 
+    
+    /**
+     * Sorts a column by natural ordering a column.
+     * @param columnIndex the index of the column to base sorting off of.
+     * @return a data frame with sorted rows corresponding to the column indexes. 
+     */
+    public static void sortByColumn(DataFrame theDataFrame, int columnIndex) {
+        PriorityQueue<Row> sortedRows = new PriorityQueue<Row>(theDataFrame.getNumRows(), new Comparator<Row>() {
+            @Override
+            public int compare(Row o1, Row o2) {
+                return o1.getParticle(columnIndex).compareTo(o2.getParticle(columnIndex));
+            }
+        });
+        for (int i = 0; i < theDataFrame.getNumRows(); i++) 
+            sortedRows.add(theDataFrame.getRow_byIndex(i));
+        for (int i = 0; i < theDataFrame.getNumRows(); i++)
+            theDataFrame.replaceRow(i, sortedRows.remove());
+    }
     
     /**
      * Split dataframe into n equal sections
