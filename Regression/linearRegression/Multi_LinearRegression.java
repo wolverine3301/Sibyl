@@ -14,12 +14,9 @@ public class Multi_LinearRegression {
 	private LinearRegression[] regressions;
 	private double intercept;
 	
-	public String y_var;//names
-	public String[] x_vars;
 	public Multi_LinearRegression(Column[] x, Column y) {
 		this.x = x;
 		this.y = y;
-		this.y_var = y.getName();
 		setRegressions();
 	}
 	/**
@@ -31,7 +28,6 @@ public class Multi_LinearRegression {
 		regressions = new LinearRegression[x.length];
 		int cnt = 0;
 		for(Column i : x) {
-			x_vars[cnt] = i.getName();
 			regressions[cnt] = new LinearRegression(y,i);
 			intercept = intercept + regressions[cnt].intercept;
 			cnt++;

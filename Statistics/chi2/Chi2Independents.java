@@ -17,15 +17,17 @@ import dataframe.DataFrame;
 import java.util.Set;
 
 /**
- * Chi^2 statistics
+ * Chi^2 Independents
+ *  The chi-squared test is used to determine whether there is a significant difference between 
+ *  the expected frequencies and the observed frequencies in one or more categories.
  * @author logan.collier
  *
  */
-public class Chi2 {
+public class Chi2Independents {
 	private DataFrame df;
 	private List<Column> targets;
 	
-	public Chi2(DataFrame df){
+	public Chi2Independents(DataFrame df){
 		this.df = df;
 		targets = new ArrayList<Column>();
 		setTargets();

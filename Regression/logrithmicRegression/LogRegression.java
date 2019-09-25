@@ -14,6 +14,10 @@ public class LogRegression {
 	
 	private Column x;
 	private Column y;
+	
+	public String y_var;//names
+	public String x_var; 
+	
 	private double sum_ylnx = 0;
 	private double sum_lnx = 0;
 	private double sum_lnx_squared = 0;
@@ -21,6 +25,8 @@ public class LogRegression {
 	public LogRegression(Column x, Column y) {
 		this.x = x;
 		this.y = y;
+		this.y_var = y.getName();
+		this.x_var = x.getName();
 		setVars();
 	}
 	/**

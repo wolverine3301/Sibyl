@@ -16,6 +16,10 @@ public class LinearRegression{
 	private Column y;
 	public double slope;
 	public double intercept;
+	
+	public String y_var;//names
+	public String x_var; 
+	
 	public double SST; //total sum of squares
 	public double RSS; //residual sum of squares
 	
@@ -26,6 +30,10 @@ public class LinearRegression{
 	public LinearRegression(Column y, Column x) {
 		this.x = x;
 		this.y = y;
+		
+		this.y_var = y.getName();
+		this.x_var = x.getName();
+		this.SST = Stats.zeroSquaredSum(x);
 		setRegression_slopeM();
 		setRegression_interceptB();
 	}
