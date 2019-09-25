@@ -266,8 +266,9 @@ public final class DataFrameTools {
         Set<Integer> set = new HashSet<Integer>();
         for (int i = 0; i < theDataFrame.getNumRows() -1; i += interval-1) {
             set.clear();
-            for(int j = i+1;j <= i+interval-1; j++) {
-                if(i == 0) {set.add(0);}
+            for(int j = i + 1;j <= i + interval - 1; j++) {
+                if(i == 0) 
+                    set.add(0);
                 set.add(j); 
             }
         }
