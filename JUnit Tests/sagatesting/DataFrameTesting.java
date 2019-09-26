@@ -3,6 +3,7 @@ package sagatesting;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -58,5 +59,32 @@ class DataFrameTesting {
         DataFrame temp = DataFrameTools.shallowCopy_rowIndexes(testFrame, rowIndexes);
         assertEquals(6, temp.getNumColumns(), "Data frame has incorrect number of columns upon copy.");
         assertEquals(3, temp.getNumRows(), "Data frame has incorrect number of rows upon copy.");
+    }
+    
+    @Test
+    void testThroughPut() {
+        DataFrame largeDataFrame = new DataFrame();
+        Date startDate = new Date();
+        long startTime = startDate.getTime();
+        largeDataFrame.loadcsv("testfiles/nasdaq.csv");
+        Date finishDate = new Date();
+        long finishTime = finishDate.getTime();
+        long totmylistTime = (finishTime - startTime);    
+        System.out.println("Loaded " + largeDataFrame.getNumColumns() + " Columns, & " + largeDataFrame.getNumRows() + " Rows." + 
+                "\nTotal time: " + totmylistTime + "ms");
+        List<Integer> rowIndexes = new ArrayList<Integer>();
+        for (int i = 0; i < 10000; i++)
+            rowIndexes.add(i);
+        startDate = new Date();
+        startTime = startDate.getTime();
+        for (int i = 0; i < 1000; i++) {
+            DataFrameTools.deepCopy_rowIndexes(largeDataFrame, rowIndexes);
+        }
+        finishDate = new Date();
+        finishTime = finishDate.getTime();
+        totmylistTime = (finishTime - startTime);
+        System.out.println("\nTotal copy time: " + totmylistTime + "ms");
+        
+        
     }
 }
