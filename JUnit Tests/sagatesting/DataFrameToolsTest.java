@@ -2,6 +2,7 @@ package sagatesting;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.BeforeClass;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,17 +14,14 @@ class DataFrameToolsTest {
 	private DataFrame iris = new DataFrame();
 	
 	
-	@BeforeEach
+	@BeforeClass
 	void setUp() throws Exception {
 		iris.loadcsv("testfiles/iris.txt");
 	}
 
-	@AfterEach
-	void tearDown() throws Exception {
-	}
 	
 	/**
-	 * Test aquire method
+	 * Test acuire method
 	 */
 	@Test
 	void testAquire() {

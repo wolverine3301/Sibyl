@@ -126,7 +126,8 @@ public class Column {
         column.add(p);
         columnLength++;
     }
-    
+    //TODO
+    //Need to update so column type is set correctly with certain particle types
     /**
      * add a raw type to column which will be converted to a particle
      * adds a value to the end of the array list
@@ -136,7 +137,8 @@ public class Column {
         Particle p = Particle.resolveType(value);
         //auto declaration of column type
         if(column.isEmpty()) {
-            this.type = p.type;
+        	if(p.type == 'd' || p.type == 'i')
+        		this.type = 'N';
         }
         add(p);
     }
