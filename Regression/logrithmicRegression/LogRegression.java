@@ -17,6 +17,8 @@ public class LogRegression {
 	
 	public String y_var;//names
 	public String x_var; 
+	public double slope;
+	public double intercept;
 	
 	private double sum_ylnx = 0;
 	private double sum_lnx = 0;
@@ -28,6 +30,8 @@ public class LogRegression {
 		this.y_var = y.getName();
 		this.x_var = x.getName();
 		setVars();
+		this.slope = log_slopeM();
+		this.intercept = intercept_b();
 	}
 	/**
 	 * return the slop of the best fitted logrithm using least squares fitting , E y_i  - b * E(ln(x_i)) / n
@@ -40,10 +44,24 @@ public class LogRegression {
 		return (ColumnTools.sum(y) - (log_slopeM() * sum_lnx)) / x.getLength();
 	}
 	private void setVars() {
-		for(int i = 0; i < x.getLength(); i++) {	
-			sum_ylnx = sum_ylnx + (double)y.getParticle(i).getValue() * Math.log((double) x.getParticle(i).getValue());
-			sum_lnx = sum_lnx + Math.log((double) x.getParticle(i).getValue());
-			sum_lnx_squared = sum_lnx_squared + Math.pow(Math.log((double) x.getParticle(i).getValue()), 2);
+		double x_1 = 0;
+		double y_1 = 0;
+		for(int i = 0; i < x.getLength(); i++) {
+			if(x.getParticle(i).getValue() instanceof Double) {
+				x_1 = (double)x.getParticle(i).getValue();
+			}
+			else if(x.getParticle(i).getValue() instanceof Integer) {
+				x_1 = (int)x.getParticle(i).getValue();
+			}
+			if(y.getParticle(i).getValue() instanceof Double) {
+				y_1 = (double)y.getParticle(i).getValue();
+			}
+			else if(y.getParticle(i).getValue() instanceof Integer) {
+				y_1 = (int)y.getParticle(i).getValue();
+			}
+			sum_ylnx = sum_ylnx + y_1 * Math.log(x_1);
+			sum_lnx = sum_lnx + Math.log(x_1);
+			sum_lnx_squared = sum_lnx_squared + Math.pow(Math.log(x_1), 2);
 		}
 	}
 

@@ -21,20 +21,19 @@ public class LinearRegression{
 	public String x_var; 
 	
 	public double SST; //total sum of squares
-	public double RSS; //residual sum of squares
 	public double SSP; //sum of products
 	/**
 	 * simple linear regression
 	 * @param theDataFrame
 	 */
-	public LinearRegression(Column y, Column x) {
+	public LinearRegression(Column x, Column y) {
 		this.x = x;
 		this.y = y;
 		
 		this.y_var = y.getName();
 		this.x_var = x.getName();
 		this.SSP = Stats.zeroSumMultiple_Columns(x, y); //sum of products
-		this.SST = Stats.zeroSquaredSum_between(x, y);
+		this.SST = Stats.zeroSquaredSum(x);
 		setRegression_slopeM();
 		setRegression_interceptB();
 	}
@@ -46,11 +45,7 @@ public class LinearRegression{
 	 * @return
 	 */
 	private void setRegression_slopeM() {
-		for(int i = 0; i < x.getLength();i++) {
-			
-		}
-		//System.out.println(Stats.zeroSumMultiple_Columns(x, y));
-		//this.slope =  Stats.zeroSumMultiple_Columns(x, y) / Stats.zeroSquaredSum(x);
+		this.slope =  Stats.zeroSumMultiple_Columns(x, y) / Stats.zeroSquaredSum(x);
 	}
 	/**
 	 * set intercept
