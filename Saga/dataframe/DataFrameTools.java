@@ -29,7 +29,7 @@ public final class DataFrameTools {
      * @param args the arguments for the function ({"ColumnName", "LogicalOperator", ObjectToCompare"}). 
      * @return a new data frame with rows fitting the arguments.
      */
-    public DataFrame acquire(DataFrame theDataFrame, String[] args) {
+    public static DataFrame acquire(DataFrame theDataFrame, String[] args) {
         Set<Integer> rowIndexes = new TreeSet<Integer>();
         for (int i = 0; i < args.length; i += 3) {
             Column column = theDataFrame.getColumn_byName(args[i]);

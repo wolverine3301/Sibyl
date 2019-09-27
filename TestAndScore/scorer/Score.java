@@ -7,15 +7,33 @@ import java.util.List;
 import dataframe.DataFrame;
 import saga.*;
 
+/**
+ * Various model scores
+ * @author logan.collier
+ *
+ */
 public class Score {
-	public HashMap<String, HashMap<Object, Double>> recall;
+	/**
+	 * recall - also known as true positive rate or sensitivity. how many of a class were correctly identified.
+	 * if u say everyone has cancer recall is one because youve successful identified all people who actually have cancer
+	 * if you guess 100 people have cancer and 75 actually do then recall is 0.75
+	 * 
+	 * precision - % of predictions 
+	 */
+	public HashMap<String, HashMap<Object, Double>> recall; 
 	public HashMap<String, HashMap<Object, Double>> precision;
 	public HashMap<String, HashMap<Object, Double>> F1;
 	public HashMap<String, HashMap<Object, Double>> mcc;
+	public HashMap<String, HashMap<Object, Double>> accuracy;
 	
 	private DataFrame df;
 	private List<Object[]> predictions;
 	private ConfusionMatrix matrix;
+	/**
+	 * Score constructor
+	 * @param df
+	 * @param predictions
+	 */
 	public Score(DataFrame df, List<Object[]> predictions) {
 		this.df = df;
 		this.predictions = predictions;
@@ -38,6 +56,7 @@ public class Score {
 		double precisionS;
 		double F1S;
 		double mccS;
+		
 		int cnt;
 		for(String i : matrix.truePositive.keySet()) {
 			
@@ -76,54 +95,8 @@ public class Score {
 		}
 		
 	}
-	/**
-	 * Returns Matthews Correlation coefficient 
-	 * @param tp - count of true positives
-	 * @param tn - count of true negatives
-	 * @param fp - count of false positives
-	 * @param fn - count of false negatives
-	 * @return MCC
-	 */
-	public double mcc(int tp, int tn, int fp, int fn) {
-		return ( ( (tp * tn) - (fp * fn) ) / (Math.sqrt( (tp + fp)*(tp+fn)*(tn+fp)*(tn+fn) ) ) );	
-	}
-	/**
-	 * Returns F1 score 
-	 * @param tp - count of true positives
-	 * @param fp - count of false positives
-	 * @param fn - count of false negatives
-	 * @return F1
-	 */
-	public double F1(int tp, int fp, int fn) {
-		return(2* (precision(tp,fp) * recall(tp,fn)) / (precision(tp,fp) + recall(tp,fn)));	
-	}
-	/**
-	 * Returns precision of a given class
-	 * @param tp - true positives
-	 * @param fp - false positives
-	 * @return precision
-	 */
-	public double precision(int tp, int fp) {
-		if(fp == 0 && tp == 0) {	
-			return 0;
-		}
-		else if(fp == 0 && tp != 0) {
-			return 1;
-		}
-		return ((double)tp/(tp+fp));
-	}
-	/**
-	 * Returns recall
-	 * @param tp - true positives
-	 * @param fn - false negatives
-	 * @return recall
-	 */
-	public double recall(int tp, int fn) {
-		if(fn == 0) {
-			return 1;
-		}
-		return (tp/(tp+fn));	
-	}
+
+	
 	/**
 	 * initializing scores
 	 */
