@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import dataframe.ColumnTools;
 import dataframe.DataFrame;
 import saga.*;
 
@@ -67,12 +68,12 @@ public class Score {
 			cnt = 0;
 			for(Object j : matrix.truePositive.get(i).keySet()) {
 				
-				recall.get(i).replace(j,recall(matrix.truePositive.get(i).get(j), matrix.falseNegative.get(i).get(j)));
-				precision.get(i).replace(j, precision(matrix.truePositive.get(i).get(j), matrix.falsePositive.get(i).get(j)));
-				F1.get(i).replace(j, F1(matrix.truePositive.get(i).get(j), 
+				recall.get(i).replace(j,Scores.recall(matrix.truePositive.get(i).get(j), matrix.falseNegative.get(i).get(j)));
+				precision.get(i).replace(j, Scores.precision(matrix.truePositive.get(i).get(j), matrix.falsePositive.get(i).get(j)));
+				F1.get(i).replace(j, Scores.F1(matrix.truePositive.get(i).get(j), 
 						matrix.falsePositive.get(i).get(j),
 						matrix.falseNegative.get(i).get(j)));
-				mcc.get(i).replace(j, mcc(matrix.truePositive.get(i).get(j), 
+				mcc.get(i).replace(j, Scores.mcc(matrix.truePositive.get(i).get(j), 
 						matrix.trueNegative.get(i).get(j),
 						matrix.falsePositive.get(i).get(j),
 						matrix.falseNegative.get(i).get(j)));
@@ -96,30 +97,27 @@ public class Score {
 		
 	}
 
-	
 	/**
 	 * initializing scores
 	 */
 	private void intitallize() {
-		for(int i = 0; i < df.numColumns;i++) {
+		for(int i = 0; i < df.getNumColumns();i++) {
 			//get target columns
-			if(df.columnTypes.get(i) == "target") {
+			if(df.getColumn_byIndex(i).getType() == 'T') {
 				HashMap<Object,Double> arr0 = new HashMap<Object,Double>();
 				HashMap<Object,Double> arr1 = new HashMap<Object,Double>();
 				HashMap<Object,Double> arr2 = new HashMap<Object,Double>();
 				HashMap<Object,Double> arr3 = new HashMap<Object,Double>();
-				for(Object j : df.getColumn_byIndex(i).uniqueValues()) {
+				for(Object j : ColumnTools.uniqueValues(df.getColumn_byIndex(i))) {
 					arr0.put(j, 0.0);
 					arr1.put(j, 0.0);
 					arr2.put(j, 0.0);
 					arr3.put(j, 0.0);
-					
 				}
-				
-				recall.put(df.columnNames.get(i),arr0);
-				precision.put(df.columnNames.get(i),arr1);
-				F1.put(df.columnNames.get(i),arr2);
-				mcc.put(df.columnNames.get(i),arr3);
+				recall.put(df.getColumn_byIndex(i).getName(),arr0);
+				precision.put(df.getColumn_byIndex(i).getName(),arr1);
+				F1.put(df.getColumn_byIndex(i).getName(),arr2);
+				mcc.put(df.getColumn_byIndex(i).getName(),arr3);
 			}
 		}
 	}

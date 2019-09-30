@@ -14,7 +14,14 @@ package regressionScore;
  *
  */
 public class Rvalue {
-	public Rvalue() {
+	public double RSS;
+	public Rvalue(Regression regression_function) {
 		
+	}
+	private void setRSS() {
+		this.RSS = 0;
+		for(int i =0; i < x.getLength(); i++) {
+			RSS = RSS + Math.pow(( (double)y.getParticle(i).getValue() - predictY(x.getParticle(i)) ), 2);
+		}
 	}
 }

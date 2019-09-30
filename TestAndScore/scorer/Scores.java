@@ -9,7 +9,7 @@ public class Scores {
 	 * @param fn - count of false negatives
 	 * @return MCC
 	 */
-	public double mcc(int tp, int tn, int fp, int fn) {
+	public static double mcc(int tp, int tn, int fp, int fn) {
 		return ( ( (tp * tn) - (fp * fn) ) / (Math.sqrt( (tp + fp)*(tp+fn)*(tn+fp)*(tn+fn) ) ) );	
 	}
 	/**
@@ -19,7 +19,7 @@ public class Scores {
 	 * @param fn - count of false negatives
 	 * @return F1
 	 */
-	public double F1(int tp, int fp, int fn) {
+	public static double F1(int tp, int fp, int fn) {
 		return(2* (precision(tp,fp) * recall(tp,fn)) / (precision(tp,fp) + recall(tp,fn)));	
 	}
 	/**
@@ -28,7 +28,7 @@ public class Scores {
 	 * @param fp - false positives
 	 * @return precision
 	 */
-	public double precision(int tp, int fp) {
+	public static double precision(int tp, int fp) {
 		if(fp == 0 && tp == 0) {	
 			return 0;
 		}
@@ -43,7 +43,7 @@ public class Scores {
 	 * @param fn - false negatives
 	 * @return recall
 	 */
-	public double recall(int tp, int fn) {
+	public static double recall(int tp, int fn) {
 		if(fn == 0) {
 			return 1;
 		}
