@@ -1,4 +1,4 @@
-package logrithmicRegression;
+
 
 import dataframe.Column;
 import dataframe.ColumnTools;

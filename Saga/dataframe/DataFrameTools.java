@@ -260,7 +260,7 @@ public final class DataFrameTools {
      * @param n - number of new dataframes 
      * @return dataframe[] of shallow copiesshallow copies
      */
-    public DataFrame[] split(DataFrame theDataFrame, int n) {
+    public static DataFrame[] split(DataFrame theDataFrame, int n) {
         int interval = Math.floorDiv(theDataFrame.getNumRows(), n-1);
         DataFrame[] partitions = new DataFrame[n-1];
         Set<Integer> set = new HashSet<Integer>();

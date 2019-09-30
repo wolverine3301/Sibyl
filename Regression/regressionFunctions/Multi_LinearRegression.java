@@ -1,4 +1,5 @@
-package linearRegression;
+package regressionFunctions;
+
 
 import dataframe.Column;
 

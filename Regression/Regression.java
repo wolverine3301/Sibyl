@@ -1,10 +1,9 @@
-package regressionFunctions;
 import dataframe.Column;
 import particles.Particle;
 
 public abstract class Regression {
-	public Column x;
-	public Column y;
+	private Column x;
+	private Column y;
 	public String y_var;//names
 	public String x_var; 
 	

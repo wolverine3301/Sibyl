@@ -1,5 +1,7 @@
 package regressionScore;
 
+import regressionFunctions.Regression;
+
 /**
  * https://www.investopedia.com/terms/r/r-squared.asp
  * R-Squared -  is the proportion of the variance in the dependent variable that is predictable from the independent variable(s).
@@ -15,13 +17,14 @@ package regressionScore;
  */
 public class Rvalue {
 	public double RSS;
+	Regression regression_function;
 	public Rvalue(Regression regression_function) {
-		
+		this.regression_function = regression_function;
 	}
 	private void setRSS() {
 		this.RSS = 0;
-		for(int i =0; i < x.getLength(); i++) {
-			RSS = RSS + Math.pow(( (double)y.getParticle(i).getValue() - predictY(x.getParticle(i)) ), 2);
+		for(int i =0; i < regression_function.x.getLength(); i++) {
+			RSS = RSS + Math.pow(( (double)regression_function.y.getParticle(i).getValue() - regression_function.predictY(regression_function.x.getParticle(i)) ), 2);
 		}
 	}
 }

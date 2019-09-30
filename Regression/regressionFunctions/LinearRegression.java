@@ -1,8 +1,10 @@
-package linearRegression;
+package regressionFunctions;
+
 
 import dataframe.Column;
 import dataframe.ColumnTools;
 import forensics.Stats;
+import particles.Particle;
 
 /**
  * Linear regression with least squared distance
@@ -10,18 +12,7 @@ import forensics.Stats;
  * @author logan.collier
  *
  */
-public class LinearRegression{
-	
-	private Column x;
-	private Column y;
-	public double slope;
-	public double intercept;
-	
-	public String y_var;//names
-	public String x_var; 
-	
-	public double SST; //total sum of squares
-	public double SSP; //sum of products
+public class LinearRegression extends Regression{
 	/**
 	 * simple linear regression
 	 * @param theDataFrame
@@ -37,7 +28,7 @@ public class LinearRegression{
 		setRegression_slopeM();
 		setRegression_interceptB();
 	}
-
+	
 	/**
 	 * least squares method
 	 * @param y
@@ -55,6 +46,9 @@ public class LinearRegression{
 	 */
 	private void setRegression_interceptB() {
 		this.intercept = ColumnTools.mean(y) - slope * ColumnTools.mean(x);
+	}
+	public double predictY(Particle x_val) {
+		return (slope * (double) x_val.getValue()) + intercept;
 	}
 
 }
