@@ -16,6 +16,7 @@ import dataframe.Row;
 import distances.Distance;
 import distances.Euclidean;
 import distances.Manhattan;
+import info_gain.InformationGain;
 import machinations.KNN;
 import machinations.Model;
 import metamorphose.Cluster;
@@ -28,11 +29,13 @@ import transform.LogTransform;
 public class bench2 {
     public static void main(String[] args) {
         DataFrame df = new DataFrame();
-        df.loadcsv("testfiles/testing.csv");
-        df.printDataFrame();
-        DataFrameTools.sortByColumn(df, 1);
-        df.printDataFrame();
-        
+        df.loadcsv("testfiles/entropyTesting.csv");
+//        df.setColumnType(5, 'T');
+//        df.setColumnType(1, 'C');
+//        df.setColumnType(2, 'C');
+        InformationGain info = new InformationGain(df);
+        info.entropy(ColumnTools.uniqueValCnt(df.getColumn_byIndex(0)));
+//        info.cadeGain(0);
 //        df.getColumn_byIndex(3).setType('T');
 //        Model knn = new KNN(df, new Manhattan(), 2);
 //        Row testRow = new Row();

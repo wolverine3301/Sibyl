@@ -100,7 +100,7 @@ public class Column {
     }
     
     public HashMap<Object, Double> getFeatureStats() {
-        return featureStats;
+        return featureStats
     }
     
     /**
