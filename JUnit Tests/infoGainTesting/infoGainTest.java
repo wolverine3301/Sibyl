@@ -29,7 +29,7 @@ class infoGainTest {
         df.setColumnType(1, 'C');
         df.setColumnType(2, 'C');
         InformationGain info = new InformationGain(df);
-        info.infoGain(0);
+        info.gain(0);
     }
 
 }
