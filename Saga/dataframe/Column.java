@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import particles.Particle;
-
+ 
 public abstract class Column {
     /** The code for type of data stored within the column.
      * Accepted values are:

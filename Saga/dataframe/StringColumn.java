@@ -6,5 +6,5 @@ import particles.Particle;
 
 public class StringColumn extends Column{
 
-
+ 
 }

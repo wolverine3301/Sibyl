@@ -87,6 +87,7 @@ public class NumericColumn extends Column{
         Collections.sort(sorted);
         this.median  = (double) sorted.get(sorted.size() / 2).getValue();
     }
+    
     /**
      * Calculates the standard deviation of a column.
      * @param theColumn the column to preform calculations on.
