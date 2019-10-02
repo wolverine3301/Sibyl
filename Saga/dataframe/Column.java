@@ -1,17 +1,20 @@
 package dataframe;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import particles.Particle;
-/**
- * column object for a data frame
- * @author logan.collier
- * @author Cade Reynoldson
- */
-public class Column {
 
+public abstract class Column {
     /** The code for type of data stored within the column.
      * Accepted values are:
      * 'T' - a target column
@@ -21,20 +24,19 @@ public class Column {
      * 'O' - a ordinal column (Ordered categorys such as A,B, and C grades)
      * 'N' - a numerical column
      *  */
-    private char type; 
-    
+    protected char type; 
     /** The name of the column */
-    private String name; 
-    
-    /** The array list of particles within the column */
-    private ArrayList<Particle> column;
-    
+    protected String name; 
     /** The length of the column (the amount of particles stored in the column) */
-    private int columnLength;
-    
+    protected int columnLength;
+    protected int unique_val_count;
+    protected Object mode;
+    /** The array list of particles within the column */
+    protected ArrayList<Particle> column;
     /** The feature stats of the column. */
-    private HashMap<Object, Double> featureStats;
-    
+    protected HashMap<Object, Double> featureStats;
+    protected Set<Object> uniqueValues;
+    protected HashMap<Object, Integer> uniqueValCnt;
     /**
      * Creates a column with a given name.
      * @param name the name of the column.
@@ -43,7 +45,9 @@ public class Column {
         this.name = name;
         column = new ArrayList<Particle>(); 
         columnLength = 0;
+        uniqueValues = new HashSet<Object>();
         featureStats = new HashMap<Object, Double>();
+        uniqueValCnt = new HashMap<Object, Integer>();
     }
     
     /**
@@ -57,7 +61,6 @@ public class Column {
         column = new ArrayList<Particle>();
         columnLength = 0;
     }
-    
     /**
      * Copy constructor.
      * @param theColumn
@@ -70,6 +73,7 @@ public class Column {
         for (Particle particle : theColumn.column) 
             column.add(particle.deepCopy());
     }
+
     
     public Particle getParticle(int index) {
         return column.get(index);
@@ -100,9 +104,8 @@ public class Column {
     }
     
     public HashMap<Object, Double> getFeatureStats() {
-        return featureStats
-    }
-    
+        return featureStats;
+    }    
     /**
      * Resolves the type of the column.
      */
@@ -112,7 +115,7 @@ public class Column {
             char s2 = column.get(i + 1).type;
             char s3 = column.get(i + 2).type;
             if (s1 == s2 && s1 == s3) {
-                setType(ColumnTools.particleTypeToColumnType(s1));
+                setType(Column.particleTypeToColumnType(s1));
                 break;
             }
         }
@@ -142,7 +145,6 @@ public class Column {
         }
         add(p);
     }
-    
     /**
      * Changes the value of a particle in the data frame.
      * @param index the index to be changed.
@@ -151,7 +153,6 @@ public class Column {
     public void changeValue(int index, Particle p) {
         column.set(index, p);
     }
-    
     /**
      * hasValue
      * returns true if specified value is in array list else returns false
@@ -165,7 +166,6 @@ public class Column {
             return false;
         }
     }
-    
     /**
      * removeValue
      * removes first occurrence of a specific value that may be in the array list 
@@ -185,16 +185,6 @@ public class Column {
         columnLength--;
     }
     /**
-     * getLength
-     * returns the length of the column array list
-     * @return
-     */
-    public int getLength() {
-        return columnLength; 
-        
-    }
-
-    /**
      * make new column from array
      * @param arr
      */
@@ -205,7 +195,6 @@ public class Column {
             this.type = tmp.type;
         }
     }
-    
     /**
      * adds array to end of column list
      * @param arr
@@ -216,14 +205,94 @@ public class Column {
             this.column.add(tmp);
         }
     }
-    
-   /**
+    /**
+     * @return set of unique values
+     */
+    public void setUniqueValues(Column column){ 
+        Set<Object> unique = new HashSet<Object>();
+        for(int i = 0; i < column.getLength(); i++) {
+            unique.add(column.getParticle(i).getValue());
+        }   
+        this.uniqueValues = unique;
+    }
+    /**
+     * returns a hashmap: keys are each unique value in array list and they point to the number of occurances
+     * @return
+     */
+    public void setUniqueValCnt() {
+        Set<Object> unique = this.uniqueValues;
+        HashMap<Object, Integer> vals = new HashMap<>();
+        //initialize map
+        for(Object o : unique) {
+            vals.put(o, 0);
+        }
+        //counting
+        for(int i = 0; i < column.size(); i++) {  
+            Particle p = column.get(i);
+            vals.replace(p.getValue(), (Integer)vals.get(p.getValue()) +1);
+        }//end count
+        // Create a list from elements of HashMap 
+        List<Map.Entry<Object, Integer>> list = new LinkedList<Map.Entry<Object, Integer> >(vals.entrySet()); 
+  
+        // Sort the list 
+        Collections.sort(list, new Comparator<Map.Entry<Object, Integer> >() { 
+            public int compare(Map.Entry<Object, Integer> o1,  
+                               Map.Entry<Object, Integer> o2) 
+            { 
+                return (o1.getValue()).compareTo(o2.getValue()); 
+            } 
+        });
+        Collections.reverse(list);
+        // put data from sorted list to hashmap  
+        HashMap<Object, Integer> temp = new LinkedHashMap<Object, Integer>(); 
+        for (Map.Entry<Object, Integer> aa : list) { 
+            temp.put(aa.getKey(), aa.getValue()); 
+        }
+        this.uniqueValCnt = temp;
+    }//end uniqueValCnt
+    /**
      * return number of unique values
      * @return
      */
-    public int numOfUniques() {
-        return ColumnTools.uniqueValues(this).size();
-    }  
+    public void setNumOfUniques() {
+        this.unique_val_count = uniqueValues.size();
+    }
+	/**
+	 * sets the features of proportion each value has in the column
+	 */
+	public void setFeatureStats() {
+		HashMap<Object, Integer> a = uniqueValCnt;
+		for(Entry<Object, Integer> i : a.entrySet()) {
+			featureStats.put(i.getKey(), (double)i.getValue()/column.size());
+		}
+	}
+    /**
+     * Returns the character corresponding to column types from a particle type.
+     * @param pType the type of the particle.
+     * @return the character of the corresponding column type. 
+     */
+    public static char particleTypeToColumnType(char pType) {
+        if (pType == 'i' || pType == 'd')
+            return 'N';
+        else if (pType == 'o')
+            return 'G';
+        else
+            return 'M';
+    }
+    /**
+     * Returns the most occouring value in a column.
+     * @param theColumn the column to preform calculations on.
+     * @return the most occouring value in a column.
+     */
+    public void setMode() {
+        Object m = null;
+        for (Map.Entry<Object,Integer> entry : uniqueValCnt.entrySet()) {
+            m = entry.getKey();
+            break;
+            }
+        this.mode = m;   
+    }
+
     /**
      * Print column
      */
@@ -233,17 +302,6 @@ public class Column {
             System.out.println(column.get(i).value);
         }
     }
-	
-	/**
-	 * sets the features of proportion each value has in the column
-	 */
-	public void setFeatureStats() {
-		HashMap<Object, Integer> a = ColumnTools.uniqueValCnt(this);
-		for(Entry<Object, Integer> i : a.entrySet()) {
-			featureStats.put(i.getKey(), (double)i.getValue()/column.size());
-		}
-	}
-	
 	/**
 	 * Creates a string representing the column.
 	 * @return a string representing the column.
@@ -255,5 +313,13 @@ public class Column {
 	        str += p.toString() + "\n";
 	    return str;
 	}
+    /**
+     * getLength
+     * returns the length of the column array list
+     * @return
+     */
+    public int getLength() {
+        return columnLength;    
+    }
 
 }
