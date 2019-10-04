@@ -32,7 +32,10 @@ public class NumericColumn extends Column{
     	setMedian();
     	setStandardDeviation();
     }
-    /**
+    public NumericColumn(Column column_byIndex) {
+    	super(column_byIndex);
+	}
+	/**
      * Calculates the sum of a numeric column. Returns 0 if column is non numeric.
      * @param column the column to preform calculations on.
      * @return the sum of a numeric column.

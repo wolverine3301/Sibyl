@@ -31,7 +31,7 @@ public abstract class Column {
     protected int columnLength;
     protected int unique_val_count;
     protected Object mode;
-    protected double mean;
+    public double mean;
     /** The array list of particles within the column */
     protected ArrayList<Particle> column;
     /** The feature stats of the column. */

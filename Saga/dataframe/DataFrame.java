@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import particles.DoubleParticle;
@@ -423,5 +424,38 @@ public class DataFrame {
             rows.get(z).printRow();
             System.out.println();
         }
-    }  
+    }
+    public static DataFrame acquire(DataFrame theDataFrame, String[] args) {
+    	return DataFrameTools.acquire(theDataFrame, args);
+    }
+    public static DataFrame deepCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
+    	return DataFrameTools.deepCopy_columnIndexes(theDataFrame, columnIndexes);
+    }
+    public static DataFrame deepCopy_columnNames(DataFrame theDataFrame, Collection<String> columnNames) {
+    	return DataFrameTools.deepCopy_columnNames(theDataFrame, columnNames);
+    }
+    public static DataFrame deepCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes) {
+    	return DataFrameTools.deepCopy_rowIndexes(theDataFrame, rowIndexes);
+    }
+    public static DataFrame exclude(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
+    	return DataFrameTools.exclude(theDataFrame, columnIndexes);
+    }
+    public static DataFrame shallowCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
+    	return DataFrameTools.shallowCopy_columnIndexes(theDataFrame, columnIndexes);
+    }
+    public static DataFrame shallowCopy_columnNames(DataFrame theDataFrame, Collection<String> columnNames){
+    	return DataFrameTools.shallowCopy_columnNames(theDataFrame, columnNames);
+    }
+    public static DataFrame shallowCopy_columnTypes(DataFrame theDataFrame, Collection<Character> columnTypes){
+    	return DataFrameTools.shallowCopy_columnTypes(theDataFrame, columnTypes);
+    }
+    public static DataFrame shallowCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes){
+    	return DataFrameTools.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
+    }
+    public static void sortByColumn(DataFrame theDataFrame, int columnIndex){
+    	DataFrameTools.sortByColumn(theDataFrame, columnIndex);;
+    }
+    public static DataFrame[] split(DataFrame theDataFrame, int n) {
+    	return DataFrameTools.split(theDataFrame, n);
+    }
 }

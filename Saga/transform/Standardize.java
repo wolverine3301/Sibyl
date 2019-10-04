@@ -5,6 +5,7 @@ import java.util.List;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import dataframe.NumericColumn;
 /**
  * Standardize turn a column of dataframe into standard form of z scores
  * @author logan.collier
@@ -16,43 +17,42 @@ public class Standardize {
 	
 	public Standardize(DataFrame df) {
 		List<Character> nums = new ArrayList<Character>();
-		nums.add('d');
-		nums.add('i');
-		this.df = df.include(nums);
+		nums.add('N');
+		this.df = DataFrame.shallowCopy_columnTypes(df, nums);
 	}
 	
 	/**
 	 * standardize whole dataframe
 	 */
 	public void standardize_df() {
-		for(Column i : df.columns) {
-			standardize_col(i);
+		for(int i =0; i < df.getNumColumns(); i++) {
+			standardize_col((NumericColumn) df.getColumn_byIndex(i));
 		}
 	}
 	/**
 	 * standardize a column
 	 * @param c
 	 */
-	public void standardize_col(Column c) {
+	public void standardize_col(NumericColumn c) {
 		for(int i = 0; i < c.getLength(); i++) {
-			c.getParticle(i).setValue(zscore(c.mean(),c.standardDeviation(),(double)c.getParticle(i).getValue()));
+			c.getParticle(i).setValue(zscore(c.mean,c.std,(double)c.getParticle(i).getValue()));
 		}
 	}
 	/**
 	 * Zero mean for all of data frame
 	 */
 	public void zeroMean_df() {
-		for(Column i : df.columns) {
-			zeroMean_col(i);
+		for(int i =0; i < df.getNumColumns(); i++) {
+			zeroMean_col((NumericColumn) df.getColumn_byIndex(i));
 		}
 	}
 	/**
 	 * zero the mean of a column
 	 * @param c
 	 */
-	public void zeroMean_col(Column c) {
+	public void zeroMean_col(NumericColumn c) {
 		for(int i = 0; i < c.getLength(); i++) {
-			c.getParticle(i).setValue(zeroMean(c.mean(),(double)c.getParticle(i).getValue()));
+			c.getParticle(i).setValue(zeroMean(c.mean,(double)c.getParticle(i).getValue()));
 		}
 	}
 	/**
