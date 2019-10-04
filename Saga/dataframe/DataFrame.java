@@ -65,13 +65,26 @@ public class DataFrame {
         	String[] colNames = line.split(cvsSplitBy);
         	for(int i = 0;i < colNames.length;i++) //Initialize column names.
         		columnNames.add(colNames[i]);
-            for (int i = 0; i < columnNames.size(); i++) { // initializing column objects
-            	Column c = new Column(columnNames.get(i));
-            	columns.add(c);
+
+            // initializing column objects
+            line = br.readLine();
+            String[] lines = line.split(cvsSplitBy);
+            Row row = new Row();
+            for(int i=0;i<columnNames.size();i++) {
+            	Particle p = Particle.resolveType(lines[i]);
+            	if(p.type == 'i' || p.type == 'd') {
+            		Column c = new NumericColumn(columnNames.get(i));
+            		columns.add(c);
+            	}else {
+            		Column c = new GenericColumn(columnNames.get(i));
+            		columns.add(c);
+            	}
+            	row.add(p);
             }
+            rows.add(row);
         	while ((line = br.readLine()) != null) { //Read in each line, create row objects and initialize data.
-                String[] lines = line.split(cvsSplitBy);
-                Row row = new Row();
+                lines = line.split(cvsSplitBy);
+                row = new Row();
                 for(int i=0;i<columnNames.size();i++) { //load data into columns and rows
                 	Particle p = Particle.resolveType(lines[i]);
                 	columns.get(i).setType(p.getType());
@@ -101,12 +114,10 @@ public class DataFrame {
             for (int j = 0; j < numRows; j++) {
                 Particle p = c.getParticle(j);
                 if (p instanceof NANParticle) {
-                    if (c.getType() == 'i')
-                        p = Particle.resolveType((int) Math.round(ColumnTools.mean(c)));
-                    else if (getColumn_byIndex(i).getType() == 'd')
-                        p = Particle.resolveType(ColumnTools.mean(c));
+                    if (c.getType() == 'N')
+                        p = Particle.resolveType(c.mean);
                     else
-                        p = Particle.resolveType(ColumnTools.mode(c));
+                        p = Particle.resolveType(c.mode);
                     getColumn_byIndex(i).changeValue(j, p);
                     getRow_byIndex(j).changeValue(i, p);
                 }
@@ -122,7 +133,7 @@ public class DataFrame {
 	        for (int j = 0; j < numRows; j++) {
 	            Particle p = getColumn_byIndex(i).getParticle(j);
 	            if (p instanceof NANParticle) {
-	                p = Particle.resolveType(ColumnTools.mode(getColumn_byIndex(i)));
+	                p = Particle.resolveType(getColumn_byIndex(i).mode);
 	                getColumn_byIndex(i).changeValue(j, p);
 	                getRow_byIndex(j).changeValue(i, p);
 	            }
@@ -197,7 +208,12 @@ public class DataFrame {
      */
     public void addColumnFromArray(String name, Object arr[]) {
     	Particle p = Particle.resolveType(arr[0]);
-    	Column c = new Column(name, p.type);
+    	Column c;
+    	if(p.type == 'd' || p.type == 'i') {
+    		c = new NumericColumn(name);
+    	}else {
+    		c = new GenericColumn(name,p.type);
+    	}
     	c.add(p);
     	rows.get(0).add(p);
     	for(int i = 1; i < arr.length;i++) {
@@ -241,7 +257,6 @@ public class DataFrame {
         }
         rows.add(r);
         numRows++;
-        
     }
     
     /**
@@ -254,7 +269,6 @@ public class DataFrame {
         for (int i = 0; i < r.getLength(); i++) 
             columns.get(i).add(r.getParticle(i));
     }
-    
     /**
      * Adds a column to the data frame.
      * @param c the column to be added.
@@ -280,7 +294,7 @@ public class DataFrame {
 	 * @param name The name of the new column.
 	 */
 	public void addBlankColumn(String name) {
-		Column c = new Column(name);
+		Column c = new GenericColumn(name);
 		columnNames.add(name);
 		columnTypes.add('n');
 		columns.add(c);
@@ -293,7 +307,11 @@ public class DataFrame {
 	 * @param dataType the data type of the new column.
 	 */
 	public void addBlankColumn(String name, char dataType) {
-	    Column c = new Column(name, dataType);
+		Column c;
+		if(dataType == 'N')
+			c = new NumericColumn(name);
+		else
+			c = new GenericColumn(name, dataType);
 	    columnNames.add(name);
 	    columnTypes.add(dataType);
 	    columns.add(c);
@@ -393,7 +411,6 @@ public class DataFrame {
 		}
 		return cols;
 	}
-	
     /**
      * Prints the data frame.
      */
@@ -406,6 +423,5 @@ public class DataFrame {
             rows.get(z).printRow();
             System.out.println();
         }
-    }
-    
+    }  
 }

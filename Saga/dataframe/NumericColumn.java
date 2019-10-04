@@ -1,5 +1,4 @@
 package dataframe;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,18 +12,26 @@ import particles.Particle;
 
 public class NumericColumn extends Column{
 	public double sum;
-	public double mean;
 	public double median;
 	public double mode;
 	public double variance;
 	public double std;
 	public double entropy;
     
-	public NumericColumn(Column theColumn) {
-		super(theColumn);
-		setSum();
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * Creates a column with a given name and data type.
+     * @param theName
+     * @param theType
+     */
+    public NumericColumn(String theName) {
+    	super(theName,'N');
+    	setSum();
+    	setMean();
+    	setEntropy();
+    	setVariance();
+    	setMedian();
+    	setStandardDeviation();
+    }
     /**
      * Calculates the sum of a numeric column. Returns 0 if column is non numeric.
      * @param column the column to preform calculations on.
@@ -47,7 +54,7 @@ public class NumericColumn extends Column{
      * @return the mean of a column.
      */
     public void setMean() {
-        this.mean =  sum / column.size();  
+        super.mean =  sum / column.size();  
     }
     /**
      * Calculates the entropy of a column.

@@ -31,6 +31,7 @@ public abstract class Column {
     protected int columnLength;
     protected int unique_val_count;
     protected Object mode;
+    protected double mean;
     /** The array list of particles within the column */
     protected ArrayList<Particle> column;
     /** The feature stats of the column. */
@@ -72,21 +73,17 @@ public abstract class Column {
         column = new ArrayList<Particle>();
         for (Particle particle : theColumn.column) 
             column.add(particle.deepCopy());
-    }
-
-    
+    } 
     public Particle getParticle(int index) {
         return column.get(index);
-    }
-    
+    }  
     /**
      * Manual override of auto determined type.
      * @param type the new type of the column.
      */
     public void setType(char type) {
         this.type = type;
-    }
-    
+    } 
     /**
      * Returns the type of the column.
      * @return the type of the column.
@@ -94,7 +91,6 @@ public abstract class Column {
     public char getType() {
         return type;
     }
-    
     /**
      * Returns the name of the column.
      * @return the name of the column.
@@ -102,7 +98,6 @@ public abstract class Column {
     public String getName() {
         return name;
     }
-    
     public HashMap<Object, Double> getFeatureStats() {
         return featureStats;
     }    
