@@ -179,6 +179,7 @@ public abstract class Column {
         column.remove(index);
         columnLength--;
     }
+
     /**
      * make new column from array
      * @param arr
@@ -316,5 +317,9 @@ public abstract class Column {
     public int getLength() {
         return columnLength;    
     }
+    public Set<Object> getUniqueValues(){
+    	return uniqueValues;
+    }
+    
 
 }

@@ -25,6 +25,7 @@ public class DataFrame {
 	
 	/** The type of each column */
 	private ArrayList<Character> columnTypes;
+	public ArrayList<Integer> numericIndexes;
 	
 	/** The ArrayList of columns */
 	private ArrayList<Column> columns;
@@ -46,6 +47,7 @@ public class DataFrame {
 		this.rows = new ArrayList<Row>();
 		this.columnNames = new ArrayList<String>();
 		this.columnTypes = new ArrayList<Character>();
+		this.numericIndexes = new ArrayList<Integer>();
 		numRows = 0;
 		numColumns = 0;
 		
@@ -74,10 +76,13 @@ public class DataFrame {
             for(int i=0;i<columnNames.size();i++) {
             	Particle p = Particle.resolveType(lines[i]);
             	if(p.type == 'i' || p.type == 'd') {
+            		numericIndexes.add(i);
             		Column c = new NumericColumn(columnNames.get(i));
+            		c.add(p);
             		columns.add(c);
             	}else {
             		Column c = new GenericColumn(columnNames.get(i));
+            		c.add(p);
             		columns.add(c);
             	}
             	row.add(p);
@@ -174,8 +179,6 @@ public class DataFrame {
 	public Row getRow_byIndex(int index) {
 	    return rows.get(index);
 	}
-	
-	
 	/**
 	 * getColumn returns a single column by name from the dataframe.
 	 * @param name The name of the desired column.
@@ -200,8 +203,6 @@ public class DataFrame {
     public Column getColumn_byIndex(int index) {
         return columns.get(index);
     }
-    
-    
     /**
      * Add a new column from an array.
      * @param name The name of the column.

@@ -24,6 +24,11 @@ public class CrossValidation {
 			prev_index = new_index;
 		}
 	}
+	public void printScores() {
+		for(Score i : scores) {
+			i.printScore();
+		}
+	}
 	
 
 }

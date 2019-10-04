@@ -14,9 +14,7 @@ import particles.Particle;
  * @author Cade Reynoldson
  * @version 1.0
  */
-public final class DataFrameTools {
-    
-    
+public final class DataFrameTools {  
     /**
      * Versitility function, arguments in the string array passed to the method will be parsed, and a shallow copy of the data frame with rows
      * that meet the specified arguments will be returned, can take multiple arguments.
@@ -64,6 +62,7 @@ public final class DataFrameTools {
         return DataFrameTools.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
     }
     
+  //TODO for some reason calling this does not include the first row in the new copied dataframe
     
     /**
      * Creates a new shallow copied data frame internally from a list of column names.
@@ -74,9 +73,9 @@ public final class DataFrameTools {
      public static DataFrame deepCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
          DataFrame newDataFrame = new DataFrame();
          for (Integer i : columnIndexes) {
-        	 if(theDataFrame.getColumn_byIndex(i).getType() == 'N')
+        	 if(theDataFrame.getColumn_byIndex(i).getType() == 'N') {
         		 newDataFrame.addColumn(new NumericColumn(theDataFrame.getColumn_byIndex(i)));
-        	 else
+        	 }else
         		 newDataFrame.addColumn(new GenericColumn(theDataFrame.getColumn_byIndex(i)));
          }
          return newDataFrame;
@@ -117,8 +116,7 @@ public final class DataFrameTools {
         }
         return newDataFrame;
     }
-    
-    
+
     /**
      * Creates a new deep copied data frame internally from a list of row indexes.
      * @param theDataFrame the data frame to copy.

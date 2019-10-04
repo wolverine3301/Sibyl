@@ -6,6 +6,8 @@ import java.util.List;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.NumericColumn;
+import particles.DoubleParticle;
+import particles.Particle;
 /**
  * Standardize turn a column of dataframe into standard form of z scores
  * @author logan.collier
@@ -13,29 +15,28 @@ import dataframe.NumericColumn;
  */
 public class Standardize {
 	
-	private DataFrame df;
+	public DataFrame df;
 	
-	public Standardize(DataFrame df) {
-		List<Character> nums = new ArrayList<Character>();
-		nums.add('N');
-		this.df = DataFrame.shallowCopy_columnTypes(df, nums);
+	public Standardize(DataFrame data) {
+		this.df = DataFrame.deepCopy_columnIndexes(data, data.numericIndexes);
+
 	}
-	
 	/**
 	 * standardize whole dataframe
 	 */
 	public void standardize_df() {
 		for(int i =0; i < df.getNumColumns(); i++) {
-			standardize_col((NumericColumn) df.getColumn_byIndex(i));
+			standardize_col((NumericColumn) df.getColumn_byIndex(i), i);
 		}
 	}
 	/**
 	 * standardize a column
 	 * @param c
 	 */
-	public void standardize_col(NumericColumn c) {
+	public void standardize_col(NumericColumn c, int index) {
 		for(int i = 0; i < c.getLength(); i++) {
-			c.getParticle(i).setValue(zscore(c.mean,c.std,(double)c.getParticle(i).getValue()));
+			Particle p = new DoubleParticle(zscore(c.mean,c.std,c.getParticle(i)));
+			df.replaceParticle(i, index, p);
 		}
 	}
 	/**
@@ -52,7 +53,9 @@ public class Standardize {
 	 */
 	public void zeroMean_col(NumericColumn c) {
 		for(int i = 0; i < c.getLength(); i++) {
-			c.getParticle(i).setValue(zeroMean(c.mean,(double)c.getParticle(i).getValue()));
+		    df.getColumn_byIndex(i).getParticle(i).resolveType(zeroMean(c.mean,c.getParticle(i)));
+            //df.getColumn_byIndex(i).changeValue(i, p);
+            df.getRow_byIndex(i).changeValue(i, df.getColumn_byIndex(i).getParticle(i));
 		}
 	}
 	/**
@@ -61,8 +64,11 @@ public class Standardize {
 	 * @param x
 	 * @return
 	 */
-	private double zeroMean(double mean, double x) {
-		return x-mean;
+	private double zeroMean(double mean, Particle x) {
+		if(x.type == 'i')
+			return (int)x.getValue()-mean;
+		else 
+			return (double)x.getValue()-mean;
 	}
 	/**
 	 * compute z score
@@ -71,8 +77,11 @@ public class Standardize {
 	 * @param x
 	 * @return
 	 */
-	private double zscore(double mean, double std, double x) {
-		return (x - mean)/std;	
+	private double zscore(double mean, double std, Particle x) {
+		if(x.type == 'i')
+			return ((int)x.getValue()- mean)/std;	
+		else
+			return ((double)x.getValue()- mean)/std;	
 	}
 
 }

@@ -27,9 +27,9 @@ public class NumericColumn extends Column{
     	super(theName,'N');
     	setSum();
     	setMean();
-    	setEntropy();
+    	//setEntropy();
     	setVariance();
-    	setMedian();
+    	//setMedian();
     	setStandardDeviation();
     }
     public NumericColumn(Column column_byIndex) {
