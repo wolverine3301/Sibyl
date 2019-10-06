@@ -77,11 +77,11 @@ public class DataFrame {
             	Particle p = Particle.resolveType(lines[i]);
             	if(p.type == 'i' || p.type == 'd') {
             		numericIndexes.add(i);
-            		Column c = new NumericColumn(columnNames.get(i));
+            		Column c = new Column(columnNames.get(i));
             		c.add(p);
             		columns.add(c);
             	}else {
-            		Column c = new GenericColumn(columnNames.get(i));
+            		Column c = new Column(columnNames.get(i));
             		c.add(p);
             		columns.add(c);
             	}
@@ -101,6 +101,14 @@ public class DataFrame {
         	}
         	for(int i = 0;i < columnNames.size();i++) {
         	    getColumn_byIndex(i).resolveType();
+        	    if(getColumn_byIndex(i).type == 'N') {
+        	    	getColumn_byIndex(i).setSum();
+        	    	getColumn_byIndex(i).setMean();
+        	    	//getColumn_byIndex(i).setEntropy();
+        	    	getColumn_byIndex(i).setVariance();
+        	    	//getColumn_byIndex(i).setMedian();
+        	    	getColumn_byIndex(i).setStandardDeviation();
+        	    }
                 columnTypes.add(columns.get(i).getType());
         	}
         	this.numRows = rows.size();
@@ -211,11 +219,7 @@ public class DataFrame {
     public void addColumnFromArray(String name, Object arr[]) {
     	Particle p = Particle.resolveType(arr[0]);
     	Column c;
-    	if(p.type == 'd' || p.type == 'i') {
-    		c = new NumericColumn(name);
-    	}else {
-    		c = new GenericColumn(name,p.type);
-    	}
+    	c = new Column(name,p.getType());
     	c.add(p);
     	rows.get(0).add(p);
     	for(int i = 1; i < arr.length;i++) {
@@ -296,7 +300,7 @@ public class DataFrame {
 	 * @param name The name of the new column.
 	 */
 	public void addBlankColumn(String name) {
-		Column c = new GenericColumn(name);
+		Column c = new Column(name);
 		columnNames.add(name);
 		columnTypes.add('n');
 		columns.add(c);
@@ -310,10 +314,7 @@ public class DataFrame {
 	 */
 	public void addBlankColumn(String name, char dataType) {
 		Column c;
-		if(dataType == 'N')
-			c = new NumericColumn(name);
-		else
-			c = new GenericColumn(name, dataType);
+		c = new Column(name, dataType);
 	    columnNames.add(name);
 	    columnTypes.add(dataType);
 	    columns.add(c);

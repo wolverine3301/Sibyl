@@ -73,10 +73,7 @@ public final class DataFrameTools {
      public static DataFrame deepCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
          DataFrame newDataFrame = new DataFrame();
          for (Integer i : columnIndexes) {
-        	 if(theDataFrame.getColumn_byIndex(i).getType() == 'N') {
-        		 newDataFrame.addColumn(new NumericColumn(theDataFrame.getColumn_byIndex(i)));
-        	 }else
-        		 newDataFrame.addColumn(new GenericColumn(theDataFrame.getColumn_byIndex(i)));
+        		newDataFrame.addColumn(new Column(theDataFrame.getColumn_byIndex(i)));
          }
          return newDataFrame;
      }
@@ -90,10 +87,7 @@ public final class DataFrameTools {
     public static DataFrame deepCopy_columnNames(DataFrame theDataFrame, Collection<String> columnNames) {
         DataFrame newDataFrame = new DataFrame();
         for (String name : columnNames) { // Create the columns
-        	if(theDataFrame.getColumn_byName(name).getType() == 'N')
-        		newDataFrame.addColumn(new NumericColumn(theDataFrame.getColumn_byName(name)));
-       	 	else
-       	 		newDataFrame.addColumn(new GenericColumn(theDataFrame.getColumn_byName(name)));
+        	newDataFrame.addColumn(new Column(theDataFrame.getColumn_byName(name)));
         }
         return newDataFrame;
     }
@@ -107,12 +101,7 @@ public final class DataFrameTools {
     public static DataFrame deepCopy_columnTypes(DataFrame theDataFrame, Collection<Character> columnTypes) {
         DataFrame newDataFrame = new DataFrame();
         for (int i = 0; i < theDataFrame.getNumColumns(); i++) {
-            if (columnTypes.contains(theDataFrame.getColumn_byIndex(i).getType())) {
-            	if(theDataFrame.getColumn_byIndex(i).getType() == 'N')
-            		newDataFrame.addColumn(new NumericColumn(theDataFrame.getColumn_byIndex(i)));
-            	else
-            		newDataFrame.addColumn(new GenericColumn(theDataFrame.getColumn_byIndex(i)));
-            }
+            	newDataFrame.addColumn(new Column(theDataFrame.getColumn_byIndex(i)));
         }
         return newDataFrame;
     }
