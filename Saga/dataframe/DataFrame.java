@@ -28,10 +28,10 @@ public class DataFrame {
 	public ArrayList<Integer> numericIndexes;
 	
 	/** The ArrayList of columns */
-	private ArrayList<Column> columns;
+	protected ArrayList<Column> columns;
 	
 	/** The ArrayList of rows */
-	private ArrayList<Row> rows;
+	protected ArrayList<Row> rows;
 	
 	/** The number of rows in the data frame */
 	private int numRows;
@@ -426,6 +426,15 @@ public class DataFrame {
             rows.get(z).printRow();
             System.out.println();
         }
+    }public void setStuff() {
+    	for(Column i : columns) {
+    		//i.setEntropy();
+    		//i.setFeatureStats();
+    		i.setMean();
+    		//i.setMode();
+    		//i.setUniqueValCnt();
+    		i.setUniqueValues(i);
+    	}
     }
     public static DataFrame acquire(DataFrame theDataFrame, String[] args) {
     	return DataFrameTools.acquire(theDataFrame, args);
@@ -457,7 +466,7 @@ public class DataFrame {
     public static void sortByColumn(DataFrame theDataFrame, int columnIndex){
     	DataFrameTools.sortByColumn(theDataFrame, columnIndex);;
     }
-    public static DataFrame[] split(DataFrame theDataFrame, int n) {
+    public static ArrayList<DataFrame> split(DataFrame theDataFrame, int n) {
     	return DataFrameTools.split(theDataFrame, n);
     }
 }

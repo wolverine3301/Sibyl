@@ -45,7 +45,7 @@ public class LinearRegression extends Regression{
 	 * @param slope
 	 */
 	private void setRegression_interceptB() {
-		this.intercept = ColumnTools.mean(y) - slope * ColumnTools.mean(x);
+		this.intercept = y.mean - slope * x.mean;
 	}
 	public double predictY(Particle x_val) {
 		return (slope * (double) x_val.getValue()) + intercept;

@@ -14,10 +14,10 @@ public class Stats {
 		double sum = 0;
 		for(int i = 0; i < x.getLength(); i++) {
 			if(x.getParticle(i).getValue() instanceof Double) {
-				sum = sum + Math.pow(((Double)x.getParticle(i).getValue() - ColumnTools.mean(x)), 2);
+				sum = sum + Math.pow(((Double)x.getParticle(i).getValue() - x.mean), 2);
 			}
 			else if(x.getParticle(i).getValue() instanceof Integer) {
-				sum = sum + Math.pow(( (Integer)x.getParticle(i).getValue() - ColumnTools.mean(x) ), 2);
+				sum = sum + Math.pow(( (Integer)x.getParticle(i).getValue() - x.mean ), 2);
 			}
 		}
 		return sum;
@@ -45,7 +45,7 @@ public class Stats {
 			else if(y.getParticle(i).getValue() instanceof Integer) {
 				y_1 = (int)y.getParticle(i).getValue();
 			}
-			sum = sum + Math.pow(((x_1 - ColumnTools.mean(x)) * (y_1- ColumnTools.mean(y)) ),2);
+			sum = sum + Math.pow(((x_1 - x.mean) * (y_1- y.mean) ),2);
 		}
 		return sum;
 	}
@@ -70,7 +70,7 @@ public class Stats {
 			else if(y.getParticle(i).getValue() instanceof Integer) {
 				y_1 = (int)y.getParticle(i).getValue();
 			}
-			covar = covar + (x_1 - ColumnTools.mean(x)) * (y_1 - ColumnTools.mean(y));
+			covar = covar + (x_1 - x.mean) * (y_1 - y.mean);
 			
 		}
 		return covar/x.getLength();	
@@ -98,7 +98,7 @@ public class Stats {
 			else if(y.getParticle(i).getValue() instanceof Integer) {
 				y_1 = (int)y.getParticle(i).getValue();
 			}
-			sum = sum + ((x_1 - ColumnTools.mean(x)) * (y_1- ColumnTools.mean(y)));
+			sum = sum + ((x_1 - x.mean) * (y_1- y.mean));
 		}
 		return sum;
 	}
@@ -149,7 +149,7 @@ public class Stats {
 		double[][] covar = new double[df.getNumColumns()][df.getNumColumns()];
 		//fill the columns of covariance matrix.
 	    for (int i = 0; i < df.getNumColumns(); i++) { 
-	    	covar[i][i] = ColumnTools.variance(df.getColumn_byIndex(i));
+	    	covar[i][i] = df.getColumn_byIndex(i).variance;
 	    	for(int j = i+1; j < df.getNumColumns(); j++) {
 	    		covar[i][j] = covariance(df.getColumn_byIndex(i), df.getColumn_byIndex(j));
 	    		covar[j][i] = covariance(df.getColumn_byIndex(j), df.getColumn_byIndex(i));

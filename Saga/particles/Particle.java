@@ -137,6 +137,15 @@ public abstract class Particle implements Comparable<Particle>{
         }
         return true;
     }
+    public double getDoubleValue() {
+    	double num = 0;
+    	if(type == 'i') {
+    		num = (int)value;
+    		return (double) num;
+    	}else {
+    		return (double)value;
+    	}
+    }
     
     /**
      * Returns the value of the particle.

@@ -29,10 +29,6 @@ public abstract class Model {
 	public Model(DataFrame theDataFrame) {
 	    trainDF_targets = DataFrameTools.shallowCopy_columnTypes(theDataFrame, set_targets());
 	    trainDF_variables = DataFrameTools.shallowCopy_columnTypes(theDataFrame, set_variables());    
-	    System.out.println("Targets: ");
-	    trainDF_targets.printDataFrame();
-	    System.out.println("Training Data: ");
-	    trainDF_variables.printDataFrame();
 	}
 	
 	/**
@@ -57,17 +53,25 @@ public abstract class Model {
 		vars.add('N');
 		return vars;
 	}
+	public abstract void train();
 	/**
 	 * Returns the probabilities of a row being a part of each class
 	 * @return
 	 */
-	public abstract HashMap<Object,Double> probability(Row row);
+	public abstract HashMap<String , HashMap<Object , Double>>  probability(Row row);
 	
 	/**
 	 * Make a prediction on a row of data
 	 * @param row
 	 * @return
 	 */
-	public abstract ArrayList<ArrayList<Particle>> predict(Row row);
+	public abstract Particle predict(Row row);
+	
+	public abstract ArrayList<ArrayList<Particle>> predictDF(DataFrame testDF);
+	
+	public void setTrain(DataFrame trainDF) {
+		this.trainDF_targets = DataFrameTools.shallowCopy_columnTypes(trainDF, set_targets());
+	    this.trainDF_variables = DataFrameTools.shallowCopy_columnTypes(trainDF, set_variables());   	
+	}
 
 }

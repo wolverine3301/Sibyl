@@ -5,7 +5,6 @@ import java.util.List;
 
 import dataframe.Column;
 import dataframe.DataFrame;
-import dataframe.NumericColumn;
 import particles.DoubleParticle;
 import particles.Particle;
 /**
@@ -81,11 +80,9 @@ public class Standardize {
 	 */
 	private double zscore(double mean, double std, Particle x) {
 		if(x.type == 'i') {
-			System.out.println((int)x.getValue() - mean);
 			return ((int)x.getValue()- mean)/std;
 		}
 		else {
-			System.out.println(((double)x.getValue()- mean)/std);
 			return ((double)x.getValue()- mean)/std;
 		}
 	}

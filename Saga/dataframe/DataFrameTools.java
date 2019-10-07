@@ -1,6 +1,8 @@
 package dataframe;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -255,18 +257,22 @@ public final class DataFrameTools {
      * @param n - number of new dataframes 
      * @return dataframe[] of shallow copiesshallow copies
      */
-    public static DataFrame[] split(DataFrame theDataFrame, int n) {
-        int interval = Math.floorDiv(theDataFrame.getNumRows(), n-1);
-        DataFrame[] partitions = new DataFrame[n-1];
+    public static ArrayList<DataFrame> split(DataFrame df, int n) {
+        int interval = Math.floorDiv(df.getNumRows(), n);
+        //shuffle(df);
+        ArrayList<DataFrame> partitions = new ArrayList<DataFrame>();
         Set<Integer> set = new HashSet<Integer>();
-        for (int i = 0; i < theDataFrame.getNumRows() -1; i += interval-1) {
+        for (int i = 0; i < df.getNumRows() -1; i += interval) {
             set.clear();
-            for(int j = i + 1;j <= i + interval - 1; j++) {
-                if(i == 0) 
-                    set.add(0);
+            for(int j = i; j < i + interval; j++) {
+            	if(j >= df.getNumRows()) break;
                 set.add(j); 
             }
+            partitions.add(shallowCopy_rowIndexes(df,set));
         }
         return partitions;
     }
+    public static void shuffle(DataFrame df) {
+		Collections.shuffle(df.rows);
+	}
 }

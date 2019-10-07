@@ -32,10 +32,10 @@ public class LogRegression extends Regression{
 	 * @return
 	 */
 	public double log_slopeM() {
-		return ((x.getLength() * sum_ylnx) - (ColumnTools.sum(y) * sum_lnx)) / ((x.getLength() * sum_lnx_squared) - Math.pow(sum_lnx, 2));
+		return ((x.getLength() * sum_ylnx) - (y.sum * sum_lnx)) / ((x.getLength() * sum_lnx_squared) - Math.pow(sum_lnx, 2));
 	}
 	public double intercept_b() {
-		return (ColumnTools.sum(y) - (log_slopeM() * sum_lnx)) / x.getLength();
+		return (y.sum - (log_slopeM() * sum_lnx)) / x.getLength();
 	}
 	private void setVars() {
 		double x_1 = 0;
