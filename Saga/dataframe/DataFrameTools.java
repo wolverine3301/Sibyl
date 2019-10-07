@@ -251,7 +251,7 @@ public final class DataFrameTools {
         for (int i = 0; i < theDataFrame.getNumRows(); i++)
             theDataFrame.replaceRow(i, sortedRows.remove());
     }
-    
+     
     /**
      * Split dataframe into n equal sections
      * @param n - number of new dataframes 

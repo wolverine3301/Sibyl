@@ -41,6 +41,7 @@ public abstract class Model {
 		return target;
 	}
 	
+	
 	/**
 	 * Sets the variables list.
 	 * @return a tree set of the variables used to train data.

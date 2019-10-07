@@ -86,6 +86,7 @@ public class NaiveBayes extends Model{
 	 * @param targetNum
 	 * @return
 	 */
+	
 	public HashMap<Object, HashMap<String, HashMap<Object, Double>>> cat_naivebayes_i(int targetNum){
 		HashMap<Object, HashMap<String, HashMap<Object, Double>>> naive_bayes = new HashMap<Object, HashMap<String, HashMap<Object, Double>>>();
 		//DataFrame[] classes = classes(targetNum);

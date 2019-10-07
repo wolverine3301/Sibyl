@@ -8,6 +8,7 @@ import machinations.Model;
 
 public class CrossValidation {
 	
+	
 	private ArrayList<DataFrame> trials;
 	public ArrayList<Score> scores;
 	public CrossValidation(DataFrame df, int N, Model model) {

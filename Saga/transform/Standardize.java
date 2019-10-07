@@ -59,6 +59,7 @@ public class Standardize {
             //df.getRow_byIndex(i).changeValue(i, df.getColumn_byIndex(i).getParticle(i));
 		}
 	}
+	
 	/**
 	 * make data have a mean of zero
 	 * @param mean
