@@ -31,12 +31,13 @@ public class Column {
     protected String name; 
     /** The length of the column (the amount of particles stored in the column) */
     protected int columnLength;
-    protected int unique_val_count;
+
     /** The array list of particles within the column */
     protected ArrayList<Particle> column;
     /** The feature stats of the column. */
     protected HashMap<Object, Double> featureStats;
     protected Set<Object> uniqueValues;
+    protected int unique_val_count;
     protected HashMap<Object, Integer> uniqueValCnt;
     protected Object mode;
     public double mean;
@@ -107,12 +108,22 @@ public class Column {
     }
     public HashMap<Object, Double> getFeatureStats() {
         return featureStats;
-    }    
+    }  
+    public void resolveTypeNew(char pType) {
+    	if (pType == 'i' || pType == 'd')
+            this.type = 'N';
+        else if (pType == 'o')
+            this.type = 'G';
+        else if (pType == 's')
+        	this.type = 'C';
+        else
+            this.type = 'M';
+    }
     /**
      * Resolves the type of the column.
      */
     public void resolveType() {
-        for (int i = 0; i < columnLength - 2; i++) {
+        for (int i = 0; i < columnLength - 1; i++) {
             char s1 = column.get(i).type;
             char s2 = column.get(i + 1).type;
             char s3 = column.get(i + 2).type;
@@ -224,7 +235,7 @@ public class Column {
      */
     public void setUniqueValCnt() {
         Set<Object> unique = this.uniqueValues;
-        HashMap<Object, Integer> vals = new HashMap<>();
+        HashMap<Object, Integer> vals = new HashMap<Object, Integer>();
         //initialize map
         for(Object o : unique) {
             vals.put(o, 0);
@@ -270,19 +281,6 @@ public class Column {
 		}
 	}
     /**
-     * Returns the character corresponding to column types from a particle type.
-     * @param pType the type of the particle.
-     * @return the character of the corresponding column type. 
-     */
-    public static char particleTypeToColumnType(char pType) {
-        if (pType == 'i' || pType == 'd')
-            return 'N';
-        else if (pType == 'o')
-            return 'G';
-        else
-            return 'M';
-    }
-    /**
      * Returns the most occouring value in a column.
      * @param theColumn the column to preform calculations on.
      * @return the most occouring value in a column.
@@ -295,6 +293,20 @@ public class Column {
             }
         this.mode = m;   
     }
+    /**
+     * Returns the character corresponding to column types from a particle type.
+     * @param pType the type of the particle.
+     * @return the character of the corresponding column type. 
+     */
+    public static char particleTypeToColumnType(char pType) {
+        if (pType == 'i' || pType == 'd')
+            return 'N';
+        else if (pType == 'o')
+            return 'G';
+        else
+            return 'M';
+    }
+
 
     /**
      * Print column

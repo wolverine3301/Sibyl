@@ -80,28 +80,31 @@ public class DataFrame {
             		numericIndexes.add(i);
             		Column c = new Column(columnNames.get(i));
             		c.add(p);
+            		c.setType('N');
             		columns.add(c);
+
             	}else {
             		Column c = new Column(columnNames.get(i));
             		c.add(p);
+            		c.setType('C');
             		columns.add(c);
+
             	}
             	row.add(p);
             }
             rows.add(row);
+            
         	while ((line = br.readLine()) != null) { //Read in each line, create row objects and initialize data.
                 lines = line.split(cvsSplitBy);
                 row = new Row();
                 for(int i=0;i<columnNames.size();i++) { //load data into columns and rows
                 	Particle p = Particle.resolveType(lines[i]);
-                	columns.get(i).setType(p.getType());
                 	columns.get(i).add(p);
                 	row.add(p);
                 }
                 rows.add(row);
         	}
         	for(int i = 0;i < columnNames.size();i++) {
-        	    getColumn_byIndex(i).resolveType();
         	    if(getColumn_byIndex(i).type == 'N') {
         	    	getColumn_byIndex(i).setSum();
         	    	getColumn_byIndex(i).setMean();
@@ -109,7 +112,7 @@ public class DataFrame {
         	    	getColumn_byIndex(i).setVariance();
         	    	//getColumn_byIndex(i).setMedian();
         	    	getColumn_byIndex(i).setStandardDeviation();
-        	    }
+        	    }    
                 columnTypes.add(columns.get(i).getType());
         	}
         	this.numRows = rows.size();
@@ -117,6 +120,7 @@ public class DataFrame {
         } catch (IOException e) {
         	e.printStackTrace();
         }
+        
 	}
 	
 	/**
@@ -429,12 +433,19 @@ public class DataFrame {
         }
     }public void setStuff() {
     	for(Column i : columns) {
-    		//i.setEntropy();
-    		//i.setFeatureStats();
-    		i.setMean();
-    		//i.setMode();
-    		//i.setUniqueValCnt();
-    		i.setUniqueValues(i);
+    		if(i.type == 'N') {
+	    		i.setSum();
+	    		i.setMean();
+	    		i.setStandardDeviation();
+	    		i.setUniqueValues(i);
+	    		i.setUniqueValCnt();
+	    		i.setEntropy();
+	    		i.setMode();
+	    		//i.setFeatureStats();
+	    		
+    		}
+    		
+    		
     	}
     }
     public static DataFrame acquire(DataFrame theDataFrame, String[] args) {

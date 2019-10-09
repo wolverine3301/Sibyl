@@ -21,14 +21,15 @@ public abstract class Model {
 	
 	/** The training data used by predictive models. */
 	public DataFrame trainDF_variables;
-	
+
 	/**
 	 * Abstract model constructor.
 	 * @param theDataFrame
 	 */
 	public Model(DataFrame theDataFrame) {
 	    trainDF_targets = DataFrameTools.shallowCopy_columnTypes(theDataFrame, set_targets());
-	    trainDF_variables = DataFrameTools.shallowCopy_columnTypes(theDataFrame, set_variables());    
+	    trainDF_variables = DataFrameTools.shallowCopy_columnTypes(theDataFrame, set_variables());
+	    trainDF_variables.setStuff();
 	}
 	
 	/**
@@ -40,8 +41,6 @@ public abstract class Model {
 		target.add('T');
 		return target;
 	}
-	
-	
 	/**
 	 * Sets the variables list.
 	 * @return a tree set of the variables used to train data.
@@ -74,5 +73,6 @@ public abstract class Model {
 		this.trainDF_targets = DataFrameTools.shallowCopy_columnTypes(trainDF, set_targets());
 	    this.trainDF_variables = DataFrameTools.shallowCopy_columnTypes(trainDF, set_variables());   	
 	}
+	
 
 }
