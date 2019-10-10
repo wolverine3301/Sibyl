@@ -123,6 +123,7 @@ public final class DataFrameTools {
         for (Integer rowIndex : rowIndexes) {
             newDataFrame.addRow(new Row(theDataFrame.getRow_byIndex(rowIndex)));
         }
+        newDataFrame.setStuff();
         return newDataFrame;
     }
     
@@ -231,6 +232,7 @@ public final class DataFrameTools {
             newDataFrame.addRow(theDataFrame.getRow_byIndex(rowIndex));
         }
         newDataFrame.updateNumRows();
+        newDataFrame.setStuff();
         return newDataFrame;
     } 
     

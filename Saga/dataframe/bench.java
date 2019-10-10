@@ -19,7 +19,7 @@ public class bench {
 		String file = "testfiles/iris.txt";
         DataFrame df = new DataFrame();
         df.loadcsv(file);
-        df.getColumn_byName("Name").setType('M');
+        //df.getColumn_byName("Name").setType('M');
         Standardize s = new Standardize(df);
         s.standardize_df();
         //s.std_df.printDataFrame();
@@ -30,21 +30,20 @@ public class bench {
         df.setStuff();
 
         ArrayList<DataFrame>df1 = DataFrameTools.split(df, 2);
-        for(int i = 0; i < df1.size();i++) {
-        	df1.get(i).setStuff();
+        for(int i = 0; i < df.getNumColumns();i++) {
+        	System.out.println(df.getColumn_byIndex(i).name + "  " +df.getColumn_byIndex(i).mean);
         	//df1.get(i).printDataFrame();
         	//df1.get(i).printDataFrame();
         }
         List<Integer> ll = new ArrayList<Integer>();
         
         ll.add(4);
-        df1.set(1, df1.get(1).exclude(df1.get(1), ll));
-        for(int i = 0; i < df1.get(1).getNumColumns(); i++) {
-        	System.out.println(df1.get(1).getColumn_byIndex(i).mean);
-        }
+        //df1.set(1, df1.get(1).exclude(df1.get(1), ll));
         
-        NaiveBayes nb = new NaiveBayes(df1.get(0));
+        NaiveBayes nb = new NaiveBayes(df);
         nb.printProbTable();
+        //nb.probabilityDF(df1.get(0));
+        nb.predictDF(df);
         //nb.probabilityDF(df1.get(1));
         
 	}

@@ -10,6 +10,8 @@ import dataframe.DataFrame;
 import dataframe.DataFrameTools;
 import dataframe.Row;
 import particles.Particle;
+import particles.StringParticle;
+
 /**
  * Naive Bayes Classifier
  * @version 1.0
@@ -25,9 +27,6 @@ public class NaiveBayes extends Model{
 	private ArrayList<DataFrame[]> classes = new ArrayList<DataFrame[]>();
 	public NaiveBayes(DataFrame df) {
 		super(df);
-		for(int i = 0;i < super.trainDF_variables.getNumColumns();i++){
-			System.out.println(super.trainDF_variables.getColumn_byIndex(i).mean);
-		}
 		setClasses();
 		train();
 	}
@@ -61,8 +60,10 @@ public class NaiveBayes extends Model{
 	 */
 	public HashMap<Object, HashMap<String, Double[]>> cont_naivebayes_i(int targetNum){
 		HashMap<Object , HashMap<String , Double[]>> naive_bayes = new HashMap<Object , HashMap<String , Double[]>>();
+		int cnt = 0;
 		for(Object i : super.trainDF_targets.getColumn_byIndex(targetNum).getUniqueValues()) {
-			naive_bayes.put(i,continuous_ProbabilityTable());
+			naive_bayes.put(i,continuous_ProbabilityTable(targetNum,cnt));
+			cnt++;
 		}
 		return naive_bayes;
 	}
@@ -72,10 +73,10 @@ public class NaiveBayes extends Model{
 	 * @param df_i - dataframe of only Class k
 	 * @return HashMap<String, Double[]>
 	 */
-	private HashMap<String, Double[]> continuous_ProbabilityTable(){
+	private HashMap<String, Double[]> continuous_ProbabilityTable(int target ,int index){
 		HashMap<String, Double[]> cont_columns_probabilities = new HashMap<String, Double[]>();
 		for(int i = 0; i < super.trainDF_variables.getNumColumns();i++) {
-			cont_columns_probabilities.put(super.trainDF_variables.getColumn_byIndex(i).getName(), set_continuousColumnProbability(super.trainDF_variables.getColumn_byIndex(i)));
+			cont_columns_probabilities.put(super.trainDF_variables.getColumn_byIndex(i).getName(), set_continuousColumnProbability(classes.get(target)[index].getColumn_byIndex(i)));
 		}
 		return cont_columns_probabilities;
 	}
@@ -131,7 +132,7 @@ public class NaiveBayes extends Model{
 		HashMap<Object, HashMap<String, HashMap<Object, Double>>> naive_bayes = new HashMap<Object, HashMap<String, HashMap<Object, Double>>>();
 		int cnt = 0;
 		for(Object i : super.trainDF_targets.getColumn_byIndex(targetNum).getUniqueValues()) {
-				naive_bayes.put(i, categorical_ProbabilityTable(classes.get(targetNum)[cnt]));
+				naive_bayes.put(i, categorical_ProbabilityTable(targetNum , cnt));
 				cnt++;
 			}
 		return naive_bayes;
@@ -142,10 +143,10 @@ public class NaiveBayes extends Model{
 	 * @param df_i - dataframe of only Class k
 	 * @return HashMap<String, HashMap<Object, Double>>
 	 */
-	private HashMap<String, HashMap<Object, Double>> categorical_ProbabilityTable(DataFrame clas){
+	private HashMap<String, HashMap<Object, Double>> categorical_ProbabilityTable(int target, int index){
 		HashMap<String, HashMap<Object, Double>> cat_columns_probabilities = new HashMap<String, HashMap<Object, Double>>();
-		for(int i = 0; i < clas.getNumColumns();i++) {
-			cat_columns_probabilities.put(super.trainDF_variables.getColumn_byIndex(i).getName(), set_categoryColumnProbability(super.trainDF_variables.getColumn_byIndex(i).getName()));
+		for(int i = 0; i < super.trainDF_variables.getNumColumns();i++) {
+			cat_columns_probabilities.put(super.trainDF_variables.getColumn_byIndex(i).getName(), set_categoryColumnProbability(classes.get(target)[index].getColumn_byIndex(i).getName()));
 		}
 		return cat_columns_probabilities;
 	}
@@ -179,9 +180,7 @@ public class NaiveBayes extends Model{
 		for(int i = 0; i < targetClasses.length; i++) {
 			arg[0] = super.trainDF_targets.getColumn_byIndex(targetNum).getName();
 			arg[2] = targetClasses[i].toString();
-			classes[i] = DataFrame.acquire(super.trainDF_targets,arg);
-			classes[i].setStuff();
-			
+			classes[i] = DataFrame.acquire(super.rawTrain,arg);
 		}
 		this.classes.add(classes);
 	}
@@ -197,7 +196,6 @@ public class NaiveBayes extends Model{
 			double prob = 1;
 			for(int i = 0; i < row.rowLength; i++) {
 				if(super.trainDF_variables.getColumn_byIndex(i).getType() == 'N') {
-					System.out.println("ROW INDEX 0: "+row.getParticle(0).getValue() +" HERE: COLUMN INDEX 0: "+super.trainDF_variables.getColumn_byIndex(0).getName());
 					prob = prob * getContinuousProbability(super.trainDF_targets.getColumn_byIndex(target).getName(),z,super.trainDF_variables.getColumn_byIndex(i).getName(),row.getParticle(i));
 				}else
 					prob = prob * cat_Naive_Bayes.get(super.trainDF_targets.getColumn_byIndex(target).getName()).get(z).get(super.trainDF_variables.getColumn_byIndex(i).getName()).get(row.getParticle(i).getValue());
@@ -236,19 +234,44 @@ public class NaiveBayes extends Model{
 	public ArrayList<HashMap<String , HashMap<Object , Double>> > probabilityDF(DataFrame df){
 		ArrayList<HashMap<String , HashMap<Object , Double>> > p = new ArrayList<HashMap<String , HashMap<Object , Double>> >();
 		for(int i = 0; i < df.getNumRows(); i++) {
-			p.add(probability(df.getRow_byIndex(i)));
-			System.out.println("PRED: " +p.get(i));
+			//
+			List<Integer> ll = new ArrayList<Integer>();
+	        
+	        ll.add(4);
+			DataFrame df1 = df.exclude(df, ll);
+			p.add(probability(df1.getRow_byIndex(i)));
+			System.out.println("PRED: " +probability(df1.getRow_byIndex(i)) + " ACTUAL: "+ df.getRow_byIndex(i).getParticle(4));
 		}
 		return p;
 	}
 	@Override
 	public Particle predict(Row row) {
-		// TODO Auto-generated method stub
-		return null;
+		HashMap<String , HashMap<Object , Double>> probs = probability(row);
+		String pred = null;
+		double max = 0;
+		for(String i : probs.keySet()) {
+			for(Object j : probs.get(i).keySet()) {
+				if(probs.get(i).get(j) > max) {
+					max = probs.get(i).get(j);
+					pred = j.toString();
+				}
+			}
+		}
+		Particle p = new StringParticle(pred);
+		return p;
 	}
 	@Override
-	public ArrayList<ArrayList<Particle>> predictDF(DataFrame testDF) {
-		// TODO Auto-generated method stub
+	public ArrayList<ArrayList<Particle>> predictDF(DataFrame df) {
+		ArrayList<HashMap<String , HashMap<Object , Double>> > p = new ArrayList<HashMap<String , HashMap<Object , Double>> >();
+		for(int i = 0; i < df.getNumRows(); i++) {
+			//
+			List<Integer> ll = new ArrayList<Integer>();
+	        
+	        ll.add(4);
+			DataFrame df1 = df.exclude(df, ll);
+			//p.add(predict(df1.getRow_byIndex(i)));
+			System.out.println("PRED: " +predict(df1.getRow_byIndex(i)) + " ACTUAL: "+ df.getRow_byIndex(i).getParticle(4));
+		}
 		return null;
 	}
 

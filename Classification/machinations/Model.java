@@ -16,17 +16,19 @@ public abstract class Model {
 	
 	public List<HashMap<Object,Double>> probabilities;
 	
+	public DataFrame rawTrain;
 	/** The target data for the data frame. */
 	public DataFrame trainDF_targets;
 	
 	/** The training data used by predictive models. */
 	public DataFrame trainDF_variables;
-
+	
 	/**
 	 * Abstract model constructor.
 	 * @param theDataFrame
 	 */
 	public Model(DataFrame theDataFrame) {
+		this.rawTrain = theDataFrame;
 	    trainDF_targets = DataFrameTools.shallowCopy_columnTypes(theDataFrame, set_targets());
 	    trainDF_variables = DataFrameTools.shallowCopy_columnTypes(theDataFrame, set_variables());
 	    trainDF_variables.setStuff();

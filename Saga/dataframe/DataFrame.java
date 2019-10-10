@@ -433,19 +433,18 @@ public class DataFrame {
         }
     }public void setStuff() {
     	for(Column i : columns) {
+    		i.setUniqueValues(i);
+    		i.setUniqueValCnt();
+    		i.setMode();
     		if(i.type == 'N') {
 	    		i.setSum();
 	    		i.setMean();
+	    		i.setVariance();
 	    		i.setStandardDeviation();
-	    		i.setUniqueValues(i);
-	    		i.setUniqueValCnt();
 	    		i.setEntropy();
-	    		i.setMode();
-	    		//i.setFeatureStats();
-	    		
     		}
-    		
-    		
+    		//i.setFeatureStats();
+		
     	}
     }
     public static DataFrame acquire(DataFrame theDataFrame, String[] args) {
