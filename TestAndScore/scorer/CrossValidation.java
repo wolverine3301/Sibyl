@@ -69,16 +69,20 @@ public class CrossValidation {
 		HashMap<String, HashMap<Object, Double>> F1 = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> mcc = new HashMap<String, HashMap<Object, Double>>();
 		int cnt = 0;
-		double[] acc;
+		
+		String overa = "OverAll";
+		double[] acc = null;
 		for(Score i : scores) {
-			for(String j : i.accuracy.keySet()) {
-				acc = new double[i.accuracy.get(j).keySet().size()];
-				cnt = 0;
-				for(Object z : i.accuracy.get(j).keySet()) {
-					acc[cnt] = acc[cnt] + i.accuracy.get(j).get(z);
-					cnt++;
-				}
+			cnt = 0;
+			acc = new double[i.recall.get(j).keySet().size()];	
+			for(String j : i.recall.keySet()) {
 				
+				acc[cnt] = acc[cnt] + i.recall.get(j).get(overa);
+				System.out.println(i.recall.get(j).get("OverAll") + " " +acc[cnt]);
+				cnt++;
+			}
+			for(int z = 0; z < cnt; z++) {
+				System.out.println(z + " "+ acc[z]);
 			}
 
 		}

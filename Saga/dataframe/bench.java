@@ -43,7 +43,7 @@ public class bench {
         
         NaiveBayes nb = new NaiveBayes();
         CrossValidation cv = new CrossValidation(df, 5, nb);
-        cv.printMatrixs();
+        cv.avgScores();
         //nb.printProbTable();
         //nb.probabilityDF(df1.get(0));
         //nb.predictDF(df);
