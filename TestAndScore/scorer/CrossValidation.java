@@ -63,7 +63,27 @@ public class CrossValidation {
 	    }
 	    this.trials = trials;
 	}
+	public void avgScores() {
+		HashMap<String, HashMap<Object, Double>> recall = new HashMap<String, HashMap<Object, Double>>();
+		HashMap<String, HashMap<Object, Double>> precision = new HashMap<String, HashMap<Object, Double>>();
+		HashMap<String, HashMap<Object, Double>> F1 = new HashMap<String, HashMap<Object, Double>>();
+		HashMap<String, HashMap<Object, Double>> mcc = new HashMap<String, HashMap<Object, Double>>();
+		int cnt = 0;
+		double[] acc;
+		for(Score i : scores) {
+			for(String j : i.accuracy.keySet()) {
+				acc = new double[i.accuracy.get(j).keySet().size()];
+				cnt = 0;
+				for(Object z : i.accuracy.get(j).keySet()) {
+					acc[cnt] = acc[cnt] + i.accuracy.get(j).get(z);
+					cnt++;
+				}
+				
+			}
 
+		}
+		
+	}
 	public void printScores() {
 		int cnt = 0;
 		for(Score i : scores) {
