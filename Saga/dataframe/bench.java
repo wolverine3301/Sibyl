@@ -11,6 +11,7 @@ import machinations.NaiveBayes;
 import particles.Particle;
 import regressionFunctions.LinearRegression;
 import regressionFunctions.LogRegression;
+import scorer.CrossValidation;
 import transform.Standardize;
 
 public class bench {
@@ -40,10 +41,11 @@ public class bench {
         ll.add(4);
         //df1.set(1, df1.get(1).exclude(df1.get(1), ll));
         
-        NaiveBayes nb = new NaiveBayes(df);
-        nb.printProbTable();
+        NaiveBayes nb = new NaiveBayes();
+        CrossValidation cv = new CrossValidation(df, 10, nb);
+        //nb.printProbTable();
         //nb.probabilityDF(df1.get(0));
-        nb.predictDF(df);
+        //nb.predictDF(df);
         //nb.probabilityDF(df1.get(1));
         
 	}

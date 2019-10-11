@@ -27,11 +27,8 @@ public abstract class Model {
 	 * Abstract model constructor.
 	 * @param theDataFrame
 	 */
-	public Model(DataFrame theDataFrame) {
-		this.rawTrain = theDataFrame;
-	    trainDF_targets = DataFrameTools.shallowCopy_columnTypes(theDataFrame, set_targets());
-	    trainDF_variables = DataFrameTools.shallowCopy_columnTypes(theDataFrame, set_variables());
-	    trainDF_variables.setStuff();
+	public Model() {
+
 	}
 	
 	/**
@@ -55,7 +52,12 @@ public abstract class Model {
 		vars.add('N');
 		return vars;
 	}
-	public abstract void train();
+	public  void train(DataFrame df) {
+		this.rawTrain = df;
+	    this.trainDF_targets = DataFrameTools.shallowCopy_columnTypes(df, set_targets());
+	    this.trainDF_variables = DataFrameTools.shallowCopy_columnTypes(df, set_variables());
+	    this.trainDF_variables.setStuff();
+	}
 	/**
 	 * Returns the probabilities of a row being a part of each class
 	 * @return
@@ -67,9 +69,9 @@ public abstract class Model {
 	 * @param row
 	 * @return
 	 */
-	public abstract Particle predict(Row row);
+	public abstract Object predict(Row row);
 	
-	public abstract ArrayList<ArrayList<Particle>> predictDF(DataFrame testDF);
+	public abstract HashMap<String , ArrayList<Object>> predictDF(DataFrame testDF);
 	
 	public void setTrain(DataFrame trainDF) {
 		this.trainDF_targets = DataFrameTools.shallowCopy_columnTypes(trainDF, set_targets());

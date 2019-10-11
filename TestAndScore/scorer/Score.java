@@ -1,12 +1,9 @@
-package appraiser;
+package scorer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import dataframe.ColumnTools;
 import dataframe.DataFrame;
-import saga.*;
 
 /**
  * Various model scores
@@ -28,14 +25,14 @@ public class Score {
 	public HashMap<String, HashMap<Object, Double>> accuracy;
 	
 	private DataFrame df;
-	private List<Object[]> predictions;
+	private HashMap<String, ArrayList<Object>> predictions;
 	private ConfusionMatrix matrix;
 	/**
 	 * Score constructor
 	 * @param df
 	 * @param predictions
 	 */
-	public Score(DataFrame df, List<Object[]> predictions) {
+	public Score(DataFrame df, HashMap<String, ArrayList<Object>> predictions) {
 		this.df = df;
 		this.predictions = predictions;
 		
@@ -108,7 +105,7 @@ public class Score {
 				HashMap<Object,Double> arr1 = new HashMap<Object,Double>();
 				HashMap<Object,Double> arr2 = new HashMap<Object,Double>();
 				HashMap<Object,Double> arr3 = new HashMap<Object,Double>();
-				for(Object j : ColumnTools.uniqueValues(df.getColumn_byIndex(i))) {
+				for(Object j : df.getColumn_byIndex(i).getUniqueValues()) {
 					arr0.put(j, 0.0);
 					arr1.put(j, 0.0);
 					arr2.put(j, 0.0);

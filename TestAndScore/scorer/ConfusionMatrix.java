@@ -14,10 +14,10 @@ public class ConfusionMatrix {
 	public HashMap<String, HashMap<Object, Integer>> falseNegative;
 	
 	private DataFrame df;
-	private List<Object[]> predictions;
+	private HashMap<String, ArrayList<Object>> predictions;
 	private List<Column> targets; //list of target columns
 	
-	public ConfusionMatrix(DataFrame df, List<Object[]> predictions) {
+	public ConfusionMatrix(DataFrame df, HashMap<String, ArrayList<Object>> predictions) {
 		this.df = df;
 		this.predictions = predictions;
 		truePositive = new HashMap<String, HashMap<Object, Integer>>();
@@ -66,10 +66,10 @@ public class ConfusionMatrix {
 		int cnt1 = 0;
 		int cnt2;
 		//for each target column
-		for(Object[] i : predictions) {
+		for(String i : predictions.keySet()) {
 			cnt2 = 0;
 			//for each prediction for a column
-			for (Object j : i) {
+			for (Object j : predictions.get(i)) {
 				//if the predicted value matches the actual
 				if(j.equals(targets.get(cnt1).getParticle(cnt2).getValue())) {
 					truePositive.get(targets.get(cnt1).getName()).replace(j, truePositive.get(targets.get(cnt1).getName()).get(j)+1);

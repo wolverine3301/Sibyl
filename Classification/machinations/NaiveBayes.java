@@ -25,13 +25,13 @@ public class NaiveBayes extends Model{
 	public HashMap<String , HashMap<Object, HashMap<String, Double[]>>> cont_Naive_Bayes;
 	public HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>> cat_Naive_Bayes;
 	private ArrayList<DataFrame[]> classes = new ArrayList<DataFrame[]>();
-	public NaiveBayes(DataFrame df) {
-		super(df);
-		setClasses();
-		train();
+	
+	public NaiveBayes() {
+
 	}
-	@Override
-	public void train() {
+
+	public void initiallize() {
+		setClasses();
 		cont_Naive_Bayes = continuous_naive_bayes();
 		cat_Naive_Bayes = categorical_naive_bayes();
 	}
@@ -234,45 +234,40 @@ public class NaiveBayes extends Model{
 	public ArrayList<HashMap<String , HashMap<Object , Double>> > probabilityDF(DataFrame df){
 		ArrayList<HashMap<String , HashMap<Object , Double>> > p = new ArrayList<HashMap<String , HashMap<Object , Double>> >();
 		for(int i = 0; i < df.getNumRows(); i++) {
-			//
-			List<Integer> ll = new ArrayList<Integer>();
-	        
-	        ll.add(4);
-			DataFrame df1 = df.exclude(df, ll);
-			p.add(probability(df1.getRow_byIndex(i)));
-			System.out.println("PRED: " +probability(df1.getRow_byIndex(i)) + " ACTUAL: "+ df.getRow_byIndex(i).getParticle(4));
+			p.add(probability(df.getRow_byIndex(i)));
+			//System.out.println("PRED: " +probability(df.getRow_byIndex(i)) + " ACTUAL: "+ df.getRow_byIndex(i).getParticle(4));
 		}
 		return p;
 	}
 	@Override
-	public Particle predict(Row row) {
+	public Object predict(Row row) {
 		HashMap<String , HashMap<Object , Double>> probs = probability(row);
-		String pred = null;
+		Object pred = null;
 		double max = 0;
 		for(String i : probs.keySet()) {
 			for(Object j : probs.get(i).keySet()) {
 				if(probs.get(i).get(j) > max) {
 					max = probs.get(i).get(j);
-					pred = j.toString();
+					pred = j;
 				}
 			}
 		}
-		Particle p = new StringParticle(pred);
-		return p;
+		
+		return pred;
 	}
 	@Override
-	public ArrayList<ArrayList<Particle>> predictDF(DataFrame df) {
-		ArrayList<HashMap<String , HashMap<Object , Double>> > p = new ArrayList<HashMap<String , HashMap<Object , Double>> >();
-		for(int i = 0; i < df.getNumRows(); i++) {
-			//
-			List<Integer> ll = new ArrayList<Integer>();
-	        
-	        ll.add(4);
-			DataFrame df1 = df.exclude(df, ll);
-			//p.add(predict(df1.getRow_byIndex(i)));
-			System.out.println("PRED: " +predict(df1.getRow_byIndex(i)) + " ACTUAL: "+ df.getRow_byIndex(i).getParticle(4));
+	public HashMap<String , ArrayList<Object>> predictDF(DataFrame df) {
+		HashMap<String , ArrayList<Object>> preds = new HashMap<String , ArrayList<Object>> ();
+		ArrayList<Object> p = new ArrayList<Object>();
+		for(int j = 0; j < super.trainDF_targets.getNumColumns();j ++) {
+			p.clear();
+			for(int i = 0; i < df.getNumRows(); i++) {
+				p.add(predict(df.getRow_byIndex(i)));
+				//System.out.println("PRED: " +predict(df1.getRow_byIndex(i)) + " ACTUAL: "+ df.getRow_byIndex(i).getParticle(4));
+			}
+			preds.put(super.trainDF_targets.getColumn_byIndex(j).getName(), p);
 		}
-		return null;
+		return preds;
 	}
 
 }
