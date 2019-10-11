@@ -29,7 +29,7 @@ public class NaiveBayes extends Model{
 	public NaiveBayes() {
 
 	}
-
+	@Override
 	public void initiallize() {
 		setClasses();
 		cont_Naive_Bayes = continuous_naive_bayes();

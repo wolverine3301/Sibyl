@@ -13,9 +13,8 @@ public class ConfusionMatrix {
 	public HashMap<String, HashMap<Object, Integer>> trueNegative;
 	public HashMap<String, HashMap<Object, Integer>> falseNegative;
 	
-	private DataFrame df;
+	private DataFrame df; //dataframe of correct answers
 	private HashMap<String, ArrayList<Object>> predictions;
-	private List<Column> targets; //list of target columns
 	
 	public ConfusionMatrix(DataFrame df, HashMap<String, ArrayList<Object>> predictions) {
 		this.df = df;
@@ -36,27 +35,23 @@ public class ConfusionMatrix {
 	 * truePositive[N] = Nth target column
 	 */
 	private void setTable() {
-		targets = new ArrayList<Column>();
 		int cnt = 0;
 		for(int i = 0; i < df.getNumColumns();i++) {
-			//get target columns
-			if(df.getColumn_byIndex(i).getType() == 'T') {
-				targets.add(df.getColumn_byIndex(i)); //target columns
-				HashMap<Object,Integer> arr0 = new HashMap<Object,Integer>();
-				HashMap<Object,Integer> arr1 = new HashMap<Object,Integer>();
-				HashMap<Object,Integer> arr2 = new HashMap<Object,Integer>();
-				HashMap<Object,Integer> arr3 = new HashMap<Object,Integer>();
-				for(Object j : targets.get(cnt).getUniqueValues()) {
-					arr0.put(j, 0);
-					arr1.put(j, 0);
-					arr2.put(j, 0);
-					arr3.put(j, 0);
-				}
-				truePositive.put(df.getColumn_byIndex(i).getName(),arr0);
-				falsePositive.put(df.getColumn_byIndex(i).getName(),arr1);
-				trueNegative.put(df.getColumn_byIndex(i).getName(),arr2);
-				falseNegative.put(df.getColumn_byIndex(i).getName(),arr3);
+			HashMap<Object,Integer> arr0 = new HashMap<Object,Integer>();
+			HashMap<Object,Integer> arr1 = new HashMap<Object,Integer>();
+			HashMap<Object,Integer> arr2 = new HashMap<Object,Integer>();
+			HashMap<Object,Integer> arr3 = new HashMap<Object,Integer>();
+			for(Object j : df.getColumn_byIndex(i).getUniqueValues()) {
+				arr0.put(j, 0);
+				arr1.put(j, 0);
+				arr2.put(j, 0);
+				arr3.put(j, 0);
 			}
+			truePositive.put(df.getColumn_byIndex(i).getName(),arr0);
+			falsePositive.put(df.getColumn_byIndex(i).getName(),arr1);
+			trueNegative.put(df.getColumn_byIndex(i).getName(),arr2);
+			falseNegative.put(df.getColumn_byIndex(i).getName(),arr3);
+			
 		}
 	}
 	/**
@@ -71,27 +66,27 @@ public class ConfusionMatrix {
 			//for each prediction for a column
 			for (Object j : predictions.get(i)) {
 				//if the predicted value matches the actual
-				if(j.equals(targets.get(cnt1).getParticle(cnt2).getValue())) {
-					truePositive.get(targets.get(cnt1).getName()).replace(j, truePositive.get(targets.get(cnt1).getName()).get(j)+1);
-					for(Object x : trueNegative.get(targets.get(cnt1).getName()).keySet()) {
+				if(j.equals(df.getColumn_byIndex(cnt1).getParticle(cnt2).getValue())) {
+					truePositive.get(df.getColumn_byIndex(cnt1).getName()).replace(j, truePositive.get(df.getColumn_byIndex(cnt1).getName()).get(j)+1);
+					for(Object x : trueNegative.get(df.getColumn_byIndex(cnt1).getName()).keySet()) {
 						if(x.equals(j)) {
 							continue;
 						}else {
 						
-						trueNegative.get(targets.get(cnt1).getName()).replace(x, trueNegative.get(targets.get(cnt1).getName()).get(x)+1);
+						trueNegative.get(df.getColumn_byIndex(cnt1).getName()).replace(x, trueNegative.get(df.getColumn_byIndex(cnt1).getName()).get(x)+1);
 						
 						}
 					}
 				}
 				//if its prediction isnt right
-				else if(!j.equals(targets.get(cnt1).getParticle(cnt2).getValue())) {
+				else if(!j.equals(df.getColumn_byIndex(cnt1).getParticle(cnt2).getValue())) {
 					//update false positive count
-					falsePositive.get(targets.get(cnt1).getName()).replace(j, falsePositive.get(targets.get(cnt1).getName()).get(j)+1);
+					falsePositive.get(df.getColumn_byIndex(cnt1).getName()).replace(j, falsePositive.get(df.getColumn_byIndex(cnt1).getName()).get(j)+1);
 					
-					for(Object x : falseNegative.get(targets.get(cnt1).getName()).keySet()) {
+					for(Object x : falseNegative.get(df.getColumn_byIndex(cnt1).getName()).keySet()) {
 						
-						if(x.equals(targets.get(cnt1).getParticle(cnt2).getValue())) {
-							falseNegative.get(targets.get(cnt1).getName()).replace(x, falseNegative.get(targets.get(cnt1).getName()).get(x)+1);
+						if(x.equals(df.getColumn_byIndex(cnt1).getParticle(cnt2).getValue())) {
+							falseNegative.get(df.getColumn_byIndex(cnt1).getName()).replace(x, falseNegative.get(df.getColumn_byIndex(cnt1).getName()).get(x)+1);
 							
 							continue;
 						}
@@ -100,7 +95,7 @@ public class ConfusionMatrix {
 							continue;
 						}else {
 							
-							trueNegative.get(targets.get(cnt1).getName()).replace(x, trueNegative.get(targets.get(cnt1).getName()).get(x)+1);
+							trueNegative.get(df.getColumn_byIndex(cnt1).getName()).replace(x, trueNegative.get(df.getColumn_byIndex(cnt1).getName()).get(x)+1);
 						}
 					}
 				}

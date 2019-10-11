@@ -475,9 +475,14 @@ public class DataFrame {
     	return DataFrameTools.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
     }
     public static void sortByColumn(DataFrame theDataFrame, int columnIndex){
-    	DataFrameTools.sortByColumn(theDataFrame, columnIndex);;
+    	DataFrameTools.sortByColumn(theDataFrame, columnIndex);
     }
     public static ArrayList<DataFrame> split(DataFrame theDataFrame, int n) {
     	return DataFrameTools.split(theDataFrame, n);
+    }
+    public DataFrame shuffle(DataFrame df) {
+    	DataFrame newdf = df;
+    	DataFrameTools.shuffle(newdf);
+    	return newdf;
     }
 }

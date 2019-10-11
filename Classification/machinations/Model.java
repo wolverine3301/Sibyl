@@ -77,6 +77,7 @@ public abstract class Model {
 		this.trainDF_targets = DataFrameTools.shallowCopy_columnTypes(trainDF, set_targets());
 	    this.trainDF_variables = DataFrameTools.shallowCopy_columnTypes(trainDF, set_variables());   	
 	}
+	public abstract void initiallize();
 	
 
 }

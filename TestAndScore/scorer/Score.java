@@ -127,6 +127,10 @@ public class Score {
 		System.out.println("F1: " + F1.toString());
 		System.out.println("MCC: " + mcc.toString());
 	}
+	public void printMatrix() {
+		matrix.print_matrix();
+	}
+	
 }
 
 

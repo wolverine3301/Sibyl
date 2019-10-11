@@ -2,81 +2,82 @@ package scorer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.Set;
 
 import dataframe.DataFrame;
-import dataframe.DataFrameTools;
 import machinations.Model;
 
 public class CrossValidation {
 	
 	
-	private ArrayList<DataFrame> trials;
+	public int N;
 	public ArrayList<Score> scores;
+	public DataFrame df;
 	/** The target data for the test data frame. */
 	public DataFrame testDF_targets;
-	
 	/** The training data used to test predictive models. */
 	public DataFrame testDF_variables;
+	ArrayList<TestTrainFit> trials;
 	
 	public CrossValidation(DataFrame df, int N, Model model) {
-		this.trials = DataFrameTools.split(df, N);
+		this.N = N;
+		this.df = df.shuffle(df);
 		scores = new ArrayList<Score>();
 		Score score;
-		DataFrame currentTraining;
+		setTrials();
 		//for each trial
-		for(int i = 0;i < trials.size(); i++) {
-			currentTraining = new DataFrame();
-			// make training set
-			for(int j = 0; j < trials.size();j++) {
-				if(j == i) {
-					setTest(trials.get(j));
-					continue;
-				}
-				else {
-					for(int c = 0; c < trials.get(j).getNumRows(); c++) {
-						currentTraining.addRow(trials.get(j).getRow_byIndex(c));
-					}
-				}
-			}
-			model.train(currentTraining);
-			HashMap<String, ArrayList<Object>> predicts = model.predictDF(testDF_variables);
-			score = new Score(trials.get(i),predicts);
+		for(int i = 0;i < this.trials.size(); i++) {
+			model.train(trials.get(i).raw_train);
+			model.initiallize();
+			HashMap<String, ArrayList<Object>> predicts = model.predictDF(trials.get(i).trial_test_variables);
+			score = new Score(trials.get(i).trial_test_targets,predicts);
 			scores.add(score);
-			
 		}
 	}
-	public void setTest(DataFrame testDF) {
-		this.testDF_targets = DataFrameTools.shallowCopy_columnTypes(testDF, set_targets());
-	    this.testDF_variables = DataFrameTools.shallowCopy_columnTypes(testDF, set_variables());  
+	public void setTrials() {
+		int interval = Math.floorDiv(this.df.getNumRows(), N);
+	    //shuffle(df);
+		ArrayList<TestTrainFit> trials = new ArrayList<TestTrainFit>();
+		TestTrainFit trial;
+	    Set<Integer> set1 = new HashSet<Integer>();
+	    Set<Integer> set2 = new HashSet<Integer>();
+	    for (int i = 0; i < this.df.getNumRows() -1; i += interval) {
+	        set1.clear();
+	        for(int j = i; j < i + interval; j++) {
+	        	if(j >= this.df.getNumRows()) break;
+	            set1.add(j); 
+	        }
+	        set2.clear();
+	        for(int c = 0; c < this.df.getNumRows(); c++) {
+	        	if(c >= this.df.getNumRows()) break;
+	        	if(set1.contains(c)) {
+	        		continue;
+	        	}else {
+	        		set2.add(c);
+	        	}
+	        	
+	        }
+	        trial = new TestTrainFit(this.df.shallowCopy_rowIndexes(this.df,set1),this.df.shallowCopy_rowIndexes(this.df, set2));
+	        trials.add(trial);
+	    }
+	    this.trials = trials;
 	}
-	/**
-	 * Sets the targets list.
-	 * @return a tree set of targets to predict.
-	 */
-	private TreeSet<Character> set_targets() {
-		TreeSet<Character> target = new TreeSet<Character>();
-		target.add('T');
-		return target;
-	}
-	
-	
-	/**
-	 * Sets the variables list.
-	 * @return a tree set of the variables used to train data.
-	 */
-	private TreeSet<Character> set_variables() {
-		TreeSet<Character> vars = new TreeSet<Character>();
-		vars.add('C');
-		vars.add('G');
-		vars.add('O');
-		vars.add('N');
-		return vars;
-	}
+
 	public void printScores() {
+		int cnt = 0;
 		for(Score i : scores) {
+			System.out.print("TRIAL: " + cnt + "  ");
 			i.printScore();
+			cnt++;
+		}
+	}
+	public void printMatrixs() {
+		int cnt = 0;
+		for(Score i : scores) {
+			System.out.print("TRIAL: " + cnt + "  ");
+			i.printMatrix();
+			cnt++;
 		}
 	}
 	
