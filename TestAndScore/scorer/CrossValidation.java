@@ -71,13 +71,13 @@ public class CrossValidation {
 		int cnt = 0;
 		
 		String overa = "OverAll";
+		ArrayList<Double> totalRecall = new ArrayList<Double>();
 		double[] acc = null;
 		for(Score i : scores) {
 			cnt = 0;
-			acc = new double[i.recall.get(j).keySet().size()];	
 			for(String j : i.recall.keySet()) {
 				
-				acc[cnt] = acc[cnt] + i.recall.get(j).get(overa);
+				totalRecall.set(index, element) acc[cnt] + i.recall.get(j).get(overa);
 				System.out.println(i.recall.get(j).get("OverAll") + " " +acc[cnt]);
 				cnt++;
 			}
