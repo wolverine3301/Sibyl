@@ -28,6 +28,7 @@ public class CrossValidation {
 		setTrials();
 		//for each trial
 		for(int i = 0;i < this.trials.size(); i++) {
+			
 			model.train(trials.get(i).raw_train);
 			model.initiallize();
 			HashMap<String, ArrayList<Object>> predicts = model.predictDF(trials.get(i).trial_test_variables);
@@ -58,7 +59,7 @@ public class CrossValidation {
 	        	}
 	        	
 	        }
-	        trial = new TestTrainFit(this.df.shallowCopy_rowIndexes(this.df,set1),this.df.shallowCopy_rowIndexes(this.df, set2));
+	        trial = new TestTrainFit(this.df.shallowCopy_rowIndexes(this.df,set2),this.df.shallowCopy_rowIndexes(this.df, set1));
 	        trials.add(trial);
 	    }
 	    this.trials = trials;
@@ -68,25 +69,52 @@ public class CrossValidation {
 		HashMap<String, HashMap<Object, Double>> precision = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> F1 = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> mcc = new HashMap<String, HashMap<Object, Double>>();
-		int cnt = 0;
 		
-		String overa = "OverAll";
-		ArrayList<Double> totalRecall = new ArrayList<Double>();
-		double[] acc = null;
+		//initiallize
+		HashMap<Object, Double> trial;
+		HashMap<Object, Double> trial2;
+		HashMap<Object, Double> trial3;
+		HashMap<Object, Double> trial4;
+		for(String j : scores.get(0).recall.keySet()) {
+			trial = new HashMap<Object,Double>();
+			trial2 = new HashMap<Object,Double>();
+			trial3 = new HashMap<Object,Double>();
+			trial4 = new HashMap<Object,Double>();
+			for(Object z : scores.get(0).recall.get(j).keySet()) {
+				trial.put(z, (double) 0);
+				trial2.put(z, (double) 0);
+				trial3.put(z, (double) 0);
+				trial4.put(z, (double) 0);
+			}
+			recall.put(j, trial);	
+			precision.put(j, trial2);
+			F1.put(j, trial3);
+			mcc.put(j, trial4);
+		}
+		//sum scores
 		for(Score i : scores) {
-			cnt = 0;
 			for(String j : i.recall.keySet()) {
-				
-				totalRecall.set(index, element) acc[cnt] + i.recall.get(j).get(overa);
-				System.out.println(i.recall.get(j).get("OverAll") + " " +acc[cnt]);
-				cnt++;
+				for(Object z : i.recall.get(j).keySet()) {
+					recall.get(j).replace(z, recall.get(j).get(z) + i.recall.get(j).get(z));
+					precision.get(j).replace(z, precision.get(j).get(z) + i.precision.get(j).get(z));
+					F1.get(j).replace(z, F1.get(j).get(z) + i.F1.get(j).get(z));
+					mcc.get(j).replace(z, mcc.get(j).get(z) + i.mcc.get(j).get(z));
+				}
 			}
-			for(int z = 0; z < cnt; z++) {
-				System.out.println(z + " "+ acc[z]);
-			}
-
 		}
 		
+		//average scores
+		for(String j : recall.keySet()) {
+			for(Object z : recall.get(j).keySet()) {
+				recall.get(j).replace(z, recall.get(j).get(z) / scores.size());
+				precision.get(j).replace(z, precision.get(j).get(z) / scores.size());
+				F1.get(j).replace(z, F1.get(j).get(z) / scores.size());
+				mcc.get(j).replace(z, mcc.get(j).get(z) / scores.size());
+			}
+		}
+		System.out.println(recall.toString());
+		System.out.println(precision.toString());
+		System.out.println(F1.toString());
 	}
 	public void printScores() {
 		int cnt = 0;

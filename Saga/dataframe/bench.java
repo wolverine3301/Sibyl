@@ -42,8 +42,10 @@ public class bench {
         //df1.set(1, df1.get(1).exclude(df1.get(1), ll));
         
         NaiveBayes nb = new NaiveBayes();
-        CrossValidation cv = new CrossValidation(df, 5, nb);
+        CrossValidation cv = new CrossValidation(df, 10, nb);
         cv.avgScores();
+        //cv.printMatrixs();
+        //cv.printScores();
         //nb.printProbTable();
         //nb.probabilityDF(df1.get(0));
         //nb.predictDF(df);
