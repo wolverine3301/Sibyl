@@ -29,7 +29,6 @@ public class threadBench {
 			for(int j =0;j< a.length;j++) {
 				sum = sum.add(BigInteger.valueOf(a[j]));
 			}
-		
 		return sum;
 	}
 	public static BigInteger sumTT(int[] a) {
