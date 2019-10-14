@@ -31,7 +31,7 @@ public class GainRatio extends Gain{
             }
         });
         for (int i = 0; i < categoricalColumns.getNumColumns(); i++) { //Calculate info gain of every column compared to the target column
-            HashMap<Object, Integer> uniqueColumn = ColumnTools.uniqueValCnt(categoricalColumns.getColumn_byIndex(i));
+            HashMap<Object, Double> uniqueColumn = categoricalColumns.getColumn_byIndex(i).getFeatureStats();
             double tempEntropy = entropy(uniqueColumn);
             if (tempEntropy != 0) //avoid deviding by 0.
                 infoGain.add(new GainInformation(i, (targetEntropy - tempEntropy) / tempEntropy)); //Only difference: add information gain devided by the temp entropy.
