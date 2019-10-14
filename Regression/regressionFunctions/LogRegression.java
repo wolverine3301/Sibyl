@@ -2,7 +2,6 @@ package regressionFunctions;
 
 
 import dataframe.Column;
-import dataframe.ColumnTools;
 import particles.Particle;
 
 /**

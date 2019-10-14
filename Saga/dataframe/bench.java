@@ -16,8 +16,6 @@ import transform.Standardize;
 
 public class bench {
 
-	
-	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		String file = "testfiles/iris.txt";
         DataFrame df = new DataFrame();
