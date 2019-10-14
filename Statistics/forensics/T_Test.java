@@ -1,7 +1,6 @@
 package forensics;
 
 import dataframe.Column;
-import dataframe.ColumnTools;
 
 /**
  * 
@@ -28,17 +27,17 @@ public class T_Test {
 		this.degFree = (2* x.getLength()) - 2;
 	}
 	private void unequal_variance_DegreesFreedom() {
-		this.degFree = Math.pow(( (Math.pow(ColumnTools.variance(x), 2) / x.getLength()) +  (Math.pow(ColumnTools.variance(y), 2) / y.getLength())) , 2)  / ( (Math.pow( (Math.pow(ColumnTools.variance(x), 2) / x.getLength()), 2) / (x.getLength() - 1)) + (Math.pow( (Math.pow(ColumnTools.variance(y), 2) / y.getLength()), 2) / (y.getLength() - 1)) );
+		this.degFree = Math.pow(( (Math.pow(x.variance, 2) / x.getLength()) +  (Math.pow(y.variance, 2) / y.getLength())) , 2)  / ( (Math.pow( (Math.pow(x.variance, 2) / x.getLength()), 2) / (x.getLength() - 1)) + (Math.pow( (Math.pow(y.variance, 2) / y.getLength()), 2) / (y.getLength() - 1)) );
 	}
 	/**
 	 * LOOK! MATH!
 	 * @return
 	 */
 	public double equal_variance_tValue() {
-		return (ColumnTools.mean(x) - ColumnTools.mean(y)) / (Math.sqrt( (((x.getLength()-1) * Math.pow(ColumnTools.variance(x),2)) + ((y.getLength()-1) * Math.pow(ColumnTools.variance(y),2))) / ((2 * x.getLength()-2)) ) * Math.sqrt( (1/x.getLength()) + (1/y.getLength())));
+		return (x.mean- y.mean) / (Math.sqrt( (((x.getLength()-1) * Math.pow(x.variance,2)) + ((y.getLength()-1) * Math.pow(y.variance,2))) / ((2 * x.getLength()-2)) ) * Math.sqrt( (1/x.getLength()) + (1/y.getLength())));
 	}
 	public double unequal_variance_tValue() {
-		return (ColumnTools.mean(x) - ColumnTools.mean(y)) / Math.sqrt( (Math.pow(ColumnTools.variance(x), 2) / x.getLength()) + (Math.pow(ColumnTools.variance(y), 2) / y.getLength()) );
+		return (x.mean - y.mean) / Math.sqrt( (Math.pow(x.variance, 2) / x.getLength()) + (Math.pow(y.variance, 2) / y.getLength()) );
 	}
 	
 

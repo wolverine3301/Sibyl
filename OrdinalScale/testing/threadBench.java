@@ -6,12 +6,13 @@ import java.util.stream.IntStream;
 public class threadBench {
 
 	public static void main(String[] args) {
-		int[][] a = new int[1][1000000000];
-		for(int j = 0; j < 1;j++) {
-			for(int i = 0; i < 1000000000;i++) {
-				a[j][i] = i;
-			}
+		//100,000 2 threads is faster
+		int[] a = new int[100000];
+
+		for(int i = 0; i < 100000;i++) {
+			a[i] = 1;
 		}
+
 		long start = System.currentTimeMillis();
 		BigInteger sum1 = sum(a);
 		long fin = System.currentTimeMillis() - start;
@@ -23,23 +24,19 @@ public class threadBench {
 		System.out.println("2 THREADED: " +sum3 + " Time: "+fin);
 		
 	}
-	public static BigInteger sum(int[][] a) {
+	public static BigInteger sum(int[] a) {
 		BigInteger sum = BigInteger.ZERO;
-		for(int i = 0; i < a.length;i++) {
-			for(int j =0;j< a[i].length;j++) {
-				sum = sum.add(BigInteger.valueOf(a[i][j]));
+			for(int j =0;j< a.length;j++) {
+				sum = sum.add(BigInteger.valueOf(a[j]));
 			}
-		}
+		
 		return sum;
 	}
-	public static BigInteger sumTT(int[][] a) {
+	public static BigInteger sumTT(int[] a) {
 		BigInteger sum = BigInteger.ZERO;
-		int i;
-		for(i = 0; i < a.length;i++) {
 			long[] results = new long[2];
-			int[] b = a[i];
-			Thread t0 = new Thread(() -> results[0] = sum2t(b,0,b.length/2));
-			Thread t1 = new Thread(() -> results[1] = sum2t(b,(b.length/2)+1,b.length));
+			Thread t0 = new Thread(() -> results[0] = sum2t(a,0,a.length/2));
+			Thread t1 = new Thread(() -> results[1] = sum2t(a,(a.length/2)+1,a.length));
 			t0.start();
 			t1.start();
 			try {
@@ -48,7 +45,7 @@ public class threadBench {
 			} catch (InterruptedException e) { /* NOP */ }
 			
 			sum = sum.add(BigInteger.valueOf(results[0]+results[1]));
-		}
+		
 		return sum;
 	}
 	public static long sum2t(int[] a,int s, int f) {

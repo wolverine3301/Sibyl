@@ -36,12 +36,13 @@ public class NaiveBayes extends Model{
 		cat_Naive_Bayes = categorical_naive_bayes();
 	}
 	/**
-	 * 1)
-	 * construct continuous Naive Bayes for all target columns
+	 * 1)construct continuous Naive Bayes for all target columns
+	 * continuous numbers are handled differently than categorical in a naive bayes 
+	 * Specifically this is using Gaussian probability
 	 * STRUCTURE: 
 	 * HASHMAP<Target Column name> -> HASHMAP< Nth unique value within Target Column > -> HASHMAP< Variable Column Name > -> Double[] -> [0] = column mean , [1] = column variance
 	 * mean and variance used to make probability for a numeric column.
-	 * @return
+	 * @return HashMap<String , HashMap<Object, HashMap<String, Double[]>>>
 	 */
 	public HashMap<String , HashMap<Object, HashMap<String, Double[]>>> continuous_naive_bayes(){
 		HashMap<String , HashMap<Object, HashMap<String, Double[]>>> NaiveBayes =
