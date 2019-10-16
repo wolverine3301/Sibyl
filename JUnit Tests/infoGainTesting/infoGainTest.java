@@ -17,7 +17,7 @@ class infoGainTest {
         DataFrame df = new DataFrame();
         df.loadcsv("testfiles/entropyTesting.csv");
         InformationGain info = new InformationGain(df);
-        double entropy = info.entropy(ColumnTools.uniqueValCnt(df.getColumn_byIndex(0)));
+        double entropy = info.entropy(ColumnTools.uniqueValCnt(df.getColumn(0)));
         assertEquals(entropy, 0.9967916319816366);
     }
     

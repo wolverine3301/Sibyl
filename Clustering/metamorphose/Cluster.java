@@ -135,7 +135,7 @@ public class Cluster {
      */
     public void updateCentroidValues(DataFrame trainingData) {
         for (int i = 0; i < trainingData.getNumColumns(); i++) {
-            Column c = trainingData.getColumn_byIndex(i);
+            Column c = trainingData.getColumn(i);
             if (c.getType() == 'd') 
                 centroid.changeValue(i, new DoubleParticle(ColumnTools.meanOfIndexes(c, clusterMemberIndexes)));
             else if (c.getType() == 'i')

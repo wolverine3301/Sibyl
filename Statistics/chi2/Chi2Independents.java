@@ -51,9 +51,9 @@ public class Chi2Independents {
 		for(Column target : targets) {
 			tmp = new HashMap<String,Double>();
 			for (int i = 0; i < df.getNumColumns(); i++) {
-			    if (df.getColumn_byIndex(i).getType() == 'T')
+			    if (df.getColumn(i).getType() == 'T')
 			        continue;
-			    tmp.put(df.getColumn_byIndex(i).getName(), chi2Independents(target, df.getColumn_byIndex(i)));
+			    tmp.put(df.getColumn(i).getName(), chi2Independents(target, df.getColumn(i)));
 			}
 	        List<Map.Entry<String, Double>> list = new LinkedList<Map.Entry<String, Double> >(tmp.entrySet()); 
 	        
@@ -173,8 +173,8 @@ public class Chi2Independents {
 	 */
 	private void setTargets() {
 		for(int i = 0; i < df.getNumColumns(); i++) {
-			if(df.getColumn_byIndex(i).getType() == 'T') {
-				targets.add(df.getColumn_byIndex(i));
+			if(df.getColumn(i).getType() == 'T') {
+				targets.add(df.getColumn(i));
 			}
 		}
 	}

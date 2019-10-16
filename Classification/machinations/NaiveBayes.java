@@ -48,7 +48,7 @@ public class NaiveBayes extends Model{
 		HashMap<String , HashMap<Object, HashMap<String, Double[]>>> NaiveBayes =
 				new HashMap<String , HashMap<Object, HashMap<String, Double[]>>>();
 		for(int i = 0; i < super.trainDF_targets.getNumColumns(); i++) {
-			NaiveBayes.put(super.trainDF_targets.getColumn_byIndex(i).getName(), cont_naivebayes_i(i));	
+			NaiveBayes.put(super.trainDF_targets.getColumn(i).getName(), cont_naivebayes_i(i));	
 		}
 		return NaiveBayes;
 	}
@@ -62,7 +62,7 @@ public class NaiveBayes extends Model{
 	public HashMap<Object, HashMap<String, Double[]>> cont_naivebayes_i(int targetNum){
 		HashMap<Object , HashMap<String , Double[]>> naive_bayes = new HashMap<Object , HashMap<String , Double[]>>();
 		int cnt = 0;
-		for(Object i : super.trainDF_targets.getColumn_byIndex(targetNum).getUniqueValues()) {
+		for(Object i : super.trainDF_targets.getColumn(targetNum).getUniqueValues()) {
 			naive_bayes.put(i,continuous_ProbabilityTable(targetNum,cnt));
 			cnt++;
 		}
@@ -77,7 +77,7 @@ public class NaiveBayes extends Model{
 	private HashMap<String, Double[]> continuous_ProbabilityTable(int target ,int index){
 		HashMap<String, Double[]> cont_columns_probabilities = new HashMap<String, Double[]>();
 		for(int i = 0; i < super.trainDF_variables.getNumColumns();i++) {
-			cont_columns_probabilities.put(super.trainDF_variables.getColumn_byIndex(i).getName(), set_continuousColumnProbability(classes.get(target)[index].getColumn_byIndex(i)));
+			cont_columns_probabilities.put(super.trainDF_variables.getColumn(i).getName(), set_continuousColumnProbability(classes.get(target)[index].getColumn(i)));
 		}
 		return cont_columns_probabilities;
 	}
@@ -116,7 +116,7 @@ public class NaiveBayes extends Model{
 		HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>> NaiveBayes =
 				new HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>>();
 		for(int i = 0; i < super.trainDF_targets.getNumColumns(); i++) {
-			NaiveBayes.put(super.trainDF_targets.getColumn_byIndex(i).getName(), cat_naivebayes_i(i));	
+			NaiveBayes.put(super.trainDF_targets.getColumn(i).getName(), cat_naivebayes_i(i));	
 		}
 		return NaiveBayes;
 	}
@@ -132,7 +132,7 @@ public class NaiveBayes extends Model{
 		
 		HashMap<Object, HashMap<String, HashMap<Object, Double>>> naive_bayes = new HashMap<Object, HashMap<String, HashMap<Object, Double>>>();
 		int cnt = 0;
-		for(Object i : super.trainDF_targets.getColumn_byIndex(targetNum).getUniqueValues()) {
+		for(Object i : super.trainDF_targets.getColumn(targetNum).getUniqueValues()) {
 				naive_bayes.put(i, categorical_ProbabilityTable(targetNum , cnt));
 				cnt++;
 			}
@@ -147,7 +147,7 @@ public class NaiveBayes extends Model{
 	private HashMap<String, HashMap<Object, Double>> categorical_ProbabilityTable(int target, int index){
 		HashMap<String, HashMap<Object, Double>> cat_columns_probabilities = new HashMap<String, HashMap<Object, Double>>();
 		for(int i = 0; i < super.trainDF_variables.getNumColumns();i++) {
-			cat_columns_probabilities.put(super.trainDF_variables.getColumn_byIndex(i).getName(), set_categoryColumnProbability(classes.get(target)[index].getColumn_byIndex(i).getName()));
+			cat_columns_probabilities.put(super.trainDF_variables.getColumn(i).getName(), set_categoryColumnProbability(classes.get(target)[index].getColumn(i).getName()));
 		}
 		return cat_columns_probabilities;
 	}
@@ -172,14 +172,14 @@ public class NaiveBayes extends Model{
 	 * @return DataFrame[]
 	 */
 	public void classes(int targetNum){
-		Object[] targetClasses = super.trainDF_targets.getColumn_byIndex(targetNum).getUniqueValues().toArray();
+		Object[] targetClasses = super.trainDF_targets.getColumn(targetNum).getUniqueValues().toArray();
 		DataFrame[] classes = new DataFrame[targetClasses.length];
 		String[] arg = new String[3];
 		arg[1] = "==";
 		//split dataframe based on current target columns classes, result is 
 		//n dataframes each with rows containing 1 value in the target column
 		for(int i = 0; i < targetClasses.length; i++) {
-			arg[0] = super.trainDF_targets.getColumn_byIndex(targetNum).getName();
+			arg[0] = super.trainDF_targets.getColumn(targetNum).getName();
 			arg[2] = targetClasses[i].toString();
 			classes[i] = DataFrame.acquire(super.rawTrain,arg);
 		}
@@ -193,15 +193,22 @@ public class NaiveBayes extends Model{
 	}
 	private HashMap<Object , Double> probabilityForClass(Row row, int target){
 		HashMap<Object , Double> classProb = new HashMap<Object , Double>();
-		for(Object z : super.trainDF_targets.getColumn_byIndex(target).getUniqueValues()) {
+		for(Object z : super.trainDF_targets.getColumn(target).getUniqueValues()) {
 			double prob = 1;
 			for(int i = 0; i < row.rowLength; i++) {
+<<<<<<< HEAD
 				if(super.trainDF_variables.getColumn_byIndex(i).getType() == 'N') {
 					prob = prob * getContinuousProbability(super.trainDF_targets.getColumn_byIndex(target).getName(),z,super.trainDF_variables.getColumn_byIndex(i).getName(),row.getParticle(i));
 				}else {
 					System.out.println(super.trainDF_variables.getColumn_byIndex(i).getName());
 					prob = prob * cat_Naive_Bayes.get(super.trainDF_targets.getColumn_byIndex(target).getName()).get(z).get(super.trainDF_variables.getColumn_byIndex(i).getName()).get(row.getParticle(i).getValue());
 				}
+=======
+				if(super.trainDF_variables.getColumn(i).getType() == 'N') {
+					prob = prob * getContinuousProbability(super.trainDF_targets.getColumn(target).getName(),z,super.trainDF_variables.getColumn(i).getName(),row.getParticle(i));
+				}else
+					prob = prob * cat_Naive_Bayes.get(super.trainDF_targets.getColumn(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(row.getParticle(i).getValue());
+>>>>>>> refs/remotes/origin/cade-branch
 			}
 			classProb.put(z, prob);
 		}
@@ -230,7 +237,7 @@ public class NaiveBayes extends Model{
 		HashMap<String , HashMap<Object , Double>> probabilities = new HashMap<String , HashMap<Object , Double>>();
 		//for each target to predict
 		for(int j = 0; j < super.trainDF_targets.getNumColumns(); j++) {
-			probabilities.put(super.trainDF_targets.getColumn_byIndex(j).getName(), probabilityForClass(row,j));
+			probabilities.put(super.trainDF_targets.getColumn(j).getName(), probabilityForClass(row,j));
 		}
 		return probabilities;
 	}
@@ -268,7 +275,7 @@ public class NaiveBayes extends Model{
 				p.add(predict(df.getRow_byIndex(i)));
 				//System.out.println("PRED: " +predict(df1.getRow_byIndex(i)) + " ACTUAL: "+ df.getRow_byIndex(i).getParticle(4));
 			}
-			preds.put(super.trainDF_targets.getColumn_byIndex(j).getName(), p);
+			preds.put(super.trainDF_targets.getColumn(j).getName(), p);
 		}
 		return preds;
 	}

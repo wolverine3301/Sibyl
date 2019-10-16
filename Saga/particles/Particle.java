@@ -79,7 +79,7 @@ public abstract class Particle implements Comparable<Particle>{
             else
                 newParticle = new DoubleParticle(Double.parseDouble(value));
         } else { //If the passed string is just a string.
-            if(value.isBlank() || value.toUpperCase().contentEquals("NAN") || value.toUpperCase().contentEquals("NULL")) 
+            if(value.isEmpty() || value.toUpperCase().contentEquals("NAN") || value.toUpperCase().contentEquals("NULL")) 
                 newParticle = new NANParticle(value);
             else 
                 newParticle = new StringParticle(value);
@@ -100,7 +100,7 @@ public abstract class Particle implements Comparable<Particle>{
             newParticle = new DoubleParticle((Double) value);
         else if (value instanceof String) {
             String s = (String) value;
-            if(s.isBlank() || s.toUpperCase().contentEquals("NAN") || s.toUpperCase().contentEquals("NULL")) 
+            if(s.isEmpty() || s.toUpperCase().contentEquals("NAN") || s.toUpperCase().contentEquals("NULL")) 
                 newParticle = new NANParticle((String) value);
             else 
                 newParticle = new StringParticle((String) value);

@@ -33,7 +33,7 @@ public class InformationGain extends Gain{
 	 * @return a "sorted" array list of columns, with the lowest index (0) representing most gain, and highest index (list.size() - 1) representing least gain.
 	 */
 	public ArrayList<Column> gain(int index) {
-	    double targetEntropy = entropy(ColumnTools.uniqueValCnt(targetColumns.getColumn_byIndex(index)));
+	    double targetEntropy = entropy(ColumnTools.uniqueValCnt(targetColumns.getColumn(index)));
 	    //Holds the calculated info gain in a max heap style.
 	    PriorityQueue<GainInformation> infoGain = new PriorityQueue<GainInformation>(categoricalColumns.getNumColumns(), new Comparator<GainInformation>() {
             @Override
@@ -42,13 +42,13 @@ public class InformationGain extends Gain{
             }
 	    });
 	    for (int i = 0; i < categoricalColumns.getNumColumns(); i++) { //Calculate info gain of every column compared to the target column
-            HashMap<Object, Integer> uniqueColumn = ColumnTools.uniqueValCnt(categoricalColumns.getColumn_byIndex(i));
+            HashMap<Object, Integer> uniqueColumn = ColumnTools.uniqueValCnt(categoricalColumns.getColumn(i));
             double tempEntropy = entropy(uniqueColumn);
             infoGain.add(new GainInformation(i, targetEntropy - tempEntropy));
 	    }
 	    ArrayList<Column> sortedGains = new ArrayList<Column>();
 	    while(!infoGain.isEmpty())
-	        sortedGains.add(categoricalColumns.getColumn_byIndex(infoGain.remove().getIndex()));
+	        sortedGains.add(categoricalColumns.getColumn(infoGain.remove().getIndex()));
 	    return sortedGains;
 	}
 }

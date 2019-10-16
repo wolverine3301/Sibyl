@@ -1,43 +1,25 @@
 package testing;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
-
-import dataframe.Column;
-import dataframe.ColumnTools;
 import dataframe.DataFrame;
-import dataframe.DataFrameTools;
-import dataframe.Row;
-import distances.Distance;
-import distances.Euclidean;
-import distances.Manhattan;
 import info_gain.Gain;
 import info_gain.GainRatio;
-import info_gain.InformationGain;
-import machinations.KNN;
-import machinations.Model;
-import metamorphose.Cluster;
-import metamorphose.Hierarchical;
-import metamorphose.KMeans;
-import particles.DoubleParticle;
-import particles.Particle;
-import transform.LogTransform;
 
 public class bench2 {
     public static void main(String[] args) {
         DataFrame df = new DataFrame();
-        df.loadcsv("testfiles/testing.csv");
-        df.setColumnType(5, 'T');
-        df.setColumnType(1, 'C');
-        df.setColumnType(2, 'C');
-        Gain info = new GainRatio(df);
-        info.entropy(ColumnTools.uniqueValCnt(df.getColumn_byIndex(0)));
-        System.out.println(info.gain(0));
+        df.loadcsv("testfiles/nanhandlingtest.csv");
+        df.convertNANS_mean();
+        for (int i = 0; i < df.getNumColumns(); i++) {
+            System.out.println("COLUMN " + i + "MODE: " + df.getColumn(i).mode + "MEAN: " + df.getColumn(i).mean);
+            
+        }
+        df.printDataFrame();
+        System.out.println(df.getColumn(0));
+//        df.setColumnType(5, 'T');
+//        df.setColumnType(1, 'C');
+//        df.setColumnType(2, 'C');
+        //info.entropy(df.getColumn_byIndex(0).getFeatureStats());
+        //System.out.println(info.gain(0));
         
 //        df.getColumn_byIndex(3).setType('T');
 //        Model knn = new KNN(df, new Manhattan(), 2);

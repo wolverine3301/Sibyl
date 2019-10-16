@@ -100,21 +100,21 @@ public class Score {
 	private void intitallize() {
 		for(int i = 0; i < df.getNumColumns();i++) {
 			//get target columns
-			if(df.getColumn_byIndex(i).getType() == 'T') {
+			if(df.getColumn(i).getType() == 'T') {
 				HashMap<Object,Double> arr0 = new HashMap<Object,Double>();
 				HashMap<Object,Double> arr1 = new HashMap<Object,Double>();
 				HashMap<Object,Double> arr2 = new HashMap<Object,Double>();
 				HashMap<Object,Double> arr3 = new HashMap<Object,Double>();
-				for(Object j : df.getColumn_byIndex(i).getUniqueValues()) {
+				for(Object j : df.getColumn(i).getUniqueValues()) {
 					arr0.put(j, 0.0);
 					arr1.put(j, 0.0);
 					arr2.put(j, 0.0);
 					arr3.put(j, 0.0);
 				}
-				recall.put(df.getColumn_byIndex(i).getName(),arr0);
-				precision.put(df.getColumn_byIndex(i).getName(),arr1);
-				F1.put(df.getColumn_byIndex(i).getName(),arr2);
-				mcc.put(df.getColumn_byIndex(i).getName(),arr3);
+				recall.put(df.getColumn(i).getName(),arr0);
+				precision.put(df.getColumn(i).getName(),arr1);
+				F1.put(df.getColumn(i).getName(),arr2);
+				mcc.put(df.getColumn(i).getName(),arr3);
 			}
 		}
 	}

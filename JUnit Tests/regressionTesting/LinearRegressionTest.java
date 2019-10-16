@@ -20,8 +20,8 @@ class LinearRegressionTest {
 
 	@Test
 	void testRegressiom() {
-		Column col1 = iris.getColumn_byIndex(0);
-		Column col2 = iris.getColumn_byIndex(1);
+		Column col1 = iris.getColumn(0);
+		Column col2 = iris.getColumn(1);
 		LinearRegression test = new LinearRegression(col1,col2);
 	}
 

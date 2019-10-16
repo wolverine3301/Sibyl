@@ -149,10 +149,10 @@ public class Stats {
 		double[][] covar = new double[df.getNumColumns()][df.getNumColumns()];
 		//fill the columns of covariance matrix.
 	    for (int i = 0; i < df.getNumColumns(); i++) { 
-	    	covar[i][i] = df.getColumn_byIndex(i).variance;
+	    	covar[i][i] = df.getColumn(i).variance;
 	    	for(int j = i+1; j < df.getNumColumns(); j++) {
-	    		covar[i][j] = covariance(df.getColumn_byIndex(i), df.getColumn_byIndex(j));
-	    		covar[j][i] = covariance(df.getColumn_byIndex(j), df.getColumn_byIndex(i));
+	    		covar[i][j] = covariance(df.getColumn(i), df.getColumn(j));
+	    		covar[j][i] = covariance(df.getColumn(j), df.getColumn(i));
 	    	}
 	    }
 	    return covar;

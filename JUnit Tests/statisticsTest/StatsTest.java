@@ -19,14 +19,14 @@ class StatsTest {
 
 	@Test
 	void testZeroSquaredSum() {
-		Column col1 = iris.getColumn_byIndex(0);
+		Column col1 = iris.getColumn(0);
 		assertEquals(102.16833333333332,Stats.zeroSquaredSum(col1));
 	}
 
 	@Test
 	void testCovariance() {
-		Column col1 = iris.getColumn_byIndex(0);
-		Column col2 = iris.getColumn_byIndex(1);
+		Column col1 = iris.getColumn(0);
+		Column col2 = iris.getColumn(1);
 		assertEquals(-0.03900666666666667,Stats.covariance(col1,col2),"covariance is incorrect");
 		
 	}

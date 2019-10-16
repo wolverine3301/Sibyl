@@ -34,8 +34,9 @@ public class bench {
         Standardize s = new Standardize(df);
         s.standardize_df();
         //s.std_df.printDataFrame();
-        LogRegression l = new LogRegression(df.getColumn_byIndex(0), df.getColumn_byIndex(1));
+        LogRegression l = new LogRegression(df.getColumn(0), df.getColumn(1));
 
+<<<<<<< HEAD
         df.getColumn_byIndex(0).setType('T');
         df.getColumn_byIndex(1).setType('M');
         df.getColumn_byIndex(2).setType('M');
@@ -50,6 +51,16 @@ public class bench {
         df.getColumn_byIndex(57).setType('M');
         //ArrayList<DataFrame>df1 = DataFrameTools.split(df, 2);
         
+=======
+        df.getColumn(4).setType('T');
+
+        ArrayList<DataFrame>df1 = DataFrameTools.split(df, 2);
+        for(int i = 0; i < df.getNumColumns();i++) {
+        	//System.out.println(df.getColumn_byIndex(i).name + "  " +df.getColumn_byIndex(i).mean);
+        	//df1.get(i).printDataFrame();
+        	//df1.get(i).printDataFrame();
+        }
+>>>>>>> refs/remotes/origin/cade-branch
         df = df.shuffle(df);
        // df.printDataFrame();
         List<Integer> ll = new ArrayList<Integer>();

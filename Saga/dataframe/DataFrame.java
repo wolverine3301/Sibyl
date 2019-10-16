@@ -110,10 +110,24 @@ public class DataFrame {
                 }
                 rows.add(row);
         	}
+<<<<<<< HEAD
         	for(int i = 0;i < columnNames.size();i++) {
         	       
                 columnTypes.add(columns.get(i).getType());
         	}
+=======
+//        	for(int i = 0;i < columnNames.size();i++) {
+//        	    if(getColumn_byIndex(i).type == 'N') {
+//        	    	getColumn_byIndex(i).setSum();
+//        	    	getColumn_byIndex(i).setMean();
+//        	    	//getColumn_byIndex(i).setEntropy();
+//        	    	getColumn_byIndex(i).setVariance();
+//        	    	//getColumn_byIndex(i).setMedian();
+//        	    	getColumn_byIndex(i).setStandardDeviation();
+//        	    }    
+//                columnTypes.add(columns.get(i).getType());
+//        	}
+>>>>>>> refs/remotes/origin/cade-branch
         	this.numRows = rows.size();
         	this.numColumns = columns.size();
         } catch (IOException e) {
@@ -128,7 +142,7 @@ public class DataFrame {
 	 */
 	public void convertNANS_mean() {
         for (int i = 0; i < numColumns; i++) {
-            Column c = getColumn_byIndex(i);
+            Column c = getColumn(i);
             for (int j = 0; j < numRows; j++) {
                 Particle p = c.getParticle(j);
                 
@@ -137,7 +151,7 @@ public class DataFrame {
                         p = Particle.resolveType(c.mean);
                     else
                         p = Particle.resolveType(c.mode);
-                    getColumn_byIndex(i).changeValue(j, p);
+                    getColumn(i).changeValue(j, p);
                     getRow_byIndex(j).changeValue(i, p);
                 }
             }
@@ -150,10 +164,10 @@ public class DataFrame {
 	public void convertNANS_mode() {
 	    for (int i = 0; i < numColumns; i++) {
 	        for (int j = 0; j < numRows; j++) {
-	            Particle p = getColumn_byIndex(i).getParticle(j);
+	            Particle p = getColumn(i).getParticle(j);
 	            if (p instanceof NANParticle) {
-	                p = Particle.resolveType(getColumn_byIndex(i).mode);
-	                getColumn_byIndex(i).changeValue(j, p);
+	                p = Particle.resolveType(getColumn(i).mode);
+	                getColumn(i).changeValue(j, p);
 	                getRow_byIndex(j).changeValue(i, p);
 	            }
 	        }
@@ -181,7 +195,7 @@ public class DataFrame {
         else if (numRows < rows.size())
             numRows = rows.size();
         else if (numRows == 0 && numColumns != 0)
-            numRows = getColumn_byIndex(0).getLength();
+            numRows = getColumn(0).getLength();
     }
     
 	/**
@@ -213,7 +227,7 @@ public class DataFrame {
      * @param index the index of the column.
      * @return the column at the index.
      */
-    public Column getColumn_byIndex(int index) {
+    public Column getColumn(int index) {
         return columns.get(index);
     }
     /**
@@ -391,7 +405,7 @@ public class DataFrame {
 				break;
 			}
 		}
-		getColumn_byIndex(index).setType(newType);
+		getColumn(index).setType(newType);
 		columnTypes.set(index, newType);
 	}
 	
@@ -401,7 +415,7 @@ public class DataFrame {
 	 * @param newType the new data type of the column.
 	 */
 	public void setColumnType(int columnIndex, char newType) {
-        getColumn_byIndex(columnIndex).setType(newType);
+        getColumn(columnIndex).setType(newType);
         columnTypes.set(columnIndex, newType);
     }
     

@@ -75,7 +75,7 @@ public final class DataFrameTools {
      public static DataFrame deepCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
          DataFrame newDataFrame = new DataFrame();
          for (Integer i : columnIndexes) {
-        		newDataFrame.addColumn(new Column(theDataFrame.getColumn_byIndex(i)));
+        		newDataFrame.addColumn(new Column(theDataFrame.getColumn(i)));
          }
          return newDataFrame;
      }
@@ -103,7 +103,7 @@ public final class DataFrameTools {
     public static DataFrame deepCopy_columnTypes(DataFrame theDataFrame, Collection<Character> columnTypes) {
         DataFrame newDataFrame = new DataFrame();
         for (int i = 0; i < theDataFrame.getNumColumns(); i++) {
-            	newDataFrame.addColumn(new Column(theDataFrame.getColumn_byIndex(i)));
+            	newDataFrame.addColumn(new Column(theDataFrame.getColumn(i)));
         }
         return newDataFrame;
     }
@@ -117,8 +117,8 @@ public final class DataFrameTools {
     public static DataFrame deepCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes) {
         DataFrame newDataFrame = new DataFrame();
         for (int i = 0; i < theDataFrame.getNumColumns(); i++) { //Initialize blank columns in new data frame.
-            newDataFrame.addBlankColumn(theDataFrame.getColumn_byIndex(i).getName(), 
-                    theDataFrame.getColumn_byIndex(i).getType());
+            newDataFrame.addBlankColumn(theDataFrame.getColumn(i).getName(), 
+                    theDataFrame.getColumn(i).getType());
         }
         for (Integer rowIndex : rowIndexes) {
             newDataFrame.addRow(new Row(theDataFrame.getRow_byIndex(rowIndex)));
@@ -166,7 +166,7 @@ public final class DataFrameTools {
         for (int i = 0; i < theDataFrame.getNumRows(); i++)
             rowLengths.add(theDataFrame.getRow_byIndex(i).getLength());
         for (int i = 0; i < theDataFrame.getNumColumns(); i++)
-            columnLengths.add(theDataFrame.getColumn_byIndex(i).getLength());
+            columnLengths.add(theDataFrame.getColumn(i).getLength());
         return (rowLengths.equals(columnLengths)) && theDataFrame.getNumRows() == theDataFrame.getNumColumns();
     }
     
@@ -181,7 +181,7 @@ public final class DataFrameTools {
     public static DataFrame shallowCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
         DataFrame newDataFrame = new DataFrame();
         for (Integer i : columnIndexes) {
-            newDataFrame.addColumn(theDataFrame.getColumn_byIndex(i));
+            newDataFrame.addColumn(theDataFrame.getColumn(i));
         }
         return newDataFrame;
     }
@@ -210,8 +210,8 @@ public final class DataFrameTools {
     public static DataFrame shallowCopy_columnTypes(DataFrame theDataFrame, Collection<Character> columnTypes) {
         DataFrame newDataFrame = new DataFrame();
         for (int i = 0; i < theDataFrame.getNumColumns(); i++) {
-            if (columnTypes.contains(theDataFrame.getColumn_byIndex(i).getType())) {
-                newDataFrame.addColumn(theDataFrame.getColumn_byIndex(i));
+            if (columnTypes.contains(theDataFrame.getColumn(i).getType())) {
+                newDataFrame.addColumn(theDataFrame.getColumn(i));
             }
         }
         return newDataFrame;
@@ -226,8 +226,8 @@ public final class DataFrameTools {
     public static DataFrame shallowCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes) {
         DataFrame newDataFrame = new DataFrame();
         for (int i = 0; i < theDataFrame.getNumColumns(); i++) 
-            newDataFrame.addBlankColumn(theDataFrame.getColumn_byIndex(i).getName(),
-                    theDataFrame.getColumn_byIndex(i).getType());
+            newDataFrame.addBlankColumn(theDataFrame.getColumn(i).getName(),
+                    theDataFrame.getColumn(i).getType());
         for (Integer rowIndex : rowIndexes) {
             newDataFrame.addRow(theDataFrame.getRow_byIndex(rowIndex));
         }
