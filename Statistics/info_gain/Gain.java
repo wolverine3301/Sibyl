@@ -6,7 +6,7 @@ import java.util.TreeSet;
 
 import dataframe.Column;
 import dataframe.DataFrame;
-import dataframe.DataFrameTools;
+import dataframe.DataFrame_Copy;
 
 public abstract class Gain {
     
@@ -21,8 +21,8 @@ public abstract class Gain {
      * @param theDataFrame the data frame to format for gain based calculations.
      */
     public Gain(DataFrame theDataFrame) {
-        categoricalColumns = DataFrameTools.shallowCopy_columnTypes(theDataFrame, setVariables());
-        targetColumns = DataFrameTools.shallowCopy_columnTypes(theDataFrame, setTargets());
+        categoricalColumns = DataFrame_Copy.shallowCopy_columnTypes(theDataFrame, setVariables());
+        targetColumns = DataFrame_Copy.shallowCopy_columnTypes(theDataFrame, setTargets());
     }
     
     /**

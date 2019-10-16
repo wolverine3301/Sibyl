@@ -16,7 +16,7 @@ import particles.Particle;
  * @author Cade Reynoldson
  * @version 1.0
  */
-public final class DataFrameTools {  
+public final class DataFrame_Copy {  
     /**
      * Versitility function, arguments in the string array passed to the method will be parsed, and a shallow copy of the data frame with rows
      * that meet the specified arguments will be returned, can take multiple arguments.
@@ -61,7 +61,7 @@ public final class DataFrameTools {
                 }
             }
         }
-        return DataFrameTools.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
+        return DataFrame_Copy.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
     }
     
   //TODO for some reason calling this does not include the first row in the new copied dataframe

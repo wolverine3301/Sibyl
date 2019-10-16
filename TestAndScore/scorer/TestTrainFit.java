@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 
 import dataframe.DataFrame;
-import dataframe.DataFrameTools;
+import dataframe.DataFrame_Copy;
 
 public class TestTrainFit {
 	
@@ -33,12 +33,12 @@ public class TestTrainFit {
 		setTest();
 	}
 	public void setTest() {
-		this.trial_test_targets = DataFrameTools.shallowCopy_columnTypes(this.raw_test, set_targets());
-	    this.trial_test_variables = DataFrameTools.shallowCopy_columnTypes(this.raw_test, set_variables());
+		this.trial_test_targets = DataFrame_Copy.shallowCopy_columnTypes(this.raw_test, set_targets());
+	    this.trial_test_variables = DataFrame_Copy.shallowCopy_columnTypes(this.raw_test, set_variables());
 	}
 	public void setTrain() {
-		this.trial_train_targets = DataFrameTools.shallowCopy_columnTypes(this.raw_train, set_targets());
-	    this.trial_train_variables = DataFrameTools.shallowCopy_columnTypes(this.raw_train, set_variables());
+		this.trial_train_targets = DataFrame_Copy.shallowCopy_columnTypes(this.raw_train, set_targets());
+	    this.trial_train_variables = DataFrame_Copy.shallowCopy_columnTypes(this.raw_train, set_variables());
 	}
 	
 	/**

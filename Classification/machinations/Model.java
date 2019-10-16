@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import dataframe.DataFrame;
-import dataframe.DataFrameTools;
+import dataframe.DataFrame_Copy;
 import dataframe.Row;
 import particles.Particle;
 
@@ -54,8 +54,8 @@ public abstract class Model {
 	}
 	public  void train(DataFrame df) {
 		this.rawTrain = df;
-	    this.trainDF_targets = DataFrameTools.shallowCopy_columnTypes(df, set_targets());
-	    this.trainDF_variables = DataFrameTools.shallowCopy_columnTypes(df, set_variables());
+	    this.trainDF_targets = DataFrame_Copy.shallowCopy_columnTypes(df, set_targets());
+	    this.trainDF_variables = DataFrame_Copy.shallowCopy_columnTypes(df, set_variables());
 	    this.trainDF_variables.setStuff();
 	}
 	/**
@@ -74,8 +74,8 @@ public abstract class Model {
 	public abstract HashMap<String , ArrayList<Object>> predictDF(DataFrame testDF);
 	
 	public void setTrain(DataFrame trainDF) {
-		this.trainDF_targets = DataFrameTools.shallowCopy_columnTypes(trainDF, set_targets());
-	    this.trainDF_variables = DataFrameTools.shallowCopy_columnTypes(trainDF, set_variables());   	
+		this.trainDF_targets = DataFrame_Copy.shallowCopy_columnTypes(trainDF, set_targets());
+	    this.trainDF_variables = DataFrame_Copy.shallowCopy_columnTypes(trainDF, set_variables());   	
 	}
 	public abstract void initiallize();
 	

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import dataframe.DataFrame;
-import dataframe.DataFrameTools;
+import dataframe.DataFrame_Copy;
 
 class DataFrameTesting {
     
@@ -30,7 +30,7 @@ class DataFrameTesting {
         columnIndexes.add(0);
         columnIndexes.add(1);
         columnIndexes.add(2);
-        DataFrame temp = DataFrameTools.shallowCopy_columnIndexes(testFrame, columnIndexes);
+        DataFrame temp = DataFrame_Copy.shallowCopy_columnIndexes(testFrame, columnIndexes);
         assertEquals(3, temp.getNumColumns(), "Data frame has incorrect number of columns upon copy.");
         assertEquals(6, temp.getNumRows(), "Data frame has incorrect number of rows upon copy.");
     }
@@ -43,7 +43,7 @@ class DataFrameTesting {
         columnIndexes.add(0);
         columnIndexes.add(1);
         columnIndexes.add(2);
-        DataFrame temp = DataFrameTools.shallowCopy_columnIndexes(testFrame, columnIndexes);
+        DataFrame temp = DataFrame_Copy.shallowCopy_columnIndexes(testFrame, columnIndexes);
         assertEquals(3, temp.getNumColumns(), "Data frame has incorrect number of columns upon copy.");
         assertEquals(6, temp.getNumRows(), "Data frame has incorrect number of rows upon copy.");
     }
@@ -56,7 +56,7 @@ class DataFrameTesting {
         rowIndexes.add(0);
         rowIndexes.add(1);
         rowIndexes.add(2);
-        DataFrame temp = DataFrameTools.shallowCopy_rowIndexes(testFrame, rowIndexes);
+        DataFrame temp = DataFrame_Copy.shallowCopy_rowIndexes(testFrame, rowIndexes);
         assertEquals(6, temp.getNumColumns(), "Data frame has incorrect number of columns upon copy.");
         assertEquals(3, temp.getNumRows(), "Data frame has incorrect number of rows upon copy.");
     }
@@ -78,7 +78,7 @@ class DataFrameTesting {
         startDate = new Date();
         startTime = startDate.getTime();
         for (int i = 0; i < 1000; i++) {
-            DataFrameTools.deepCopy_rowIndexes(largeDataFrame, rowIndexes);
+            DataFrame_Copy.deepCopy_rowIndexes(largeDataFrame, rowIndexes);
         }
         finishDate = new Date();
         finishTime = finishDate.getTime();

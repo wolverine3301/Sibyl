@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import dataframe.DataFrame;
-import dataframe.DataFrameTools;
+import dataframe.DataFrame_Copy;
 
 class DataFrameToolsTest {
 	private DataFrame iris = new DataFrame();
@@ -27,7 +27,7 @@ class DataFrameToolsTest {
 	void testAquire() {
 		DataFrame df1 = new DataFrame();
 		String[] args = {"species","==","setosa"};
-		df1 = DataFrameTools.acquire(iris,args);
+		df1 = DataFrame_Copy.acquire(iris,args);
 		assertEquals(50, df1.getNumRows(), "The new dataframe has incorrect number of rows");
 		assertEquals(50,df1.getColumn_byName("species").getLength(),"The column copy has incorrect number of rows");
 		assertEquals(1,df1.getColumn_byName("species").numOfUniques());
