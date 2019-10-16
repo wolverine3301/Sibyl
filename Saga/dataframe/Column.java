@@ -340,11 +340,6 @@ public class Column {
      * BEING CALLED - JUST USE prepareForStatistics() LIKE A GOOD PROGRAMMER
      */
     public void setUniqueValues(){ 
-        Set<Object> unique = new HashSet<Object>();
-        for(int i = 0; i < column.size(); i++) {
-            unique.add(column.get(i).getValue());
-        }   
-        this.uniqueValues = unique;
         uniqueValues = uniqueValueCounts.keySet();
     }
     
@@ -353,16 +348,17 @@ public class Column {
      * @return
      */
     public void setUniqueValueCount() {
-        Set<Object> unique = this.uniqueValues;
         HashMap<Object, Integer> vals = new HashMap<Object, Integer>();
-        //initialize map
-        for(Object o : unique) {
-            vals.put(o, 0);
-        }
         //counting
-        for(int i = 0; i < column.size(); i++) {  
-            Particle p = column.get(i);
-            vals.replace(p.getValue(), (Integer)vals.get(p.getValue()) +1);
+        for(int i = 0; i < column.size(); i++) {
+            Object value = column.get(i).getValue();
+            if (!vals.containsKey(value))
+                vals.put(value, 1);
+            else {
+                Integer temp = vals.get(value);
+                vals.replace(value, temp + 1);
+            }
+                
         }//end count
         // Create a list from elements of HashMap 
         List<Map.Entry<Object, Integer>> list = new LinkedList<Map.Entry<Object, Integer> >(vals.entrySet()); 
@@ -441,6 +437,26 @@ public class Column {
 	    return str;
 	}
 
+	/**
+	 * Returns a string consisting of the statisitcs of the column.
+	 * @return a string consisting of the statistics of the column.
+	 */
+	public String toStringStatistics() {
+	    String str = "Column " + name + "\nType: " + type;
+	    str += "\nMean: " + mean;
+	    str += "\nMode: " + mode;
+	    str += "\nMedian: " + median;
+	    str += "\nSum: " + sum;
+	    str += "\nVariance: " + variance;
+	    str += "\nStandard Deviation: " + std;
+	    str += "\nEntropy: " + entropy;
+	    str += "\nNumber of Unique Values: " + totalUniqueValues;
+	    str += "\nUnique Values: " + uniqueValues;
+	    str += "\nUnique Value Counts: " + uniqueValueCounts;
+	    str += "\nFeature Stats: " + featureStats + "\n";
+	    return str;
+	}
+	
     /**
      * NUMERIC COLUMN METHODS
      */
@@ -510,12 +526,16 @@ public class Column {
      * @return the median value of a column if column is numeric, mode if column is non numeric.
      */
     public void setMedian() {
-        List<Particle> sorted = new ArrayList<Particle>();
+        List<Double> sorted = new ArrayList<Double>();
         for (int i = 0; i < column.size(); i++) {
-            sorted.add(column.get(i).deepCopy());
+            if (!(column.get(i) instanceof NANParticle))
+                sorted.add(column.get(i).getDoubleValue());
         }
         Collections.sort(sorted);
-        this.median  = (double) sorted.get(sorted.size() / 2).getValue();
+        if (sorted.size() % 2 == 0)
+            median = (double) sorted.get(sorted.size() / 2);
+        else
+            median = (double) sorted.get((sorted.size() + 1) / 2);
     }
     
     /**
