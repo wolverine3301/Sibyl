@@ -231,7 +231,7 @@ public final class DataFrame_Copy {
         for (Integer rowIndex : rowIndexes) {
             newDataFrame.addRow(theDataFrame.getRow_byIndex(rowIndex));
         }
-        newDataFrame.updateNumRows();
+        newDataFrame.setNumRows();
         newDataFrame.setStuff();
         return newDataFrame;
     } 

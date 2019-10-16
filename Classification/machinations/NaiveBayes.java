@@ -196,19 +196,16 @@ public class NaiveBayes extends Model{
 		for(Object z : super.trainDF_targets.getColumn(target).getUniqueValues()) {
 			double prob = 1;
 			for(int i = 0; i < row.rowLength; i++) {
-<<<<<<< HEAD
 				if(super.trainDF_variables.getColumn_byIndex(i).getType() == 'N') {
 					prob = prob * getContinuousProbability(super.trainDF_targets.getColumn_byIndex(target).getName(),z,super.trainDF_variables.getColumn_byIndex(i).getName(),row.getParticle(i));
 				}else {
 					System.out.println(super.trainDF_variables.getColumn_byIndex(i).getName());
 					prob = prob * cat_Naive_Bayes.get(super.trainDF_targets.getColumn_byIndex(target).getName()).get(z).get(super.trainDF_variables.getColumn_byIndex(i).getName()).get(row.getParticle(i).getValue());
 				}
-=======
 				if(super.trainDF_variables.getColumn(i).getType() == 'N') {
 					prob = prob * getContinuousProbability(super.trainDF_targets.getColumn(target).getName(),z,super.trainDF_variables.getColumn(i).getName(),row.getParticle(i));
 				}else
 					prob = prob * cat_Naive_Bayes.get(super.trainDF_targets.getColumn(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(row.getParticle(i).getValue());
->>>>>>> refs/remotes/origin/cade-branch
 			}
 			classProb.put(z, prob);
 		}

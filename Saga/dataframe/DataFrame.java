@@ -22,11 +22,11 @@ import particles.Particle;
 public class DataFrame {
 	
     /** The names of the columns */
-	private ArrayList<String> columnNames;
+	protected ArrayList<String> columnNames;
 	
 	/** The type of each column */
-	private ArrayList<Character> columnTypes;
-	public ArrayList<Integer> numericIndexes;
+	protected ArrayList<Character> columnTypes;
+	protected ArrayList<Integer> numericIndexes;
 	
 	/** The ArrayList of columns */
 	protected ArrayList<Column> columns;
@@ -35,10 +35,10 @@ public class DataFrame {
 	protected ArrayList<Row> rows;
 	
 	/** The number of rows in the data frame */
-	private int numRows;
+	protected int numRows;
 	
 	/** The number of columns in the data frame */
-	private int numColumns;
+	protected int numColumns;
 	
 	/**
 	 * Create a new, empty data frame.
@@ -53,143 +53,17 @@ public class DataFrame {
 		numColumns = 0;
 		
 	}
-	
-	/**
-	 * Construct a dataframe directly from a csv file, auto assumes there is a header line which it uses as the column names.
-	 * @param file  - csv file name or path
-	 * @param types - an array of strings to set the type attribute of the column, needs work and automization but will be usefully
-	 * for managing which functions to use on which type of column
+	/*
+	 * ##################################################################
 	 * 
+	 * 					DATAFRAME SETTERS
+	 * 
+	 * ##################################################################
 	 */
-	public void loadcsv(String file) {
-        String line = "";
-        String cvsSplitBy = ",";
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-        	line =  br.readLine(); //get column names
-        	String[] colNames = line.split(cvsSplitBy);
-        	for(int i = 0;i < colNames.length;i++) //Initialize column names.
-        		columnNames.add(colNames[i]);
-
-            // initializing column objects
-            line = br.readLine();
-            String[] lines = line.split(cvsSplitBy);
-            Row row = new Row();
-            for(int i=0;i<columnNames.size();i++) {
-            	Particle p = Particle.resolveType(lines[i]);
-            	if(p.type == 'i' || p.type == 'd') {
-            		numericIndexes.add(i);
-            		Column c = new Column(columnNames.get(i));
-            		c.add(p);
-            		c.setType('N');
-            		columns.add(c);
-
-            	}else if(p.type == 'n') {
-            		Column c = new Column(columnNames.get(i));
-            		c.add(p);
-            		c.setType('M');
-            		columns.add(c);
-            			
-            	}else {
-            		Column c = new Column(columnNames.get(i));
-            		c.add(p);
-            		c.setType('C');
-            		columns.add(c);
-
-            	}
-            	row.add(p);
-            }
-            rows.add(row);
-            
-        	while ((line = br.readLine()) != null) { //Read in each line, create row objects and initialize data.
-                lines = line.split(cvsSplitBy);
-                row = new Row();
-                for(int i=0;i<columnNames.size();i++) { //load data into columns and rows
-                	Particle p = Particle.resolveType(lines[i]);
-                	columns.get(i).add(p);
-                	row.add(p);
-                }
-                rows.add(row);
-        	}
-<<<<<<< HEAD
-        	for(int i = 0;i < columnNames.size();i++) {
-        	       
-                columnTypes.add(columns.get(i).getType());
-        	}
-=======
-//        	for(int i = 0;i < columnNames.size();i++) {
-//        	    if(getColumn_byIndex(i).type == 'N') {
-//        	    	getColumn_byIndex(i).setSum();
-//        	    	getColumn_byIndex(i).setMean();
-//        	    	//getColumn_byIndex(i).setEntropy();
-//        	    	getColumn_byIndex(i).setVariance();
-//        	    	//getColumn_byIndex(i).setMedian();
-//        	    	getColumn_byIndex(i).setStandardDeviation();
-//        	    }    
-//                columnTypes.add(columns.get(i).getType());
-//        	}
->>>>>>> refs/remotes/origin/cade-branch
-        	this.numRows = rows.size();
-        	this.numColumns = columns.size();
-        } catch (IOException e) {
-        	e.printStackTrace();
-        }
-        
-	}
-	
-	/**
-	 * Converts all NANS in the data frame to their mean value, excluding non numeric values, which will
-	 * be converted to the most occouring value in the data frame.
-	 */
-	public void convertNANS_mean() {
-        for (int i = 0; i < numColumns; i++) {
-            Column c = getColumn(i);
-            for (int j = 0; j < numRows; j++) {
-                Particle p = c.getParticle(j);
-                
-                if (p instanceof NANParticle) {
-                    if (c.getType() == 'N')
-                        p = Particle.resolveType(c.mean);
-                    else
-                        p = Particle.resolveType(c.mode);
-                    getColumn(i).changeValue(j, p);
-                    getRow_byIndex(j).changeValue(i, p);
-                }
-            }
-        }
-	}
-	
-	/**
-	 * Converts all NANS in the data frame to their mode value.
-	 */
-	public void convertNANS_mode() {
-	    for (int i = 0; i < numColumns; i++) {
-	        for (int j = 0; j < numRows; j++) {
-	            Particle p = getColumn(i).getParticle(j);
-	            if (p instanceof NANParticle) {
-	                p = Particle.resolveType(getColumn(i).mode);
-	                getColumn(i).changeValue(j, p);
-	                getRow_byIndex(j).changeValue(i, p);
-	            }
-	        }
-	    }
-	}
-	
-	/**
-	 * Replaces a row in the data frame.
-	 * @param index the index of the row to be replaced
-	 * @param row the row to be added in place of the row at the passed index.
-	 */
-	public void replaceRow(int index, Row row) {
-	    rows.set(index, row);
-	    for (int i = 0; i < row.getLength(); i++) {
-	        columns.get(i).changeValue(index, row.getParticle(i));
-	    }
-	}
-    
     /**
      * Updates the number of rows in this column. Note: this does not create new rows when changing the size.
      */
-    public void updateNumRows() {
+    public void setNumRows() {
         if (numRows == rows.size())
             return;
         else if (numRows < rows.size())
@@ -197,6 +71,41 @@ public class DataFrame {
         else if (numRows == 0 && numColumns != 0)
             numRows = getColumn(0).getLength();
     }
+	/**
+	 * Set column to certain type given the column's name.
+	 * @param columnName the name of the column.
+	 * @param newType the new data type of the column.
+	 */
+	public void setColumnType(String columnName, char newType) {
+		int index = 0;
+		for(int i = 0; i < columnNames.size(); i++) {
+			if(columnNames.get(i).contentEquals(columnName)){
+				index = i;
+				break;
+			}
+		}
+		getColumn(index).setType(newType);
+		columnTypes.set(index, newType);
+	}
+	
+	/**
+	 * Set a column at a specified index's data type. 
+	 * @param columnIndex the index of the column.
+	 * @param newType the new data type of the column.
+	 */
+	public void setColumnType(int columnIndex, char newType) {
+        getColumn(columnIndex).setType(newType);
+        columnTypes.set(columnIndex, newType);
+    }
+	
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
+	/*
+	 * ##################################################################
+	 * 
+	 * 					DATAFRAME GETTERS
+	 * 
+	 * ##################################################################
+	 */
     
 	/**
 	 * Returns an indexed row from the data frame.
@@ -230,6 +139,64 @@ public class DataFrame {
     public Column getColumn(int index) {
         return columns.get(index);
     }
+
+	
+	/**
+	 * Returns an array of the column names from the data frame.
+	 * @return an array of the column names from the data frame.
+	 */
+	public ArrayList<String> getColumnNames() {
+		return columnNames;
+	}
+	
+	/**
+	 * Returns the amount of rows in the data frame.
+	 * @return the amount of rows in the data frame.
+	 */
+	public int getNumRows() {
+		return numRows;
+	}
+	
+	/**
+	 * Returns the number of columns in the data frame.
+	 * @return the amount of columns in the data frame.
+	 */
+	public int getNumColumns() {
+	    return numColumns;
+	}
+	
+	/**
+	 * Returns the names of the columns in the data frame in a single string.
+	 * @return the names of the columns in the data frame in a single string.
+	 */
+	public String columnNamesToString() {
+		return columnNames.toString();
+	}
+	
+
+    
+	/**
+	 * returns a list of columns of the specified type
+	 * @param String type
+	 * @return List<Column>
+	 */
+	public List<Column> getColumnByTypes(char type){
+		List<Column> cols = new ArrayList<Column>();
+		for(Column i : columns) {
+			if(i.getType() == type) {
+				cols.add(i);
+			}
+		}
+		return cols;
+	}
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
+	/*
+	 * ##################################################################
+	 * 
+	 * 					DATAFRAME MANIPULATION FUNCTIONS
+	 * 
+	 * ##################################################################
+	 */
     /**
      * Add a new column from an array.
      * @param name The name of the column.
@@ -294,6 +261,17 @@ public class DataFrame {
         for (int i = 0; i < r.getLength(); i++) 
             columns.get(i).add(r.getParticle(i));
     }
+	/**
+	 * Replaces a row in the data frame.
+	 * @param index the index of the row to be replaced
+	 * @param row the row to be added in place of the row at the passed index.
+	 */
+	public void replaceRow(int index, Row row) {
+	    rows.set(index, row);
+	    for (int i = 0; i < row.getLength(); i++) {
+	        columns.get(i).changeValue(index, row.getParticle(i));
+	    }
+	}
     /**
      * Adds a column to the data frame.
      * @param c the column to be added.
@@ -360,79 +338,118 @@ public class DataFrame {
 	    } 
 	}
 	
-	/**
-	 * Returns an array of the column names from the data frame.
-	 * @return an array of the column names from the data frame.
+	
+
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
+	/*
+	 * ##################################################################
+	 * 
+	 * 						DATAFRAME_ READ CALLS
+	 * 
+	 * ##################################################################
 	 */
-	public ArrayList<String> getColumnNames() {
-		return columnNames;
+	/**
+	 * load a csv into a data frame
+	 * @param file
+	 * @return
+	 */
+	public static DataFrame read_csv(String file) {
+		DataFrame df = DataFrame_Read.loadcsv(file);
+		return df;
 	}
 	
-	/**
-	 * Returns the amount of rows in the data frame.
-	 * @return the amount of rows in the data frame.
+
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
+	/*
+	 * ##################################################################
+	 * 
+	 * 						DATAFRAME_ COPY CALLS
+	 * 
+	 * ##################################################################
 	 */
-	public int getNumRows() {
-		return numRows;
-	}
-	
-	/**
-	 * Returns the number of columns in the data frame.
-	 * @return the amount of columns in the data frame.
-	 */
-	public int getNumColumns() {
-	    return numColumns;
-	}
-	
-	/**
-	 * Returns the names of the columns in the data frame in a single string.
-	 * @return the names of the columns in the data frame in a single string.
-	 */
-	public String columnNamesToString() {
-		return columnNames.toString();
-	}
-	
-	/**
-	 * Set column to certain type given the column's name.
-	 * @param columnName the name of the column.
-	 * @param newType the new data type of the column.
-	 */
-	public void setColumnType(String columnName, char newType) {
-		int index = 0;
-		for(int i = 0; i < columnNames.size(); i++) {
-			if(columnNames.get(i).contentEquals(columnName)){
-				index = i;
-				break;
-			}
-		}
-		getColumn(index).setType(newType);
-		columnTypes.set(index, newType);
-	}
-	
-	/**
-	 * Set a column at a specified index's data type. 
-	 * @param columnIndex the index of the column.
-	 * @param newType the new data type of the column.
-	 */
-	public void setColumnType(int columnIndex, char newType) {
-        getColumn(columnIndex).setType(newType);
-        columnTypes.set(columnIndex, newType);
+    public static DataFrame acquire(DataFrame theDataFrame, String[] args) {
+    	return DataFrame_Copy.acquire(theDataFrame, args);
     }
-    
-	/**
-	 * returns a list of columns of the specified type
-	 * @param String type
-	 * @return List<Column>
+    public static DataFrame deepCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
+    	return DataFrame_Copy.deepCopy_columnIndexes(theDataFrame, columnIndexes);
+    }
+    public static DataFrame deepCopy_columnNames(DataFrame theDataFrame, Collection<String> columnNames) {
+    	return DataFrame_Copy.deepCopy_columnNames(theDataFrame, columnNames);
+    }
+    public static DataFrame deepCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes) {
+    	return DataFrame_Copy.deepCopy_rowIndexes(theDataFrame, rowIndexes);
+    }
+    public static DataFrame exclude(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
+    	return DataFrame_Copy.exclude(theDataFrame, columnIndexes);
+    }
+    public static DataFrame shallowCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
+    	return DataFrame_Copy.shallowCopy_columnIndexes(theDataFrame, columnIndexes);
+    }
+    public static DataFrame shallowCopy_columnNames(DataFrame theDataFrame, Collection<String> columnNames){
+    	return DataFrame_Copy.shallowCopy_columnNames(theDataFrame, columnNames);
+    }
+    public static DataFrame shallowCopy_columnTypes(DataFrame theDataFrame, Collection<Character> columnTypes){
+    	return DataFrame_Copy.shallowCopy_columnTypes(theDataFrame, columnTypes);
+    }
+    public static DataFrame shallowCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes){
+    	return DataFrame_Copy.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
+    }
+    public static void sortByColumn(DataFrame theDataFrame, int columnIndex){
+    	DataFrame_Copy.sortByColumn(theDataFrame, columnIndex);
+    }
+    public static ArrayList<DataFrame> split(DataFrame theDataFrame, int n) {
+    	return DataFrame_Copy.split(theDataFrame, n);
+    }
+    public DataFrame shuffle(DataFrame df) {
+    	DataFrame newdf = df;
+    	DataFrame_Copy.shuffle(newdf);
+    	return newdf;
+    }
+    /*
+	 * ##################################################################
+	 * 
+	 * 						DATAFRAME_ COPY CALLS
+	 * 
+	 * ##################################################################
 	 */
-	public List<Column> getColumnByTypes(char type){
-		List<Column> cols = new ArrayList<Column>();
-		for(Column i : columns) {
-			if(i.getType() == type) {
-				cols.add(i);
-			}
-		}
-		return cols;
+	/**
+	 * Converts all NANS in the data frame to their mean value, excluding non numeric values, which will
+	 * be converted to the most occouring value in the data frame.
+	 */
+	public void convertNANS_mean() {
+        for (int i = 0; i < numColumns; i++) {
+            Column c = getColumn(i);
+            for (int j = 0; j < numRows; j++) {
+                Particle p = c.getParticle(j);
+                
+                if (p instanceof NANParticle) {
+                    if (c.getType() == 'N')
+                        p = Particle.resolveType(c.mean);
+                    else
+                        p = Particle.resolveType(c.mode);
+                    getColumn(i).changeValue(j, p);
+                    getRow_byIndex(j).changeValue(i, p);
+                }
+            }
+        }
 	}
+	
+	/**
+	 * Converts all NANS in the data frame to their mode value.
+	 */
+	public void convertNANS_mode() {
+	    for (int i = 0; i < numColumns; i++) {
+	        for (int j = 0; j < numRows; j++) {
+	            Particle p = getColumn(i).getParticle(j);
+	            if (p instanceof NANParticle) {
+	                p = Particle.resolveType(getColumn(i).mode);
+	                getColumn(i).changeValue(j, p);
+	                getRow_byIndex(j).changeValue(i, p);
+	            }
+	        }
+	    }
+	}
+
     /**
      * Prints the data frame.
      */
@@ -445,7 +462,8 @@ public class DataFrame {
             rows.get(z).printRow();
             System.out.println();
         }
-    }public void setStuff() {
+    }
+    public void setStuff() {
     	for(Column i : columns) {
     		i.setUniqueValues();
     		i.setUniqueValCnt();
@@ -461,42 +479,5 @@ public class DataFrame {
 		
     	}
     }
-    public static DataFrame acquire(DataFrame theDataFrame, String[] args) {
-    	return DataFrameTools.acquire(theDataFrame, args);
-    }
-    public static DataFrame deepCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
-    	return DataFrameTools.deepCopy_columnIndexes(theDataFrame, columnIndexes);
-    }
-    public static DataFrame deepCopy_columnNames(DataFrame theDataFrame, Collection<String> columnNames) {
-    	return DataFrameTools.deepCopy_columnNames(theDataFrame, columnNames);
-    }
-    public static DataFrame deepCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes) {
-    	return DataFrameTools.deepCopy_rowIndexes(theDataFrame, rowIndexes);
-    }
-    public static DataFrame exclude(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
-    	return DataFrameTools.exclude(theDataFrame, columnIndexes);
-    }
-    public static DataFrame shallowCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
-    	return DataFrameTools.shallowCopy_columnIndexes(theDataFrame, columnIndexes);
-    }
-    public static DataFrame shallowCopy_columnNames(DataFrame theDataFrame, Collection<String> columnNames){
-    	return DataFrameTools.shallowCopy_columnNames(theDataFrame, columnNames);
-    }
-    public static DataFrame shallowCopy_columnTypes(DataFrame theDataFrame, Collection<Character> columnTypes){
-    	return DataFrameTools.shallowCopy_columnTypes(theDataFrame, columnTypes);
-    }
-    public static DataFrame shallowCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes){
-    	return DataFrameTools.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
-    }
-    public static void sortByColumn(DataFrame theDataFrame, int columnIndex){
-    	DataFrameTools.sortByColumn(theDataFrame, columnIndex);
-    }
-    public static ArrayList<DataFrame> split(DataFrame theDataFrame, int n) {
-    	return DataFrameTools.split(theDataFrame, n);
-    }
-    public DataFrame shuffle(DataFrame df) {
-    	DataFrame newdf = df;
-    	DataFrameTools.shuffle(newdf);
-    	return newdf;
-    }
+
 }
