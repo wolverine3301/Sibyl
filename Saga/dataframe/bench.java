@@ -24,9 +24,9 @@ public class bench {
         Standardize s = new Standardize(df);
         s.standardize_df();
         //s.std_df.printDataFrame();
-        LogRegression l = new LogRegression(df.getColumn_byIndex(0), df.getColumn_byIndex(1));
+        LogRegression l = new LogRegression(df.getColumn(0), df.getColumn(1));
 
-        df.getColumn_byIndex(4).setType('T');
+        df.getColumn(4).setType('T');
 
         ArrayList<DataFrame>df1 = DataFrameTools.split(df, 2);
         for(int i = 0; i < df.getNumColumns();i++) {

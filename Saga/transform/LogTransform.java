@@ -19,7 +19,7 @@ public class LogTransform {
      */
     public static DataFrame transformBase10(DataFrame dataFrame) {
         for (int i = 0; i < dataFrame.getNumColumns(); i++) {
-            Column c = dataFrame.getColumn_byIndex(i);
+            Column c = dataFrame.getColumn(i);
             if (c.getType() == 'N') {
                 for (int j = 0; j < dataFrame.getNumRows(); j++) {
                     Particle p = new DoubleParticle(Math.log10((Double) c.getParticle(j).value));
@@ -37,7 +37,7 @@ public class LogTransform {
      */
     public static DataFrame transformNaturalLog(DataFrame dataFrame) {
         for (int i = 0; i < dataFrame.getNumColumns(); i++) {
-            Column c = dataFrame.getColumn_byIndex(i);
+            Column c = dataFrame.getColumn(i);
             if (c.getType() == 'N') {
                 for (int j = 0; j < dataFrame.getNumRows(); j++) {
                     Particle p = new DoubleParticle(Math.log((Double) c.getParticle(j).value));

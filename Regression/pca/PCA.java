@@ -38,9 +38,9 @@ public class PCA {
 		Column[] cols = new Column[df.getNumColumns()-1];
 		//x columns
 		for(int j = 1; j < df.getNumColumns(); j++) {
-			cols[j] = df.getColumn_byIndex(j);
+			cols[j] = df.getColumn(j);
 		}
-		Multi_LinearRegression regress = new Multi_LinearRegression(cols, df.getColumn_byIndex(0));
+		Multi_LinearRegression regress = new Multi_LinearRegression(cols, df.getColumn(0));
 		return regress;
 	}
 	/**

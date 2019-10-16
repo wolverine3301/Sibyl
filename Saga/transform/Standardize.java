@@ -25,7 +25,7 @@ public class Standardize {
 	 */
 	public void standardize_df() {
 		for(int i =0; i < df.getNumColumns(); i++) {
-			standardize_col(df.getColumn_byIndex(i), i);
+			standardize_col(df.getColumn(i), i);
 		}
 	}
 	/**
@@ -45,7 +45,7 @@ public class Standardize {
 	 */
 	public void zeroMean_df() {
 		for(int i =0; i < df.getNumColumns(); i++) {
-			zeroMean_col(df.getColumn_byIndex(i));
+			zeroMean_col(df.getColumn(i));
 		}
 	}
 	/**

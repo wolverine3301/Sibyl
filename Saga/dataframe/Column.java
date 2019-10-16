@@ -53,7 +53,7 @@ public class Column {
     protected HashMap<Object, Integer> uniqueValueCounts;
     
     /** The most occouring value in the column. */
-    protected Object mode;
+    public Object mode;
     
     /** The mean value of the column (NUMERIC ONLY)*/
     public double mean;
@@ -192,6 +192,14 @@ public class Column {
     }
     
     /**
+     * Returns the name of the column.
+     * @return the name of the column.
+     */
+    public String getName() {
+        return name;
+    }
+    
+    /**
      * Returns the particle at a given index.
      * @param index particle at this index.
      * @return a particle at the given index.
@@ -315,6 +323,7 @@ public class Column {
         }   
         this.uniqueValues = unique;
     }
+    
     /**
      * returns a hashmap: keys are each unique value in array list and they point to the number of occurances
      * @return
