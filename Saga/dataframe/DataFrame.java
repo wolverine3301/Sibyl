@@ -18,7 +18,6 @@ import particles.Particle;
  * @author logan.collier
  * @author Cade Reynoldson
  */
-
 public class DataFrame {
 	
     /** The names of the columns */
@@ -172,9 +171,6 @@ public class DataFrame {
 	public String columnNamesToString() {
 		return columnNames.toString();
 	}
-	
-
-    
 	/**
 	 * returns a list of columns of the specified type
 	 * @param String type
@@ -337,9 +333,6 @@ public class DataFrame {
 	                            + columns.get(rowIndex).getType() + "\nParticle Type: " + p.type);
 	    } 
 	}
-	
-	
-
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
 	/*
 	 * ##################################################################
@@ -357,8 +350,6 @@ public class DataFrame {
 		DataFrame df = DataFrame_Read.loadcsv(file);
 		return df;
 	}
-	
-
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
 	/*
 	 * ##################################################################
@@ -433,7 +424,6 @@ public class DataFrame {
             }
         }
 	}
-	
 	/**
 	 * Converts all NANS in the data frame to their mode value.
 	 */
@@ -449,7 +439,7 @@ public class DataFrame {
 	        }
 	    }
 	}
-
+	
     /**
      * Prints the data frame.
      */
