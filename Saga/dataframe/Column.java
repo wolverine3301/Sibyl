@@ -256,23 +256,19 @@ public class Column {
      * Prepares the column's statistic based fields. 
      */
     public void prepareForStatistics() {
-        
         if (type == 'N') {
-            setSum();           //SUM
-            setMean();          //MODE
-            setVariance();      //VARIANCE
+            setSum();               //SUM
+            setMean();              //MODE
+            setVariance();          //VARIANCE
+            setStandardDeviation(); //STANDARD DEVIATION
+            setMedian();            //MEDIAN
         }
         setUniqueValueCount();  //UNIQUE VAL COUNT
-        setFeatureStats();      //FEATURE STATS
         setUniqueValues();      //SET UNIQUE VALUES SET
-        setTotalUniqueValues(); //TOTAL UNIQUE VALUES
-        setUniqueValues();      //SET MEDIAN      
-        
-        //ENTROPY
-        //MEDIAN
-        //STD
-        //ENTROPY
-        //UNIQUE VAL SET
+        setFeatureStats();      //FEATURE STATS
+        setTotalUniqueValues(); //TOTAL UNIQUE VALUES      
+        setEntropy();           //ENTROPY
+        setMode();              //MODE
     }
     
     /**
