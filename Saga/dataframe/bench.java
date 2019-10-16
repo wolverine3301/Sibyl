@@ -29,7 +29,7 @@ public class bench {
         df.setStuff();
         //df.printDataFrame();
         df.convertNANS_mean();
-        
+        System.out.println(df.getColumn_byName("overallMatchResult").uniqueValCnt);
         //df.getColumn_byName("Name").setType('M');
         Standardize s = new Standardize(df);
         s.standardize_df();
@@ -37,7 +37,17 @@ public class bench {
         LogRegression l = new LogRegression(df.getColumn_byIndex(0), df.getColumn_byIndex(1));
 
         df.getColumn_byIndex(0).setType('T');
-
+        df.getColumn_byIndex(1).setType('M');
+        df.getColumn_byIndex(2).setType('M');
+        df.getColumn_byIndex(3).setType('M');
+        df.getColumn_byIndex(4).setType('M');
+        df.getColumn_byIndex(5).setType('M');
+        df.getColumn_byIndex(6).setType('M');
+        df.getColumn_byIndex(48).setType('M');
+        df.getColumn_byIndex(46).setType('M');
+        df.getColumn_byIndex(54).setType('M');
+        df.getColumn_byIndex(56).setType('M');
+        df.getColumn_byIndex(57).setType('M');
         //ArrayList<DataFrame>df1 = DataFrameTools.split(df, 2);
         
         df = df.shuffle(df);
