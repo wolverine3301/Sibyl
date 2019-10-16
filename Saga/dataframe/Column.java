@@ -340,15 +340,12 @@ public class Column {
      * BEING CALLED - JUST USE prepareForStatistics() LIKE A GOOD PROGRAMMER
      */
     public void setUniqueValues(){ 
-<<<<<<< HEAD
         Set<Object> unique = new HashSet<Object>();
         for(int i = 0; i < column.size(); i++) {
             unique.add(column.get(i).getValue());
         }   
         this.uniqueValues = unique;
-=======
         uniqueValues = uniqueValueCounts.keySet();
->>>>>>> refs/remotes/origin/cade-branch
     }
     
     /**
