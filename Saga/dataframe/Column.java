@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import particles.DoubleParticle;
@@ -43,7 +44,7 @@ public class Column {
     /** The feature stats of the column. (Percentages of values) */
     protected HashMap<Object, Double> featureStats;
     
-    /** A set of the unique values contained within the column. */
+    /** A sorted set of the unique values contained within the column, with lowest index being most occouring, highest index being least occouring */
     protected Set<Object> uniqueValues;
     
     /** The total number of unique values in the column. */
@@ -251,6 +252,29 @@ public class Column {
     }
     
     /**
+     * Prepares the column's statistic based fields. 
+     */
+    public void prepareForStatistics() {
+        
+        if (type == 'N') {
+            setSum();           //SUM
+            setMean();          //MODE
+            setVariance();      //VARIANCE
+        }
+        setUniqueValueCount();  //UNIQUE VAL COUNT
+        setFeatureStats();      //FEATURE STATS
+        setUniqueValues();      //SET UNIQUE VALUES SET
+        setTotalUniqueValues(); //TOTAL UNIQUE VALUES
+        setUniqueValues();      //SET MEDIAN      
+        
+        //ENTROPY
+        //MEDIAN
+        //STD
+        //ENTROPY
+        //UNIQUE VAL SET
+    }
+    
+    /**
      * Print column
      */
     public void printCol() {
@@ -314,21 +338,19 @@ public class Column {
     } 
     
     /**
-     * @return set of unique values
+     * Sets the unique values of the column
+     * WARNING: UNIQUE VALUE COUNT MUST BE SET PRIOR TO THIS METHOD
+     * BEING CALLED - JUST USE prepareForStatistics() LIKE A GOOD PROGRAMMER
      */
-    public void setUniqueValues(Column column){ 
-        Set<Object> unique = new HashSet<Object>();
-        for(int i = 0; i < column.getLength(); i++) {
-            unique.add(column.getParticle(i).getValue());
-        }   
-        this.uniqueValues = unique;
+    public void setUniqueValues(){ 
+        uniqueValues = uniqueValueCounts.keySet();
     }
     
     /**
      * returns a hashmap: keys are each unique value in array list and they point to the number of occurances
      * @return
      */
-    public void setUniqueValCnt() {
+    public void setUniqueValueCount() {
         Set<Object> unique = this.uniqueValues;
         HashMap<Object, Integer> vals = new HashMap<Object, Integer>();
         //initialize map
@@ -360,28 +382,14 @@ public class Column {
         this.uniqueValueCounts = temp;
     }
     
-    public void setUniqueValueCount() {
-        HashMap<Object, Integer> count = new HashMap<Object, Integer>();
-        for (Particle p : column) {
-            Object value = p.getValue();
-            if (!count.containsKey(value)) {
-                count.put(value, 1);
-            } else {
-                Integer i = count.get(value);
-                count.replace(value, i + 1);
-            }
-        }
-        uniqueValueCounts = count;   
-    }
-    
-    
     /**
      * return number of unique values
      * @return
      */
-    public void setNumOfUniques() {
+    public void setTotalUniqueValues() {
         this.totalUniqueValues = uniqueValues.size();
     }
+    
 	/**
 	 * sets the features of proportion each value has in the column
 	 */
@@ -404,6 +412,7 @@ public class Column {
             }
         this.mode = m;   
     }
+    
     /**
      * Returns the character corresponding to column types from a particle type.
      * @param pType the type of the particle.
@@ -488,7 +497,7 @@ public class Column {
     }
     
     /**
-     * Calculates the median value in a column. Returns the mode if column is non numeric.
+     * Calculates the median value in a column.
      * @param theColumn the column to preform calculations on.
      * @return the median value of a column if column is numeric, mode if column is non numeric.
      */
