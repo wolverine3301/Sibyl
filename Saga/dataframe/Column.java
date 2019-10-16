@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 
 import particles.DoubleParticle;
 import particles.IntegerParticle;
+import particles.NANParticle;
 import particles.Particle;
  
 public class Column {
@@ -222,10 +223,10 @@ public class Column {
     /**
      * @return set of unique values
      */
-    public void setUniqueValues(Column column){ 
+    public void setUniqueValues(){ 
         Set<Object> unique = new HashSet<Object>();
-        for(int i = 0; i < column.getLength(); i++) {
-            unique.add(column.getParticle(i).getValue());
+        for(int i = 0; i < column.size(); i++) {
+            unique.add(column.get(i).getValue());
         }   
         this.uniqueValues = unique;
     }
@@ -352,6 +353,9 @@ public class Column {
     	//long sum = IntStream.of(array).parallel().sum();
         double sum = 0;
            for(int i = 0;i < column.size();i++) {
+        	   if (column.get(i) instanceof NANParticle) {
+        		   continue;
+        	   }
                if (column.get(i) instanceof DoubleParticle)
                    sum += (Double) column.get(i).getValue();
                else
@@ -388,6 +392,9 @@ public class Column {
     public void setVariance() {
         double var = 0.0;
         for(int i = 0;i < column.size();i++) {
+        	if(column.get(i) instanceof NANParticle) {
+        		continue;
+        	}
             var += Math.pow(((Double)getDoubleValue(i) - mean), 2);
         }
         this.variance = var / column.size();

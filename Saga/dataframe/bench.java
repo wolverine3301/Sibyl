@@ -17,23 +17,29 @@ import transform.Standardize;
 public class bench {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		String file = "testfiles/iris.txt";
+		//String file = "testfiles/iris.txt";
+		String file = "C:\\Users\\logan.collier\\Desktop\\allfraud.csv";
         DataFrame df = new DataFrame();
         df.loadcsv(file);
+        for(int i = 0; i < df.getNumColumns();i++) {
+        	//System.out.println(df.getColumn_byIndex(i).name + "  " +df.getColumn_byIndex(i).type);
+        	//df1.get(i).printDataFrame();
+        	//df1.get(i).printDataFrame();
+        }
+        df.setStuff();
+        //df.printDataFrame();
+        df.convertNANS_mean();
+        
         //df.getColumn_byName("Name").setType('M');
         Standardize s = new Standardize(df);
         s.standardize_df();
         //s.std_df.printDataFrame();
         LogRegression l = new LogRegression(df.getColumn_byIndex(0), df.getColumn_byIndex(1));
 
-        df.getColumn_byIndex(4).setType('T');
+        df.getColumn_byIndex(0).setType('T');
 
-        ArrayList<DataFrame>df1 = DataFrameTools.split(df, 2);
-        for(int i = 0; i < df.getNumColumns();i++) {
-        	//System.out.println(df.getColumn_byIndex(i).name + "  " +df.getColumn_byIndex(i).mean);
-        	//df1.get(i).printDataFrame();
-        	//df1.get(i).printDataFrame();
-        }
+        //ArrayList<DataFrame>df1 = DataFrameTools.split(df, 2);
+        
         df = df.shuffle(df);
        // df.printDataFrame();
         List<Integer> ll = new ArrayList<Integer>();

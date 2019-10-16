@@ -83,6 +83,12 @@ public class DataFrame {
             		c.setType('N');
             		columns.add(c);
 
+            	}else if(p.type == 'n') {
+            		Column c = new Column(columnNames.get(i));
+            		c.add(p);
+            		c.setType('M');
+            		columns.add(c);
+            			
             	}else {
             		Column c = new Column(columnNames.get(i));
             		c.add(p);
@@ -105,14 +111,7 @@ public class DataFrame {
                 rows.add(row);
         	}
         	for(int i = 0;i < columnNames.size();i++) {
-        	    if(getColumn_byIndex(i).type == 'N') {
-        	    	getColumn_byIndex(i).setSum();
-        	    	getColumn_byIndex(i).setMean();
-        	    	//getColumn_byIndex(i).setEntropy();
-        	    	getColumn_byIndex(i).setVariance();
-        	    	//getColumn_byIndex(i).setMedian();
-        	    	getColumn_byIndex(i).setStandardDeviation();
-        	    }    
+        	       
                 columnTypes.add(columns.get(i).getType());
         	}
         	this.numRows = rows.size();
@@ -132,6 +131,7 @@ public class DataFrame {
             Column c = getColumn_byIndex(i);
             for (int j = 0; j < numRows; j++) {
                 Particle p = c.getParticle(j);
+                
                 if (p instanceof NANParticle) {
                     if (c.getType() == 'N')
                         p = Particle.resolveType(c.mean);
@@ -433,7 +433,7 @@ public class DataFrame {
         }
     }public void setStuff() {
     	for(Column i : columns) {
-    		i.setUniqueValues(i);
+    		i.setUniqueValues();
     		i.setUniqueValCnt();
     		i.setMode();
     		if(i.type == 'N') {
