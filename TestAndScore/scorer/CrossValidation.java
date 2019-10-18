@@ -36,6 +36,7 @@ public class CrossValidation {
 			scores.add(score);
 		}
 	}
+	
 	public void setTrials() {
 		int interval = Math.floorDiv(this.df.getNumRows(), N);
 	    //shuffle(df);

@@ -1,16 +1,13 @@
 package machinations;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-
 import dataframe.Column;
 import dataframe.DataFrame;
-import dataframe.DataFrameTools;
 import dataframe.Row;
 import particles.Particle;
-import particles.StringParticle;
 
 /**
  * Naive Bayes Classifier
@@ -196,11 +193,11 @@ public class NaiveBayes extends Model{
 		for(Object z : super.trainDF_targets.getColumn(target).getUniqueValues()) {
 			double prob = 1;
 			for(int i = 0; i < row.rowLength; i++) {
-				if(super.trainDF_variables.getColumn_byIndex(i).getType() == 'N') {
-					prob = prob * getContinuousProbability(super.trainDF_targets.getColumn_byIndex(target).getName(),z,super.trainDF_variables.getColumn_byIndex(i).getName(),row.getParticle(i));
+				if(super.trainDF_variables.getColumn(i).getType() == 'N') {
+					prob = prob * getContinuousProbability(super.trainDF_targets.getColumn(target).getName(),z,super.trainDF_variables.getColumn(i).getName(),row.getParticle(i));
 				}else {
-					System.out.println(super.trainDF_variables.getColumn_byIndex(i).getName());
-					prob = prob * cat_Naive_Bayes.get(super.trainDF_targets.getColumn_byIndex(target).getName()).get(z).get(super.trainDF_variables.getColumn_byIndex(i).getName()).get(row.getParticle(i).getValue());
+					System.out.println(super.trainDF_variables.getColumn(i).getName());
+					prob = prob * cat_Naive_Bayes.get(super.trainDF_targets.getColumn(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(row.getParticle(i).getValue());
 				}
 				if(super.trainDF_variables.getColumn(i).getType() == 'N') {
 					prob = prob * getContinuousProbability(super.trainDF_targets.getColumn(target).getName(),z,super.trainDF_variables.getColumn(i).getName(),row.getParticle(i));

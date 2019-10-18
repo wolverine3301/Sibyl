@@ -18,56 +18,20 @@ public class bench {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		//String file = "testfiles/iris.txt";
-		String file = "C:\\Users\\logan.collier\\Desktop\\allfraud.csv";
-        DataFrame df = new DataFrame();
-        df.loadcsv(file);
-        for(int i = 0; i < df.getNumColumns();i++) {
-        	//System.out.println(df.getColumn_byIndex(i).name + "  " +df.getColumn_byIndex(i).type);
-        	//df1.get(i).printDataFrame();
-        	//df1.get(i).printDataFrame();
+		String file = "testfiles/iris.txt";
+        DataFrame df = DataFrame.read_csv(file);
+        for(Column i : df.columns) {
+        	System.out.println(i.mean);
         }
-        df.setStuff();
-        //df.printDataFrame();
-        df.convertNANS_mean();
-        System.out.println(df.getColumn_byName("overallMatchResult").uniqueValCnt);
-        //df.getColumn_byName("Name").setType('M');
-        Standardize s = new Standardize(df);
-        s.standardize_df();
-        //s.std_df.printDataFrame();
-        LogRegression l = new LogRegression(df.getColumn(0), df.getColumn(1));
-
-        df.getColumn_byIndex(0).setType('T');
-        df.getColumn_byIndex(1).setType('M');
-        df.getColumn_byIndex(2).setType('M');
-        df.getColumn_byIndex(3).setType('M');
-        df.getColumn_byIndex(4).setType('M');
-        df.getColumn_byIndex(5).setType('M');
-        df.getColumn_byIndex(6).setType('M');
-        df.getColumn_byIndex(48).setType('M');
-        df.getColumn_byIndex(46).setType('M');
-        df.getColumn_byIndex(54).setType('M');
-        df.getColumn_byIndex(56).setType('M');
-        df.getColumn_byIndex(57).setType('M');
-        //ArrayList<DataFrame>df1 = DataFrameTools.split(df, 2);
-        
-        df.getColumn(4).setType('T');
-
-        ArrayList<DataFrame>df1 = DataFrame_Copy.split(df, 2);
-        for(int i = 0; i < df.getNumColumns();i++) {
-        	//System.out.println(df.getColumn_byIndex(i).name + "  " +df.getColumn_byIndex(i).mean);
-        	//df1.get(i).printDataFrame();
-        	//df1.get(i).printDataFrame();
-        }
-        df = df.shuffle(df);
        // df.printDataFrame();
-        List<Integer> ll = new ArrayList<Integer>();
+        df.convertNANS_mean();
+        df = Standardize.standardize_df(df);
         
-        ll.add(4);
-        //df1.set(1, df1.get(1).exclude(df1.get(1), ll));
-        
-        NaiveBayes nb = new NaiveBayes();
-        CrossValidation cv = new CrossValidation(df, 10, nb);
-        cv.avgScores();
+       // df.printDataFrame();
+       // df = df.shuffle(df);
+        //NaiveBayes nb = new NaiveBayes();
+        //CrossValidation cv = new CrossValidation(df, 10, nb);
+        //cv.avgScores();
         //cv.printMatrixs();
         //cv.printScores();
         //nb.printProbTable();

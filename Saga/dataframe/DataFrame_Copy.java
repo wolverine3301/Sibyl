@@ -63,7 +63,31 @@ public final class DataFrame_Copy {
         }
         return DataFrame_Copy.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
     }
-    
+    /**
+     * Deep copy of a dataframe
+     * @param theDataFrame
+     * @return
+     */
+    public static DataFrame deepCopy(DataFrame df) {
+        DataFrame newdf = new DataFrame();
+        for (int i = 0; i < df.numColumns; i++) {
+       		newdf.addColumn(new Column(df.getColumn(i)));
+        }
+        return newdf;
+    }
+    /**
+     * Shallow copy of a dataframe
+     * @param theDataFrame
+     * @return
+     */
+    public static DataFrame shallowCopy(DataFrame theDataFrame) {
+        DataFrame newDataFrame = new DataFrame();
+        for (String name : theDataFrame.columnNames) {
+            Column c = theDataFrame.getColumn_byName(name);
+            newDataFrame.addColumn(c);
+        }
+        return newDataFrame;
+    }
   //TODO for some reason calling this does not include the first row in the new copied dataframe
     
     /**

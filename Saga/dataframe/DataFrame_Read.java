@@ -65,8 +65,8 @@ public class DataFrame_Read {
                 df.rows.add(row);
         	}
         	for(int i = 0;i < df.columnNames.size();i++) {
-        	       
-                df.columnTypes.add(df.columns.get(i).getType());
+        	      df.getColumn(i).prepareForStatistics();
+        	      df.columnTypes.add(df.columns.get(i).getType());
         	}
 //        	for(int i = 0;i < columnNames.size();i++) {
 //        	    if(getColumn_byIndex(i).type == 'N') {

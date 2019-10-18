@@ -25,10 +25,10 @@ public class DataFrame {
 	
 	/** The type of each column */
 	protected ArrayList<Character> columnTypes;
-	protected ArrayList<Integer> numericIndexes;
+	public ArrayList<Integer> numericIndexes;
 	
 	/** The ArrayList of columns */
-	protected ArrayList<Column> columns;
+	public ArrayList<Column> columns;
 	
 	/** The ArrayList of rows */
 	protected ArrayList<Row> rows;
@@ -313,7 +313,10 @@ public class DataFrame {
 	    columns.add(c);
 	    numColumns++;
 	}
-	
+	public void replaceColumn(int index, Column newColumn) {
+		this.columns.remove(index);
+		this.columns.add(index, newColumn);
+	}
 	/**
 	 * Replaces a particle at a given row index (position in row) and column index (position in column).
 	 * @param rowIndex the position of the particle in the row being replaced.
@@ -358,6 +361,12 @@ public class DataFrame {
 	 * 
 	 * ##################################################################
 	 */
+	public static DataFrame deepCopy(DataFrame df) {
+		return DataFrame_Copy.deepCopy(df);
+	}
+	public static DataFrame shallowCopy(DataFrame df) {
+		return DataFrame_Copy.shallowCopy(df);
+	}
     public static DataFrame acquire(DataFrame theDataFrame, String[] args) {
     	return DataFrame_Copy.acquire(theDataFrame, args);
     }
@@ -457,21 +466,19 @@ public class DataFrame {
             System.out.println();
         }
     }
-    public void setStuff() {
-    	for(Column i : columns) {
-    		i.setUniqueValues();
-    		i.setUniqueValCnt();
-    		i.setMode();
-    		if(i.type == 'N') {
-	    		i.setSum();
-	    		i.setMean();
-	    		i.setVariance();
-	    		i.setStandardDeviation();
-	    		i.setEntropy();
-    		}
+   // public void setStuff() {
+    //	for(Column i : columns) {
+    //		i.setUniqueValues();
+    //		i.setUniqueValCnt();
+    ///		i.setMode();
+    //		if(i.type == 'N') {
+	//    		i.setSum();
+	//    		i.setMean();
+	//    		i.setVariance();
+	//    		i.setStandardDeviation();
+	//    		i.setEntropy();
+    //		}
     		//i.setFeatureStats();
-		
-    	}
-    }
+	
 
 }

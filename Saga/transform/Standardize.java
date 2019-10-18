@@ -20,25 +20,37 @@ public class Standardize {
 		this.df = DataFrame.shallowCopy_columnIndexes(data, data.numericIndexes);
 		this.std_df = new DataFrame();
 	}
+
 	/**
 	 * standardize whole dataframe
 	 */
-	public void standardize_df() {
-		for(int i =0; i < df.getNumColumns(); i++) {
-			standardize_col(df.getColumn(i), i);
+	public static DataFrame standardize_df(DataFrame data) {
+		DataFrame df = DataFrame.shallowCopy_columnIndexes(data, data.numericIndexes);
+		DataFrame std_df = DataFrame.deepCopy(data);
+		for(Column i : std_df.columns) {
+        	System.out.println(i.mean);
+        }
+		System.out.println();
+		for(int i =0; i < std_df.numericIndexes.size(); i++) {
+			Column a =  standardize_col(std_df.getColumn(std_df.numericIndexes.get(i)), i);
+
+			std_df.addColumn(a);
 		}
+		return std_df;
 	}
 	/**
 	 * standardize a column
 	 * @param c
 	 */
-	public void standardize_col(Column c, int index) {
+	public static Column standardize_col(Column c, int index) {
 		Column a  = new Column(c.getName(),'N');
+
 		for(int i = 0; i < c.getLength(); i++) {
 			Particle p = new DoubleParticle((Double) zscore(c.mean,c.std,c.getParticle(i)));
 			a.add(p);
+			
 		}
-		std_df.addColumn(a);
+		return a;
 	}
 	/**
 	 * Zero mean for all of data frame
@@ -67,6 +79,7 @@ public class Standardize {
 	 * @return
 	 */
 	private double zeroMean(double mean, Particle x) {
+		
 		if(x.type == 'i')
 			return (int)x.getValue()-mean;
 		else 
@@ -79,7 +92,8 @@ public class Standardize {
 	 * @param x
 	 * @return
 	 */
-	private double zscore(double mean, double std, Particle x) {
+	private static double zscore(double mean, double std, Particle x) {
+
 		if(x.type == 'i') {
 			return ((int)x.getValue()- mean)/std;
 		}

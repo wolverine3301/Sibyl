@@ -62,6 +62,7 @@ public class ConfusionMatrix {
 		int cnt2;
 		//for each target column
 		for(String i : predictions.keySet()) {
+			System.out.println(i);
 			cnt2 = 0;
 			//for each prediction for a column
 			for (Object j : predictions.get(i)) {
