@@ -42,6 +42,8 @@ public class Column {
      *         COLUMN STATISTIC FIELDS        *
      ******************************************/
     
+    public boolean readyForStats;
+    
     /** The feature stats of the column. (Percentages of values) */
     protected HashMap<Object, Double> featureStats;
     
@@ -91,6 +93,7 @@ public class Column {
         uniqueValues = new HashSet<Object>();
         featureStats = new HashMap<Object, Double>();
         uniqueValueCounts = new HashMap<Object, Integer>();
+        readyForStats = false;
     }
     
     /**
@@ -103,6 +106,7 @@ public class Column {
         type = theType;
         column = new ArrayList<Particle>();
         columnLength = 0;
+        readyForStats = false;
     }
     /**
      * Copy constructor.
@@ -115,6 +119,11 @@ public class Column {
         column = new ArrayList<Particle>();
         for (Particle particle : theColumn.column) 
             column.add(particle.deepCopy());
+        if (theColumn.isReadyForStats()) 
+            copyStats(theColumn);
+        else
+            readyForStats = false;
+        
     }
     
     /**
@@ -160,6 +169,27 @@ public class Column {
             Particle tmp = Particle.resolveType(arr[i]);
             this.column.add(tmp);
         }
+    }
+    
+    /**
+     * Copies the stats of one column to this column (Mainly used for copy constructors).
+     * @param theColumn the columns stats to copy.
+     */ 
+    public void copyStats(Column theColumn) {
+        if (type == 'N') {
+            sum = theColumn.sum; //SUM
+            mode = theColumn.mode;//MODE
+            variance = theColumn.variance;//VARIANCE  
+            std = theColumn.std;//STANDARD DEVIATION
+            median = theColumn.median;//MEDIAN
+        }
+        uniqueValueCounts = theColumn.uniqueValueCounts;
+        totalUniqueValues = theColumn.totalUniqueValues;
+        uniqueValues = theColumn.uniqueValues;
+        featureStats = theColumn.featureStats;
+        entropy = theColumn.entropy;
+        mode = theColumn.mode;
+        readyForStats = true;
     }
     
     /**
@@ -241,6 +271,14 @@ public class Column {
     }
     
     /**
+     * Returns if the stats fields have been initialized.
+     * @return if the stats fields have been initialized.
+     */
+    public boolean isReadyForStats() {
+        return readyForStats;
+    }
+    
+    /**
      * make new column from array
      * @param arr
      */
@@ -257,18 +295,18 @@ public class Column {
      */
     public void prepareForStatistics() {
         if (type == 'N') {
-            setSum();               //SUM
-            setMean();              //MODE
+            setSumAndMean();        //SUM AND MEAN
             setVariance();          //VARIANCE
             setStandardDeviation(); //STANDARD DEVIATION
             setMedian();            //MEDIAN
         }
-        setUniqueValueCount();  //UNIQUE VAL COUNT
-        setUniqueValues();      //SET UNIQUE VALUES SET
-        setFeatureStats();      //FEATURE STATS
-        setTotalUniqueValues(); //TOTAL UNIQUE VALUES      
-        setEntropy();           //ENTROPY
-        setMode();              //MODE
+        setUniqueValueCount();      //UNIQUE VAL COUNT
+        setUniqueValues();          //SET UNIQUE VALUES SET
+        setFeatureStats();          //FEATURE STATS
+        setTotalUniqueValues();     //TOTAL UNIQUE VALUES      
+        setEntropy();               //ENTROPY
+        setMode();                  //MODE
+        readyForStats = true;
     }
     
     /**
@@ -462,16 +500,17 @@ public class Column {
      */
 	
 	/**
-     * Calculates the sum of a numeric column. Returns 0 if column is non numeric.
+     * Calculates the sum & mean of a numeric column. Returns 0 if column is non numeric.
      * @param column the column to preform calculations on.
      * @return the sum of a numeric column.
      */
-    public void setSum() {
+    public void setSumAndMean() {
     	//long sum = IntStream.of(array).parallel().sum();
         double sum = 0;
+        int nanCount = 0;
            for(int i = 0;i < column.size();i++) {
         	   if (column.get(i) instanceof NANParticle) {
-        		   continue;
+        		   nanCount++;
         	   }
                if (column.get(i) instanceof DoubleParticle)
                    sum += (Double) column.get(i).getValue();
@@ -479,15 +518,7 @@ public class Column {
                    sum += (Integer) column.get(i).getValue();
             }
         this.sum = sum;
-    }
-    
-    /**
-     * Calculates the mean of a column.
-     * @param column the column to preform calculations on.
-     * @return the mean of a column.
-     */
-    public void setMean() {
-        this.mean =  sum / column.size();  
+        this.mean = sum / (column.size() - nanCount);
     }
     
     /**
