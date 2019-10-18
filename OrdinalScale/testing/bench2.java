@@ -1,20 +1,16 @@
 package testing;
 
 import dataframe.DataFrame;
-import info_gain.Gain;
-import info_gain.GainRatio;
 
 public class bench2 {
     public static void main(String[] args) {
-        DataFrame df = new DataFrame();
-        df.loadcsv("testfiles/nanhandlingtest.csv");
+        DataFrame df = DataFrame.read_csv("testfiles/nanhandlingtest.csv");
         df.convertNANS_mean();
         for (int i = 0; i < df.getNumColumns(); i++) {
-            System.out.println("COLUMN " + i + "MODE: " + df.getColumn(i).mode + "MEAN: " + df.getColumn(i).mean);
-            
+            System.out.println(df.getColumn(i).toStringStatistics());
         }
-        df.printDataFrame();
-        System.out.println(df.getColumn(0));
+//        df.printDataFrame();
+//        System.out.println(df.getColumn(0));
 //        df.setColumnType(5, 'T');
 //        df.setColumnType(1, 'C');
 //        df.setColumnType(2, 'C');

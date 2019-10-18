@@ -409,10 +409,11 @@ public class DataFrame {
 	 */
 	public void convertNANS_mean() {
         for (int i = 0; i < numColumns; i++) {
-            Column c = getColumn(i);
+            Column c = columns.get(i);
+            if (!c.isReadyForStats())
+                c.prepareForStatistics();
             for (int j = 0; j < numRows; j++) {
-                Particle p = c.getParticle(j);
-                
+                Particle p = c.getParticle(j); 
                 if (p instanceof NANParticle) {
                     if (c.getType() == 'N')
                         p = Particle.resolveType(c.mean);
@@ -429,6 +430,9 @@ public class DataFrame {
 	 */
 	public void convertNANS_mode() {
 	    for (int i = 0; i < numColumns; i++) {
+	        Column c = columns.get(i);
+	        if (!c.isReadyForStats())
+	            c.prepareForStatistics();
 	        for (int j = 0; j < numRows; j++) {
 	            Particle p = getColumn(i).getParticle(j);
 	            if (p instanceof NANParticle) {
