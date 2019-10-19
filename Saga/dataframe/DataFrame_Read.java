@@ -65,20 +65,12 @@ public class DataFrame_Read {
                 df.rows.add(row);
         	}
         	for(int i = 0;i < df.columnNames.size();i++) {
-        	      df.getColumn(i).prepareForStatistics();
+        	      df.getColumn(i).setStatistics();
         	      df.columnTypes.add(df.columns.get(i).getType());
         	}
-//        	for(int i = 0;i < columnNames.size();i++) {
-//        	    if(getColumn_byIndex(i).type == 'N') {
-//        	    	getColumn_byIndex(i).setSum();
-//        	    	getColumn_byIndex(i).setMean();
-//        	    	//getColumn_byIndex(i).setEntropy();
-//        	    	getColumn_byIndex(i).setVariance();
-//        	    	//getColumn_byIndex(i).setMedian();
-//        	    	getColumn_byIndex(i).setStandardDeviation();
-//        	    }    
-//                columnTypes.add(columns.get(i).getType());
-//        	}
+        	for(int i = 0; i < df.getNumColumns() ;i++) {
+        	    df.getColumn(i).setStatistics();
+        	}
         	df.numRows = df.rows.size();
         	df.numColumns = df.columns.size();
         } catch (IOException e) {

@@ -9,6 +9,11 @@ public class bench2 {
         for (int i = 0; i < df.getNumColumns(); i++) {
             System.out.println(df.getColumn(i).toStringStatistics());
         }
+        DataFrame df2 = df.shallowCopy();
+        System.out.println("\n\n\n::::COPY TEST::::\n\n\n");
+        for (int i = 0; i < df.getNumColumns(); i++) {
+            System.out.println(df2.getColumn(i).toStringStatistics());
+        }
 //        df.printDataFrame();
 //        System.out.println(df.getColumn(0));
 //        df.setColumnType(5, 'T');

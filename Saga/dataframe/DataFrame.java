@@ -97,6 +97,15 @@ public class DataFrame {
         columnTypes.set(columnIndex, newType);
     }
 	
+	/**
+	 * Updates/Initializes all of the Columns contained in the DataFrame statistics. 
+	 */
+	public void setStatistics() {
+	    for (Column c : columns) {
+            c.setStatistics();
+	    }
+	}
+	
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
 	/*
 	 * ##################################################################
@@ -336,6 +345,7 @@ public class DataFrame {
 	                            + columns.get(rowIndex).getType() + "\nParticle Type: " + p.type);
 	    } 
 	}
+	
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
 	/*
 	 * ##################################################################
@@ -361,44 +371,44 @@ public class DataFrame {
 	 * 
 	 * ##################################################################
 	 */
-	public static DataFrame deepCopy(DataFrame df) {
-		return DataFrame_Copy.deepCopy(df);
+	public DataFrame deepCopy() {
+		return DataFrame_Copy.deepCopy(this);
 	}
-	public static DataFrame shallowCopy(DataFrame df) {
-		return DataFrame_Copy.shallowCopy(df);
+	public DataFrame shallowCopy() {
+		return DataFrame_Copy.shallowCopy(this);
 	}
-    public static DataFrame acquire(DataFrame theDataFrame, String[] args) {
-    	return DataFrame_Copy.acquire(theDataFrame, args);
+    public DataFrame acquire(String[] args) {
+    	return DataFrame_Copy.acquire(this, args);
     }
-    public static DataFrame deepCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
-    	return DataFrame_Copy.deepCopy_columnIndexes(theDataFrame, columnIndexes);
+    public DataFrame deepCopy_columnIndexes(Collection<Integer> columnIndexes) {
+    	return DataFrame_Copy.deepCopy_columnIndexes(this, columnIndexes);
     }
-    public static DataFrame deepCopy_columnNames(DataFrame theDataFrame, Collection<String> columnNames) {
-    	return DataFrame_Copy.deepCopy_columnNames(theDataFrame, columnNames);
+    public DataFrame deepCopy_columnNames(Collection<String> columnNames) {
+    	return DataFrame_Copy.deepCopy_columnNames(this, columnNames);
     }
-    public static DataFrame deepCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes) {
-    	return DataFrame_Copy.deepCopy_rowIndexes(theDataFrame, rowIndexes);
+    public DataFrame deepCopy_rowIndexes(Collection<Integer> rowIndexes) {
+    	return DataFrame_Copy.deepCopy_rowIndexes(this, rowIndexes);
     }
-    public static DataFrame exclude(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
-    	return DataFrame_Copy.exclude(theDataFrame, columnIndexes);
+    public DataFrame exclude(Collection<Integer> columnIndexes) {
+    	return DataFrame_Copy.exclude(this, columnIndexes);
     }
-    public static DataFrame shallowCopy_columnIndexes(DataFrame theDataFrame, Collection<Integer> columnIndexes) {
-    	return DataFrame_Copy.shallowCopy_columnIndexes(theDataFrame, columnIndexes);
+    public DataFrame shallowCopy_columnIndexes(Collection<Integer> columnIndexes) {
+    	return DataFrame_Copy.shallowCopy_columnIndexes(this, columnIndexes);
     }
-    public static DataFrame shallowCopy_columnNames(DataFrame theDataFrame, Collection<String> columnNames){
-    	return DataFrame_Copy.shallowCopy_columnNames(theDataFrame, columnNames);
+    public DataFrame shallowCopy_columnNames(Collection<String> columnNames){
+    	return DataFrame_Copy.shallowCopy_columnNames(this, columnNames);
     }
-    public static DataFrame shallowCopy_columnTypes(DataFrame theDataFrame, Collection<Character> columnTypes){
-    	return DataFrame_Copy.shallowCopy_columnTypes(theDataFrame, columnTypes);
+    public DataFrame shallowCopy_columnTypes(Collection<Character> columnTypes){
+    	return DataFrame_Copy.shallowCopy_columnTypes(this, columnTypes);
     }
-    public static DataFrame shallowCopy_rowIndexes(DataFrame theDataFrame, Collection<Integer> rowIndexes){
-    	return DataFrame_Copy.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
+    public DataFrame shallowCopy_rowIndexes(Collection<Integer> rowIndexes){
+    	return DataFrame_Copy.shallowCopy_rowIndexes(this, rowIndexes);
     }
-    public static void sortByColumn(DataFrame theDataFrame, int columnIndex){
-    	DataFrame_Copy.sortByColumn(theDataFrame, columnIndex);
+    public void sortByColumn(int columnIndex){
+    	DataFrame_Copy.sortByColumn(this, columnIndex);
     }
-    public static ArrayList<DataFrame> split(DataFrame theDataFrame, int n) {
-    	return DataFrame_Copy.split(theDataFrame, n);
+    public ArrayList<DataFrame> split(int n) {
+    	return DataFrame_Copy.split(this, n);
     }
     public DataFrame shuffle(DataFrame df) {
     	DataFrame newdf = df;
@@ -420,7 +430,7 @@ public class DataFrame {
         for (int i = 0; i < numColumns; i++) {
             Column c = columns.get(i);
             if (!c.isReadyForStats())
-                c.prepareForStatistics();
+                c.setStatistics();
             for (int j = 0; j < numRows; j++) {
                 Particle p = c.getParticle(j); 
                 if (p instanceof NANParticle) {
@@ -441,7 +451,7 @@ public class DataFrame {
 	    for (int i = 0; i < numColumns; i++) {
 	        Column c = columns.get(i);
 	        if (!c.isReadyForStats())
-	            c.prepareForStatistics();
+	            c.setStatistics();
 	        for (int j = 0; j < numRows; j++) {
 	            Particle p = getColumn(i).getParticle(j);
 	            if (p instanceof NANParticle) {

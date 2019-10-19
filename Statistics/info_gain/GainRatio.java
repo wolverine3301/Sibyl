@@ -1,12 +1,10 @@
 package info_gain;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.Comparator; 
 import java.util.PriorityQueue;
 
 import dataframe.Column;
-import dataframe.ColumnTools;
 import dataframe.DataFrame;
 
 /**
@@ -20,28 +18,31 @@ public class GainRatio extends Gain{
         super(theDataFrame);
     }
 
+    /**
+     * Computes the gain ratio of every column in relation to the target column.
+     * @param the index of the column in the TARGET data frame to compare entropies with.
+     * @return 
+     */
     @Override
     public ArrayList<Column> gain(int index) {
-        double targetEntropy = entropy(ColumnTools.uniqueValCnt(targetColumns.getColumn(index)));
+        double targetEntropy = targetColumns.getColumn(index).entropy;
         //Holds the calculated info gain in a max heap style.
-        PriorityQueue<GainInformation> infoGain = new PriorityQueue<GainInformation>(categoricalColumns.getNumColumns(), new Comparator<GainInformation>() {
+        PriorityQueue<GainInformation> gainRatios = new PriorityQueue<GainInformation>(categoricalColumns.getNumColumns(), new Comparator<GainInformation>() {
             @Override
             public int compare(GainInformation o1, GainInformation o2) {
                 return Double.compare(o2.getInfoGain(), o1.getInfoGain());
             }
         });
         for (int i = 0; i < categoricalColumns.getNumColumns(); i++) { //Calculate info gain of every column compared to the target column
-            HashMap<Object, Double> uniqueColumn = categoricalColumns.getColumn(i).getFeatureStats();
-            double tempEntropy = entropy(uniqueColumn);
+            double tempEntropy = categoricalColumns.getColumn(i).entropy;
             if (tempEntropy != 0) //avoid deviding by 0.
-                infoGain.add(new GainInformation(i, (targetEntropy - tempEntropy) / tempEntropy)); //Only difference: add information gain devided by the temp entropy.
+                gainRatios.add(new GainInformation(i, (targetEntropy - tempEntropy) / tempEntropy)); //Only difference: add information gain devided by the temp entropy.
             else
-                infoGain.add(new GainInformation(i, 0)); //Bad choice, no diversity in the column --- Only on rare occasions.
+                gainRatios.add(new GainInformation(i, 0)); //Bad choice, no diversity in the column --- Only on rare occasions.
         }
-        System.out.println(infoGain);
         ArrayList<Column> sortedGains = new ArrayList<Column>();
-        while(!infoGain.isEmpty())
-            sortedGains.add(categoricalColumns.getColumn(infoGain.remove().getIndex()));
+        while(!gainRatios.isEmpty())
+            sortedGains.add(categoricalColumns.getColumn(gainRatios.remove().getIndex()));
         return sortedGains;
     }
     

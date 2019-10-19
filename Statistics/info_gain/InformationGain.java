@@ -2,11 +2,9 @@ package info_gain;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.PriorityQueue;
 
 import dataframe.Column;
-import dataframe.ColumnTools;
 import dataframe.DataFrame;
 
 
@@ -33,7 +31,7 @@ public class InformationGain extends Gain{
 	 * @return a "sorted" array list of columns, with the lowest index (0) representing most gain, and highest index (list.size() - 1) representing least gain.
 	 */
 	public ArrayList<Column> gain(int index) {
-	    double targetEntropy = entropy(ColumnTools.uniqueValCnt(targetColumns.getColumn(index)));
+	    double targetEntropy = targetColumns.getColumn(index).entropy;
 	    //Holds the calculated info gain in a max heap style.
 	    PriorityQueue<GainInformation> infoGain = new PriorityQueue<GainInformation>(categoricalColumns.getNumColumns(), new Comparator<GainInformation>() {
             @Override
@@ -42,9 +40,8 @@ public class InformationGain extends Gain{
             }
 	    });
 	    for (int i = 0; i < categoricalColumns.getNumColumns(); i++) { //Calculate info gain of every column compared to the target column
-            HashMap<Object, Integer> uniqueColumn = ColumnTools.uniqueValCnt(categoricalColumns.getColumn(i));
-            double tempEntropy = entropy(uniqueColumn);
-            infoGain.add(new GainInformation(i, targetEntropy - tempEntropy));
+            double currentEntropy = categoricalColumns.getColumn(i).entropy;
+            infoGain.add(new GainInformation(i, targetEntropy - currentEntropy));
 	    }
 	    ArrayList<Column> sortedGains = new ArrayList<Column>();
 	    while(!infoGain.isEmpty())

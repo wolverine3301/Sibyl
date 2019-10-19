@@ -257,6 +257,14 @@ public class Column {
     }
     
     /**
+     * Returns the unique value counts in the form of a hashmap, with values mapped to their count.
+     * @return the unique value counts of the column.
+     */
+    public HashMap<Object, Integer> getUniqueValueCounts() {
+        return uniqueValueCounts;
+    }
+    
+    /**
      * hasValue
      * returns true if specified value is in array list else returns false
      * @param value
@@ -288,25 +296,6 @@ public class Column {
             this.column.add(tmp);
             this.type = tmp.type;
         }
-    }
-    
-    /**
-     * Prepares the column's statistic based fields. 
-     */
-    public void prepareForStatistics() {
-        if (type == 'N') {
-            setSumAndMean();        //SUM AND MEAN
-            setVariance();          //VARIANCE
-            setStandardDeviation(); //STANDARD DEVIATION
-            setMedian();            //MEDIAN
-        }
-        setUniqueValueCount();      //UNIQUE VAL COUNT
-        setUniqueValues();          //SET UNIQUE VALUES SET
-        setFeatureStats();          //FEATURE STATS
-        setTotalUniqueValues();     //TOTAL UNIQUE VALUES      
-        setEntropy();               //ENTROPY
-        setMode();                  //MODE
-        readyForStats = true;
     }
     
     /**
@@ -365,6 +354,25 @@ public class Column {
     }
     
     /**
+     * Prepares the column's statistic based fields. 
+     */
+    public void setStatistics() {
+        if (type == 'N') {
+            setSumAndMean();        //SUM AND MEAN
+            setVariance();          //VARIANCE
+            setStandardDeviation(); //STANDARD DEVIATION
+            setMedian();            //MEDIAN
+        }
+        setUniqueValueCount();      //UNIQUE VAL COUNT
+        setUniqueValues();          //SET UNIQUE VALUES SET
+        setFeatureStats();          //FEATURE STATS
+        setTotalUniqueValues();     //TOTAL UNIQUE VALUES      
+        setEntropy();               //ENTROPY
+        setMode();                  //MODE
+        readyForStats = true;
+    }
+    
+    /**
      * Manual override of auto determined type.
      * @param type the new type of the column.
      */
@@ -377,7 +385,7 @@ public class Column {
      * WARNING: UNIQUE VALUE COUNT MUST BE SET PRIOR TO THIS METHOD
      * BEING CALLED - JUST USE prepareForStatistics() LIKE A GOOD PROGRAMMER
      */
-    public void setUniqueValues(){ 
+    private void setUniqueValues(){ 
         uniqueValues = uniqueValueCounts.keySet();
     }
     
@@ -385,7 +393,7 @@ public class Column {
      * returns a hashmap: keys are each unique value in array list and they point to the number of occurances
      * @return
      */
-    public void setUniqueValueCount() {
+    private void setUniqueValueCount() {
         HashMap<Object, Integer> vals = new HashMap<Object, Integer>();
         //counting
         for(int i = 0; i < column.size(); i++) {
@@ -422,14 +430,14 @@ public class Column {
      * return number of unique values
      * @return
      */
-    public void setTotalUniqueValues() {
+    private void setTotalUniqueValues() {
         this.totalUniqueValues = uniqueValues.size();
     }
     
 	/**
 	 * sets the features of proportion each value has in the column
 	 */
-	public void setFeatureStats() {
+	private void setFeatureStats() {
 		HashMap<Object, Integer> a = uniqueValueCounts;
 		for(Entry<Object, Integer> i : a.entrySet()) {
 			featureStats.put(i.getKey(), (double)i.getValue()/column.size());
@@ -440,7 +448,7 @@ public class Column {
      * @param theColumn the column to preform calculations on.
      * @return the most occouring value in a column.
      */
-    public void setMode() {
+    private void setMode() {
         Object m = null;
         for (Map.Entry<Object,Integer> entry : uniqueValueCounts.entrySet()) {
             m = entry.getKey();
@@ -504,15 +512,14 @@ public class Column {
      * @param column the column to preform calculations on.
      * @return the sum of a numeric column.
      */
-    public void setSumAndMean() {
+    private void setSumAndMean() {
     	//long sum = IntStream.of(array).parallel().sum();
         double sum = 0;
         int nanCount = 0;
            for(int i = 0;i < column.size();i++) {
-        	   if (column.get(i) instanceof NANParticle) {
+        	   if (column.get(i) instanceof NANParticle) 
         		   nanCount++;
-        	   }
-               if (column.get(i) instanceof DoubleParticle)
+        	   else if (column.get(i) instanceof DoubleParticle)
                    sum += (Double) column.get(i).getValue();
                else
                    sum += (Integer) column.get(i).getValue();
@@ -526,7 +533,7 @@ public class Column {
      * @param theColumn the column to preform calculations on.
      * @return the entropy of a column.
      */
-    public void setEntropy() {
+    private void setEntropy() {
         HashMap<Object,Integer> values = uniqueValueCounts;
         double ent = 0;
         for (Integer value : values.values()) {
@@ -540,7 +547,7 @@ public class Column {
      * @param theColumn the column to preform calculations on.
      * @return The variance of a column.
      */
-    public void setVariance() {
+    private void setVariance() {
         double var = 0.0;
         for(int i = 0;i < column.size();i++) {
         	if(column.get(i) instanceof NANParticle) {
@@ -556,7 +563,7 @@ public class Column {
      * @param theColumn the column to preform calculations on.
      * @return the median value of a column if column is numeric, mode if column is non numeric.
      */
-    public void setMedian() {
+    private void setMedian() {
         List<Double> sorted = new ArrayList<Double>();
         for (int i = 0; i < column.size(); i++) {
             if (!(column.get(i) instanceof NANParticle))
@@ -574,7 +581,7 @@ public class Column {
      * @param theColumn the column to preform calculations on.
      * @return the standard deviation of a column.
      */
-    public void setStandardDeviation() {
+    private void setStandardDeviation() {
         this.std = Math.sqrt(variance);       
     }
     
@@ -584,11 +591,11 @@ public class Column {
      * @param indexes the set of indexes.
      * @return the sum of a given set of indexes.
      */
-    public static double sumOfIndexes(Column theColumn, Set<Integer> indexes) {
+    public double sumOfIndexes(Set<Integer> indexes) {
         double sum = 0; 
-        if (theColumn.getType() == 'N') {
+        if (getType() == 'N') {
             for (Integer i : indexes) {
-                Particle p = theColumn.getParticle(i);
+                Particle p = getParticle(i);
                 if (p instanceof DoubleParticle)
                     sum += (Double) p.getValue();
                 else if (p instanceof IntegerParticle)
@@ -604,8 +611,8 @@ public class Column {
      * @param indexes the set of indexes.
      * @return the sum of a given set of indexes.
      */
-    public static double meanOfIndexes(Column theColumn, Set<Integer> indexes) {
-        double sum = sumOfIndexes(theColumn, indexes);
+    public double meanOfIndexes(Set<Integer> indexes) {
+        double sum = sumOfIndexes(indexes);
         return sum / indexes.size();
     }
 }
