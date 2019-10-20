@@ -1,24 +1,32 @@
 package testing;
 
+import java.util.ArrayList;
+
+import dataframe.Column;
 import dataframe.DataFrame;
+import info_gain.Gain;
+import info_gain.GiniIndex;
 
 public class bench2 {
     public static void main(String[] args) {
-        DataFrame df = DataFrame.read_csv("testfiles/nanhandlingtest.csv");
-        df.convertNANS_mean();
+        DataFrame df = DataFrame.read_csv("testfiles/testing.csv");
+        df.setStatistics();
         for (int i = 0; i < df.getNumColumns(); i++) {
             System.out.println(df.getColumn(i).toStringStatistics());
         }
-        DataFrame df2 = df.shallowCopy();
-        System.out.println("\n\n\n::::COPY TEST::::\n\n\n");
-        for (int i = 0; i < df.getNumColumns(); i++) {
-            System.out.println(df2.getColumn(i).toStringStatistics());
-        }
-//        df.printDataFrame();
-//        System.out.println(df.getColumn(0));
-//        df.setColumnType(5, 'T');
-//        df.setColumnType(1, 'C');
-//        df.setColumnType(2, 'C');
+//        DataFrame df2 = df.shallowCopy();
+//        System.out.println("\n\n\n::::COPY TEST::::\n\n\n");
+//        for (int i = 0; i < df.getNumColumns(); i++) {
+//            System.out.println(df2.getColumn(i).toStringStatistics());
+//        }
+        df.printDataFrame();
+        System.out.println(df.getColumn(0));
+        df.setColumnType(0, 'C');
+        df.setColumnType(1, 'C');
+        df.setColumnType(2, 'C');
+        Gain info = new GiniIndex(df);
+        ArrayList<Column> giniShit = info.gain(0);
+        System.out.println(giniShit);
         //info.entropy(df.getColumn_byIndex(0).getFeatureStats());
         //System.out.println(info.gain(0));
         
