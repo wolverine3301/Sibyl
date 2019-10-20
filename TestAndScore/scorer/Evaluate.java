@@ -1,4 +1,4 @@
-package appraiser;
+package scorer;
 
 public class Evaluate {
 

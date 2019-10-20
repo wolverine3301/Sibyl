@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import dataframe.Column;
-import dataframe.ColumnTools;
 import dataframe.DataFrame;
 import dataframe.Row;
 import distances.Distance;
@@ -137,9 +136,9 @@ public class Cluster {
         for (int i = 0; i < trainingData.getNumColumns(); i++) {
             Column c = trainingData.getColumn(i);
             if (c.getType() == 'd') 
-                centroid.changeValue(i, new DoubleParticle(ColumnTools.meanOfIndexes(c, clusterMemberIndexes)));
+                centroid.changeValue(i, new DoubleParticle(c.meanOfIndexes(clusterMemberIndexes)));
             else if (c.getType() == 'i')
-                centroid.changeValue(i, new IntegerParticle((int) ColumnTools.meanOfIndexes(c, clusterMemberIndexes)));
+                centroid.changeValue(i, new IntegerParticle((int) c.meanOfIndexes(clusterMemberIndexes)));
         }
     }
     

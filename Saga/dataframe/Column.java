@@ -248,6 +248,10 @@ public class Column {
         return type;
     }
     
+    public int getTotalUniqueValues() {
+        return totalUniqueValues;
+    }
+    
     /**
      * Returns a set of the unique values of the column.
      * @return a set of the unique values of the column.

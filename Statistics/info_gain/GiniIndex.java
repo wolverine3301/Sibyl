@@ -26,6 +26,7 @@ public class GiniIndex extends Gain{
 
     /**
      * Returns a "sorted" array list of columns, with the sorting rule being the columns with the highest gini index (impurity).
+     * NOTE: PASS 0 TO THE PARAMETER OF THIS FUNCTION. 
      */
     @Override
     public ArrayList<Column> gain(int index) {

@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import dataframe.Column;
-import dataframe.ColumnTools;
 import dataframe.DataFrame;
 
 import java.util.Set;
@@ -39,7 +38,7 @@ public class Chi2Independents {
 	 * @return degrees of freedom
 	 */
 	public int degreesFreedom(Column col1, Column col2) {
-		return (col1.numOfUniques()-1)* (col2.numOfUniques()-1);
+		return (col1.getTotalUniqueValues() - 1)* (col2.getTotalUniqueValues() - 1);
 	}
 	/**
 	 * Perform a chi2 test on all columns on all targets
@@ -106,8 +105,8 @@ public class Chi2Independents {
 	 */
 	public HashMap<Object, HashMap<Object, Double>> exp_contegencyTable(Column target, Column col){
 		HashMap<Object, HashMap<Object, Double>> table = new HashMap<Object, HashMap<Object, Double>>();
-		HashMap<Object, Integer> target_info = ColumnTools.uniqueValCnt(target);
-		HashMap<Object, Integer> col_info = ColumnTools.uniqueValCnt(col);
+		HashMap<Object, Integer> target_info = target.getUniqueValueCounts();
+		HashMap<Object, Integer> col_info = col.getUniqueValueCounts();
 		//Initialize and fill
 		HashMap<Object, Double> vals;
 		for(Object key1 : target_info.keySet()) {
@@ -128,8 +127,8 @@ public class Chi2Independents {
 	 */
 	public HashMap<Object, HashMap<Object, Integer>> obs_contegencyTable(Column target, Column col){
 		HashMap<Object, HashMap<Object, Integer>> table = new HashMap<Object, HashMap<Object, Integer>>();
-		Set<Object> target_info = ColumnTools.uniqueValues(target);
-		Set<Object> col_info = ColumnTools.uniqueValues(col);
+		Set<Object> target_info = target.getUniqueValues();
+		Set<Object> col_info = col.getUniqueValues();
 		
 		//Initialize
 		HashMap<Object, Integer> vals;

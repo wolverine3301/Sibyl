@@ -23,7 +23,7 @@ class DoubleParticleTest {
 
 	@Test
 	void testGetValue() {
-		assertEquals(3.14,p.getValue());
+		assertEquals(3.14, p.getValue());
 	}
 	@Test
 	void testSetValue() {

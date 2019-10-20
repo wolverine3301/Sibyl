@@ -60,7 +60,7 @@ public class CrossValidation {
 	        	}
 	        	
 	        }
-	        trial = new TestTrainFit(this.df.shallowCopy_rowIndexes(this.df,set2),this.df.shallowCopy_rowIndexes(this.df, set1));
+	        trial = new TestTrainFit(this.df.shallowCopy_rowIndexes(set2), this.df.shallowCopy_rowIndexes(set1));
 	        trials.add(trial);
 	    }
 	    this.trials = trials;

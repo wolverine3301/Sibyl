@@ -17,7 +17,7 @@ public class Standardize {
 	public DataFrame std_df;
 	private DataFrame df;
 	public Standardize(DataFrame data) {
-		this.df = DataFrame.shallowCopy_columnIndexes(data, data.numericIndexes);
+		this.df = data.shallowCopy_columnIndexes(data.numericIndexes);
 		this.std_df = new DataFrame();
 	}
 
@@ -25,8 +25,8 @@ public class Standardize {
 	 * standardize whole dataframe
 	 */
 	public static DataFrame standardize_df(DataFrame data) {
-		DataFrame df = DataFrame.shallowCopy_columnIndexes(data, data.numericIndexes);
-		DataFrame std_df = DataFrame.deepCopy(data);
+		DataFrame df = data.shallowCopy_columnIndexes(data.numericIndexes);
+		DataFrame std_df = data.deepCopy();
 		for(Column i : std_df.columns) {
         	System.out.println(i.mean);
         }

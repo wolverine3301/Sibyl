@@ -52,12 +52,13 @@ public abstract class Model {
 		vars.add('N');
 		return vars;
 	}
-	public  void train(DataFrame df) {
+	
+	public void train(DataFrame df) {
 		this.rawTrain = df;
 	    this.trainDF_targets = DataFrame_Copy.shallowCopy_columnTypes(df, set_targets());
 	    this.trainDF_variables = DataFrame_Copy.shallowCopy_columnTypes(df, set_variables());
-	    this.trainDF_variables.setStuff();
 	}
+	
 	/**
 	 * Returns the probabilities of a row being a part of each class
 	 * @return
@@ -71,12 +72,14 @@ public abstract class Model {
 	 */
 	public abstract Object predict(Row row);
 	
+	
 	public abstract HashMap<String , ArrayList<Object>> predictDF(DataFrame testDF);
 	
 	public void setTrain(DataFrame trainDF) {
 		this.trainDF_targets = DataFrame_Copy.shallowCopy_columnTypes(trainDF, set_targets());
 	    this.trainDF_variables = DataFrame_Copy.shallowCopy_columnTypes(trainDF, set_variables());   	
 	}
+	
 	public abstract void initiallize();
 	
 

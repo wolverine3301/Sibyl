@@ -1,4 +1,4 @@
-package appraiser;
+package scorer;
 
 /**
  * Reciever Operating Characteristic
