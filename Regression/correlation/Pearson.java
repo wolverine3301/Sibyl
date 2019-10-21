@@ -16,7 +16,7 @@ public class Pearson extends Correlation{
 	 * Pearson correlation coefficient 
 	 */
 	public double getCorrelation(Column x, Column y) {
-		return Stats.zeroSumMultiple_Columns(x, y)  / Math.sqrt( Stats.zeroSquaredSum(x) * Stats.zeroSquaredSum(y) );
+		return Stats.covariance(x, y) / Math.sqrt( (x.variance * y.variance ) );
 	}
 
 }
