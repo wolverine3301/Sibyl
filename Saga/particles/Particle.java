@@ -22,6 +22,7 @@ public abstract class Particle implements Comparable<Particle>{
      * 'c' : Categorical
      * 'e' : Distance
      * 'g' : Object
+     * 't' : time
      * */
     public char type;
     
