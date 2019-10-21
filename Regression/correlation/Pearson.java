@@ -3,18 +3,20 @@ package correlation;
 
 import dataframe.Column;
 import forensics.Stats;
-
+/**
+ * Pearson correlation coeffecent
+ * @author logan.collier
+ *
+ */
 public class Pearson extends Correlation{
-
-	public Pearson(Column x, Column y) {
-		super(x, y);
+	public Pearson() {
+		
 	}
 	/**
 	 * Pearson correlation coefficient 
 	 */
-	@Override
-	public double correlation() {
-		return Stats.covariance(x,y)/(x.mean * y.mean);
+	public double getCorrelation(Column x, Column y) {
+		return Stats.zeroSumMultiple_Columns(x, y)  / Math.sqrt( Stats.zeroSquaredSum(x) * Stats.zeroSquaredSum(y) );
 	}
 
 }

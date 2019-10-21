@@ -112,7 +112,7 @@ public class Stats {
 	public static double sumMultiple_Columns(Column x, Column y) {
 		double sum = 0;
 		for(int i = 0; i < x.getLength();i++) {
-			sum = sum + ((double)x.getParticle(i).getValue() * (double)y.getParticle(i).getValue());
+			sum = sum + ((double)x.getParticle(i).getDoubleValue() * (double)y.getParticle(i).getDoubleValue());
 		}
 		return sum;
 	}
@@ -124,6 +124,18 @@ public class Stats {
 	 */
 	public static double comean(Column x, Column y) {
 		return sumMultiple_Columns(x, y) / x.getLength();
+	}
+	/**
+	 * Square each value and return sum
+	 * @param x
+	 * @return
+	 */
+	public static double squareSum(Column x) {
+		double s = 0;
+		for(int i = 0; i < x.getLength(); i++) {
+			s = s + Math.pow((double)x.getParticle(i).getDoubleValue(),2);
+		}
+		return s;
 	}
 	/**
 	 * return square mean of a column , E (x_i)^2 / n
