@@ -26,6 +26,7 @@ public class DataFrame {
 	/** The type of each column */
 	protected ArrayList<Character> columnTypes;
 	public ArrayList<Integer> numericIndexes;
+	public ArrayList<Integer> targetIndexes;
 	
 	/** The ArrayList of columns */
 	public ArrayList<Column> columns;
@@ -48,6 +49,7 @@ public class DataFrame {
 		this.columnNames = new ArrayList<String>();
 		this.columnTypes = new ArrayList<Character>();
 		this.numericIndexes = new ArrayList<Integer>();
+		this.targetIndexes = new ArrayList<Integer>();
 		numRows = 0;
 		numColumns = 0;
 		
@@ -84,6 +86,10 @@ public class DataFrame {
 			}
 		}
 		getColumn(index).setType(newType);
+		//update target indexes
+		if(newType == 'T'){
+			this.targetIndexes.add(index);
+		}
 		columnTypes.set(index, newType);
 	}
 	

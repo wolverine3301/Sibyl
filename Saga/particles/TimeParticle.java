@@ -15,4 +15,28 @@ public class TimeParticle extends Particle{
 		
 	}
 
+	@Override
+	public Object getValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValue(Object newValue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Particle deepCopy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int compareTo(Particle p) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

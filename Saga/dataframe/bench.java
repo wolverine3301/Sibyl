@@ -17,21 +17,22 @@ import transform.Standardize;
 public class bench {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		//String file = "testfiles/iris.txt";
+
 		String file = "testfiles/iris.txt";
         DataFrame df = DataFrame.read_csv(file);
+        df.getColumn_byName("species").setType('T'); //set target column
+        System.out.println(df.getColumn_byName("species").getUniqueValues());
+        //print column means
         for(Column i : df.columns) {
         	System.out.println(i.mean);
         }
-       // df.printDataFrame();
-        df.convertNANS_mean();
-        df = Standardize.standardize_df(df);
         
-       // df.printDataFrame();
-       // df = df.shuffle(df);
-        //NaiveBayes nb = new NaiveBayes();
-        //CrossValidation cv = new CrossValidation(df, 10, nb);
-        //cv.avgScores();
+        df.convertNANS_mean(); // conevert any NAN's to the mean of column 
+        df = Standardize.standardize_df(df); //Standardize the DF into z scores
+        df = df.shuffle(df);
+        NaiveBayes nb = new NaiveBayes();
+        CrossValidation cv = new CrossValidation(df, 10, nb);
+        cv.avgScores();
         //cv.printMatrixs();
         //cv.printScores();
         //nb.printProbTable();
