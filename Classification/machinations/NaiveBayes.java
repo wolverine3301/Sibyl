@@ -178,7 +178,7 @@ public class NaiveBayes extends Model{
 		for(int i = 0; i < targetClasses.length; i++) {
 			arg[0] = super.trainDF_targets.getColumn(targetNum).getName();
 			arg[2] = targetClasses[i].toString();
-			classes[i] = DataFrame.acquire(super.rawTrain,arg);
+			classes[i] = super.rawTrain.acquire(arg);
 		}
 		this.classes.add(classes);
 	}
