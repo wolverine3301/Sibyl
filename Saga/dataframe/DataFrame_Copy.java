@@ -16,7 +16,8 @@ import particles.Particle;
  * @author Cade Reynoldson
  * @version 1.0
  */
-public final class DataFrame_Copy {  
+public final class DataFrame_Copy {
+    
     /**
      * Versitility function, arguments in the string array passed to the method will be parsed, and a shallow copy of the data frame with rows
      * that meet the specified arguments will be returned, can take multiple arguments.
@@ -147,6 +148,7 @@ public final class DataFrame_Copy {
         for (Integer rowIndex : rowIndexes) {
             newDataFrame.addRow(new Row(theDataFrame.getRow_byIndex(rowIndex)));
         }
+        newDataFrame.setStatistics();
         return newDataFrame;
     }
     
@@ -255,6 +257,7 @@ public final class DataFrame_Copy {
             newDataFrame.addRow(theDataFrame.getRow_byIndex(rowIndex));
         }
         newDataFrame.setNumRows();
+        newDataFrame.setStatistics();
         return newDataFrame;
     } 
     
