@@ -1,8 +1,8 @@
 package forensics;
 
 import dataframe.Column;
-import dataframe.ColumnTools;
 import dataframe.DataFrame;
+import examples.ColumnTools;
 import linearRegression.LinearRegression;
 import linearRegression.Multi_LinearRegression;
 import logrithmicRegression.LogRegression;

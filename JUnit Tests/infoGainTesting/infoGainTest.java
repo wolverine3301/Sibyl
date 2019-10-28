@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import dataframe.ColumnTools;
 import dataframe.DataFrame;
+import examples.ColumnTools;
 import info_gain.InformationGain;
 
 class infoGainTest {

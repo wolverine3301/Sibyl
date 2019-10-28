@@ -1,4 +1,4 @@
-package dataframe;
+package examples;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dataframe.Column;
+import dataframe.DataFrame;
 import machinations.NaiveBayes;
 import particles.Particle;
 import regressionFunctions.LinearRegression;

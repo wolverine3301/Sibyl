@@ -369,10 +369,10 @@ public class Column {
         }
         setUniqueValueCount();      //UNIQUE VAL COUNT
         setUniqueValues();          //SET UNIQUE VALUES SET
-        setFeatureStats();          //FEATURE STATS
         setTotalUniqueValues();     //TOTAL UNIQUE VALUES      
         setEntropy();               //ENTROPY
         setMode();                  //MODE
+        setFeatureStats();          //FEATURE STATS
         readyForStats = true;
     }
     
@@ -444,7 +444,10 @@ public class Column {
 	private void setFeatureStats() {
 		HashMap<Object, Integer> a = uniqueValueCounts;
 		for(Entry<Object, Integer> i : a.entrySet()) {
-			featureStats.put(i.getKey(), (double)i.getValue()/column.size());
+			System.out.println(featureStats);
+			System.out.println(i.getKey());
+			System.out.println((double)i.getValue()/column.size());
+			this.featureStats.put(i.getKey(), (double)i.getValue()/column.size());
 		}
 	}
     /**

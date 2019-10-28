@@ -2,10 +2,12 @@ package anova;
 
 import java.util.Set;
 
+import dataframe.Column;
 import dataframe.DataFrame;
 
 public class ANOVA {
 	private DataFrame df;
+	private DataFrame[] classes;
 	/**
 	 * Use anova for all dataframe
 	 * @param df
@@ -13,12 +15,21 @@ public class ANOVA {
 	public ANOVA(DataFrame df) {
 		this.df = df;
 		
-	}
-	public void initiallize_ANOVA() {
-		for(Integer i : df.targetIndexes) {
-			Set<Object> targets = df.getColumn(i).getUniqueValues();
-		}
 		
+	}
+	public void initiallize_ANOVA(int target_index) {
+		Set<Object> targets = df.getColumn(target_index).getUniqueValues();
+		classes = new DataFrame[targets.size()];
+		int cnt = 0;
+		String[] args = new String[3];
+		args[0] = df.getColumn(target_index).getName();
+		args[1] = "==";
+		for(Object i : targets) {
+			args[2] = i.toString();
+			classes[cnt] = df.acquire(args);
+			classes[cnt].setStatistics();
+		}
+		classes[0].printDataFrame();
 	}
 	/**
 	 * analasys of determination on a column
