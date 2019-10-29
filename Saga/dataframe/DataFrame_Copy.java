@@ -295,7 +295,9 @@ public final class DataFrame_Copy {
             	if(j >= df.getNumRows()) break;
                 set.add(j); 
             }
-            partitions.add(shallowCopy_rowIndexes(df,set));
+            DataFrame temp = shallowCopy_rowIndexes(df, set);
+            temp.setStatistics();
+            partitions.add(temp);
         }
         return partitions;
     }
