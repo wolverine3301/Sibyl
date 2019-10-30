@@ -36,6 +36,7 @@ public final class DataFrame_Copy {
             Column column = theDataFrame.getColumn_byName(args[i]);
             String operator = args[i + 1];
             Particle particle = Particle.resolveType(args[i + 2]);
+            
             for (int j = 0; j < column.getLength(); j++) {
                 int compare = column.getParticle(j).compareTo(particle);
                 switch (operator) {
@@ -257,7 +258,8 @@ public final class DataFrame_Copy {
             newDataFrame.addRow(theDataFrame.getRow_byIndex(rowIndex));
         }
         newDataFrame.setNumRows();
-        newDataFrame.setStatistics();
+        //newDataFrame.setStatistics();
+        newDataFrame.targetIndexes = theDataFrame.targetIndexes;
         return newDataFrame;
     } 
     

@@ -397,7 +397,7 @@ public class Column {
      * returns a hashmap: keys are each unique value in array list and they point to the number of occurances
      * @return
      */
-    private void setUniqueValueCount() {
+    public void setUniqueValueCount() {
         HashMap<Object, Integer> vals = new HashMap<Object, Integer>();
         //counting
         for(int i = 0; i < column.size(); i++) {
@@ -444,9 +444,7 @@ public class Column {
 	private void setFeatureStats() {
 		HashMap<Object, Integer> a = uniqueValueCounts;
 		for(Entry<Object, Integer> i : a.entrySet()) {
-			System.out.println(featureStats);
-			System.out.println(i.getKey());
-			System.out.println((double)i.getValue()/column.size());
+
 			this.featureStats.put(i.getKey(), (double)i.getValue()/column.size());
 		}
 	}
