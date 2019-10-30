@@ -13,9 +13,7 @@ public class ANOVA {
 	 * @param df
 	 */
 	public ANOVA(DataFrame df) {
-		this.df = df;
-		
-		
+		this.df = df;	
 	}
 	public void initiallize_ANOVA(int target_index) {
 		Set<Object> targets = df.getColumn(target_index).getUniqueValues();
@@ -30,6 +28,9 @@ public class ANOVA {
 			classes[cnt].setStatistics();
 			cnt++;
 		}
+	
+	}
+	private void setDegreeFreedom() {
 		
 	}
 	/**

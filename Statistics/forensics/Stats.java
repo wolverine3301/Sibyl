@@ -10,6 +10,11 @@ public class Stats {
 	public static double standardError() {
 		return 0;
 	}
+	/**
+	 * Also known as sum of squared errors
+	 * @param x
+	 * @return
+	 */
 	public static double zeroSquaredSum(Column x) {
 		double sum = 0;
 		for(int i = 0; i < x.getLength(); i++) {
