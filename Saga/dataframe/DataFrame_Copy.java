@@ -258,7 +258,7 @@ public final class DataFrame_Copy {
             newDataFrame.addRow(theDataFrame.getRow_byIndex(rowIndex));
         }
         newDataFrame.setNumRows();
-        //newDataFrame.setStatistics();
+        newDataFrame.setStatistics();
         newDataFrame.targetIndexes = theDataFrame.targetIndexes;
         return newDataFrame;
     } 

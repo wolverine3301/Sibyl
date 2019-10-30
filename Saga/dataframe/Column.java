@@ -106,6 +106,9 @@ public class Column {
         type = theType;
         column = new ArrayList<Particle>();
         columnLength = 0;
+        uniqueValues = new HashSet<Object>();
+        featureStats = new HashMap<Object, Double>();
+        uniqueValueCounts = new HashMap<Object, Integer>();
         readyForStats = false;
     }
     /**
@@ -443,8 +446,8 @@ public class Column {
 	 */
 	private void setFeatureStats() {
 		HashMap<Object, Integer> a = uniqueValueCounts;
+		
 		for(Entry<Object, Integer> i : a.entrySet()) {
-
 			this.featureStats.put(i.getKey(), (double)i.getValue()/column.size());
 		}
 	}

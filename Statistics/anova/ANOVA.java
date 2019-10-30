@@ -28,8 +28,9 @@ public class ANOVA {
 			args[2] = i.toString();
 			classes[cnt] = df.acquire(args);
 			classes[cnt].setStatistics();
+			cnt++;
 		}
-		classes[0].printDataFrame();
+		
 	}
 	/**
 	 * analasys of determination on a column
