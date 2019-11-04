@@ -16,7 +16,7 @@ import particles.Particle;
  * @author Cade Reynoldson
  */
 public class DataFrame {
-	
+	protected String DataFrameName;
     /** The names of the columns */
 	protected ArrayList<String> columnNames;
 	
@@ -57,7 +57,11 @@ public class DataFrame {
 	 * 					DATAFRAME SETTERS
 	 * 
 	 * ##################################################################
+	 * 
 	 */
+	public void setName(String name) {
+		this.DataFrameName = name;
+	}
     /**
      * Updates the number of rows in this column. Note: this does not create new rows when changing the size.
      */
@@ -117,7 +121,9 @@ public class DataFrame {
 	 * 
 	 * ##################################################################
 	 */
-    
+    public String getName() {
+    	return this.DataFrameName;
+    }
 	/**
 	 * Returns an indexed row from the data frame.
 	 * @param index the index of the row.

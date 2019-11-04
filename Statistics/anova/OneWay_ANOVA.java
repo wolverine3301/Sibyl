@@ -1,6 +1,7 @@
 package anova;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 
 import dataframe.Column;
@@ -23,28 +24,45 @@ import forensics.Stats;
  */
 public class OneWay_ANOVA {
 	
+	private DataFrame anova;
 	private DataFrame df;
 	private ArrayList<DataFrame[]> classes;
-	private int[] degreesOfFreedom;
-	private double[] meanSquaresTreatment;
-	private double[] meanSquaresError;
+	private HashMap<String, HashMap<String, Double>> MSB; //mean sques between treatments(groups
+	private HashMap<String, HashMap<String, Double>> meanSquaresError;
+	private HashMap<String, HashMap<String, Double>> F_RATIO;
 	public OneWay_ANOVA(DataFrame df) {
 		this.df = df;
+		anova = new DataFrame();
+		this.meanSquaresError = new HashMap<String, HashMap<String, Double>>();
+		this.MSB = new HashMap<String, HashMap<String, Double>>();
+		this.F_RATIO = new HashMap<String, HashMap<String, Double>>();
 		classes = new ArrayList<DataFrame[]>();
-		initializeAll_anova();
-		setDegreesFreedom();
 	}
-	private void cybernization() {
-		for(DataFrame[] i : classes) {
-			for(int j = 0; j < )
-			SumOfSquaresOfError(i,)
-			
+	public void invokeANOVA(){
+		initializeAll_anova();
+		HashMap<String, Double> MS;
+		HashMap<String, Double> MSE;
+		HashMap<String, Double> F;
+		for(Integer i : df.targetIndexes) {
+			MS = new HashMap<String, Double>();
+			MSE = new HashMap<String, Double>();
+			F = new HashMap<String, Double>();
+			for(Integer j : df.numericIndexes) {
+				for(DataFrame[] k : classes) {
+					MS.put(df.getColumn(j).getName(), sumOfSquaresOfTreatment(k, j));
+					MSE.put(df.getColumn(j).getName(), SumOfSquaresOfError(k,j));
+					F.put(df.getColumn(j).getName(), MS.get(df.getColumn(j).getName()) / MSE.get(df.getColumn(j).getName()) );
+				}
+			}
+			this.MSB.put(df.getColumn(i).getName(), MS);
+			this.meanSquaresError.put(df.getColumn(i).getName(), MSE);
+			this.F_RATIO.put(df.getColumn(i).getName(), F);
 		}
 	}
 	/**
 	 * initiallizing for all targets
 	 */
-	private void initializeAll_anova() {
+	public void initializeAll_anova() {
 		for(Integer i : df.targetIndexes) {
 			initiallize_anova(i);
 		}
@@ -61,6 +79,7 @@ public class OneWay_ANOVA {
 			args[2] = i.toString();
 			target_class[cnt] = df.acquire(args);
 			target_class[cnt].setStatistics();
+			target_class[cnt].setName(i.toString());
 			cnt++;
 		}
 		classes.add(target_class);
@@ -69,36 +88,35 @@ public class OneWay_ANOVA {
 	 * 1. calculate sum of squares of error for each class and add them up
 	 * @param columnIndex
 	 */
-	private void SumOfSquaresOfError(DataFrame[] class_n ,int columnIndex) {
+	private double SumOfSquaresOfError(DataFrame[] class_n ,int columnIndex) {
 		double sumSSE = 0;
 		for(int i = 0; i < class_n.length; i++) {
 			sumSSE = sumSSE + Stats.zeroSquaredSum(class_n[i].getColumn(columnIndex));
 		}
+		return sumSSE/(df.getNumRows()-class_n.length);
 	}
 	/**
 	 * 2. the squared deviations of each sample mean from the overall mean,
 	 *  and multiply this number by one less than the number of populations
 	 * @param columnIndex
 	 */
-	private void sumOfSquaresOfTreatment(DataFrame[] class_n, int columnIndex) {
+	private double sumOfSquaresOfTreatment(DataFrame[] class_n, int columnIndex) {
 		double sum = 0;
 		for(int i = 0; i < class_n.length;i++) {
-			sum = sum + Math.pow( class_n[i].getColumn(columnIndex).mean - df.getColumn(columnIndex).mean, 2);
+			sum = sum + (class_n[i].getNumRows() * Math.pow( class_n[i].getColumn(columnIndex).mean - df.getColumn(columnIndex).mean, 2));
 		}
-		sum = sum * (class_n.length - 1);	
+		return sum/(class_n.length-1);
 	}
-	/**
-	 * calculate degees freedom: TotalRows - #classes
-	 * @return
-	 */
-	private void setDegreesFreedom() {
-		int[] degFree = new int[classes.size()];
-		int cnt = 0;
-		for(DataFrame[] i : classes) {
-			degFree[cnt] = df.getNumRows() - i.length;
+	
+	public void printResults() {
+		System.out.println("F-RATIOS:");
+		for(String i : this.F_RATIO.keySet()) {
+			System.out.println(i);
+			for(String j : this.F_RATIO.get(i).keySet() ) {
+				System.out.println(j +": "+ this.F_RATIO.get(i).get(j));
+			}
 		}
-		this.degreesOfFreedom = degFree;
-		
 	}
+
 
 }

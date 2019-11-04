@@ -23,8 +23,9 @@ public class ANOVA_example {
 			cnt++;
 		}
 		
-        ANOVA anova = new ANOVA(df);
-        anova.initiallize_ANOVA(4);
+		OneWay_ANOVA anova = new OneWay_ANOVA(df);
+        anova.invokeANOVA();
+        anova.printResults();
 
 	}
 
