@@ -31,6 +31,16 @@ public class Chi2Independents {
 		targets = new ArrayList<Column>();
 		setTargets();
 	}
+	public ArrayList<Column> ranked(int targetIndex){
+		HashMap<String, HashMap<String, Double>> chi = chi2IndependentsAll();
+		ArrayList<Column> rank = new ArrayList<Column>();
+		for(String i : chi.keySet()) {
+			for(String j : chi.get(i).keySet()) {
+				rank.add(df.getColumn_byName(j));
+			}
+		}
+		return rank;
+	}
 	/**
 	 * calculate degrees of freedom
 	 * @param col1

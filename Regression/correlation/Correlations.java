@@ -10,7 +10,11 @@ import java.util.Map;
 
 import dataframe.Column;
 import dataframe.DataFrame;
-
+/**
+ * Performs a specified correlation coeffecient on entire data frame
+ * @author logan.collier
+ *
+ */
 public class Correlations {
 	 	
 	private DataFrame num_df;
