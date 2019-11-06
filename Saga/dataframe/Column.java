@@ -529,8 +529,9 @@ public class Column {
         		   nanCount++;
         	   else if (column.get(i) instanceof DoubleParticle)
                    sum += (Double) column.get(i).getValue();
-               else
+               else {
                    sum += (Integer) column.get(i).getValue();
+               }
             }
         this.sum = sum;
         this.mean = sum / (column.size() - nanCount);

@@ -20,10 +20,23 @@ public class bench {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 
-		String file = "testfiles/iris.txt";
+		String file = "testfiles/allfraud.csv";
         DataFrame df = DataFrame.read_csv(file);
-        df.getColumn_byName("species").setType('T'); //set target column
-        System.out.println(df.getColumn_byName("species").getUniqueValues());
+        df.convertNANS_mode();
+        df.getColumn_byName("defaulted").setType('T'); //set target column
+        df.getColumn_byName("trackingNumber").setType('M');
+        df.getColumn_byName("DebtorClientId").setType('M');
+        df.getColumn_byName("Id").setType('M');
+        df.getColumn_byName("inquiryInquiryReceivedAt").setType('M');
+        df.getColumn_byName("fullName").setType('M');
+        df.getColumn_byName("overallMatchResult").setType('M');
+        df.getColumn_byName("ssnNameMatch").setType('M');
+        df.getColumn_byName("nameAddressMatch").setType('M');
+        df.getColumn_byName("ssnDobMatch").setType('M');
+        df.getColumn_byName("nameAddressReasonCode").setType('M');
+        //df.getColumn_byName("ssnDobMatch").setType('M');
+        //df.getColumn_byName("ssnDobMatch").setType('M');
+        System.out.println(df.getColumn_byName("defaulted").getUniqueValues());
         //print column means
         for(Column i : df.columns) {
         	System.out.println(i.mean);
@@ -33,7 +46,7 @@ public class bench {
         df = Standardize.standardize_df(df); //Standardize the DF into z scores
         df = df.shuffle(df);
         NaiveBayes nb = new NaiveBayes();
-        CrossValidation cv = new CrossValidation(df, 10, nb);
+        CrossValidation cv = new CrossValidation(df, 2, nb);
         cv.avgScores();
         //cv.printMatrixs();
         //cv.printScores();

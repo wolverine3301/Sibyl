@@ -59,6 +59,9 @@ public class DataFrame_Read {
                 row = new Row();
                 for(int i=0;i<df.columnNames.size();i++) { //load data into columns and rows
                 	Particle p = Particle.resolveType(lines[i]);
+                	if(p.getType() == 's' && df.getColumn(i).getType() == 'N') {
+                		p = Particle.resolveType("NAN");
+                	}
                 	df.columns.get(i).add(p);
                 	row.add(p);
                 }
