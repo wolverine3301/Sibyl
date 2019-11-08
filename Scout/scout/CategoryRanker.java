@@ -8,7 +8,11 @@ import dataframe.DataFrame;
 import info_gain.GainRatio;
 import info_gain.GiniIndex;
 import info_gain.InformationGain;
-
+/**
+ * Various categorical column ranking methods
+ * @author logan.collier
+ *
+ */
 public class CategoryRanker {
 	private DataFrame df;
 	private int targetIndex;
@@ -34,6 +38,29 @@ public class CategoryRanker {
 		makeGini();
 		makeGainRatio();
 		makeChi2();
+	}
+	public void printRankings() {
+		System.out.println("GAIN: ");
+		for(int i = 0; i < GAIN.size(); i++) {
+			System.out.print(GAIN.get(i).getName()+" ");
+		}
+		System.out.println();
+		System.out.println("GAIN RATIO: ");
+		for(int i = 0; i < GAIN_RATIO.size(); i++) {
+			System.out.print(GAIN_RATIO.get(i).getName()+" ");
+		}
+		System.out.println();
+		System.out.println("GINI: ");
+		for(int i = 0; i < GINI.size(); i++) {
+			System.out.print(GINI.get(i).getName()+" ");
+		}
+		System.out.println();
+		System.out.println("CHI2: ");
+		for(int i = 0; i < CHI2.size(); i++) {
+			System.out.print(CHI2.get(i).getName()+" ");
+		}
+		System.out.println();
+		
 	}
 	private void makeGain() {
 		GAIN = gain.gain(targetIndex);

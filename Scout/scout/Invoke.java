@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import dataframe.DataFrame_Copy;
 
 public class Invoke {
 	private static CategoryRanker CR; 
@@ -15,19 +16,20 @@ public class Invoke {
         df.setColumnType("thal", 'T');//set target column
         CR = new CategoryRanker(df, 0);
 		NR = new NumericRanker(df);
-
+		CR.printRankings();
 	}
-	private DataFrame[] evocation() {
+	private ArrayList<DataFrame> evocation() {
 		ArrayList<DataFrame> recollection = new ArrayList<DataFrame>();
 		DataFrame memory;
 		for(int cnt = 1; cnt < df.getNumColumns();cnt++) {
 			memory = new DataFrame();
 			for(int i = 0; i < cnt; i++) {
-				
+				memory = DataFrame_Copy.shallowCopy_columnNames(df, columnNames)
 			}
 			
 		}
 		
 	}
+	
 
 }
