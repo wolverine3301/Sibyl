@@ -3,7 +3,7 @@ package pca;
 import dataframe.Column;
 import dataframe.DataFrame;
 import forensics.Stats;
-import linearRegression.Multi_LinearRegression;
+import regressionFunctions.Multi_LinearRegression;
 import transform.Standardize;
 /**
  * Principal Component Analysis
@@ -48,7 +48,7 @@ public class PCA {
 	 */
 	private void setEgienVectors() {
 		Multi_LinearRegression regress = getRegressions();
-		for(int i = 0; i < regress.x_vars.length;i++) {
+		for(int i = 0; i < regress.xcolumns.length;i++) {
 			
 		}
 		
