@@ -3,7 +3,9 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
@@ -19,7 +21,7 @@ import javax.swing.JToolBar;
 
 import dataframe.DataFrame;
 
-public class SibylGUI extends JFrame{
+public class SibylGUI extends JFrame {
     /** THE KEY TO LIFE */
     private static final long serialVersionUID = -3696717041450563682L;
 
@@ -27,10 +29,10 @@ public class SibylGUI extends JFrame{
     private static final String GUI_NAME = "Sibyl";
     
     /** Reference to the data frame */
-    private DataFrame<String> dataFrame;
+    private DataFrame dataFrame;
     
     /** List of columns to create as inputs. */
-    private String[] columnsToUse;
+    private ArrayList<String> columnsToUse;
     
     /** The JPanel which holds the options of successes and defaults option. */
     private JPanel sdOptionsMenu;
@@ -49,7 +51,7 @@ public class SibylGUI extends JFrame{
      * Constructs a new instance of the GUI.
      * @param theDataFrame reference to the main data frame.
      */
-    public SibylGUI(DataFrame<String> theDataFrame) {
+    public SibylGUI(DataFrame theDataFrame) {
         super(GUI_NAME);
         dataFrame = theDataFrame;
         columnsToUse = dataFrame.getColumnNames();
@@ -77,22 +79,22 @@ public class SibylGUI extends JFrame{
      * Builds the options/inputs menu.
      */
     private void buildGenericOptionsMenu() {
-        for (int i = 0; i < columnsToUse.length; i++) {
+        for (int i = 0; i < columnsToUse.size(); i++) {
             JPanel currentPanel = new JPanel(new BorderLayout());
-            JLabel currentLabel = new JLabel(columnsToUse[i]);
-            TreeSet<String> currentOptions = (TreeSet<String>) dataFrame.getColumn(i).uniqueValuesTree(); //OPTIMIZE 
+            JLabel currentLabel = new JLabel(columnsToUse.get(i));
+            Set<Object> currentOptions = dataFrame.getColumn(i).getUniqueValues(); //OPTIMIZE 
             if (currentOptions.size() >= 25) {  //TEXT BOX
                 JTextField textInput = new JTextField(10);
                 currentPanel.add(currentLabel, BorderLayout.NORTH);
                 currentPanel.add(textInput, BorderLayout.SOUTH);
-                textInput.addActionListener(new InputActionListener(columnsToUse[i], true));
-                variableInputs.put(columnsToUse[i], null);
+                textInput.addActionListener(new InputActionListener(columnsToUse.get(i), true));
+                variableInputs.put(columnsToUse.get(i), null);
             } else {                            //DROP DOWN MENU
                 JComboBox<String> dropDownInput = new JComboBox<String>(currentOptions.toArray(new String[0]));
                 currentPanel.add(currentLabel, BorderLayout.NORTH);
                 currentPanel.add(dropDownInput, BorderLayout.SOUTH);
-                variableInputs.put(columnsToUse[i], (String) dropDownInput.getSelectedItem());
-                dropDownInput.addActionListener(new InputActionListener(columnsToUse[i], false));
+                variableInputs.put(columnsToUse.get(i), (String) dropDownInput.getSelectedItem());
+                dropDownInput.addActionListener(new InputActionListener(columnsToUse.get(i), false));
             }
             genericOptionsMenu.add(currentPanel);
             genericOptionsMenu.addSeparator();

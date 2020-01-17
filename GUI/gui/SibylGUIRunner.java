@@ -26,8 +26,7 @@ public class SibylGUIRunner {
 //            }
 //        });
       dataFrame = new DataFrame();
-      dataFrame.loadcsv("testing.csv");
-      new SibylGUI(dataFrame).start();
+      new FirstView().start();
     }
 
 }
