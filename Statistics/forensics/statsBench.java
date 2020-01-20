@@ -30,6 +30,7 @@ public class statsBench {
 		y.add(2);
 		y.add(3);
 		y.add(2);
+		
 		LinearRegression test = new LinearRegression(col1,col3);
 		System.out.println("Total sum of Squares: " + test.SST);
 		System.out.println("Total squared sum products:"+  test.SSP);
