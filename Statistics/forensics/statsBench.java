@@ -15,6 +15,7 @@ public class statsBench {
 		Column col1 = iris.getColumn(0);
 		Column col2 = iris.getColumn(1);
 		Column col3 = iris.getColumn(3);
+		
 		//col1.printCol();
 		//System.out.println(Stats.zeroSquaredSum(col1));
 		//System.out.println(Stats.covariance(col1, col2));
