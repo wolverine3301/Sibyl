@@ -15,6 +15,7 @@ public class statsBench {
 		Column col1 = iris.getColumn(0);
 		Column col2 = iris.getColumn(1);
 		Column col3 = iris.getColumn(3);
+		
 		//col1.printCol();
 		//System.out.println(Stats.zeroSquaredSum(col1));
 		//System.out.println(Stats.covariance(col1, col2));
@@ -29,6 +30,8 @@ public class statsBench {
 		y.add(2);
 		y.add(3);
 		y.add(2);
+		
+		
 		LinearRegression test = new LinearRegression(col1,col3);
 		System.out.println("Total sum of Squares: " + test.SST);
 		System.out.println("Total squared sum products:"+  test.SSP);

@@ -20,6 +20,7 @@ public class Multi_LinearRegression {
 		this.x = x;
 		this.y = y;
 		setRegressions();
+		setSlopes();
 	}
 	/**
 	 * regression lines for columns
@@ -39,7 +40,7 @@ public class Multi_LinearRegression {
 	private void setSlopes() {
 		int cnt = 0;
 		for(LinearRegression i : regressions) {
-			slopes[cnt] = 
+			slopes[cnt] = i.slope;
 			cnt++;
 		}
 	}
