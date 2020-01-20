@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -16,10 +18,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import dataframe.DataFrame;
+import particles.Particle;
 
 public class SibylGUI extends JFrame {
     /** THE KEY TO LIFE */
@@ -36,6 +40,8 @@ public class SibylGUI extends JFrame {
     
     /** The JPanel which holds the options of successes and defaults option. */
     private JPanel sdOptionsMenu;
+    
+    private JScrollPane dataFrameDisplay;
     
     /** Holds the inputs for the successes and defaults. Index 1 = successes, index 0 = defaults */
     private String[] sdInputs;
@@ -72,6 +78,8 @@ public class SibylGUI extends JFrame {
         add(sdOptionsMenu, BorderLayout.NORTH);
         buildGenericOptionsMenu();
         add(genericOptionsMenu, BorderLayout.SOUTH);
+        dataFrameDisplay();
+        add(dataFrameDisplay, BorderLayout.CENTER);
         pack();
     }
     
@@ -90,7 +98,7 @@ public class SibylGUI extends JFrame {
                 textInput.addActionListener(new InputActionListener(columnsToUse.get(i), true));
                 variableInputs.put(columnsToUse.get(i), null);
             } else {                            //DROP DOWN MENU
-                JComboBox<String> dropDownInput = new JComboBox<String>(currentOptions.toArray(new String[0]));
+                JComboBox<String> dropDownInput = createDropDownMenus(currentOptions);
                 currentPanel.add(currentLabel, BorderLayout.NORTH);
                 currentPanel.add(dropDownInput, BorderLayout.SOUTH);
                 variableInputs.put(columnsToUse.get(i), (String) dropDownInput.getSelectedItem());
@@ -107,6 +115,22 @@ public class SibylGUI extends JFrame {
             }   
         });
         genericOptionsMenu.add(runButton);
+    }
+    
+    /**
+     * Converts a set to a dropdown menu consiting of the items within the set.
+     * @param currentOptions the options to convert to a dropdown menu.
+     * @return a dropdown menu consisting of the items in the passed set. 
+     */
+    private JComboBox<String> createDropDownMenus(Set<Object> currentOptions) {
+        JComboBox<String> options = new JComboBox<String>();
+        for (Object o : currentOptions) {
+            if (o instanceof String)
+                options.addItem((String) o);
+            else
+                options.addItem("" + o);
+        }
+        return options;
     }
     
     /**
@@ -155,6 +179,29 @@ public class SibylGUI extends JFrame {
         sdOptionsMenu.add(succsessesPanel, BorderLayout.SOUTH);
     }
     
+    public void dataFrameDisplay() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(dataFrame.getNumRows() + 1, dataFrame.getNumColumns()));
+        //Initialize the names of the columns
+        for (int i = 0; i < dataFrame.getNumRows(); i++) { 
+            panel.add(new JLabel(dataFrame.getColumn(i).getName()));
+        }
+        //Add all of the data from the data frame to the display.
+        for (int rowNum = 0; rowNum < dataFrame.getNumRows(); rowNum++) {
+            for (int colNum = 0; colNum < dataFrame.getNumColumns(); colNum++) {
+                JTextField textBox = new JTextField("" + dataFrame.getRow_byIndex(rowNum).getParticle(colNum).getValue());
+                //textBox.addActionListener(new ActionListener() {
+//                    @Override
+//                    public void actionPerformed(ActionEvent e) {
+//                        dataFrame.replaceParticle(colNum, rowNum, Particle.resolveType(textBox.getText()));
+//                    }
+                //});
+                panel.add(textBox);
+            }
+        }
+        dataFrameDisplay = new JScrollPane(panel);
+    }
+   
     /**
      * Creates an action listener for a combo box or text box.
      * @author Cade Reynoldson

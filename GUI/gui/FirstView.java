@@ -69,9 +69,11 @@ public class FirstView extends JFrame {
     
     private void loadDataframe(File file) {
         DataFrame df = DataFrame_Read.loadcsv(file.getAbsolutePath());
-        super.setContentPane(new SibylGUI(df));
+        System.out.println("Loading data frame GUI");
+        new SibylGUI(df).start();
+        this.
     }
-    
+        
     private void loadModel(File file) {
         
     }

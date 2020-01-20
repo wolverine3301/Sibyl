@@ -1,6 +1,9 @@
 package gui;
 
+import java.awt.EventQueue;
+
 import dataframe.DataFrame;
+import dataframe.DataFrame_Read;
 
 public class SibylGUIRunner {
     static DataFrame dataFrame;
@@ -16,17 +19,14 @@ public class SibylGUIRunner {
      * @param theArgs allows aruments to be passed.
      */
     public static void main(final String[] theArgs) {
-//        EventQueue.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                dataFrame = new DataFrame();
-//                String[] types = {"target","numeric","numeric","category","meta","meta"};
-//                dataFrame.loadcsv("testfiles/testing.csv", types);
-//                new SibylGUI2(dataFrame).start();
-//            }
-//        });
-      dataFrame = new DataFrame();
-      new FirstView().start();
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                //new FirstView().start();
+                DataFrame df = DataFrame_Read.loadcsv("testfiles/testing.csv");
+                new SibylGUI(df).start();
+            }
+        });
     }
 
 }
