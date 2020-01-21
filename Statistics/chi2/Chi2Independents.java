@@ -103,8 +103,8 @@ public class Chi2Independents {
 				sum = sum + Math.pow((observed.get(key1).get(key2) - expected.get(key1).get(key2)), 2) / expected.get(key1).get(key2) ;
 			}
 		}
-		System.out.println(degreesFreedom(target,col));
-		System.out.println(sum);
+		//System.out.println(degreesFreedom(target,col));
+		//System.out.println(sum);
 		return p_value(sum, degreesFreedom(target,col));
 	}
 	/**

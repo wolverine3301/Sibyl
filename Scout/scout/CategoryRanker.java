@@ -26,7 +26,12 @@ public class CategoryRanker {
 	public ArrayList<Column> GAIN_RATIO;
 	public ArrayList<Column> GINI;
 	public ArrayList<Column> CHI2;
-	
+	public final int rankers = 4; //number of ranker methods used
+	/**
+	 * Category Ranker
+	 * @param df - the dataframe
+	 * @param targetIndex - dataframe keeps a list of target columns, if there is one target it will be 0
+	 */
 	public CategoryRanker(DataFrame df, int targetIndex) {
 		this.targetIndex = targetIndex;
 		this.df = df;
@@ -42,22 +47,22 @@ public class CategoryRanker {
 	public void printRankings() {
 		System.out.println("GAIN: ");
 		for(int i = 0; i < GAIN.size(); i++) {
-			System.out.print(GAIN.get(i).getName()+" ");
+			System.out.print(GAIN.get(i).getName()+" ,");
 		}
 		System.out.println();
 		System.out.println("GAIN RATIO: ");
 		for(int i = 0; i < GAIN_RATIO.size(); i++) {
-			System.out.print(GAIN_RATIO.get(i).getName()+" ");
+			System.out.print(GAIN_RATIO.get(i).getName()+" ,");
 		}
 		System.out.println();
 		System.out.println("GINI: ");
 		for(int i = 0; i < GINI.size(); i++) {
-			System.out.print(GINI.get(i).getName()+" ");
+			System.out.print(GINI.get(i).getName()+" ,");
 		}
 		System.out.println();
 		System.out.println("CHI2: ");
 		for(int i = 0; i < CHI2.size(); i++) {
-			System.out.print(CHI2.get(i).getName()+" ");
+			System.out.print(CHI2.get(i).getName()+" ,");
 		}
 		System.out.println();
 		

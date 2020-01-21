@@ -46,6 +46,7 @@ public class bench {
         df = Standardize.standardize_df(df); //Standardize the DF into z scores
         df = df.shuffle(df);
         NaiveBayes nb = new NaiveBayes();
+        nb.initiallize();
         CrossValidation cv = new CrossValidation(df, 2, nb);
         cv.avgScores();
         //cv.printMatrixs();
