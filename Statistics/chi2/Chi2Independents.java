@@ -23,11 +23,18 @@ import java.util.Set;
  *
  */
 public class Chi2Independents {
+	
 	private DataFrame df;
 	private List<Column> targets;
+	private ArrayList<HashMap<Object, HashMap<Object, Integer>>> obs_table; //observed value table
+	private ArrayList<HashMap<Object, HashMap<Object, Double>>> exp_table; //expected table
+	private HashMap<Object, HashMap<Object, Integer>> deg_free; //degrees freedom
+	private HashMap<String, HashMap<String, Double>> p_values; //p-values
 	
 	public Chi2Independents(DataFrame df){
 		this.df = df;
+		this.obs_table = new ArrayList<HashMap<Object, HashMap<Object, Integer>>>();
+		this.exp_table = new ArrayList<HashMap<Object, HashMap<Object, Double>>>();
 		targets = new ArrayList<Column>();
 		setTargets();
 	}
@@ -52,7 +59,8 @@ public class Chi2Independents {
 	}
 	/**
 	 * Perform a chi2 test on all columns on all targets
-	 * @return HashMap<String, HashMap<String, Double>>
+	 * @return HashMap<String, HashMap<String, Double>> key1 = target name -> HashMap<string,Double> => key2 = variable column -> p-value
+	 * ranked by smallest p value (best)
 	 */
 	public HashMap<String, HashMap<String, Double>> chi2IndependentsAll(){
 		HashMap<String, HashMap<String, Double>> ranks = new HashMap<String, HashMap<String, Double>>();
@@ -82,6 +90,7 @@ public class Chi2Independents {
 	        }
 			ranks.put(target.getName(), temp);		
 		}
+		this.p_values = ranks;
 		return ranks;
 	}
 	/**
@@ -103,8 +112,6 @@ public class Chi2Independents {
 				sum = sum + Math.pow((observed.get(key1).get(key2) - expected.get(key1).get(key2)), 2) / expected.get(key1).get(key2) ;
 			}
 		}
-		//System.out.println(degreesFreedom(target,col));
-		//System.out.println(sum);
 		return p_value(sum, degreesFreedom(target,col));
 	}
 	/**
@@ -127,6 +134,7 @@ public class Chi2Independents {
 			}
 			table.put(key1,vals);
 		}
+		this.exp_table.add(table);
 		return table;
 	}
 	/**
@@ -154,6 +162,7 @@ public class Chi2Independents {
 		for(int j = 0; j < target.getLength();j++) {
 			table.get(target.getParticle(j).getValue()).replace(col.getParticle(j).getValue(), table.get(target.getParticle(j).getValue()).get(col.getParticle(j).getValue())+1);
 		}
+		this.obs_table.add(table);
 		return table;
 	}
 	/**
