@@ -14,7 +14,8 @@ class StatsTest {
 	private DataFrame iris = new DataFrame();
 	@BeforeEach
 	void setUp() throws Exception {
-		iris.loadcsv("testfiles/iris.txt");
+		iris = DataFrame.read_csv("testfiles/iris.txt");
+		
 	}
 
 	@Test

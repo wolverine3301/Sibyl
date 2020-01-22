@@ -10,7 +10,9 @@ import machinations.NaiveBayes;
 import scorer.CrossValidation;
 
 public class Invoke {
-	private static CategoryRanker CR; 
+	//behold, my will creates your body and your sword my destiny
+	private static CategoryRanker CR;
+	//
 	private static NumericRanker NR; 
 	private static DataFrame  df;
 	public static void main(String[] args) {

@@ -25,30 +25,27 @@ public class Standardize {
 	 * standardize whole dataframe
 	 */
 	public static DataFrame standardize_df(DataFrame data) {
-		DataFrame df = data.shallowCopy_columnIndexes(data.numericIndexes);
-		DataFrame std_df = data.deepCopy();
-		for(Column i : std_df.columns) {
-        	System.out.println(i.mean);
-        }
-		System.out.println();
-		for(int i =0; i < std_df.numericIndexes.size(); i++) {
-			Column a =  standardize_col(std_df.getColumn(std_df.numericIndexes.get(i)), i);
-
-			std_df.addColumn(a);
+		DataFrame std_df = new DataFrame();
+		for(Column i : data.columns) {
+			if(i.getType() == 'N') {
+				Column a =  standardize_col(i);
+				std_df.addColumn(a);
+			}else {
+				std_df.addColumn(i);
+			}
 		}
+		std_df.setStatistics();
 		return std_df;
 	}
 	/**
 	 * standardize a column
 	 * @param c
 	 */
-	public static Column standardize_col(Column c, int index) {
+	public static Column standardize_col(Column c) {
 		Column a  = new Column(c.getName(),'N');
-
 		for(int i = 0; i < c.getLength(); i++) {
 			Particle p = new DoubleParticle((Double) zscore(c.mean,c.std,c.getParticle(i)));
-			a.add(p);
-			
+			a.add(p);	
 		}
 		return a;
 	}
