@@ -26,15 +26,15 @@ public class Chi2Independents {
 	
 	private DataFrame df;
 	private List<Column> targets;
-	private ArrayList<HashMap<Object, HashMap<Object, Integer>>> obs_table; //observed value table
-	private ArrayList<HashMap<Object, HashMap<Object, Double>>> exp_table; //expected table
+	private HashMap<String ,HashMap<Object, HashMap<Object, Integer>>> obs_table; //observed value table ; key1(String) = "target x column" -> key2 = targetClass_n -
+	private HashMap<String, HashMap<Object, HashMap<Object, Double>>> exp_table; //expected table
 	private HashMap<Object, HashMap<Object, Integer>> deg_free; //degrees freedom
 	private HashMap<String, HashMap<String, Double>> p_values; //p-values
 	
 	public Chi2Independents(DataFrame df){
 		this.df = df;
-		this.obs_table = new ArrayList<HashMap<Object, HashMap<Object, Integer>>>();
-		this.exp_table = new ArrayList<HashMap<Object, HashMap<Object, Double>>>();
+		this.obs_table = new HashMap<String ,HashMap<Object, HashMap<Object, Integer>>>();
+		this.exp_table = new HashMap<String, HashMap<Object, HashMap<Object, Double>>>();
 		targets = new ArrayList<Column>();
 		setTargets();
 	}
@@ -101,7 +101,7 @@ public class Chi2Independents {
 	 * if you plot the same column against itself there would be no difference and x^2 would = 0
 	 * @param col1
 	 * @param col2
-	 * @return
+	 * @return p values
 	 */
 	public double chi2Independents(Column target,Column col) {
 		double sum = 0;
@@ -112,6 +112,7 @@ public class Chi2Independents {
 				sum = sum + Math.pow((observed.get(key1).get(key2) - expected.get(key1).get(key2)), 2) / expected.get(key1).get(key2) ;
 			}
 		}
+
 		return p_value(sum, degreesFreedom(target,col));
 	}
 	/**
@@ -134,7 +135,7 @@ public class Chi2Independents {
 			}
 			table.put(key1,vals);
 		}
-		this.exp_table.add(table);
+		this.exp_table.put(target.getName().concat(" x ").concat(col.getName()),table);
 		return table;
 	}
 	/**
@@ -162,7 +163,8 @@ public class Chi2Independents {
 		for(int j = 0; j < target.getLength();j++) {
 			table.get(target.getParticle(j).getValue()).replace(col.getParticle(j).getValue(), table.get(target.getParticle(j).getValue()).get(col.getParticle(j).getValue())+1);
 		}
-		this.obs_table.add(table);
+		if(col.getType() != 'N')
+			this.obs_table.put(target.getName().concat(" x ").concat(col.getName()),table);
 		return table;
 	}
 	/**
@@ -194,6 +196,85 @@ public class Chi2Independents {
 			if(df.getColumn(i).getType() == 'T') {
 				targets.add(df.getColumn(i));
 			}
+		}
+	}
+	public void printObsContengencyTables() {
+		ArrayList<String> tableName = new ArrayList<String>();
+		ArrayList<ArrayList<String>> headers = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<ArrayList<String>>> lines = new ArrayList<ArrayList<ArrayList<String>>>();
+		for(String i : this.obs_table.keySet()) {
+			tableName.add(i);
+			ArrayList<String> header = new ArrayList<String>();
+			ArrayList<ArrayList<String>> line = new ArrayList<ArrayList<String>>(); 
+			for(Object j : this.obs_table.get(i).keySet()) {
+				ArrayList<String> lin = new ArrayList<String>();
+				lin.add(j.toString());
+				for(Object k : this.obs_table.get(i).get(j).keySet()) {
+					if(!header.contains(k.toString()))
+						header.add(k.toString());
+					lin.add(this.obs_table.get(i).get(j).get(k).toString());
+				}
+				line.add(lin);
+			}
+			headers.add(header);
+			lines.add(line);
+		}
+		for(int i = 0; i < tableName.size(); i++) {
+			System.out.println("OBSERVED: " + tableName.get(i));
+			for(int j = 0; j < headers.get(i).size(); j++) {
+				System.out.print("    "+headers.get(i).get(j));
+			}
+			for(int j = 0; j < lines.get(i).size(); j++) {
+				System.out.println();
+				for(int k = 0; k < lines.get(i).get(j).size(); k++) {
+					System.out.print(lines.get(i).get(j).get(k)+ "  ");
+				}		
+			}
+			System.out.println();
+		}
+	}
+	public void printResults() {
+		HashMap<String, HashMap<String, Double>> map = chi2IndependentsAll();
+		for(String i : map.keySet()) {
+			System.out.println(i);
+			for(String j : map.get(i).keySet()) {
+				System.out.println(j + " "+ map.get(i).get(j));
+			}
+		}
+	}
+	public void printEXPContengencyTables() {
+		ArrayList<String> tableName = new ArrayList<String>();
+		ArrayList<ArrayList<String>> headers = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<ArrayList<String>>> lines = new ArrayList<ArrayList<ArrayList<String>>>();
+		for(String i : this.exp_table.keySet()) {
+			tableName.add(i);
+			ArrayList<String> header = new ArrayList<String>();
+			ArrayList<ArrayList<String>> line = new ArrayList<ArrayList<String>>(); 
+			for(Object j : this.exp_table.get(i).keySet()) {
+				ArrayList<String> lin = new ArrayList<String>();
+				lin.add(j.toString());
+				for(Object k : this.exp_table.get(i).get(j).keySet()) {
+					if(!header.contains(k.toString()))
+						header.add(k.toString());
+					lin.add(this.exp_table.get(i).get(j).get(k).toString());
+				}
+				line.add(lin);
+			}
+			headers.add(header);
+			lines.add(line);
+		}
+		for(int i = 0; i < tableName.size(); i++) {
+			System.out.println("EXPECTED: " + tableName.get(i));
+			for(int j = 0; j < headers.get(i).size(); j++) {
+				System.out.print("    "+headers.get(i).get(j));
+			}
+			for(int j = 0; j < lines.get(i).size(); j++) {
+				System.out.println();
+				for(int k = 0; k < lines.get(i).get(j).size(); k++) {
+					System.out.print(lines.get(i).get(j).get(k)+ "  ");
+				}		
+			}
+			System.out.println();
 		}
 	}
 	

@@ -13,14 +13,7 @@ public class Chi2_example {
         df.setColumnType("gender", 'T');//set target column
 		Chi2Independents chi2 = new Chi2Independents(df);
 		
-		
-		HashMap<String, HashMap<String, Double>> map = chi2.chi2IndependentsAll();
-		for(String i : map.keySet()) {
-			System.out.println(i);
-			for(String j : map.get(i).keySet()) {
-				System.out.println(j + " "+ map.get(i).get(j));
-			}
-		}
+		chi2.printResults();
 
 	}
 
