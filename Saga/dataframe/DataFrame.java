@@ -431,6 +431,21 @@ public class DataFrame {
 	 * 
 	 * ##################################################################
 	 */
+    
+    /*
+     * ##################################################################
+     * 
+     * 						DATAFRAME UTIL CALLS
+     * 
+     * ##################################################################
+     * 
+     */
+    public void saveDataFrame(DataFrame df, String name) {
+    	DataFrame_Utilities.saveDataFrame(df, name);
+    }
+    public DataFrame saveDataFrame(String filename) {
+    	return DataFrame_Utilities.loadDataFrame(filename);
+    }
 	/**
 	 * Converts all NANS in the data frame to their mean value, excluding non numeric values, which will
 	 * be converted to the most occouring value in the data frame.
