@@ -196,7 +196,7 @@ public class NaiveBayes extends Model{
 				if(super.trainDF_variables.getColumn(i).getType() == 'N') {
 					prob = prob * getContinuousProbability(super.trainDF_targets.getColumn(target).getName(),z,super.trainDF_variables.getColumn(i).getName(),row.getParticle(i));
 				}else {
-					System.out.println(super.trainDF_variables.getColumn(i).getName());
+					
 					prob = prob * cat_Naive_Bayes.get(super.trainDF_targets.getColumn(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(row.getParticle(i).getValue());
 				}
 				if(super.trainDF_variables.getColumn(i).getType() == 'N') {

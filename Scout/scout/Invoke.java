@@ -8,6 +8,7 @@ import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
 import machinations.NaiveBayes;
 import scorer.CrossValidation;
+import transform.Standardize;
 
 public class Invoke {
 	//behold, my will creates your body and your sword my destiny
@@ -16,17 +17,23 @@ public class Invoke {
 	private static NumericRanker NR; 
 	private static DataFrame  df;
 	public static void main(String[] args) {
-		String file = "testfiles/heart_disease.csv";
+		String file = "testfiles/iris.txt";
         df = DataFrame.read_csv(file);
-        df.setColumnType("thal", 'T');//set target column
-        System.out.println(df.columnNamesToString());
-        CR = new CategoryRanker(df, 0);
-		//NR = new NumericRanker(df);
-		CR.printRankings();
-		generateRecollection(1, 5);
+        df.setColumnType("species", 'T');//set target column
+        df.convertNANS_mean(); // conevert any NAN's to the mean of column 
+        df = Standardize.standardize_df(df); //Standardize the DF into z scores
+        df = df.shuffle(df);
 		NaiveBayes nb = new NaiveBayes();
         CrossValidation cv = new CrossValidation(df, 2, nb);
-        cv.avgScores();
+        //cv.avgScores();
+        cv.printScores();
+        cv.printMatrixs();
+        //System.out.println(df.columnNamesToString());
+        CR = new CategoryRanker(df, 0);
+		//NR = new NumericRanker(df);
+		//CR.printRankings();
+		generateRecollection(2, 5);
+
 	}
 	/**
 	 * evocation

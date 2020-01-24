@@ -7,9 +7,12 @@ import java.util.Set;
 
 import dataframe.DataFrame;
 import machinations.Model;
-
+/**
+ * Cross validation for training and testing models 
+ * @author logan.collier
+ *
+ */
 public class CrossValidation {
-	
 	
 	public int N;
 	public ArrayList<Score> scores;
@@ -19,7 +22,12 @@ public class CrossValidation {
 	/** The training data used to test predictive models. */
 	public DataFrame testDF_variables;
 	ArrayList<TestTrainFit> trials;
-	
+	/**
+	 * Cross Validation
+	 * @param df - the dataframe 
+	 * @param N - number of folds
+	 * @param model - a model object to be tested
+	 */
 	public CrossValidation(DataFrame df, int N, Model model) {
 		this.N = N;
 		this.df = df.shuffle(df);
@@ -28,7 +36,6 @@ public class CrossValidation {
 		setTrials();
 		//for each trial
 		for(int i = 0;i < this.trials.size(); i++) {
-			
 			model.train(trials.get(i).raw_train);
 			model.initiallize();
 			HashMap<String, ArrayList<Object>> predicts = model.predictDF(trials.get(i).trial_test_variables);
@@ -36,7 +43,9 @@ public class CrossValidation {
 			scores.add(score);
 		}
 	}
-	
+	/**
+	 * setup an array of dataframes to test and train with
+	 */
 	public void setTrials() {
 		int interval = Math.floorDiv(this.df.getNumRows(), N);
 	    //shuffle(df);
@@ -65,6 +74,9 @@ public class CrossValidation {
 	    }
 	    this.trials = trials;
 	}
+	/**
+	 * Avg scores from all trials
+	 */
 	public void avgScores() {
 		HashMap<String, HashMap<Object, Double>> recall = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> precision = new HashMap<String, HashMap<Object, Double>>();
@@ -113,14 +125,14 @@ public class CrossValidation {
 				mcc.get(j).replace(z, mcc.get(j).get(z) / scores.size());
 			}
 		}
-		System.out.println(recall.toString());
-		System.out.println(precision.toString());
-		System.out.println(F1.toString());
+		System.out.println("Recall: "+recall.toString());
+		System.out.println("Precicion: "+precision.toString());
+		System.out.println("F1: "+F1.toString());
 	}
 	public void printScores() {
 		int cnt = 0;
 		for(Score i : scores) {
-			System.out.print("TRIAL: " + cnt + "  ");
+			System.out.println("TRIAL: " + cnt + "  ");
 			i.printScore();
 			cnt++;
 		}
