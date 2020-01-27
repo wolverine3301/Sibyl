@@ -9,7 +9,11 @@ import dataframe.DataFrame_Copy;
 import machinations.NaiveBayes;
 import scorer.CrossValidation;
 import transform.Standardize;
-
+/**
+ * என்னை அழைத்துச் செல்லுங்கள்
+ * @author logan.collier
+ *
+ */
 public class Invoke {
 	//behold, my will creates your body and your sword my destiny
 	private static CategoryRanker CR;

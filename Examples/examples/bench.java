@@ -37,7 +37,8 @@ public class bench {
         NaiveBayes nb = new NaiveBayes();
         //nb.initiallize();
         CrossValidation cv = new CrossValidation(df, 2, nb);
-        cv.avgScores();
+        cv.printScores();
+        cv.printMatrixs();
         //cv.printMatrixs();
         //cv.printScores();
         //nb.printProbTable();

@@ -64,7 +64,13 @@ public class Score {
 			mccS = 0;
 			cnt = 0;
 			for(Object j : matrix.truePositive.get(i).keySet()) {
-				
+				System.out.println("**********************************");
+				System.out.println(j.toString());
+				System.out.println("TP:   "+matrix.truePositive.get(i).get(j));
+				System.out.println("FN:   "+matrix.falseNegative.get(i).get(j));
+				System.out.println(matrix.truePositive.get(i).get(j)+ matrix.falseNegative.get(i).get(j));
+				System.out.println((matrix.truePositive.get(i).get(j)/(matrix.truePositive.get(i).get(j)+ matrix.falseNegative.get(i).get(j))));
+				System.out.println("************************************");
 				recall.get(i).replace(j,Scores.recall(matrix.truePositive.get(i).get(j), matrix.falseNegative.get(i).get(j)));
 				precision.get(i).replace(j, Scores.precision(matrix.truePositive.get(i).get(j), matrix.falsePositive.get(i).get(j)));
 				F1.get(i).replace(j, Scores.F1(matrix.truePositive.get(i).get(j), 

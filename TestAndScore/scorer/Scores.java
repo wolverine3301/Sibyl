@@ -44,9 +44,10 @@ public class Scores {
 	 * @return recall
 	 */
 	public static double recall(int tp, int fn) {
-		if(fn == 0) {
-			return 1;
+		if(tp == 0 && fn ==0) {
+			return -1;
 		}
+
 		return (tp/(tp+fn));	
 	}
 	/**
