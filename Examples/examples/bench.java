@@ -25,20 +25,20 @@ public class bench {
         df.convertNANS_mode();
         df.getColumn_byName("species").setType('T'); //set target column
 
-        System.out.println(df.getColumn_byName("species").getUniqueValues());
+        //System.out.println(df.getColumn_byName("species").getUniqueValues());
         //print column means
         for(Column i : df.columns) {
-        	System.out.println(i.mean);
+        	//System.out.println(i.mean);
         }
         
-        df.convertNANS_mean(); // conevert any NAN's to the mean of column 
-        df = Standardize.standardize_df(df); //Standardize the DF into z scores
+        //df.convertNANS_mean(); // conevert any NAN's to the mean of column 
+        //df = Standardize.standardize_df(df); //Standardize the DF into z scores
         df = df.shuffle(df);
         NaiveBayes nb = new NaiveBayes();
         //nb.initiallize();
-        CrossValidation cv = new CrossValidation(df, 2, nb);
-        cv.printScores();
-        cv.printMatrixs();
+        CrossValidation cv = new CrossValidation(df, 10, nb);
+        //cv.printScores();
+        //cv.printMatrixs();
         //cv.printMatrixs();
         //cv.printScores();
         //nb.printProbTable();

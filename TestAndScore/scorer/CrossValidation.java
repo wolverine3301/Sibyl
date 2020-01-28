@@ -125,9 +125,9 @@ public class CrossValidation {
 				mcc.get(j).replace(z, mcc.get(j).get(z) / scores.size());
 			}
 		}
-		System.out.println("Recall: "+recall.toString());
-		System.out.println("Precicion: "+precision.toString());
-		System.out.println("F1: "+F1.toString());
+		//System.out.println("Recall: "+recall.toString());
+		//System.out.println("Precicion: "+precision.toString());
+		//System.out.println("F1: "+F1.toString());
 	}
 	public void printScores() {
 		int cnt = 0;

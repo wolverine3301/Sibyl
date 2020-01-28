@@ -75,10 +75,10 @@ public class Score {
 						matrix.falsePositive.get(i).get(j),
 						matrix.falseNegative.get(i).get(j)));
 				//sums for average over classes
-				
 				recallS = recallS + recall.get(i).get(j);
 				F1S = F1S + F1.get(i).get(j);
 				mccS = mccS + mcc.get(i).get(j);
+				precisionS = precisionS + precision.get(i).get(j);
 				cnt++;
 			}
 			recallS = recallS/cnt;
