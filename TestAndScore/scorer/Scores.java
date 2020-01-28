@@ -43,7 +43,7 @@ public class Scores {
 	 * @param fn - false negatives
 	 * @return recall
 	 */
-	public static double recall(int tp, int fn) {
+	public static double recall(double tp, int fn) {
 		if(tp == 0 && fn ==0) {
 			return -1;
 		}
@@ -59,7 +59,7 @@ public class Scores {
 	 * @return
 	 */
 	public double accuracy(int tp,int fp,int tn, int fn) {
-		return (tp+tn)/(tp+fp+fn+tn);
+		return (double)(tp+tn)/(tp+fp+fn+tn);
 	}
 	/**
 	 * False omission rate
@@ -68,7 +68,7 @@ public class Scores {
 	 * @return
 	 */
 	public double FOR(int fn, int tn) {
-		return fn/(fn+tn);
+		return (double)fn/(fn+tn);
 	}
 	/**
 	 * false discovery rate
@@ -77,7 +77,7 @@ public class Scores {
 	 * @return
 	 */
 	public double FDR(int fp,int tp) {
-		return fp / (fp+tp);
+		return (double)fp / (fp+tp);
 	}
 	/**
 	 * False negative rate
@@ -86,14 +86,14 @@ public class Scores {
 	 * @return
 	 */
 	public double FNR(int fn,int tp) {
-		return fn / (fn+tp);
+		return (double)fn / (fn+tp);
 	}
 	/**
 	 * False Positive rate
 	 * @return
 	 */
 	public double FPR(int fp, int tn,int fn) {
-		return fp / ( tn + fn);
+		return (double)fp / ( tn + fn);
 		
 	}
 	/**
@@ -103,7 +103,7 @@ public class Scores {
 	 * @return
 	 */
 	public double NPV(int tn, int fn) {
-		return tn / (tn+fn);
+		return (double)tn / (tn+fn);
 	}
 	/**
 	 * positive_likelihood_ratio
