@@ -23,7 +23,6 @@ public class ANOVA_example {
 			classes[cnt] = df.acquire(arg);
 			cnt++;
 		}
-		
 		OneWay_ANOVA anova = new OneWay_ANOVA(df);
         anova.invokeANOVA();
         anova.printResults();
