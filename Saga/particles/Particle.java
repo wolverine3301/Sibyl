@@ -99,12 +99,8 @@ public abstract class Particle implements Comparable<Particle>{
             newParticle = new IntegerParticle((Integer) value);
         else if (value instanceof Double)
             newParticle = new DoubleParticle((Double) value);
-        else if (value instanceof String) {
-            String s = (String) value;
-            if(s.isEmpty() || s.toUpperCase().contentEquals("NAN") || s.toUpperCase().contentEquals("NULL")) 
-                newParticle = new NANParticle((String) value);
-            else 
-                newParticle = new StringParticle((String) value);
+        else if (value instanceof Object) {
+            newParticle = new ObjectParticle(value);
         } else {
             return null; //UPDATE FOR ORDINAL, OBJECT AND DISTANCE.
         }

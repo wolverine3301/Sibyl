@@ -33,7 +33,11 @@ public class Correlations {
 				if(j == i) {
 					continue;
 				}else {
-					corr.put(i.getName() + " vs. " + j.getName(), function.getCorrelation(i, j));
+					if(corr.containsKey(j.getName() + " vs. " + i.getName())) {
+						continue;
+					}else {
+						corr.put(i.getName() + " vs. " + j.getName(), function.getCorrelation(i, j));
+					}
 				}
 			}
 			

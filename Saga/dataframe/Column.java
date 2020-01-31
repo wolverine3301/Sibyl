@@ -74,6 +74,15 @@ public class Column {
 	/** The standard deviation of the column (NUMERIC ONLY) */
 	public double std;
 	
+	/** The maximum value in the column (NUMERIC ONLY) */
+	public double max;
+	
+	/** The Minimum value in the column (NUMERIC ONLY) */
+	public double min;
+	
+	/** The Range of values in the column (NUMERIC ONLY) */
+	public double range;
+	
 	/** The entropy of the column */
 	public double entropy;
 	
@@ -524,19 +533,37 @@ public class Column {
     	//long sum = IntStream.of(array).parallel().sum();
         double sum = 0;
         int nanCount = 0;
-           for(int i = 0;i < column.size();i++) {
-        	   if (column.get(i) instanceof NANParticle) 
-        		   nanCount++;
-        	   else if (column.get(i) instanceof DoubleParticle)
-                   sum += (Double) column.get(i).getValue();
-               else {
-                   sum += (Integer) column.get(i).getValue();
-               }
-            }
+        this.max = column.get(0).getDoubleValue();
+        this.min = column.get(0).getDoubleValue();
+	       for(int i = 0;i < column.size();i++) {
+	    	   if (column.get(i) instanceof NANParticle) 
+	    		   nanCount++;
+	    	   else if (column.get(i) instanceof DoubleParticle)
+	               sum += (Double) column.get(i).getValue();
+	           else {
+	               sum += (Integer) column.get(i).getValue();
+	           }
+	    	   if(column.get(i).getDoubleValue() > this.max) {
+	    		   setMax(column.get(i).getDoubleValue());
+	    	   }
+	    	   if(column.get(i).getDoubleValue() < this.min) {
+	    		   setMin(column.get(i).getDoubleValue());
+	    	   }
+	        }
         this.sum = sum;
         this.mean = sum / (column.size() - nanCount);
+        this.range = this.max - this.min;
     }
-    
+    private void setMin(double m) {
+    	this.min = m;
+    }
+    /**
+     * set max
+     * @param m
+     */
+    private void setMax(double m) {
+    	this.max = m;
+    }
     /**
      * Calculates the entropy of a column.
      * @param theColumn the column to preform calculations on.
