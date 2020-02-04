@@ -4,6 +4,24 @@
   <artifactId>Sibyl0.01</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Sybil</name>
+  <dependencies>
+  		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.17</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+   			<groupId>org.mybatis</groupId>
+   			<artifactId>mybatis</artifactId>
+   			<version>3.4.5</version>
+		</dependency>
+	</dependencies>
   <build>
     <sourceDirectory>OrdinalScale</sourceDirectory>
     <resources>
