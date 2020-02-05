@@ -38,5 +38,10 @@ public class TimeParticle extends Particle{
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	private void setTimeFormat(String time) {
+		char[] time_arr = time.toCharArray();
+		
+		
+	}
 
 }

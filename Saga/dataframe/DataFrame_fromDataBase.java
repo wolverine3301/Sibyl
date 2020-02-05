@@ -43,7 +43,7 @@ public class DataFrame_fromDataBase {
 			 }
 			 ResultSet rs = null;
 			 stmt = conn.createStatement();
-	         rs = stmt.executeQuery("SELECT * FROM ClarityInquiry CI");
+	         rs = stmt.executeQuery("SELECT * FROM "+datatable);
 	         while (rs.next()) {
 	        	 for(int i = 0; i < columnNames.size(); i++) {
 	        		 if(columnTypes.get(i).contentEquals("INT") || columnTypes.get(i).contentEquals("MEDIUMINT") || columnTypes.get(i).contentEquals("TINYINT") || columnTypes.get(i).contentEquals("SMALLINT")) {
@@ -93,7 +93,6 @@ public class DataFrame_fromDataBase {
 		                 	}
 	        		 }
 	        	 }
-	        	 System.out.println(rs.getInt("CI.clarityResponseID"));
 	         }
 			 conn.close(); 
 		 } 
