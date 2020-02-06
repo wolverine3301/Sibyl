@@ -150,6 +150,9 @@ public class DataFrame_fromDataBase {
 	        	 }
 	        	 
 	         }
+	         for(int i = 0; i < df.numColumns;i++) {
+	        	 df.columnTypes.add(df.getColumn(i).getType());
+	         }
 	        for(int i = 0;i < df.numericIndexes.size();i++) {
 	        	System.out.println(df.getColumn(df.numericIndexes.get(i)).getName());
 	        	df.getColumn(df.numericIndexes.get(i)).setStatistics();
