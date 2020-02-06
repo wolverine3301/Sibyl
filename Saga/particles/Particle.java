@@ -74,17 +74,22 @@ public abstract class Particle implements Comparable<Particle>{
      */
     public static Particle resolveType(String value) {
         Particle newParticle;
+        
         if(isNumeric(value)) { //If the passed string is numeric.
-            if(isInteger(value))
+        	
+            if(isInteger(value)) {
                 newParticle = new IntegerParticle(Integer.parseInt(value));
-            else
+            }else
                 newParticle = new DoubleParticle(Double.parseDouble(value));
         } else { //If the passed string is just a string.
-            if(value.isEmpty() || value.toUpperCase().contentEquals("NAN") || value.toUpperCase().contentEquals("NULL")) 
-                newParticle = new NANParticle(value);
-            else 
+            if(value==null || value.isEmpty() || value.toUpperCase().contentEquals("NAN") || value.toUpperCase().contentEquals("NULL")) {
+            	newParticle = new NANParticle(value);
+            }else {
+            	
                 newParticle = new StringParticle(value);
+            }
         }
+        
         return newParticle;
     }
     
@@ -102,6 +107,7 @@ public abstract class Particle implements Comparable<Particle>{
         else if (value instanceof Object) {
             newParticle = new ObjectParticle(value);
         } else {
+        	
             return null; //UPDATE FOR ORDINAL, OBJECT AND DISTANCE.
         }
         return newParticle;

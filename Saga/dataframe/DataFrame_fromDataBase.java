@@ -37,8 +37,8 @@ public class DataFrame_fromDataBase {
 				 System.out.println("Not Connected"); 
 			 
 			 getColumns(datatable);
-			 System.out.println(columnNames);
-			 System.out.println(columnTypes);
+			 //System.out.println(columnNames);
+			 //System.out.println(columnTypes);
 			 DataFrame df = new DataFrame();
 			 for(int i = 0; i < columnNames.size(); i++) {
 				 df.columnNames.add(columnNames.get(i));
@@ -46,13 +46,42 @@ public class DataFrame_fromDataBase {
 			 ResultSet rs = null;
 			 stmt = conn.createStatement();
 	         rs = stmt.executeQuery("SELECT * FROM "+datatable);
-	         boolean init = false;
+	         boolean init = true;
+	         int cnt1 = 0;
 	         int cnt = 0;
 	         while (rs.next()) {
-	        	 for(int i = 0; i < columnNames.size(); i++) {
+	        	 cnt = 0;
+	        	 Row row = new Row();
+	        	 for(int i = 1; i <= columnNames.size(); i++) {
 	        		 
-	        		 Row row = new Row();
-	        		 if(!init){
+	        		 if(init){
+	        			 Particle p = Particle.resolveType(rs.getString(i));
+	                 	if(p.type == 'i' || p.type == 'd') {
+	                 		
+	                 		df.numericIndexes.add(cnt);
+	                 		Column c = new Column(df.columnNames.get(cnt));
+	                 		c.add(p);
+	                 		c.setType('N');
+	                 		df.columns.add(c);
+
+	                 	}else if(p.type == 'n') {
+	                 		
+	                 		Column c = new Column(df.columnNames.get(cnt));
+	                 		c.add(p);
+	                 		c.setType('M');
+	                 		df.columns.add(c);
+	                 		
+	                 	}else {
+	                 		
+	                 		Column c = new Column(df.columnNames.get(cnt));
+	                 		c.add(p);
+	                 		c.setType('C');
+	                 		df.columns.add(c);
+
+	                 	}
+	                 	row.add(p);
+	                 	
+	        			 /*
 		        		 if(columnTypes.get(i).contentEquals("INT") || columnTypes.get(i).contentEquals("MEDIUMINT") || columnTypes.get(i).contentEquals("TINYINT") || columnTypes.get(i).contentEquals("SMALLINT") || columnTypes.get(i).contentEquals("BIT")) {
 		        			 
 		        			 Particle p = Particle.resolveType(rs.getInt(columnNames.get(i)));
@@ -99,36 +128,35 @@ public class DataFrame_fromDataBase {
 	
 			                 }
 		        		 }
-		        		 df.rows.add(row);
-		        		 init = true;
-		        		 System.out.println("COLS: "+df.columns.size());
+		        		 */
+		        		 //df.rows.add(row);
+		        		 
+		        		 //System.out.println("COLS: "+df.columns.size());
 		        	 }//end init
 	        		 else {
-	        			 
-	        			 if(columnTypes.get(i).contentEquals("INT") || columnTypes.get(i).contentEquals("MEDIUMINT") || columnTypes.get(i).contentEquals("TINYINT") || columnTypes.get(i).contentEquals("SMALLINT")) {
-		        			Particle p = Particle.resolveType(rs.getInt(columnNames.get(i)));
-		        			System.out.println("TO STRING: "+p.toString() + " TYPE: "+p.getType());
-		        			df.columns.get(i).add(p);
-		                	row.add(p);
-	        			 }
-		        		 else if(columnTypes.get(i).contentEquals("VARCHAR")) {
-		        			Particle p = Particle.resolveType(rs.getString(columnNames.get(i)));
-		        			df.columns.get(i).add(p);
-			                row.add(p);
-		        		 }
-	        			 df.rows.add(row);
+	        			 Particle p = Particle.resolveType(rs.getString(i));
+	        			 df.columns.get(cnt).add(p);
+		                 row.add(p);
 	        		 }
+	                 
+	        		 cnt++;
 	        	 }
-	        	 System.out.println("CNT: "+cnt);
-	        	 cnt++;
+	        	 cnt1++;
+	        	 init = false;
+	        	 df.rows.add(row);
+	        	 if(cnt1 > 1000) {
+	        		 System.out.println("BREAKING");
+	        		 break;
+	        	 }
+	        	 
 	         }
-	        for(int i = 0;i < df.columnNames.size();i++) {
-	        	df.getColumn(i).setStatistics();
-	        	df.columnTypes.add(df.columns.get(i).getType());
+	        for(int i = 0;i < df.numericIndexes.size();i++) {
+	        	System.out.println(df.getColumn(df.numericIndexes.get(i)).getName());
+	        	df.getColumn(df.numericIndexes.get(i)).setStatistics();
+	        	//df.columnTypes.add(df.columns.get(i).getType());
+	        	
 	        }
-	        for(int i = 0; i < df.getNumColumns() ;i++) {
-	        	df.getColumn(i).setStatistics();
-	        }
+	        System.out.println("STATS SET");
 	        df.numRows = df.rows.size();
 	        df.numColumns = df.columns.size();
 	        System.out.println("SIZE: "+df.columns.size());
