@@ -37,6 +37,8 @@ public class DataFrame_fromDataBase {
 				 System.out.println("Not Connected"); 
 			 
 			 getColumns(datatable);
+			 System.out.println(columnNames);
+			 System.out.println(columnTypes);
 			 DataFrame df = new DataFrame();
 			 for(int i = 0; i < columnNames.size(); i++) {
 				 df.columnNames.add(columnNames.get(i));
@@ -44,57 +46,94 @@ public class DataFrame_fromDataBase {
 			 ResultSet rs = null;
 			 stmt = conn.createStatement();
 	         rs = stmt.executeQuery("SELECT * FROM "+datatable);
+	         boolean init = false;
+	         int cnt = 0;
 	         while (rs.next()) {
 	        	 for(int i = 0; i < columnNames.size(); i++) {
-	        		 if(columnTypes.get(i).contentEquals("INT") || columnTypes.get(i).contentEquals("MEDIUMINT") || columnTypes.get(i).contentEquals("TINYINT") || columnTypes.get(i).contentEquals("SMALLINT")) {
-	        			 Particle p = Particle.resolveType(rs.getInt(i+1));
-	                 	if(p.type == 'i' || p.type == 'd') {
-	                 		df.numericIndexes.add(i);
-	                 		Column c = new Column(df.columnNames.get(i));
-	                 		c.add(p);
-	                 		c.setType('N');
-	                 		df.columns.add(c);
-
-	                 	}else if(p.type == 'n') {
-	                 		Column c = new Column(df.columnNames.get(i));
-	                 		c.add(p);
-	                 		c.setType('M');
-	                 		df.columns.add(c);
-	                 			
-	                 	}else {
-	                 		Column c = new Column(df.columnNames.get(i));
-	                 		c.add(p);
-	                 		c.setType('C');
-	                 		df.columns.add(c);
-
-	                 	}
-	        		 }
-	        		 if(columnTypes.get(i).contentEquals("VARCHAR")) {
-	        			 Particle p = Particle.resolveType(rs.getString(i+1));
-		                 	if(p.type == 'i' || p.type == 'd') {
-		                 		df.numericIndexes.add(i);
-		                 		Column c = new Column(df.columnNames.get(i));
-		                 		c.add(p);
-		                 		c.setType('N');
-		                 		df.columns.add(c);
-
-		                 	}else if(p.type == 'n') {
-		                 		Column c = new Column(df.columnNames.get(i));
-		                 		c.add(p);
-		                 		c.setType('M');
-		                 		df.columns.add(c);
+	        		 
+	        		 Row row = new Row();
+	        		 if(!init){
+		        		 if(columnTypes.get(i).contentEquals("INT") || columnTypes.get(i).contentEquals("MEDIUMINT") || columnTypes.get(i).contentEquals("TINYINT") || columnTypes.get(i).contentEquals("SMALLINT") || columnTypes.get(i).contentEquals("BIT")) {
+		        			 
+		        			 Particle p = Particle.resolveType(rs.getInt(columnNames.get(i)));
+		        			 System.out.println("TO STRING: "+p.toString() + " TYPE: "+p.getType());
+		        			 if(p.type == 'i' || p.type == 'd') {
+		        				 df.numericIndexes.add(i);
+		        				 Column c = new Column(df.columnNames.get(i));
+		        				 c.add(p);
+		        				 c.setType('N');
+		        				 df.columns.add(c);
+		        			 }else if(p.type == 'n') {
+		        				 Column c = new Column(df.columnNames.get(i));
+		        				 c.add(p);
+		        				 c.setType('M');
+		        				 df.columns.add(c);
 		                 			
-		                 	}else {
-		                 		Column c = new Column(df.columnNames.get(i));
-		                 		c.add(p);
-		                 		c.setType('C');
-		                 		df.columns.add(c);
-
-		                 	}
+		        			 }else {
+		        				 Column c = new Column(df.columnNames.get(i));
+		        				 c.add(p);
+		        				 c.setType('C');
+		        				 df.columns.add(c);
+		        			 }
+		        		 }
+		        		 else if(columnTypes.get(i).contentEquals("VARCHAR")) {
+		        			 Particle p = Particle.resolveType(rs.getString(columnNames.get(i)));
+			                 if(p.type == 'i' || p.type == 'd') {
+			                	 df.numericIndexes.add(i);
+			                	 Column c = new Column(df.columnNames.get(i));
+			                	 c.add(p);
+			                	 c.setType('N');
+			                	 df.columns.add(c);
+	
+			                 }else if(p.type == 'n') {
+			                	 Column c = new Column(df.columnNames.get(i));
+			                	 c.add(p);
+			                	 c.setType('M');
+			                	 df.columns.add(c);
+			                 			
+			                 }else {
+			                	 Column c = new Column(df.columnNames.get(i));
+			                	 c.add(p);
+			                	 c.setType('C');
+			                	 df.columns.add(c);
+	
+			                 }
+		        		 }
+		        		 df.rows.add(row);
+		        		 init = true;
+		        		 System.out.println("COLS: "+df.columns.size());
+		        	 }//end init
+	        		 else {
+	        			 
+	        			 if(columnTypes.get(i).contentEquals("INT") || columnTypes.get(i).contentEquals("MEDIUMINT") || columnTypes.get(i).contentEquals("TINYINT") || columnTypes.get(i).contentEquals("SMALLINT")) {
+		        			Particle p = Particle.resolveType(rs.getInt(columnNames.get(i)));
+		        			System.out.println("TO STRING: "+p.toString() + " TYPE: "+p.getType());
+		        			df.columns.get(i).add(p);
+		                	row.add(p);
+	        			 }
+		        		 else if(columnTypes.get(i).contentEquals("VARCHAR")) {
+		        			Particle p = Particle.resolveType(rs.getString(columnNames.get(i)));
+		        			df.columns.get(i).add(p);
+			                row.add(p);
+		        		 }
+	        			 df.rows.add(row);
 	        		 }
 	        	 }
+	        	 System.out.println("CNT: "+cnt);
+	        	 cnt++;
 	         }
-			 conn.close(); 
+	        for(int i = 0;i < df.columnNames.size();i++) {
+	        	df.getColumn(i).setStatistics();
+	        	df.columnTypes.add(df.columns.get(i).getType());
+	        }
+	        for(int i = 0; i < df.getNumColumns() ;i++) {
+	        	df.getColumn(i).setStatistics();
+	        }
+	        df.numRows = df.rows.size();
+	        df.numColumns = df.columns.size();
+	        System.out.println("SIZE: "+df.columns.size());
+			conn.close(); 
+			return df;
 		 } 
 		 catch(Exception e) { 
 			 System.out.println(e); 
