@@ -9,12 +9,20 @@ public class EqualWidthBinning {
 	private Column col;
 	private int numbins;
 	private ArrayList<Bin> BINS;
-	
+	/**
+	 * make numerical data into categorical
+	 * make bins that are an even distance of units apart and place numerical data into them
+	 * @param bins - number of bins desired
+	 * @param col - column to bin (must be numeric)
+	 */
 	public EqualWidthBinning(int bins,Column col) {
 		this.numbins = bins;
 		this.col = col;
 		makeBins();
 	}
+	/**
+	 * make bin objects
+	 */
 	private void makeBins() {
 		double width = col.range / numbins;
 		ArrayList<Bin> Bins = new ArrayList<Bin>(numbins);
@@ -27,6 +35,10 @@ public class EqualWidthBinning {
 		Bins.add(new Bin(iter,col.max + width));
 		this.BINS = Bins;
 	}
+	/**
+	 * place column into bins and return new column
+	 * @return
+	 */
 	public Column binColumn() {
 		Column newCol = new Column(col.getName()+"_"+numbins);
 		for(int i = 0; i < this.col.getLength(); i++) {
