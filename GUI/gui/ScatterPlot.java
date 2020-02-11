@@ -32,7 +32,8 @@ public class ScatterPlot extends JFrame{
 		frame.setVisible(true);
 		frame.setLayout(new BorderLayout());
 		frame.add(columnSelectPanel(),BorderLayout.WEST);
-		frame.add(scatter,BorderLayout.EAST);
+		frame.add(scatter.panel,BorderLayout.EAST);
+		frame.pack();
 	}
 	private JPanel columnSelectPanel() {
 		JPanel sidePanel = new JPanel();

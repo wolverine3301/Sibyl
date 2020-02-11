@@ -9,33 +9,47 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import dataframe.Column;
-import javafx.scene.shape.Circle;
 
 public class Plot extends JPanel{
-	private List<Circle> coordinates = new ArrayList<Circle>();
 	
+	private Column x,y;
+	public ChartPanel panel;
 	public Plot(Column x, Column y) {
-		setBackground(Color.GRAY);
-		setPreferredSize(new Dimension(500, 500));
-		for(int i = 0; i < x.getLength(); i++) {
-			addPoint(x.getDoubleValue(i),y.getDoubleValue(i));
-		}
+		this.x = x;
+		this.y = y;
+	    XYDataset dataset = createDataset();
+
+	    // Create chart
+	    JFreeChart chart = ChartFactory.createScatterPlot(
+	        x.getName()+" "+y.getName(), 
+	        "X-Axis", "Y-Axis", dataset);
+	    //Changes background color
+	    XYPlot plot = (XYPlot)chart.getPlot();
+	    plot.setBackgroundPaint(new Color(255,228,196));
+	    // Create Panel
+	    this.panel = new ChartPanel(chart);
+
 	}
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.red);
-        
-        for (Circle s : coordinates) {
-               g2d.draw((Shape) s);
-        }
-    }
-    public void addPoint(double x, double y) {
-        coordinates.add(new Circle((int)x, (int)y, 2));
-        repaint();
-    }
+	private XYDataset createDataset() {
+		   XYSeriesCollection dataset = new XYSeriesCollection();
+		   XYSeries series = new XYSeries("r");
+		   for(int i = 0; i < x.getLength();i++) {
+			   series.add(x.getDoubleValue(i), y.getDoubleValue(i));
+		   }
+		   dataset.addSeries(series);
+		   return dataset;
+	}
+
+
 
 }
