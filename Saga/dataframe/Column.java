@@ -37,7 +37,8 @@ public class Column {
 
     /** The array list of particles within the column */
     protected ArrayList<Particle> column;
-  
+    /** sorted array of particles within column (ordinal/numeric only)**/
+    protected ArrayList<Particle> sorted_column;
     /******************************************
      *         COLUMN STATISTIC FIELDS        *
      ******************************************/
@@ -89,7 +90,32 @@ public class Column {
     /******************************************
      *      END COLUMN STATISTIC FIELDS       *
      ******************************************/
-	
+	public Column(double[] arr) {
+		type = 'N';
+        column = new ArrayList<Particle>(); 
+        columnLength = 0;
+        uniqueValues = new HashSet<Object>();
+        featureStats = new HashMap<Object, Double>();
+        uniqueValueCounts = new HashMap<Object, Integer>();
+        for(double i : arr) {
+        	Particle p = Particle.resolveType(i);
+        	column.add(p);
+        }
+        this.setStatistics();
+	}
+	public Column(int[] arr) {
+		type = 'N';
+        column = new ArrayList<Particle>(); 
+        columnLength = 0;
+        uniqueValues = new HashSet<Object>();
+        featureStats = new HashMap<Object, Double>();
+        uniqueValueCounts = new HashMap<Object, Integer>();
+        for(int i : arr) {
+        	Particle p = Particle.resolveType(i);
+        	column.add(p);
+        }
+        this.setStatistics();
+	}
 	
     /**
      * Creates a column with a given name.
@@ -368,7 +394,16 @@ public class Column {
             }
         }
     }
-    
+    public void sort_column() {
+    	if(this.type == 'N' || this.type == 'O') {
+    		this.sorted_column = new ArrayList<Particle>();
+            for (Particle particle : this.column) 
+            	this.sorted_column.add(particle.deepCopy());
+    	}
+    	//System.out.println(this.sorted_column);
+    	Collections.sort(this.sorted_column);
+    	//System.out.println(this.sorted_column);
+    }
     /**
      * Prepares the column's statistic based fields. 
      */
@@ -650,5 +685,12 @@ public class Column {
     public double meanOfIndexes(Set<Integer> indexes) {
         double sum = sumOfIndexes(indexes);
         return sum / indexes.size();
+    }
+    /**
+     * returns a columns sorted values
+     * @return
+     */
+    public ArrayList<Particle> getSortedValues(){
+    	return this.sorted_column;
     }
 }

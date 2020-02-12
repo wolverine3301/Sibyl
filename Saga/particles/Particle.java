@@ -1,5 +1,7 @@
 package particles;
 
+import java.util.Comparator;
+
 /**
  * Particle abstract class, represents various types of data to be stored in the data frame. 
  * 
@@ -39,7 +41,7 @@ public abstract class Particle implements Comparable<Particle>{
         type = theType;
         nextParticle = null;
     }
-     
+    
     /**
      * @return the type
      */

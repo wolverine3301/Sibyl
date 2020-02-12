@@ -35,7 +35,7 @@ public class Plot extends JPanel{
 	        "X-Axis", "Y-Axis", dataset);
 	    //Changes background color
 	    XYPlot plot = (XYPlot)chart.getPlot();
-	    plot.setBackgroundPaint(new Color(255,228,196));
+	    plot.setBackgroundPaint(new Color(145,130,255));
 	    // Create Panel
 	    this.panel = new ChartPanel(chart);
 

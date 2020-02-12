@@ -40,7 +40,7 @@ public class Bin {
 		}
 	}
 	public void printBin() {
-		System.out.print("("+s1+","+s2+"]");
+		System.out.print(this.binString);
 	}
 	public String toString() {
 		return this.binString;
