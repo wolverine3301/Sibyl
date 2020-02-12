@@ -3,7 +3,11 @@ package discreteize;
 import java.util.ArrayList;
 
 import dataframe.Column;
-
+/**
+ * 
+ * @author logan.collier
+ *
+ */
 public class EqualWidthBinning {
 	
 	private Column col;

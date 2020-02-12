@@ -4,7 +4,11 @@ import java.util.ArrayList;
 
 import dataframe.Column;
 import particles.Particle;
-
+/**
+ * discreteize a numeric column into equal frequency bins
+ * @author logan.collier
+ *
+ */
 public class EqualFrequencyBinning {
 	
 	private Column col;

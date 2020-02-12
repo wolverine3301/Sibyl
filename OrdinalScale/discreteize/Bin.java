@@ -3,6 +3,11 @@ package discreteize;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * a Bin object for discretizing numerical attributes
+ * @author logan.collier
+ *
+ */
 public class Bin {
 	
 	private double s1;
