@@ -93,10 +93,11 @@ public class Column {
 	public Column(double[] arr) {
 		type = 'N';
         column = new ArrayList<Particle>(); 
-        columnLength = 0;
+        columnLength = arr.length;
         uniqueValues = new HashSet<Object>();
         featureStats = new HashMap<Object, Double>();
         uniqueValueCounts = new HashMap<Object, Integer>();
+        
         for(double i : arr) {
         	Particle p = Particle.resolveType(i);
         	column.add(p);
@@ -106,7 +107,7 @@ public class Column {
 	public Column(int[] arr) {
 		type = 'N';
         column = new ArrayList<Particle>(); 
-        columnLength = 0;
+        columnLength = arr.length;
         uniqueValues = new HashSet<Object>();
         featureStats = new HashMap<Object, Double>();
         uniqueValueCounts = new HashMap<Object, Integer>();

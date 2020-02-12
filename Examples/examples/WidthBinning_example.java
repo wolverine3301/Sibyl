@@ -13,7 +13,7 @@ public class WidthBinning_example {
         b.printBins();
         Column c = b.binColumn();
         System.out.println(c.getUniqueValueCounts());
-
+        c.printCol();
 	}
 
 }
