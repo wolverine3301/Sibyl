@@ -31,41 +31,59 @@ public class KNN extends Model {
      * @param theK the amount of predictions to be returned upon completion of the algorithm.
      */
     public KNN(DataFrame theDataFrame, Distance theDistanceFunction, int theK) {
-        super(theDataFrame);
+        super.setTrain(theDataFrame);
         distanceFunction = theDistanceFunction;
         k = theK;
     }
     
     /**
      * Uses KNN to calculate / estimate the missing value of a passed row, and returns the probability of a value in a hashmap, 
-     * formatted as 50.0 for 50% probability, and so on. The row passed MUST contain one less entry than the test data frame's rows; with the 
+     * formatted as 0.50 for 50% probability, and so on. The row passed MUST contain one less entry than the test data frame's rows; with the 
      * missing entry being the desired prediction variable. The name of the column to be predicted MUST have its column type marked as "target".
      * @param row The row, or set of values on which predictions will be based on.
      * @return A hashmap of predictions and probabilities, with the key of the hashmap being the prediction, and the value being it's given probability.
      */
     @Override
-    public HashMap<Object, Double> probability(Row row) {
+    public HashMap<String, HashMap<Object, Double>> probability(Row row) {
+        HashMap<String, HashMap<Object, Double>> probabilityMap = new HashMap<String, HashMap<Object, Double>>();
+        //Priority queue which contains the distance data from the target row to every other row.
         PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(trainDF_variables.getNumRows(), new Comparator<DistanceParticle>() {
             @Override
             public int compare(DistanceParticle p1, DistanceParticle p2) {
                 return Double.compare(p1.getValue(), p2.getValue());
             }
         });
+        //Calculate the distances from the target row to each row in the target variables dataframe.
         for (int i = 0; i < trainDF_variables.getNumRows(); i++)
             neighbors.add(new DistanceParticle(distanceFunction.distance(row, trainDF_variables.getRow_byIndex(i)), i, distanceFunction.distanceType));
-        HashMap<Object, Double> probabilityMap = new HashMap<Object, Double>();
-        HashMap<Object, Double> objectCount = new HashMap<Object, Double>();
-        for (int i = 0; i < k; i++) { //load predictions into temporary hash map
-            Object currentPrediction = trainDF_targets.getColumn(0).getParticle(neighbors.remove().distanceToIndex).getValue(); //Update in future for ArrayLists of hashmaps?
-            if (objectCount.containsKey(currentPrediction)) {
-                double currentValue = objectCount.get(currentPrediction);
-                objectCount.put(currentPrediction, currentValue + 1.0);
-            } else {
-                objectCount.put(currentPrediction, 1.0);
+        HashMap<String, HashMap<Object, Double>> objectCount = new HashMap<String, HashMap<Object, Double>>(); //Initialize the hashmap for instances of an object (prediction)
+        //Create a hashmap for each column name 
+        for (String columnName : trainDF_targets.getColumnNames()) { //Create a hashmap for each column name 
+            probabilityMap.put(columnName, new HashMap<Object, Double>());
+            objectCount.put(columnName, new HashMap<Object, Double>());
+        }
+        //load k-predictions into temporary hash map. Initializes k-predictions for each target. 
+        for (int i = 0; i < k; i++) { 
+            Row currentPrediction = trainDF_targets.getRow_byIndex(neighbors.remove().distanceToIndex); //the current row 
+            for (int j = 0; j < trainDF_targets.getNumColumns(); j++) {
+                String columnName = trainDF_targets.getColumnNames().get(j); //Name of the current target row
+                Object currentValue = currentPrediction.getParticle(j).getValue(); //The object value of the current prediction
+                if (objectCount.get(columnName).containsKey(currentValue)) { // If the value is already contained in the object count hashmap, add one to its value.
+                    double currentCount = objectCount.get(columnName).get(currentValue);
+                    objectCount.get(columnName).put(currentValue, currentCount + 1.0);
+                } else { // Else initialize value in hashmap to 1.
+                    objectCount.get(columnName).put(currentValue, 1.0);
+                }
             }
         }
-        for (Object key : objectCount.keySet())  // loop through predictions and calculate percent probablility of each prediction
-            probabilityMap.put(key, (objectCount.get(key) / k) * 100.0);
+        //Initialize the probabilites of each value. 
+        for (String target : objectCount.keySet()) {
+            HashMap<Object, Double> tempProbs = new HashMap<Object, Double>();
+            for (Object value: objectCount.get(target).keySet()) {
+                tempProbs.put(value, (objectCount.get(target).get(value) / k));
+            }
+            probabilityMap.put(target, tempProbs);
+        }
         return probabilityMap;
     }
 
@@ -77,8 +95,8 @@ public class KNN extends Model {
      * @return an array of predictions, with the lowest index being the most likely, and highest index being the least likey (based on the given k value).
      */
     @Override
-    public ArrayList<ArrayList<Particle>> predict(Row row) {
-        ArrayList<ArrayList<Particle>> predictions = new ArrayList<ArrayList<Particle>>();
+    public HashMap<String , ArrayList<Object>> predictDF(DataFrame testDf) {
+        HashMap<String, ArrayList<Object>> predictions = new HashMap<String, ArrayList<Object>>();
         for (int i = 0; i < trainDF_targets.getNumColumns(); i++ ) {
             PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(trainDF_variables.getNumRows(), new Comparator<DistanceParticle>() {
                 @Override
@@ -88,11 +106,11 @@ public class KNN extends Model {
             });
             for (int j = 0; j < trainDF_variables.getNumRows(); j++)
                 neighbors.add(new DistanceParticle(distanceFunction.distance(row, trainDF_variables.getRow_byIndex(j)), j, distanceFunction.distanceType));
-            ArrayList<Particle> currPredictions = new ArrayList<Particle>(k);
+            ArrayList<Object> currPredictions = new ArrayList<Object>(k);
             for (int j = 0; i < k; i++) {
-                currPredictions.add(trainDF_variables.getColumn(j).getParticle(neighbors.remove().distanceToIndex));
+                currPredictions.add(trainDF_variables.getColumn(j).getParticle(neighbors.remove().distanceToIndex).getValue());
             }
-            predictions.add(currPredictions);
+            predictions.put(trainDF_targets.getColumnNames().get(i), currPredictions);
         }
         return predictions;
     } 

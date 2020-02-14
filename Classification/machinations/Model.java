@@ -73,7 +73,7 @@ public abstract class Model {
 	public abstract Object predict(Row row);
 	
 	
-	public abstract HashMap<String , ArrayList<Object>> predictDF(DataFrame testDF);
+	public abstract HashMap<String, ArrayList<Object>> predictDF(DataFrame testDF);
 	
 	public void setTrain(DataFrame trainDF) {
 		this.trainDF_targets = DataFrame_Copy.shallowCopy_columnTypes(trainDF, set_targets());

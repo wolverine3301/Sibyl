@@ -41,6 +41,7 @@ public class SibylGUI extends JFrame {
     /** The JPanel which holds the options of successes and defaults option. */
     private JPanel sdOptionsMenu;
     
+    /** The display for the data frame loaded in. */ 
     private JScrollPane dataFrameDisplay;
     
     /** Holds the inputs for the successes and defaults. Index 1 = successes, index 0 = defaults */
@@ -179,6 +180,9 @@ public class SibylGUI extends JFrame {
         sdOptionsMenu.add(succsessesPanel, BorderLayout.SOUTH);
     }
     
+    /**
+     * Displays the entire dataframe
+     */
     public void dataFrameDisplay() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(dataFrame.getNumRows() + 1, dataFrame.getNumColumns()));
@@ -190,12 +194,15 @@ public class SibylGUI extends JFrame {
         for (int rowNum = 0; rowNum < dataFrame.getNumRows(); rowNum++) {
             for (int colNum = 0; colNum < dataFrame.getNumColumns(); colNum++) {
                 JTextField textBox = new JTextField("" + dataFrame.getRow_byIndex(rowNum).getParticle(colNum).getValue());
-                //textBox.addActionListener(new ActionListener() {
-//                    @Override
-//                    public void actionPerformed(ActionEvent e) {
-//                        dataFrame.replaceParticle(colNum, rowNum, Particle.resolveType(textBox.getText()));
-//                    }
-                //});
+                textBox.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        e.getSource();
+                        dataFrame.replaceParticle(colNum, rowNum, Particle.resolveType(textBox.getText()));
+                        System.out.println("Editing DataFrame");
+                        dataFrame.printDataFrame();
+                    }
+                });
                 panel.add(textBox);
             }
         }
