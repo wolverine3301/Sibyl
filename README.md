@@ -3,7 +3,7 @@ deep learning
 
 ## Saga
 
-These are the accepted type codes for data tpes in saga
+These are the accepted type codes for data types in saga
  - Particle
   	* TYPE CHARACTERS:
  		* 'i' : Integer
