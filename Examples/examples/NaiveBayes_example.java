@@ -16,7 +16,7 @@ import regressionFunctions.LogRegression;
 import scorer.CrossValidation;
 import transform.Standardize;
 
-public class bench {
+public class NaiveBayes_example {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 
@@ -37,7 +37,7 @@ public class bench {
         NaiveBayes nb = new NaiveBayes();
         //nb.initiallize();
         CrossValidation cv = new CrossValidation(df, 10, nb);
-        //cv.printScores();
+        cv.printScores();
         //cv.printMatrixs();
         //cv.printMatrixs();
         //cv.printScores();

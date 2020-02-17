@@ -31,6 +31,9 @@ public abstract class Particle implements Comparable<Particle>{
     /** The next particle, acting as a linked list of rows. */
     public Particle nextParticle;
     
+    /** index position in a column **/
+    public int index;
+    
     /**
      * Creates a new instance of a particle with a given value and type.
      * @param theValue
@@ -93,6 +96,12 @@ public abstract class Particle implements Comparable<Particle>{
         }
         
         return newParticle;
+    }
+    public void setIndex(int index) {
+    	this.index = index;
+    }
+    public int getIndex() {
+    	return index;
     }
     
    /**

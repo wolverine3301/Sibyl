@@ -90,6 +90,8 @@ public class Column {
     /******************************************
      *      END COLUMN STATISTIC FIELDS       *
      ******************************************/
+	
+	/** double[] constructor **/
 	public Column(double[] arr) {
 		type = 'N';
         column = new ArrayList<Particle>(); 
@@ -98,12 +100,14 @@ public class Column {
         featureStats = new HashMap<Object, Double>();
         uniqueValueCounts = new HashMap<Object, Integer>();
         
-        for(double i : arr) {
-        	Particle p = Particle.resolveType(i);
+        for(int i = 0; i < arr.length; i++) {
+        	Particle p = Particle.resolveType(arr[i]);
+        	p.setIndex(i);
         	column.add(p);
         }
         this.setStatistics();
 	}
+	/** int[] constructor **/
 	public Column(int[] arr) {
 		type = 'N';
         column = new ArrayList<Particle>(); 
@@ -111,8 +115,10 @@ public class Column {
         uniqueValues = new HashSet<Object>();
         featureStats = new HashMap<Object, Double>();
         uniqueValueCounts = new HashMap<Object, Integer>();
-        for(int i : arr) {
-        	Particle p = Particle.resolveType(i);
+        
+        for(int i = 0; i < arr.length; i++) {
+        	Particle p = Particle.resolveType(arr[i]);
+        	p.setIndex(i);
         	column.add(p);
         }
         this.setStatistics();
@@ -170,8 +176,9 @@ public class Column {
      * @param p
      */
     public void add(Particle p) {
+    	p.setIndex(columnLength);
         column.add(p);
-        columnLength++;
+        this.columnLength++;
     }
     //TODO
     //Need to update so column type is set correctly with certain particle types
@@ -206,7 +213,9 @@ public class Column {
     public void concatArray(Object arr[]) {
         for(int i = 0; i < arr.length; i++) {
             Particle tmp = Particle.resolveType(arr[i]);
+            tmp.setIndex(columnLength);
             this.column.add(tmp);
+            this.columnLength++;
         }
     }
     
@@ -336,6 +345,7 @@ public class Column {
     public void makeColumn_fromArray(Object arr[]) {
         for(int i = 0; i < arr.length; i++) {
             Particle tmp = Particle.resolveType(arr[i]);
+            tmp.setIndex(i);
             this.column.add(tmp);
             this.type = tmp.type;
         }

@@ -113,5 +113,17 @@ public class KNN extends Model {
             predictions.put(trainDF_targets.getColumnNames().get(i), currPredictions);
         }
         return predictions;
-    } 
+    }
+
+	@Override
+	public Object predict(Row row) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void initiallize() {
+		// TODO Auto-generated method stub
+		
+	} 
 }
