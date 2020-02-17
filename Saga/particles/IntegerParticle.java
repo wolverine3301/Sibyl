@@ -41,7 +41,10 @@ public class IntegerParticle extends Particle {
 
     @Override
     public int compareTo(Particle p) {
-        return Integer.compare((Integer) value, (Integer) p.value);
+    	if(p.getType() == 'd')
+    		return Double.compare(getDoubleValue(), p.getDoubleValue());
+    	else
+    		return Integer.compare((Integer) value, (Integer) p.value);
     }
 
 }
