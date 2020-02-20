@@ -101,8 +101,7 @@ public class Column {
         uniqueValueCounts = new HashMap<Object, Integer>();
         
         for(int i = 0; i < arr.length; i++) {
-        	Particle p = Particle.resolveType(arr[i]);
-        	p.setIndex(i);
+        	Particle p = Particle.resolveType(arr[i],i);
         	column.add(p);
         }
         this.setStatistics();
@@ -117,8 +116,7 @@ public class Column {
         uniqueValueCounts = new HashMap<Object, Integer>();
         
         for(int i = 0; i < arr.length; i++) {
-        	Particle p = Particle.resolveType(arr[i]);
-        	p.setIndex(i);
+        	Particle p = Particle.resolveType(arr[i],i);
         	column.add(p);
         }
         this.setStatistics();
@@ -188,13 +186,14 @@ public class Column {
      * @param value
      */
     public void add(Object value) {
-        Particle p = Particle.resolveType(value);
+        Particle p = Particle.resolveType(value,this.columnLength);
         //auto declaration of column type
         if(column.isEmpty()) {
             if(p.type == 'd' || p.type == 'i')
                 this.type = 'N';
         }
         add(p);
+        
     }
     
     /**
@@ -213,9 +212,7 @@ public class Column {
     public void concatArray(Object arr[]) {
         for(int i = 0; i < arr.length; i++) {
             Particle tmp = Particle.resolveType(arr[i]);
-            tmp.setIndex(columnLength);
-            this.column.add(tmp);
-            this.columnLength++;
+            add(tmp);
         }
     }
     
@@ -408,8 +405,9 @@ public class Column {
     public void sort_column() {
     	if(this.type == 'N' || this.type == 'O') {
     		this.sorted_column = new ArrayList<Particle>();
-            for (Particle particle : this.column) 
+            for (Particle particle : this.column) {
             	this.sorted_column.add(particle.deepCopy());
+            }
     	}
     	//System.out.println(this.sorted_column);
     	Collections.sort(this.sorted_column);

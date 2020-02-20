@@ -13,7 +13,14 @@ public class IntegerParticle extends Particle {
 	public IntegerParticle(Integer value) {
 	    super(value, 'i');
 	}
-	
+	/**
+	 * integer particle with index position
+	 * @param value
+	 * @param index
+	 */
+	public IntegerParticle(Integer value,int index) {
+	    super(value, 'i',index);
+	}
 	/**
 	 * Returns the value of the particle (integer).
 	 * @return The integer value in this particle.
@@ -36,7 +43,7 @@ public class IntegerParticle extends Particle {
      */
     @Override
     public Particle deepCopy() {
-        return new IntegerParticle((int) value);
+        return new IntegerParticle((int) value,index);
     }
 
     @Override

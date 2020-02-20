@@ -28,8 +28,10 @@ public class DataFrame_Read {
             line = br.readLine();
             String[] lines = line.split(cvsSplitBy);
             Row row = new Row();
+            //initiallizes row 0
             for(int i=0;i<df.columnNames.size();i++) {
             	Particle p = Particle.resolveType(lines[i]);
+            	p.setIndex(0);
             	if(p.type == 'i' || p.type == 'd') {
             		df.numericIndexes.add(i);
             		Column c = new Column(df.columnNames.get(i));
@@ -53,18 +55,23 @@ public class DataFrame_Read {
             	row.add(p);
             }
             df.rows.add(row);
-            
+            // end row 0
+            //fill rest of rows
+            int cnt = 0;
         	while ((line = br.readLine()) != null) { //Read in each line, create row objects and initialize data.
                 lines = line.split(cvsSplitBy);
                 row = new Row();
                 for(int i=0;i<df.columnNames.size();i++) { //load data into columns and rows
                 	Particle p = Particle.resolveType(lines[i]);
+                	p.setIndex(cnt);
                 	if(p.getType() == 's' && df.getColumn(i).getType() == 'N') {
                 		p = Particle.resolveType("NAN");
+                		p.setIndex(cnt);
                 	}
                 	df.columns.get(i).add(p);
                 	row.add(p);
                 }
+                cnt++;
                 df.rows.add(row);
         	}
         	for(int i = 0;i < df.columnNames.size();i++) {

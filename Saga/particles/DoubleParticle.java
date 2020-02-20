@@ -13,6 +13,9 @@ public class DoubleParticle extends Particle{
 	public DoubleParticle(Double value) {
 	    super(value, 'd');
 	}
+	public DoubleParticle(Double value, int index) {
+		super(value,'d',index);
+	}
 	
 	/**
 	 * @return the double value
@@ -37,8 +40,9 @@ public class DoubleParticle extends Particle{
      */
     @Override
     public Particle deepCopy() {
-        return new DoubleParticle((double) value);
+        return new DoubleParticle((double) value,index);
     }
+    
 
     @Override
     public int compareTo(Particle p) {

@@ -40,9 +40,21 @@ public abstract class Particle implements Comparable<Particle>{
      * @param theType
      */
     public Particle(Object theValue, char theType) {
-        value = theValue;
-        type = theType;
-        nextParticle = null;
+        this.value = theValue;
+        this.type = theType;
+        this.nextParticle = null;
+    }
+    /**
+     * new particle with index position
+     * @param value
+     * @param type
+     * @param index
+     */
+    public Particle(Object value, char type, int index) {
+    	this.value = value;
+    	this.type = type;
+    	this.nextParticle = null;
+    	this.index = index;
     }
     
     /**
@@ -97,6 +109,31 @@ public abstract class Particle implements Comparable<Particle>{
         
         return newParticle;
     }
+    /**
+     * TO DO: UPDATE FOR SUPPORT WITH ORDINAL & OBJECT PARTICLES.
+     * Resolves the type of a value from a string.
+     * @param value the string to resolve the type of.
+     */
+    public static Particle resolveType(String value,int index) {
+        Particle newParticle;
+        
+        if(isNumeric(value)) { //If the passed string is numeric.
+        	
+            if(isInteger(value)) {
+                newParticle = new IntegerParticle(Integer.parseInt(value));
+            }else
+                newParticle = new DoubleParticle(Double.parseDouble(value));
+        } else { //If the passed string is just a string.
+            if(value==null || value.isEmpty() || value.toUpperCase().contentEquals("NAN") || value.toUpperCase().contentEquals("NULL")) {
+            	newParticle = new NANParticle(value);
+            }else {
+            	
+                newParticle = new StringParticle(value);
+            }
+        }
+        newParticle.setIndex(index);
+        return newParticle;
+    }
     public void setIndex(int index) {
     	this.index = index;
     }
@@ -121,6 +158,21 @@ public abstract class Particle implements Comparable<Particle>{
         	
             return null; //UPDATE FOR ORDINAL, OBJECT AND DISTANCE.
         }
+        return newParticle;
+    }
+    public static Particle resolveType(Object value,int index) {
+        Particle newParticle;
+        if (value instanceof Integer)
+            newParticle = new IntegerParticle((Integer) value);
+        else if (value instanceof Double)
+            newParticle = new DoubleParticle((Double) value);
+        else if (value instanceof Object) {
+            newParticle = new ObjectParticle(value);
+        } else {
+        	
+            return null; //UPDATE FOR ORDINAL, OBJECT AND DISTANCE.
+        }
+        newParticle.setIndex(index);
         return newParticle;
     }
     
