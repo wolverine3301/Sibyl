@@ -11,7 +11,7 @@ import dataframe.DataFrame;
 public class corrBench {
 
 	public static void main(String[] args) {
-		String file = "testfiles/testNum.txt";
+		String file = "testfiles/iris.txt";
         DataFrame df = DataFrame.read_csv(file);
         int[] a = {106,86,100,101,99,103,97,113,112,110};
         int[] b = {7,0,27,50,28,29,20,12,6,17};
@@ -25,9 +25,8 @@ public class corrBench {
         //c.printCorrelations();
         Spearman s = new Spearman();
         System.out.println(df.getColumn(1).getName() + " v. " );
-       System.out.println(s.getCorrelation(df.getColumn(1), df.getColumn(3)));
-        //Correlations v = new Correlations(df,s);
-        //v.printCorrelations();
+        Correlations v = new Correlations(df,s);
+        v.printCorrelations();
 
 	}
 
