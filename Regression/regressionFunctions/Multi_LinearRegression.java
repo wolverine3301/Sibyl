@@ -10,8 +10,8 @@ import dataframe.Column;
  */
 public class Multi_LinearRegression {
 	
-	private Column[] x;
-	private Column y;
+	private Column[] x; //predictors
+	private Column y; //variable to predict
 	public LinearRegression[] regressions;
 	public double[] slopes;
 	public double intercept;
@@ -43,5 +43,8 @@ public class Multi_LinearRegression {
 			slopes[cnt] = i.slope;
 			cnt++;
 		}
+	}
+	public int numPredictors() {
+		return x.length;
 	}
 }

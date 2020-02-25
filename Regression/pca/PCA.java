@@ -1,5 +1,7 @@
 package pca;
 
+import java.util.ArrayList;
+
 import dataframe.Column;
 import dataframe.DataFrame;
 import forensics.Stats;
@@ -21,13 +23,14 @@ import transform.Standardize;
  *
  */
 public class PCA {
-	private double[] EIGEN_VECTORS;
+	private ArrayList<EigenVector> EIGEN_VECTORS;
 	private DataFrame df;
 	/**
 	 * 
 	 * @param df
 	 */
 	public PCA(DataFrame df) {
+		EIGEN_VECTORS = new ArrayList<EigenVector>();
 		Standardize standard = new Standardize(df);
 		standard.zeroMean_df();
 		this.df = df;
@@ -48,10 +51,13 @@ public class PCA {
 	 */
 	private void setEgienVectors() {
 		Multi_LinearRegression regress = getRegressions();
-		for(int i = 0; i < regress.xcolumns.length;i++) {
-			
+		for(int i = 0; i < regress.numPredictors();i++) {
+			EIGEN_VECTORS.add(new EigenVector(regress.slopes[i]));
 		}
 		
+	}
+	public EigenVector getEigneVector(int index) {
+		return EIGEN_VECTORS.get(index);
 	}
 	
 

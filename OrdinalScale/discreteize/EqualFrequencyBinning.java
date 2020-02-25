@@ -30,6 +30,7 @@ public class EqualFrequencyBinning {
 	}
 	private void makeBins() {
 		this.BINS = new ArrayList<Bin>(numbins);
+		col.sort_column();
 		ArrayList<Particle> s = col.getSortedValues();
 		int n = (int)(col.getLength()/numbins);
 		int w = 0;
