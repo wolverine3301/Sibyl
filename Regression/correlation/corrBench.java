@@ -21,10 +21,9 @@ public class corrBench {
         d.addColumn(x);
         d.addColumn(y);
         Pearson p = new Pearson();
-        //Correlations c = new Correlations(df,p);
-        //c.printCorrelations();
+        Correlations c = new Correlations(df,p);
+        c.printCorrelations();
         Spearman s = new Spearman();
-        System.out.println(df.getColumn(1).getName() + " v. " );
         Correlations v = new Correlations(df,s);
         v.printCorrelations();
 
