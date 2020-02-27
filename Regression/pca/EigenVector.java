@@ -17,5 +17,8 @@ public class EigenVector {
 		this.x_ratio = (1 / regression_slope) / hypo;
 		this.y_ratio = 1 / hypo;
 	}
+	public void printVector() {
+		System.out.println("Vector: "+slope+"x");
+	}
 
 }

@@ -12,6 +12,7 @@ public class Stats {
 	}
 	/**
 	 * Also known as sum of squared errors
+	 * SSE , SSP
 	 * @param x
 	 * @return
 	 */

@@ -1,20 +1,15 @@
-package forensics;
+package regressionFunctions;
 
 import dataframe.Column;
 import dataframe.DataFrame;
-import examples.ColumnTools;
-import linearRegression.LinearRegression;
-import linearRegression.Multi_LinearRegression;
-import logrithmicRegression.LogRegression;
 
 public class statsBench {
 
 	public static void main(String[] args) {
-		DataFrame iris = new DataFrame();
-		iris.loadcsv("testfiles/iris.txt");
+		DataFrame iris = DataFrame.read_csv("testfiles/regress");
 		Column col1 = iris.getColumn(0);
 		Column col2 = iris.getColumn(1);
-		Column col3 = iris.getColumn(3);
+		Column col3 = iris.getColumn(2);
 		
 		//col1.printCol();
 		//System.out.println(Stats.zeroSquaredSum(col1));
@@ -51,12 +46,13 @@ public class statsBench {
 		System.out.println("Y Intercept:" + test2.intercept);
 		System.out.println();
 		
-		
+		System.out.println("MULTI");
 		Column[] x_cols = {col1,col2};
 		Multi_LinearRegression test3 = new Multi_LinearRegression(x_cols,col3);
-		//System.out.println(test3.intercept);
-		//System.out.println(test3.regressions[0].slope);
-		//System.out.println(test3.regressions[1].slope);
+		System.out.println(test3.intercept);
+		System.out.println(test3.regressions[0].slope);
+		System.out.println(test3.regressions[1].slope);
+		System.out.println(test3.slopes.toString());
 	}
 
 }

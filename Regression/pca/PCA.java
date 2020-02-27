@@ -34,13 +34,13 @@ public class PCA {
 		Standardize standard = new Standardize(df);
 		standard.zeroMean_df();
 		this.df = df;
-
+		setEgienVectors();
 	}
 	private Multi_LinearRegression getRegressions() {
 		
 		Column[] cols = new Column[df.getNumColumns()-1];
 		//x columns
-		for(int j = 1; j < df.getNumColumns(); j++) {
+		for(int j = 0; j < df.getNumColumns()-1; j++) {
 			cols[j] = df.getColumn(j);
 		}
 		Multi_LinearRegression regress = new Multi_LinearRegression(cols, df.getColumn(0));
@@ -59,7 +59,14 @@ public class PCA {
 	public EigenVector getEigneVector(int index) {
 		return EIGEN_VECTORS.get(index);
 	}
-	
+	public ArrayList<EigenVector> getPCA(){
+		return this.EIGEN_VECTORS;
+	}
+	public void printPCA() {
+		for(EigenVector i : this.EIGEN_VECTORS) {
+			i.printVector();
+		}
+	}
 
 
 }

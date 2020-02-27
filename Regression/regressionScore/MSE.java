@@ -5,6 +5,7 @@ import dataframe.Column;
 /**
  * 
  * @author logan.collier
+ * Mean squared error
  * measures the average of the squares of the errors, that is the distance between an actual point and the regression line
  * values closer to zero are better.
  * The MSE is a measure of the quality of an estimator
