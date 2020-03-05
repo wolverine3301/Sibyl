@@ -1,5 +1,9 @@
 package pca;
-
+/**
+ * can be thought of as a normalized linerar regression kinda
+ * @author logan.collier
+ *
+ */
 public class EigenVector {
 	public String pc_name;
 	public String real_name;
