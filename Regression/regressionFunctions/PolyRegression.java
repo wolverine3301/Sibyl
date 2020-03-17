@@ -58,7 +58,6 @@ public class PolyRegression {
 					eq = eq.concat(" + ");
 				}
 			}
-			
 		}
 		return eq;
 	}
