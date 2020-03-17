@@ -1,6 +1,8 @@
 package regressionFunctions;
 
 
+import java.util.Arrays;
+
 import dataframe.Column;
 import forensics.Stats;
 /**
@@ -14,8 +16,9 @@ import forensics.Stats;
 public class PolyRegression {
 	private Column x;
 	private Column y;
-	private double[] poly_x;
-	private double[] poly_xy;
+	private double[][] matrix_x;
+	private double[][] matrix_xy;
+	private double[][] coefficent_matrix;
 	int degree; // degree of the polynomial
 	/**
 	 * 
@@ -28,6 +31,167 @@ public class PolyRegression {
 		this.y = y;
 		this.degree = degree;
 		degree_sums();
+		//inverse(combine());
+		//matrix_inversion(combine());
+		//rref(combine());
+		this.coefficent_matrix = multiply(inverse(this.matrix_x), this.matrix_xy);
+
+	}
+	public String equation_toString() {
+		String eq = "y = ";
+		for (int i = this.coefficent_matrix.length-1; i >= 0; i--) {
+			if(i == 1) {
+				eq = eq.concat(String.valueOf(this.coefficent_matrix[i][0]));
+				eq = eq.concat("X");
+				if(this.coefficent_matrix[i-1][0] >= 0) {
+					eq = eq.concat(" + ");
+				}
+			}else if(i == 0) {
+				eq = eq.concat(String.valueOf(this.coefficent_matrix[i][0]));
+				return eq;
+			}else {
+				eq = eq.concat(String.valueOf(this.coefficent_matrix[i][0]));
+				eq = eq.concat("X");
+				eq = eq.concat("^");
+				eq = eq.concat(String.valueOf(i));
+				if(this.coefficent_matrix[i-1][0] >= 0) {
+					eq = eq.concat(" + ");
+				}
+			}
+			
+		}
+		return eq;
+	}
+	public void printEquation() {
+		System.out.println(this.equation_toString());
+	}
+	public void print_coefficentMatrix() {
+		for (double[] i : this.coefficent_matrix)
+			System.out.println(Arrays.toString(i));
+		System.out.println();
+	}
+	/**
+	 * find the determinant of the matrix
+	 * @param matrix
+	 * @return
+	 */
+	private double determinant(double[][] matrix) {
+		if (matrix.length != matrix[0].length)
+			throw new IllegalStateException("invalid dimensions");
+
+		if (matrix.length == 2)
+			return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+
+		double det = 0;
+		for (int i = 0; i < matrix[0].length; i++)
+			det += Math.pow(-1, i) * matrix[0][i]
+					* determinant(minor(matrix, 0, i));
+		return det;
+	}
+	/**
+	 * return the inverse of a matrix
+	 * @param matrix
+	 * @return
+	 */
+	private double[][] inverse(double[][] matrix) {
+		double[][] inverse = new double[matrix.length][matrix.length];
+
+		// minors and cofactors
+		for (int i = 0; i < matrix.length; i++)
+			for (int j = 0; j < matrix[i].length; j++)
+				inverse[i][j] = Math.pow(-1, i + j)
+						* determinant(minor(matrix, i, j));
+
+		// adjugate and determinant
+		double det = 1.0 / determinant(matrix);
+		for (int i = 0; i < inverse.length; i++) {
+			for (int j = 0; j <= i; j++) {
+				double temp = inverse[i][j];
+				inverse[i][j] = inverse[j][i] * det;
+				inverse[j][i] = temp * det;
+			}
+		}
+
+		return inverse;
+	}
+	/**
+	 * creat a minor of a larger matrix
+	 * @param matrix
+	 * @param row
+	 * @param column
+	 * @return
+	 */
+	private double[][] minor(double[][] matrix, int row, int column) {
+		double[][] minor = new double[matrix.length - 1][matrix.length - 1];
+
+		for (int i = 0; i < matrix.length; i++)
+			for (int j = 0; i != row && j < matrix[i].length; j++)
+				if (j != column)
+					minor[i < row ? i : i - 1][j < column ? j : j - 1] = matrix[i][j];
+		return minor;
+	}
+	/**
+	 * matrix multiplication
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	private double[][] multiply(double[][] a, double[][] b) {
+		if (a[0].length != b.length)
+			throw new IllegalStateException("invalid dimensions");
+
+		double[][] matrix = new double[a.length][b[0].length];
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < b[0].length; j++) {
+				double sum = 0;
+				for (int k = 0; k < a[i].length; k++)
+					sum += a[i][k] * b[k][j];
+				matrix[i][j] = sum;
+			}
+		}
+
+		return matrix;
+	}
+	/**
+	 * using reduced row echelon form
+	 * @param matrix
+	 * @return
+	 */
+	private double[][] rref(double[][] matrix) {
+		double[][] rref = new double[matrix.length][];
+		for (int i = 0; i < matrix.length; i++)
+			rref[i] = Arrays.copyOf(matrix[i], matrix[i].length);
+
+		int r = 0;
+		for (int c = 0; c < rref[0].length && r < rref.length; c++) {
+			int j = r;
+			for (int i = r + 1; i < rref.length; i++)
+				if (Math.abs(rref[i][c]) > Math.abs(rref[j][c]))
+					j = i;
+			if (Math.abs(rref[j][c]) < 0.00001)
+				continue;
+
+			double[] temp = rref[j];
+			rref[j] = rref[r];
+			rref[r] = temp;
+
+			double s = 1.0 / rref[r][c];
+			for (j = 0; j < rref[0].length; j++)
+				rref[r][j] *= s;
+			for (int i = 0; i < rref.length; i++) {
+				if (i != r) {
+					double t = rref[i][c];
+					for (j = 0; j < rref[0].length; j++)
+						rref[i][j] -= t * rref[r][j];
+				}
+			}
+			r++;
+		}
+		System.out.println("INVERSING");
+		for (double[] i : matrix)
+			System.out.println(Arrays.toString(i));
+		System.out.println();
+		return rref;
 	}
 	/**
 	 * Method to carry out the partial-pivoting Gaussian elimination. Here index[] stores pivoting order.
@@ -89,7 +253,7 @@ public class PolyRegression {
 	 */
 	private double[][] matrix_inversion(double[][] a) {
 		int n = a.length;
-        double x[][] = new double[n][n];
+        double xx[][] = new double[n][n];
         double b[][] = new double[n][n];
         int index[] = new int[n];
         for (int i=0; i<n; ++i) 
@@ -100,33 +264,40 @@ public class PolyRegression {
         for (int i=0; i<n-1; ++i) {
             for (int j=i+1; j<n; ++j) {
                 for (int k=0; k<n; ++k) {
-                    b[index[j]][k]
-                    	    -= a[index[j]][i]*b[index[i]][k];
+                    b[index[j]][k] -= a[index[j]][i]*b[index[i]][k];
+
                 }
             }
         }
         // Perform backward substitutions
         for (int i=0; i<n; ++i) {
-            x[n-1][i] = b[index[n-1]][i]/a[index[n-1]][n-1];
+            xx[n-1][i] = b[index[n-1]][i]/a[index[n-1]][n-1];
             for (int j=n-2; j>=0; --j) {
-                x[j][i] = b[index[j]][i];
+                xx[j][i] = b[index[j]][i];
                 for (int k=j+1; k<n; ++k) {
-                    x[j][i] -= a[index[j]][k]*x[k][i];
+                    xx[j][i] -= a[index[j]][k]*xx[k][i];
+                    
                 }
-                x[j][i] /= a[index[j]][j];
+                xx[j][i] /= a[index[j]][j];
             }
         }
-        return x;
+        for(int i = 0; i < b.length; i++) {
+        	for(int j = 0; j < b[0].length; j++) {
+        		System.out.print(b[i][j]+" ");
+        	}
+        	System.out.println();
+        }
+        return xx;
         
 	}
-	private double[][] degree_sums() {
+	private void degree_sums() {
 		double[] poly_x = new double[this.degree*2];
 		
 		poly_x[0] = x.sum;
 		
-		double[] poly_xy = new double[this.degree+1];
-		poly_xy[0] = y.sum;
-		poly_xy[1] = Stats.sumMultiple_Columns(x, y);
+		double[][] poly_xy = new double[this.degree+1][1];
+		poly_xy[0][0] = y.sum;
+		poly_xy[1][0] = Stats.sumMultiple_Columns(x, y);
 		int cnt_xy = 2;
 		int cnt_x = 1;
 		for(int i = 2; i <= poly_x.length; i++) {
@@ -140,7 +311,7 @@ public class PolyRegression {
 			
 			poly_x[cnt_x] = sum_x;
 			if(cnt_xy < poly_xy.length)
-				poly_xy[cnt_xy] = sum_xy;
+				poly_xy[cnt_xy][0] = sum_xy;
 			cnt_x++;
 			cnt_xy++;
 		}
@@ -152,9 +323,10 @@ public class PolyRegression {
 		for(int h = 0; h < poly_xy.length; h++) {
 			System.out.println(poly_xy[h]);
 		}
+		this.matrix_xy = poly_xy;
+		
 		double[][] x_matrix = new double[this.degree+1][this.degree+1];
 		x_matrix[0][0] = x.getLength();
-		int cnt_xx = 0;
 		cnt_x = 0;
 		for(int i = 0; i <= this.degree; i++) {
 			
@@ -183,7 +355,29 @@ public class PolyRegression {
 			}
 			System.out.println();
 		}
-		return x_matrix;
+		this.matrix_x = x_matrix;
+	}
+	private double[][] combine() {
+		double[][] aug_matrix = new double[this.degree+2][this.degree+2];
+		int cnt = 0;
+		for(int i = 0; i <= this.degree; i++) {
+			for(int j = 0; j <= this.degree+1; j++) {
+				if(j == this.degree+1) {
+					//aug_matrix[i][j] = this.matrix_xy[cnt];
+					cnt++;
+				}else {
+					aug_matrix[i][j] = this.matrix_x[i][j];
+				}
+			}
+		}
+		System.out.println();
+		for(int i = 0; i < aug_matrix.length;i++) {
+			for(int j = 0; j < aug_matrix.length;j++) {
+				//System.out.print(aug_matrix[i][j] + "] ");
+			}
+			//System.out.println();
+		}
+		return aug_matrix;
 	}
 	
 }
