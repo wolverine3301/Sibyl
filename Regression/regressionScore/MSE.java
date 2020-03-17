@@ -30,7 +30,8 @@ public class MSE {
 		this.intercept = intercept;
 	}
 	/**
-	 * 
+	 * Mean Standard Error
+	 * [ E( y_i - f(x_i) )^2 ] / n
 	 * @return the MSE
 	 */
 	public static double mse(Column x,Column y , double slope, double intercept) {

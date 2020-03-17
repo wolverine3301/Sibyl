@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import dataframe.Column;
 import forensics.Stats;
+import particles.Particle;
 /**
  * step 1: calculate a weird matrix made by math
  * step 2: do some kind of fuckin witchcraft made by a mathematician
@@ -280,12 +281,12 @@ public class PolyRegression {
                 xx[j][i] /= a[index[j]][j];
             }
         }
-        for(int i = 0; i < b.length; i++) {
-        	for(int j = 0; j < b[0].length; j++) {
-        		System.out.print(b[i][j]+" ");
-        	}
-        	System.out.println();
-        }
+        //for(int i = 0; i < b.length; i++) {
+        //	for(int j = 0; j < b[0].length; j++) {
+        //		System.out.print(b[i][j]+" ");
+        //	}
+        //	System.out.println();
+        //}
         return xx;
         
 	}
@@ -314,14 +315,14 @@ public class PolyRegression {
 			cnt_x++;
 			cnt_xy++;
 		}
-		System.out.println("X:");
-		for(int h = 0; h < poly_x.length; h++) {
-			System.out.println(poly_x[h]);
-		}
-		System.out.println("Y:");
-		for(int h = 0; h < poly_xy.length; h++) {
-			System.out.println(poly_xy[h]);
-		}
+		//System.out.println("X:");
+		//for(int h = 0; h < poly_x.length; h++) {
+		//	System.out.println(poly_x[h]);
+		//}
+		//System.out.println("Y:");
+		//for(int h = 0; h < poly_xy.length; h++) {
+		//	System.out.println(poly_xy[h]);
+		//}
 		this.matrix_xy = poly_xy;
 		
 		double[][] x_matrix = new double[this.degree+1][this.degree+1];
@@ -348,35 +349,20 @@ public class PolyRegression {
 			}
 		}
 		x_matrix[this.degree][this.degree] = poly_x[poly_x.length-1];
-		for(int i = 0; i <= this.degree; i++) {
-			for(int j = 0; j <= this.degree;j++) {
-				System.out.print("["+x_matrix[i][j]+"]");
-			}
-			System.out.println();
-		}
+		//for(int i = 0; i <= this.degree; i++) {
+		//	for(int j = 0; j <= this.degree;j++) {
+		//		System.out.print("["+x_matrix[i][j]+"]");
+		//	}
+		//	System.out.println();
+		//}
 		this.matrix_x = x_matrix;
 	}
-	private double[][] combine() {
-		double[][] aug_matrix = new double[this.degree+2][this.degree+2];
-		int cnt = 0;
-		for(int i = 0; i <= this.degree; i++) {
-			for(int j = 0; j <= this.degree+1; j++) {
-				if(j == this.degree+1) {
-					//aug_matrix[i][j] = this.matrix_xy[cnt];
-					cnt++;
-				}else {
-					aug_matrix[i][j] = this.matrix_x[i][j];
-				}
-			}
+	public double predictY(Particle x_val) {
+		double y = 0;
+		for(int i = coefficent_matrix.length-1; i >= 0; i--) {
+			y = y + (coefficent_matrix[i][0] * Math.pow(x_val.getDoubleValue(),i));
 		}
-		System.out.println();
-		for(int i = 0; i < aug_matrix.length;i++) {
-			for(int j = 0; j < aug_matrix.length;j++) {
-				//System.out.print(aug_matrix[i][j] + "] ");
-			}
-			//System.out.println();
-		}
-		return aug_matrix;
+		return y;
 	}
 	
 }

@@ -29,7 +29,7 @@ public class statsBench {
 		
 		LinearRegression test = new LinearRegression(col1,col3);
 		System.out.println("Total sum of Squares: " + test.SST);
-		System.out.println("Total squared sum products:"+  test.SSP);
+		System.out.println("Total squared sum products:"+  test.SSE);
 		System.out.println("Slope:" + test.slope +"x");
 		System.out.println("Y Intercept:" + test.intercept);
 		System.out.println();
@@ -41,7 +41,7 @@ public class statsBench {
 		
 		LinearRegression test2 = new LinearRegression(col2,col3);
 		System.out.println("Total sum of Squares: " + test2.SST);
-		System.out.println("Total squared sum products:"+  test2.SSP);
+		System.out.println("Total squared sum products:"+  test2.SSE);
 		System.out.println("Slope:" + test2.slope +"x");
 		System.out.println("Y Intercept:" + test2.intercept);
 		System.out.println();
@@ -53,6 +53,10 @@ public class statsBench {
 		System.out.println(test3.regressions[0].slope);
 		System.out.println(test3.regressions[1].slope);
 		System.out.println(test3.slopes.toString());
+		
+		System.out.println("POLYNOMIAL");
+		PolyRegression p = new PolyRegression(col1, col3, 10);
+		p.printEquation();
 	}
 
 }

@@ -59,6 +59,11 @@ public class LinearRegression extends Regression{
 		this.SSR = sum2;
 		this.R2 = 1 - (this.SSE / this.SST);
 	}
+	private void standard_error() {
+		for(int i = 0; i < y.getLength();i++) {
+			
+		}
+	}
 
 	public double predictY(Particle x_val) {
 		return (slope * (double) x_val.getValue()) + intercept;
