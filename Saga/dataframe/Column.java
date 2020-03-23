@@ -30,19 +30,24 @@ public class Column {
      * 'N' - a numerical column
      *  */
     protected char type; 
+    
     /** The name of the column */
     protected String name; 
+    
     /** The length of the column (the amount of particles stored in the column) */
     protected int columnLength;
 
     /** The array list of particles within the column */
     protected ArrayList<Particle> column;
+    
     /** sorted array of particles within column (ordinal/numeric only)**/
     protected ArrayList<Particle> sorted_column;
+    
     /******************************************
      *         COLUMN STATISTIC FIELDS        *
      ******************************************/
     
+    /** Indicates if the coulumn is ready for statistics to be done on it. */
     public boolean readyForStats;
     
     /** The feature stats of the column. (Percentages of values) */

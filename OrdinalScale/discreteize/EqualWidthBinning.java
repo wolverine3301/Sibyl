@@ -13,6 +13,7 @@ public class EqualWidthBinning {
 	private Column col;
 	private int numbins;
 	private ArrayList<Bin> BINS;
+	
 	/**
 	 * make numerical data into categorical
 	 * make bins that are an even distance of units apart and place numerical data into them
@@ -24,6 +25,7 @@ public class EqualWidthBinning {
 		this.col = col;
 		makeBins();
 	}
+	
 	/**
 	 * make bin objects
 	 */

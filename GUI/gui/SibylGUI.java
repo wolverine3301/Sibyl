@@ -79,8 +79,8 @@ public class SibylGUI extends JFrame {
         add(sdOptionsMenu, BorderLayout.NORTH);
         buildGenericOptionsMenu();
         add(genericOptionsMenu, BorderLayout.SOUTH);
-        dataFrameDisplay();
-        add(dataFrameDisplay, BorderLayout.CENTER);
+//        dataFrameDisplay();
+//        add(dataFrameDisplay, BorderLayout.CENTER);
         pack();
     }
     
@@ -180,34 +180,34 @@ public class SibylGUI extends JFrame {
         sdOptionsMenu.add(succsessesPanel, BorderLayout.SOUTH);
     }
     
-    /**
-     * Displays the entire dataframe
-     */
-    public void dataFrameDisplay() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(dataFrame.getNumRows() + 1, dataFrame.getNumColumns()));
-        //Initialize the names of the columns
-        for (int i = 0; i < dataFrame.getNumRows(); i++) { 
-            panel.add(new JLabel(dataFrame.getColumn(i).getName()));
-        }
-        //Add all of the data from the data frame to the display.
-        for (int rowNum = 0; rowNum < dataFrame.getNumRows(); rowNum++) {
-            for (int colNum = 0; colNum < dataFrame.getNumColumns(); colNum++) {
-                JTextField textBox = new JTextField("" + dataFrame.getRow_byIndex(rowNum).getParticle(colNum).getValue());
-                textBox.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        e.getSource();
-                        dataFrame.replaceParticle(colNum, rowNum, Particle.resolveType(textBox.getText()));
-                        System.out.println("Editing DataFrame");
-                        dataFrame.printDataFrame();
-                    }
-                });
-                panel.add(textBox);
-            }
-        }
-        dataFrameDisplay = new JScrollPane(panel);
-    }
+//    /**
+//     * Displays the entire dataframe
+//     */
+//    public void dataFrameDisplay() {
+//        JPanel panel = new JPanel();
+//        panel.setLayout(new GridLayout(dataFrame.getNumRows() + 1, dataFrame.getNumColumns()));
+//        //Initialize the names of the columns
+//        for (int i = 0; i < dataFrame.getNumRows(); i++) { 
+//            panel.add(new JLabel(dataFrame.getColumn(i).getName()));
+//        }
+//        //Add all of the data from the data frame to the display.
+//        for (int rowNum = 0; rowNum < dataFrame.getNumRows(); rowNum++) {
+//            for (int colNum = 0; colNum < dataFrame.getNumColumns(); colNum++) {
+//                JTextField textBox = new JTextField("" + dataFrame.getRow_byIndex(rowNum).getParticle(colNum).getValue());
+//                textBox.addActionListener(new ActionListener() {
+//                    @Override
+//                    public void actionPerformed(ActionEvent e) {
+//                        e.getSource();
+//                        dataFrame.replaceParticle(colNum, rowNum, Particle.resolveType(textBox.getText()));
+//                        System.out.println("Editing DataFrame");
+//                        dataFrame.printDataFrame();
+//                    }
+//                });
+//                panel.add(textBox);
+//            }
+//        }
+//        dataFrameDisplay = new JScrollPane(panel);
+//    }
    
     /**
      * Creates an action listener for a combo box or text box.

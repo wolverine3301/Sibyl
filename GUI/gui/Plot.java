@@ -28,10 +28,9 @@ public class Plot extends JPanel{
 		this.x = x;
 		this.y = y;
 	    XYDataset dataset = createDataset();
-
 	    // Create chart
 	    JFreeChart chart = ChartFactory.createScatterPlot(
-	        x.getName()+" "+y.getName(), 
+	        x.getName() + " " + y.getName(), 
 	        "X-Axis", "Y-Axis", dataset);
 	    //Changes background color
 	    XYPlot plot = (XYPlot)chart.getPlot();

@@ -14,7 +14,7 @@ import particles.Particle;
 /**
  * KNN class, contains the algorithm and data needed to compute k nearest neighbors of a given row.
  * @author Cade Reynoldson
- * @version 1.0
+ * @version 1.5
  */
 public class KNN extends Model {
     
@@ -115,15 +115,15 @@ public class KNN extends Model {
         return predictions;
     }
 
-	@Override
-	public Object predict(Row row) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Object predict(Row row) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void initiallize() {
-		// TODO Auto-generated method stub
-		
-	} 
+    @Override
+    public void initiallize() {
+        // TODO Auto-generated method stub
+        
+    } 
 }

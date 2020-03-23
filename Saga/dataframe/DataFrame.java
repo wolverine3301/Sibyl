@@ -16,13 +16,19 @@ import particles.Particle;
  * @author Cade Reynoldson
  */
 public class DataFrame {
-	protected String DataFrameName;
-    /** The names of the columns */
+	
+    protected String DataFrameName;
+    
+	/** The names of the columns */
 	protected ArrayList<String> columnNames;
 	
 	/** The type of each column */
 	protected ArrayList<Character> columnTypes;
+	
+	/** The numeric indexes of the dataframe. */
 	public ArrayList<Integer> numericIndexes;
+	
+	/** The target indexes of the dataframe. */
 	public ArrayList<Integer> targetIndexes;
 	
 	/** The ArrayList of columns */

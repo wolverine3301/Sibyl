@@ -5,72 +5,98 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import dataframe.Column;
 import dataframe.DataFrame;
 
-public class ScatterPlot extends JFrame{
-	private DataFrame df;
+/**
+ * Creates a JPanel which contains a scatterplot. 
+ * @author Cade Reynoldson & Logan Collier
+ * @version 1.0
+ */
+public class ScatterPlot extends JPanel{
+    
+    /** The bullshit ID. */
+    private static final long serialVersionUID = 9137857479069749287L;
+    
+    /** The data frame to base the scatter plot upon. */
+    private DataFrame df;
+    
+    /** The current x column. */
 	private Column col_x;
+	
+	/** The current y column. */
 	private Column col_y;
+	
+	/** The scatter plot in the current view. */
 	private Plot scatter;
+	
 	/**
-	 * constructor
+	 * Constructs a new scatter plot view
+	 * @param df the data frame to create a scatterplot view for. 
 	 */
 	public ScatterPlot(DataFrame df) {
-		this.df = df;
-		
+	    super();
+	    this.df = df;
+	    col_x = df.getColumn(df.numericIndexes.get(0));
+	    col_y = df.getColumn(df.numericIndexes.get(0));
+	    start();
 	}
+	
+	/**
+	 * Handles initializing everything in the panel. 
+	 */
 	public void start() {
-		JFrame frame = new JFrame("scatter plot");
 		scatter = new Plot(df.getColumn(df.numericIndexes.get(0)), df.getColumn(df.numericIndexes.get(0)));
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-		frame.setLayout(new BorderLayout());
-		frame.add(columnSelectPanel(),BorderLayout.WEST);
-		frame.add(scatter.panel,BorderLayout.EAST);
-		frame.pack();
+		this.setLayout(new BorderLayout());
+		this.add(scatter.panel, BorderLayout.CENTER);
+		this.add(axisSelectPanel(), BorderLayout.SOUTH);
 	}
-	private JPanel columnSelectPanel() {
-		JPanel sidePanel = new JPanel();
-		sidePanel.setSize(200, 600);
-		sidePanel.setLayout(new BorderLayout());
-		JLabel xaxis_label = new JLabel("X-Axis: ");
-		JLabel yaxis_label = new JLabel("Y-Axis: ");
-		
-		JComboBox<String> columnNames_x = new JComboBox<String>();
-		JComboBox<String> columnNames_y = new JComboBox<String>();
-		//initiallize combo boxesa
-		for(Integer i : df.numericIndexes) {
-			columnNames_x.addItem(df.getColumnNames().get(i));
-			columnNames_y.addItem(df.getColumnNames().get(i));
-		}
-		columnNames_x.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				col_x = df.getColumn_byName((String) columnNames_x.getSelectedItem());
-				scatter = new Plot(col_x,col_y);
-			}
-			
-		});
-		columnNames_y.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				col_y = df.getColumn_byName((String) columnNames_y.getSelectedItem());
-				scatter = new Plot(col_x,col_y);
-			}
-			
-		});
-		sidePanel.add(xaxis_label,BorderLayout.WEST);
-		sidePanel.add(columnNames_x,BorderLayout.EAST);
-		sidePanel.add(yaxis_label,BorderLayout.WEST);
-		sidePanel.add(columnNames_y,BorderLayout.EAST);
-		return sidePanel;
+	
+	/**
+	 * Creates a jpanel which contains combo boxes for selection of the x and y axis. 
+	 * @return a jpanel which contains combo boxes for selection of the x and y axis.
+	 */
+	private JPanel axisSelectPanel() {
+	    JPanel panel = new JPanel();
+	    panel.add(new JLabel("X-Axis"));
+        JComboBox<String> xNames = new JComboBox<String>();
+        JComboBox<String> yNames = new JComboBox<String>();
+        for (Integer i : df.numericIndexes) {
+            xNames.addItem(df.getColumnNames().get(i));
+            yNames.addItem(df.getColumnNames().get(i));
+        }
+        xNames.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                col_x = df.getColumn_byName((String) xNames.getSelectedItem());
+                refreshPanel();
+            } 
+        });
+        yNames.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                col_y = df.getColumn_byName((String) yNames.getSelectedItem());
+                refreshPanel();
+            }
+        });
+        panel.add(xNames);
+        panel.add(new JLabel("Y-Axis"));
+        panel.add(yNames);
+        return panel;
 	}
-
-
+	
+	/**
+	 * Refreshes the panel. Used to update scatter plot.
+	 */
+	private void refreshPanel() {
+	    Plot newScatter = new Plot(col_x, col_y);
+	    this.remove(scatter.panel);
+	    scatter = newScatter;
+	    this.add(scatter.panel, BorderLayout.CENTER);
+	    this.revalidate();
+	    this.repaint();
+	}
 }
