@@ -14,7 +14,7 @@ public class MAE {
 		double sum = 0;
 		for(int i = 0; i < x.getLength(); i++) {
 			pred_y = ((double)x.getParticle(i).getValue() * slope) + intercept;
-			sum = sum +  Math.abs((double)y.getParticle(i).getValue() - pred_y);
+			sum = sum +  Math.abs(pred_y - (double)y.getParticle(i).getValue());
 		}
 		return sum / x.getLength();
 	}
