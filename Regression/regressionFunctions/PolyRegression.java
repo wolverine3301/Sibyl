@@ -363,6 +363,7 @@ public class PolyRegression extends Regression{
 		//}
 		this.matrix_x = x_matrix;
 	}
+	
 	public double predictY(Particle x_val) {
 		double y = 0;
 		for(int i = coefficent_matrix.length-1; i >= 0; i--) {

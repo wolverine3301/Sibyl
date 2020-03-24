@@ -4,19 +4,24 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import regressionFunctions.Regression;
 
 /**
  * Creates a JPanel which contains a scatterplot. 
  * @author Cade Reynoldson & Logan Collier
  * @version 1.0
  */
-public class ScatterPlot extends JPanel{
+public class ScatterPlotView extends JPanel{
     
     /** The bullshit ID. */
     private static final long serialVersionUID = 9137857479069749287L;
@@ -37,12 +42,26 @@ public class ScatterPlot extends JPanel{
 	 * Constructs a new scatter plot view
 	 * @param df the data frame to create a scatterplot view for. 
 	 */
-	public ScatterPlot(DataFrame df) {
+	public ScatterPlotView(DataFrame df) {
 	    super();
 	    this.df = df;
 	    col_x = df.getColumn(df.numericIndexes.get(0));
 	    col_y = df.getColumn(df.numericIndexes.get(0));
 	    start();
+	}
+	
+	public ScatterPlotView(Column x, Column y, Regression regression) {
+	    super();
+	    col_x = x;
+	    col_y = y;
+	    start(regression);
+	}
+	
+	private void start(Regression regression) {
+        scatter = new Plot(col_x, col_y, regression);
+        this.setLayout(new BorderLayout());
+        this.add(optionPanel(), BorderLayout.NORTH);
+        this.add(scatter.panel, BorderLayout.CENTER);
 	}
 	
 	/**
@@ -51,8 +70,34 @@ public class ScatterPlot extends JPanel{
 	public void start() {
 		scatter = new Plot(df.getColumn(df.numericIndexes.get(0)), df.getColumn(df.numericIndexes.get(0)));
 		this.setLayout(new BorderLayout());
+		this.add(optionPanel(), BorderLayout.NORTH);
 		this.add(scatter.panel, BorderLayout.CENTER);
 		this.add(axisSelectPanel(), BorderLayout.SOUTH);
+	}
+	
+	private JMenuBar optionPanel() {
+	    JMenuBar menuBar = new JMenuBar();
+	    JMenu file = createFileMenu();
+	    menuBar.add(file);
+	    return menuBar;
+	}
+	
+	/**
+	 * Creates a file menu for the option panel.  
+	 * @return the
+	 */
+	private JMenu createFileMenu() {
+	    JMenu file = new JMenu("File");
+	    JMenuItem save = new JMenuItem("Save Plot");
+	    save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+	    });
+	    file.add(save);
+	    file.addSeparator();
+	    return file;
 	}
 	
 	/**
