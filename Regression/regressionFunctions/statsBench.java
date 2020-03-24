@@ -33,10 +33,12 @@ public class statsBench {
 		System.out.println("Slope:" + test.slope +"x");
 		System.out.println("Y Intercept:" + test.intercept);
 		System.out.println();
-		//LogRegression test2 = new LogRegression (col1,col2);
-		//System.out.println("Slope:" + test2.slope +"x");
-		//System.out.println("Y Intercept:" + test2.intercept);
-		//System.out.println();
+		
+		System.out.println("LOG");
+		LogRegression test0 = new LogRegression (col1,col2);
+		System.out.println("Slope:" + test0.slope +"x");
+		System.out.println("Y Intercept:" + test0.intercept);
+		System.out.println();
 		
 		
 		LinearRegression test2 = new LinearRegression(col2,col3);
@@ -55,8 +57,8 @@ public class statsBench {
 		System.out.println(test3.slopes.toString());
 		
 		System.out.println("POLYNOMIAL");
-		PolyRegression p = new PolyRegression(col1, col3, 10);
-		p.printEquation();
+		PolyRegression p = new PolyRegression(col1, col3, 3);
+		System.out.println(p.getEquation());
 	}
 
 }

@@ -13,18 +13,17 @@ import particles.Particle;
  */
 public class LogRegression extends Regression{
 	
+
 	private double sum_ylnx = 0;
 	private double sum_lnx = 0;
 	private double sum_lnx_squared = 0;
 	
+	protected double slope;
+	protected double intercept;
+	
 	public LogRegression(Column x, Column y) {
-		this.x = x;
-		this.y = y;
-		this.y_var = y.getName();
-		this.x_var = x.getName();
-		setVars();
-		this.slope = log_slopeM();
-		this.intercept = intercept_b();
+		super(x, y);
+		setRegression();
 	}
 	/**
 	 * return the slop of the best fitted logrithm using least squares fitting , E y_i  - b * E(ln(x_i)) / n
@@ -60,6 +59,20 @@ public class LogRegression extends Regression{
 	
 	public double predictY(Particle x_val) {
 		return (slope * Math.log((double) x_val.getValue())) + intercept;
+	}
+	@Override
+	protected void setRegression() {
+		super.function = new double[2];
+		setVars();
+		this.slope = log_slopeM();
+		this.intercept = intercept_b();
+		super.function[0] = this.intercept;
+		super.function[1] = this.slope;
+		
+	}
+	@Override
+	public String getEquation() {
+		return "Y = " + this.slope + "log("+"X"+")"+ " + "+this.intercept;
 	}
 
 }

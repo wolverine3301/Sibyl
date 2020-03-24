@@ -14,12 +14,13 @@ import particles.Particle;
  * @author logan.collier
  *
  */
-public class PolyRegression {
+public class PolyRegression extends Regression{
 	private Column x;
 	private Column y;
 	private double[][] matrix_x;
 	private double[][] matrix_xy;
-	private double[][] coefficent_matrix;
+	private double[] coefficent_matrix;
+	
 	int degree; // degree of the polynomial
 	/**
 	 * 
@@ -27,47 +28,60 @@ public class PolyRegression {
 	 * @param y
 	 * @param degree - max degree of polynomial
 	 */
-	public PolyRegression(Column x, Column y,int degree) {
-		this.x = x;
-		this.y = y;
+	public PolyRegression(Column x, Column y, int degree) {
+		super(x,y);
 		this.degree = degree;
-		degree_sums();
-		//inverse(combine());
-		//matrix_inversion(combine());
-		//rref(combine());
-		this.coefficent_matrix = multiply(inverse(this.matrix_x), this.matrix_xy);
-
+		setRegression();
 	}
-	public String equation_toString() {
+
+	public void setDegree(int degree) {
+		this.degree = degree;
+	}
+	/**
+	 * The coefficent matrix is the constant infront of each X^degree
+	 * the degree to raise an x value to is the index number+1 that the coefficent is in
+	 */
+	private void setCoefficentMatrix() {
+		double[][] m = multiply(inverse(this.matrix_x), this.matrix_xy);
+		this.coefficent_matrix = new double[m.length];
+		for(int i = m.length-1; i>= 0; i--) {
+			this.coefficent_matrix[i] = m[i][0];
+		}
+	}
+	@Override
+	protected void setRegression() {
+		degree_sums();
+		setCoefficentMatrix();
+	}
+	@Override
+	public String getEquation() {
 		String eq = "y = ";
 		for (int i = this.coefficent_matrix.length-1; i >= 0; i--) {
 			if(i == 1) {
-				eq = eq.concat(String.valueOf(this.coefficent_matrix[i][0]));
+				eq = eq.concat(String.valueOf(this.coefficent_matrix[i]));
 				eq = eq.concat("X");
-				if(this.coefficent_matrix[i-1][0] >= 0) {
+				if(this.coefficent_matrix[i-1] >= 0) {
 					eq = eq.concat(" + ");
 				}
 			}else if(i == 0) {
-				eq = eq.concat(String.valueOf(this.coefficent_matrix[i][0]));
+				eq = eq.concat(String.valueOf(this.coefficent_matrix[i]));
 				return eq;
 			}else {
-				eq = eq.concat(String.valueOf(this.coefficent_matrix[i][0]));
+				eq = eq.concat(String.valueOf(this.coefficent_matrix[i]));
 				eq = eq.concat("X");
 				eq = eq.concat("^");
 				eq = eq.concat(String.valueOf(i));
-				if(this.coefficent_matrix[i-1][0] >= 0) {
+				if(this.coefficent_matrix[i-1] >= 0) {
 					eq = eq.concat(" + ");
 				}
 			}
 		}
 		return eq;
 	}
-	public void printEquation() {
-		System.out.println(this.equation_toString());
-	}
+
 	public void print_coefficentMatrix() {
-		for (double[] i : this.coefficent_matrix)
-			System.out.println(Arrays.toString(i));
+		for (double i : this.coefficent_matrix)
+			System.out.print(i + " ");
 		System.out.println();
 	}
 	/**
@@ -84,8 +98,7 @@ public class PolyRegression {
 
 		double det = 0;
 		for (int i = 0; i < matrix[0].length; i++)
-			det += Math.pow(-1, i) * matrix[0][i]
-					* determinant(minor(matrix, 0, i));
+			det += Math.pow(-1, i) * matrix[0][i] * determinant(minor(matrix, 0, i));
 		return det;
 	}
 	/**
@@ -281,32 +294,25 @@ public class PolyRegression {
                 xx[j][i] /= a[index[j]][j];
             }
         }
-        //for(int i = 0; i < b.length; i++) {
-        //	for(int j = 0; j < b[0].length; j++) {
-        //		System.out.print(b[i][j]+" ");
-        //	}
-        //	System.out.println();
-        //}
         return xx;
         
 	}
 	private void degree_sums() {
 		double[] poly_x = new double[this.degree*2];
-		
-		poly_x[0] = x.sum;
+		poly_x[0] = super.x.sum;
 		
 		double[][] poly_xy = new double[this.degree+1][1];
-		poly_xy[0][0] = y.sum;
-		poly_xy[1][0] = Stats.sumMultiple_Columns(x, y);
+		poly_xy[0][0] = super.y.sum;
+		poly_xy[1][0] = Stats.sumMultiple_Columns(super.x, super.y);
 		int cnt_xy = 2;
 		int cnt_x = 1;
 		for(int i = 2; i <= poly_x.length; i++) {
 			double sum_x = 0;
 			double sum_xy = 0;
-			for(int j = 0; j < x.getLength(); j++) {
-				sum_x = sum_x + Math.pow(x.getDoubleValue(j), i);
+			for(int j = 0; j < super.x.getLength(); j++) {
+				sum_x = sum_x + Math.pow(super.x.getDoubleValue(j), i);
 				if(cnt_xy < poly_xy.length)
-					sum_xy = sum_xy + (Math.pow(x.getDoubleValue(j), i) * y.getDoubleValue(j));
+					sum_xy = sum_xy + (Math.pow(super.x.getDoubleValue(j), i) * super.y.getDoubleValue(j));
 			}
 			
 			poly_x[cnt_x] = sum_x;
@@ -326,7 +332,7 @@ public class PolyRegression {
 		this.matrix_xy = poly_xy;
 		
 		double[][] x_matrix = new double[this.degree+1][this.degree+1];
-		x_matrix[0][0] = x.getLength();
+		x_matrix[0][0] = super.x.getLength();
 		cnt_x = 0;
 		for(int i = 0; i <= this.degree; i++) {
 			
@@ -360,9 +366,10 @@ public class PolyRegression {
 	public double predictY(Particle x_val) {
 		double y = 0;
 		for(int i = coefficent_matrix.length-1; i >= 0; i--) {
-			y = y + (coefficent_matrix[i][0] * Math.pow(x_val.getDoubleValue(),i));
+			y = y + (coefficent_matrix[i] * Math.pow(x_val.getDoubleValue(),i));
 		}
 		return y;
 	}
+
 	
 }

@@ -3,13 +3,9 @@ import dataframe.Column;
 import particles.Particle;
 
 public abstract class Regression {
-	public Column x;
-	public Column y;
-	public String y_var;//names
-	public String x_var; 
-	
-	public double slope;
-	public double intercept;
+	protected Column x;
+	protected Column y;
+
 	/**
 	 *  Y = mean of observed data ( the target ) = 1/n * E y_i
 	 *  y_i = an observed value in target column
@@ -25,8 +21,40 @@ public abstract class Regression {
 	public double MAE; //mean absolute error
 	public double MSE; //mean squared error
 	public double RMSD; //Root mean squared deviation
+	public double[] function;
 	
+	/**
+	 * abstract regression class for all types of regression functions
+	 * slope. the y intercept is always the last index of the double array
+	 * @param x
+	 * @param y
+	 */
+	public Regression(Column x, Column y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	/**
+	 * set the regression equation
+	 */
+	protected abstract void setRegression();
+	/**
+	 * returns string representation of the regression function
+	 * @return
+	 */
+	public abstract String getEquation();
+	/**
+	 * prints the string representation of the regression function
+	 */
+	public void printEquation() {
+		System.out.println(getEquation());
+	}
 	
+	/**
+	 * predict a y value based on an x_value
+	 * @param x_val
+	 * @return
+	 */
 	public abstract double predictY(Particle x_val);
 	
 }

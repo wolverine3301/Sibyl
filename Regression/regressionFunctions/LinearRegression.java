@@ -11,21 +11,25 @@ import particles.Particle;
  *
  */
 public class LinearRegression extends Regression{
-	/**
-	 * simple linear regression
-	 * @param theDataFrame
-	 */
+	
+	public double slope;
+	public double intercept;
+	
 	public LinearRegression(Column x, Column y) {
-		this.x = x;
-		this.y = y;
-		this.y_var = y.getName();
-		this.x_var = x.getName();
-		this.SP = Stats.zeroSumMultiple_Columns(x, y); //sum of products
+		super(x, y);
+		setRegression();
+	}
+	@Override
+	public void setRegression() {
+		super.function = new double[2];
+		this.SP = Stats.zeroSumMultiple_Columns(super.x, super.y); //sum of products
 		this.SST = Stats.zeroSquaredSum(x);
 		setRegression_slopeM();
 		setRegression_interceptB();
+		super.function[0] = this.intercept;
+		super.function[1] = this.slope;
 	}
-	
+
 	/**
 	 * least squares method
 	 * @param y
@@ -33,7 +37,7 @@ public class LinearRegression extends Regression{
 	 * @return
 	 */
 	private void setRegression_slopeM() {
-		this.slope =  this.SP / this.SST;
+		this.slope = this.SP / this.SST;
 	}
 	/**
 	 * set intercept
@@ -68,5 +72,13 @@ public class LinearRegression extends Regression{
 	public double predictY(Particle x_val) {
 		return (slope * (double) x_val.getValue()) + intercept;
 	}
+	@Override
+	public String getEquation() {
+		return "Y = "+ super.function[1] +"X" + " + "+ super.function[0];
+	}
+
+
+
+
 
 }
