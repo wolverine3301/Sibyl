@@ -1,9 +1,11 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.SplashScreen;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -15,6 +17,8 @@ import javax.swing.JPanel;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import regressionFunctions.LinearRegression;
+import regressionFunctions.LogRegression;
 import regressionFunctions.PolyRegression;
 import regressionFunctions.Regression;
 
@@ -116,7 +120,27 @@ public class ScatterPlotView extends JPanel{
                 regressionInput(RegressionType.POLYNOMIAL);
             }
 	    });
+	    JMenuItem generateLin = new JMenuItem("Generate Linear Regression");
+	    generateLin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                regressionInput(RegressionType.LINEAR);
+            }
+	        
+	    });
+	    
+	    JMenuItem generateLog = new JMenuItem("Generate Logarithmic Regression");
+	    generateLog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                regressionInput(RegressionType.LOGARITHMIC);
+            }
+	    });
+	    r.add(generateLin);
+	    r.addSeparator();
 	    r.add(generatePR);
+	    r.addSeparator();
+	    r.add(generateLog);
 	    return r;
 	}
 	
@@ -125,18 +149,52 @@ public class ScatterPlotView extends JPanel{
 	        case POLYNOMIAL:
 	            String degree = JOptionPane.showInputDialog(this, "Enter degree of polynomial: ", "Generate Polynomial Regression ", JOptionPane.PLAIN_MESSAGE);
 	            try {
-	                refreshPanel(new PolyRegression(col_x, col_y, Integer.parseInt(degree)));
+	                int deg = Integer.parseInt(degree);
+	                if (deg <= 1) {
+	                    JOptionPane.showMessageDialog(this, "Degree must be larger than 1.", "Input error", JOptionPane.ERROR_MESSAGE);
+	                    break;
+	                }
+	                //showLoadingScreen("Preparing polynomial regression for " + col_x.getName() + " vs. " + col_y.getName()); //NEED THREADS FOR THIS
+	                PolyRegression polyR = new PolyRegression(col_x, col_y, deg);
+	                refreshPanel(polyR);
 	            } catch (Exception e) {
-	                JOptionPane.showMessageDialog(this, "Invalid degree input.", "Input error", JOptionPane.ERROR_MESSAGE);
+	                JOptionPane.showMessageDialog(this, "Error when generating regression.", "Error", JOptionPane.ERROR_MESSAGE);
 	            }
 	            break;
 	        case LOGARITHMIC:
-	            
+	                LogRegression logR = new LogRegression(col_x, col_y);
+	                refreshPanel(logR);
 	            break;
 	        case LINEAR:
-	            
+	            try {
+	                LinearRegression linR = new LinearRegression(col_x, col_y);
+	                refreshPanel(linR);
+	            } catch (Exception e) {
+	                JOptionPane.showMessageDialog(this, "Error when generating regression.", "Error", JOptionPane.ERROR_MESSAGE);
+	            }
 	            break;
 	    }
+	}
+	
+	/**
+	 * Shows a loading screen for a given message. 
+	 * @param message the message to display with the loading screen. 
+	 */
+	private void showLoadingScreen(String message) {
+	    JPanel panel = new JPanel();
+	    ImageIcon loading = new ImageIcon("GUI_Icons/ajax-loader.gif");
+	    JButton cancel = new JButton("Cancel");
+	    cancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refreshPanel();
+            }
+	    });
+	    panel.setLayout(new BorderLayout());
+	    panel.add(new JLabel(message), BorderLayout.NORTH);
+	    panel.add(new JLabel(loading), BorderLayout.CENTER);
+	    panel.add(cancel, BorderLayout.SOUTH);
+	    refreshPanel(panel);
 	}
 	
 	/**
@@ -170,6 +228,13 @@ public class ScatterPlotView extends JPanel{
         panel.add(new JLabel("Y-Axis"));
         panel.add(yNames);
         return panel;
+	}
+	
+	private void refreshPanel(JPanel panel) {
+	    this.remove(scatter.panel);
+	    this.add(panel, BorderLayout.CENTER);
+	    this.revalidate();
+	    this.repaint();
 	}
 	
 	/**
