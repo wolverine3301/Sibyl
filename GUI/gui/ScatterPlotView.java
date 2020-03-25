@@ -10,10 +10,12 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import regressionFunctions.PolyRegression;
 import regressionFunctions.Regression;
 
 /**
@@ -57,6 +59,10 @@ public class ScatterPlotView extends JPanel{
 	    start(regression);
 	}
 	
+	/**
+	 * Starts a view with a polynomial regression.
+	 * @param regression the regression to start the 
+	 */
 	private void start(Regression regression) {
         scatter = new Plot(col_x, col_y, regression);
         this.setLayout(new BorderLayout());
@@ -79,6 +85,7 @@ public class ScatterPlotView extends JPanel{
 	    JMenuBar menuBar = new JMenuBar();
 	    JMenu file = createFileMenu();
 	    menuBar.add(file);
+	    menuBar.add(createRegressionMenu());
 	    return menuBar;
 	}
 	
@@ -98,6 +105,38 @@ public class ScatterPlotView extends JPanel{
 	    file.add(save);
 	    file.addSeparator();
 	    return file;
+	}
+	
+	private JMenu createRegressionMenu() {
+	    JMenu r = new JMenu("Regression");
+	    JMenuItem generatePR = new JMenuItem("Generate Polynomial Regression");
+	    generatePR.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                regressionInput(RegressionType.POLYNOMIAL);
+            }
+	    });
+	    r.add(generatePR);
+	    return r;
+	}
+	
+	private void regressionInput(RegressionType type) {
+	    switch (type) {
+	        case POLYNOMIAL:
+	            String degree = JOptionPane.showInputDialog(this, "Enter degree of polynomial: ", "Generate Polynomial Regression ", JOptionPane.PLAIN_MESSAGE);
+	            try {
+	                refreshPanel(new PolyRegression(col_x, col_y, Integer.parseInt(degree)));
+	            } catch (Exception e) {
+	                JOptionPane.showMessageDialog(this, "Invalid degree input.", "Input error", JOptionPane.ERROR_MESSAGE);
+	            }
+	            break;
+	        case LOGARITHMIC:
+	            
+	            break;
+	        case LINEAR:
+	            
+	            break;
+	    }
 	}
 	
 	/**
@@ -144,4 +183,22 @@ public class ScatterPlotView extends JPanel{
 	    this.revalidate();
 	    this.repaint();
 	}
+	
+	/**
+	 * Refreshes panel, used to update scatter plot with a regression. 
+	 * @param r the regresssion to plot. 
+	 */
+	private void refreshPanel(Regression r) {
+        Plot newScatter = new Plot(col_x, col_y, r);
+        this.remove(scatter.panel);
+        scatter = newScatter;
+        this.add(scatter.panel, BorderLayout.CENTER);
+        this.revalidate();
+        this.repaint();
+	}
+	
+	private enum RegressionType {
+	    POLYNOMIAL, LINEAR, LOGARITHMIC;
+	}
+	
 }
