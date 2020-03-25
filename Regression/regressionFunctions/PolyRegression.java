@@ -10,7 +10,7 @@ import particles.Particle;
  * step 1: calculate a weird matrix made by math
  * step 2: do some kind of fuckin witchcraft made by a mathematician
  * step 3: done
- * 
+ * http://polynomialregression.drque.net/math.html
  * @author logan.collier
  *
  */

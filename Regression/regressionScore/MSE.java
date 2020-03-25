@@ -41,7 +41,7 @@ public class MSE {
 			pred_y = ((double)x.getParticle(i).getValue() * slope) + intercept;
 			sum = sum +  Math.pow( ((double)y.getParticle(i).getValue() - pred_y),2);
 		}
-		return sum / x.getLength();
+		return sum / (x.getLength()-2);
 	}
 
 }
