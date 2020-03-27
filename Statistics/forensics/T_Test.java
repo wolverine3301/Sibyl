@@ -30,6 +30,15 @@ public class T_Test {
 		this.degFree = Math.pow(( (Math.pow(x.variance, 2) / x.getLength()) +  (Math.pow(y.variance, 2) / y.getLength())) , 2)  / ( (Math.pow( (Math.pow(x.variance, 2) / x.getLength()), 2) / (x.getLength() - 1)) + (Math.pow( (Math.pow(y.variance, 2) / y.getLength()), 2) / (y.getLength() - 1)) );
 	}
 	/**
+	 * Use to compare the mean of a group to that of the overall population
+	 * @param population_mean
+	 * @return
+	 */
+	public double one_samp_ttest(double population_mean) {
+		this.degFree = x.getLength()-1;
+		return (x.mean - population_mean) / (x.std / Math.sqrt(x.getLength()));
+	}
+	/**
 	 * LOOK! MATH!
 	 * @return the p-value
 	 */
