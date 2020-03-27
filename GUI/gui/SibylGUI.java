@@ -3,19 +3,12 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 
-import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,14 +18,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
+import javax.swing.JTabbedPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dataframe.DataFrame;
-import dataframe.DataFrame_Read;
 import machinations.Model;
-import particles.Particle;
 
 public class SibylGUI extends JFrame {
     /** THE KEY TO LIFE */
@@ -41,111 +31,44 @@ public class SibylGUI extends JFrame {
     /** Name of the GUI */
     private static final String GUI_NAME = "Sibyl";
     
-    /** Reference to the data frame */
-    private DataFrame dataFrame;
+    /** A hashmap of the dataframes loaded in. */ 
+    private HashMap<String, DataFrame> loadedDataFrames;
     
-    /** A scatterplot view. */
-    private ScatterPlotView currentPlot;
+    private MainToolBar toolBar;
+    
+    /** A HashSet of plots. */
+    private HashSet<JPanel> plots;
     
     /** The current model in view. */
     private Model currentModel;
     
     /** The center component of the GUI. */
-    private Component currentCenter;
+    private JTabbedPane centerTabs;
     
-    /**
-     * 
-     */
+    
     public SibylGUI() {
         super(GUI_NAME);
-        dataFrame = null;
-        currentPlot = null;
         currentModel = null;
-        currentCenter = null;
+        loadedDataFrames = new HashMap<String, DataFrame>();
+        toolBar = new MainToolBar(this);
+        centerTabs = new JTabbedPane();
+        plots = new HashSet<JPanel>();
         start();
     }
     
-//    /**
-//     * Constructs a new instance of the GUI.
-//     * @param theDataFrame reference to the main data frame.
-//     */
-//    public SibylGUI(DataFrame theDataFrame) {
-//        super(GUI_NAME);
-//        dataFrame = theDataFrame;
-//        columnsToUse = dataFrame.getColumnNames();
-//        sdOptionsMenu = new JPanel(new BorderLayout());
-//        sdInputs = new String[2];
-//        genericOptionsMenu = new JToolBar("Options");
-//        variableInputs = new HashMap<String, String>();
-//    }
     
     /**
      * Calls all methods required to build the GUI.
      */
     public void start() {
+        this.setLayout(new BorderLayout());
+        this.add(toolBar, BorderLayout.NORTH);
+        this.add(centerTabs, BorderLayout.CENTER);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-        this.setLayout(new BorderLayout());
-        this.add(createToolBar(), BorderLayout.NORTH);
         pack();
-//        // Build the menu buttons.
-//        buildOptionsMenu();
-//        add(sdOptionsMenu, BorderLayout.NORTH);
-//        buildGenericOptionsMenu();
-//        add(genericOptionsMenu, BorderLayout.SOUTH);
-//        dataFrameDisplay();
-//        add(dataFrameDisplay, BorderLayout.CENTER);
-//        pack();
     }
     
-    /**
-     * Creates the tool bar.
-     * @return
-     */
-    private JMenuBar createToolBar() {
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.add(createFileMenu());
-        menuBar.add(createViewsMenu());
-        return menuBar;
-    }
-    
-    private JMenu createFileMenu() {
-        JMenu file = new JMenu("File");
-        //Load in menu options. 
-        JMenu loadDfMenu = new JMenu("Load Data"); //Load in options.
-        JMenuItem csvFormat = new JMenuItem("CSV Formatted File");
-        csvFormat.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileFilter(new FileNameExtensionFilter("CSV & TXT files", "csv", "txt"));
-                int returnVal = fileChooser.showOpenDialog(csvFormat);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    loadDataframe(fileChooser.getSelectedFile(), 0);
-                }
-            }
-        });
-        JMenuItem tsvFormat = new JMenuItem("TSV Formatted File");
-        JMenuItem xlsxFormat = new JMenuItem("XLSX Formatted File");
-        loadDfMenu.add(csvFormat);
-        loadDfMenu.addSeparator();
-        loadDfMenu.add(tsvFormat);
-        loadDfMenu.addSeparator();
-        loadDfMenu.add(xlsxFormat);
-        
-        //Save options.
-        JMenuItem saveDf = new JMenuItem("Save DataFrame");
-        JMenuItem loadModel = new JMenuItem("Load Model");
-        JMenuItem saveModel = new JMenuItem("Save Model");
-        file.add(loadDfMenu);
-        file.addSeparator();
-        file.add(loadModel);
-        file.addSeparator();
-        file.add(saveDf);
-        file.addSeparator();
-        file.add(saveModel);
-        return file;
-    }
     
     /**
      * Loads a dataframe given a filepath and option.
@@ -156,11 +79,13 @@ public class SibylGUI extends JFrame {
      * @param file
      * @param option
      */
-    private void loadDataframe(File file, int option) {
+    public void loadDataframe(File file, int option) {
         System.out.println("Loading data frame GUI");
         try {
             if (option == 0) {
-                this.dataFrame = DataFrame.read_csv(file.getAbsolutePath());
+                DataFrame dataFrame = DataFrame.read_csv(file.getAbsolutePath());
+                this.loadedDataFrames.put(dataFrame.getName(), dataFrame);
+                toolBar.addDataFrame(dataFrame.getName());
             } else if (option == 1) {
                 
             } else if (option == 2) {
@@ -173,66 +98,33 @@ public class SibylGUI extends JFrame {
     }
     
     
-    
-    private JMenu createViewsMenu() {
-        JMenu view = new JMenu("Views");
-        JMenuItem data = new JMenuItem("Data View");
-        data.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (initializedDF()) {
-                    refreshCenter(dataFrameDisplay());
-                }
-            }  
-        });
-        JMenuItem plot = new JMenuItem("Plot View");
-        plot.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (initializedDF()) {
-                    if (currentPlot == null) 
-                        currentPlot = new ScatterPlotView(dataFrame);
-                    refreshCenter(currentPlot);
-                }
-            }
-        });
-        view.add(data);
-        view.addSeparator();
-        view.add(plot);
-        return view;
-    }
-    
-    private boolean initializedDF() {
-        if (dataFrame == null) {
-            JOptionPane.showMessageDialog(this, "Dataframe has not been initialized.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        } else {
-            return true;
-        }
+    public void addPlotDisplay(String dfName) {
+        ScatterPlotView plot = new ScatterPlotView(loadedDataFrames.get(dfName));
+        addTab(dfName + " Plot", plot);
     }
     
       /**
       * Displays the entire dataframe
       */
-     private JScrollPane dataFrameDisplay() {
-         if (dataFrame == null) {
-             JOptionPane.showMessageDialog(this, "Dataframe has not been initialized.", "Error", JOptionPane.ERROR_MESSAGE);
-             return null;
+     public void addDataFrameDisplay(String dfName) {
+         DataFrame df = loadedDataFrames.get(dfName);
+         if (loadedDataFrames.size() == 0) {
+             JOptionPane.showMessageDialog(this, "No dataframes have been initialized.", "Error", JOptionPane.ERROR_MESSAGE);
          } else {
              JPanel panel = new JPanel();
-             panel.setLayout(new GridLayout(dataFrame.getNumRows() + 1, dataFrame.getNumColumns()));
+             panel.setLayout(new GridLayout(df.getNumRows() + 1, df.getNumColumns()));
              //Initialize the names of the columns
-             for (int i = 0; i < dataFrame.getNumRows(); i++) { 
-                 panel.add(new JLabel(dataFrame.getColumn(i).getName()));
+             for (int i = 0; i < df.getNumRows(); i++) { 
+                 panel.add(new JLabel(df.getColumn(i).getName()));
              }
              //Add all of the data from the data frame to the display.
-             for (int rowNum = 0; rowNum < dataFrame.getNumRows(); rowNum++) {
-                 for (int colNum = 0; colNum < dataFrame.getNumColumns(); colNum++) {
-                     JLabel textBox = new JLabel("" + dataFrame.getRow_byIndex(rowNum).getParticle(colNum).getValue());
+             for (int rowNum = 0; rowNum < df.getNumRows(); rowNum++) {
+                 for (int colNum = 0; colNum < df.getNumColumns(); colNum++) {
+                     JLabel textBox = new JLabel("" + df.getRow_byIndex(rowNum).getParticle(colNum).getValue());
                      panel.add(textBox);
                  }
              }
-             return new JScrollPane(panel);
+             addTab(dfName + " data", panel);
          }
      }
     
@@ -240,19 +132,16 @@ public class SibylGUI extends JFrame {
       * Refreshes the center view of the GUI.
       * @param center the new center. 
       */
-     private void refreshCenter(Component center) {
-         if (currentCenter != null) 
-             this.remove(currentCenter);
-         this.add(center, BorderLayout.CENTER);
+     private void addTab(String tabName, Component tab) {
+         centerTabs.addTab(tabName, tab);
          this.revalidate();
          this.repaint();
+         this.pack();
      }
 //    
 //    private JMenu createAlgorithmsMenu() {
 //        
 //    }
-    
-    
     
     /***********************************
      * OLD CODE !!!! 

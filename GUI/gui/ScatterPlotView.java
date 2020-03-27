@@ -44,6 +44,9 @@ public class ScatterPlotView extends JPanel{
 	/** The scatter plot in the current view. */
 	private Plot scatter;
 	
+	/** The name of the current plot. */
+	private String plotName;
+	
 	/**
 	 * Constructs a new scatter plot view
 	 * @param df the data frame to create a scatterplot view for. 

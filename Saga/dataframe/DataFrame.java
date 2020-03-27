@@ -57,13 +57,13 @@ public class DataFrame {
 		numColumns = 0;
 		
 	}
+	
 	/*
 	 * ##################################################################
 	 * 
 	 * 					DATAFRAME SETTERS
 	 * 
 	 * ##################################################################
-	 * 
 	 */
 	public void setName(String name) {
 		this.DataFrameName = name;

@@ -18,6 +18,7 @@ public class DataFrame_Read {
 	public static DataFrame loadcsv(String filePath) {
 	    DataFrame df = new DataFrame();
 	    try {
+	        df.setName(filePath.substring(filePath.lastIndexOf("\\") + 1));
 	        BufferedReader br = new BufferedReader(new FileReader(filePath));
 	        String[] columnNames = br.readLine().split(",");
 	        for (int i = 0; i < columnNames.length; i++) { //Initialize blank columns with column names.
