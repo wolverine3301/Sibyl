@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -14,15 +15,21 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dataframe.DataFrame;
+import dataframe.DataFrame_Read;
 import particles.Particle;
 
 public class SibylGUI extends JFrame {
@@ -53,6 +60,13 @@ public class SibylGUI extends JFrame {
     /** Holds the input values for a given column */
     private HashMap<String, String> variableInputs;
     
+    /**
+     * 
+     */
+    public SibylGUI() {
+        super(GUI_NAME);
+        start();
+    }
     
     /**
      * Constructs a new instance of the GUI.
@@ -72,17 +86,88 @@ public class SibylGUI extends JFrame {
      * Calls all methods required to build the GUI.
      */
     public void start() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
-        // Build the menu buttons.
-        buildOptionsMenu();
-        add(sdOptionsMenu, BorderLayout.NORTH);
-        buildGenericOptionsMenu();
-        add(genericOptionsMenu, BorderLayout.SOUTH);
+        this.setLayout(new BorderLayout());
+        this.add(createToolBar(), BorderLayout.NORTH);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setVisible(true);
+//        // Build the menu buttons.
+//        buildOptionsMenu();
+//        add(sdOptionsMenu, BorderLayout.NORTH);
+//        buildGenericOptionsMenu();
+//        add(genericOptionsMenu, BorderLayout.SOUTH);
 //        dataFrameDisplay();
 //        add(dataFrameDisplay, BorderLayout.CENTER);
-        pack();
+//        pack();
     }
+    
+    /**
+     * Creates the tool bar.
+     * @return
+     */
+    private JMenuBar createToolBar() {
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(createFileMenu());
+        
+        return menuBar;
+    }
+    
+    private JMenu createFileMenu() {
+        JMenu file = new JMenu("File");
+        JMenuItem loadDf = new JMenuItem("Open file");
+        loadDf.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileFilter(new FileNameExtensionFilter("CSV & TXT files", "csv", "txt"));
+                int returnVal = fileChooser.showOpenDialog(loadDf);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    loadDataframe(fileChooser.getSelectedFile());
+                }
+            }
+        });
+        JMenuItem saveDf = new JMenuItem("Save DataFrame");
+        file.add(loadDf);
+        file.addSeparator();
+        file.add(saveDf);
+        return file;
+    }
+    
+    private void loadDataframe(File file) {
+        this.dataFrame = DataFrame_Read.loadcsv_new(file.getAbsolutePath());
+        System.out.println("Loading data frame GUI");
+    }
+    
+    private JMenu createViewsMenu() {
+        JMenu view = new JMenu("Views");
+        JMenuItem plot = new JMenuItem("Plots");
+        
+    }
+    
+    private JMenu createAlgorithmsMenu() {
+        
+    }
+    
+    private JButton loadFileButton() {
+        JButton fileButton = new JButton("Load File");
+        fileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileFilter(new FileNameExtensionFilter("CSV & TXT files", "csv", "txt"));
+                int returnVal = fileChooser.showOpenDialog(fileButton);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    loadDataframe(fileChooser.getSelectedFile());
+                }
+            }
+        });
+        return fileButton;
+    }
+    
+    
+    
+    /***********************************
+     * OLD CODE !!!! 
+     ***********************************/
     
     /**
      * Builds the options/inputs menu.
@@ -146,6 +231,7 @@ public class SibylGUI extends JFrame {
             System.out.println(variableInputs); //temporary to check for proper storage of inputs.
         }
     }
+    
     /**
      * Builds the proportion of defaults and succsesses options menu.
      */

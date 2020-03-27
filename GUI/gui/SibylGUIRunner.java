@@ -22,9 +22,9 @@ public class SibylGUIRunner {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                //new FirstView().start();
-                DataFrame df = DataFrame_Read.loadcsv("testfiles/testing.csv");
-                new SibylGUI(df).start();
+                new SibylGUI();
+                //DataFrame df = DataFrame_Read.loadcsv("testfiles/testing.csv");
+                //new SibylGUI(df).start();
             }
         });
     }

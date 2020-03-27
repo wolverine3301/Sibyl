@@ -402,7 +402,7 @@ public class Column {
             char s2 = column.get(i + 1).type;
             char s3 = column.get(i + 2).type;
             if (s1 == s2 && s1 == s3) {
-                setType(Column.particleTypeToColumnType(s1));
+                resolveTypeNew(s1);
                 break;
             }
         }

@@ -22,7 +22,7 @@ public class FirstView extends JFrame {
     private static final long serialVersionUID = 1338600238686282192L;
     
     public FirstView() {
-        
+        super("Sibyl GUI");
     }
     
     public void start() {
@@ -70,8 +70,8 @@ public class FirstView extends JFrame {
     private void loadDataframe(File file) {
         DataFrame df = DataFrame_Read.loadcsv(file.getAbsolutePath());
         System.out.println("Loading data frame GUI");
+        this.dispose();
         new SibylGUI(df).start();
-        this.
     }
         
     private void loadModel(File file) {
