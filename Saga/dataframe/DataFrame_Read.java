@@ -9,89 +9,13 @@ import java.util.Arrays;
 import particles.Particle;
 
 public class DataFrame_Read {
-	/**
-	 * Construct a dataframe directly from a csv file, auto assumes there is a header line which it uses as the column names.
-	 * @param file  - csv file name or path
-	 * @param types - an array of strings to set the type attribute of the column, needs work and automization but will be usefully
-	 * for managing which functions to use on which type of column
-	 * 
-	 */
-	public static DataFrame loadcsv(String file) {
-		DataFrame df = new DataFrame();
-        String line = "";
-        String cvsSplitBy = ",";
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-        	line =  br.readLine(); //get column names
-        	String[] colNames = line.split(cvsSplitBy);
-        	for (int i = 0; i < colNames.length; i++) { //Initialize column names.
-        		df.addBlankColumn(colNames[i]);
-        	}
-            // initializing column objects
-            line = br.readLine();
-            String[] lines = line.split(cvsSplitBy);
-            Row row = new Row();
-            //initiallizes row 0
-            for(int i=0;i<df.columnNames.size();i++) {
-            	Particle p = Particle.resolveType(lines[i]);
-            	p.setIndex(0);
-            	if(p.type == 'i' || p.type == 'd') {
-            		df.numericIndexes.add(i);
-            		Column c = new Column(df.columnNames.get(i));
-            		c.add(p);
-            		c.setType('N');
-            		df.columns.add(c);
 
-            	}else if(p.type == 'n') {
-            		Column c = new Column(df.columnNames.get(i));
-            		c.add(p);
-            		c.setType('M');
-            		df.columns.add(c);
-            			
-            	}else {
-            		Column c = new Column(df.columnNames.get(i));
-            		c.add(p);
-            		c.setType('C');
-            		df.columns.add(c);
-
-            	}
-            	row.add(p);
-            }
-            df.rows.add(row);
-            // end row 0
-            //fill rest of rows
-            int cnt = 0;
-        	while ((line = br.readLine()) != null) { //Read in each line, create row objects and initialize data.
-                lines = line.split(cvsSplitBy);
-                row = new Row();
-                for(int i=0;i<df.columnNames.size();i++) { //load data into columns and rows
-                	Particle p = Particle.resolveType(lines[i]);
-                	p.setIndex(cnt);
-                	if(p.getType() == 's' && df.getColumn(i).getType() == 'N') {
-                		p = Particle.resolveType("NAN");
-                		p.setIndex(cnt);
-                	}
-                	df.columns.get(i).add(p);
-                	row.add(p);
-                }
-                cnt++;
-                df.rows.add(row);
-        	}
-        	for(int i = 0;i < df.columnNames.size();i++) {
-        	      df.getColumn(i).setStatistics();
-        	      df.columnTypes.add(df.columns.get(i).getType());
-        	}
-        	for(int i = 0; i < df.getNumColumns() ;i++) {
-        	    df.getColumn(i).setStatistics();
-        	}
-        	df.numRows = df.rows.size();
-        	df.numColumns = df.columns.size();
-        } catch (IOException e) {
-        	e.printStackTrace();
-        }
-		return df;
-	}
-	
-	public static DataFrame loadcsv_new(String filePath) {
+    /**
+     * Loads a csv formatted file.
+     * @param filePath the filepath of the file to read in.
+     * @return a fully initialized dataframe. 
+     */
+	public static DataFrame loadcsv(String filePath) {
 	    DataFrame df = new DataFrame();
 	    try {
 	        BufferedReader br = new BufferedReader(new FileReader(filePath));
