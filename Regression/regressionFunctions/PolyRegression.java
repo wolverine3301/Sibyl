@@ -363,7 +363,14 @@ public class PolyRegression extends Regression{
 		//}
 		this.matrix_x = x_matrix;
 	}
-	
+
+	public void get_SE_coeffiecents() {
+		double[][] m = inverse(this.matrix_x);
+		double[] SE = new double[m.length];
+		for(int i = 0; i < SE.length;i++) {
+			SE[i] = this.RMSD * Math.sqrt(m[i][i]);
+		}
+	}
 	public double predictY(Particle x_val) {
 		double y = 0;
 		for(int i = coefficent_matrix.length-1; i >= 0; i--) {

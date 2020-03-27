@@ -19,6 +19,13 @@ public abstract class Regression {
 	public double SP;  //sum of products
 	
 	public double R2;  //r squared
+	/**
+	 * Standard error is the estimated standard deviation. so the regression line is the mean
+	 * and the std is calculated from the distance from points to the line aka SSE
+	 * so variance is SUM[ (x-mean)^2) would be SUM[(y_i - y_predicted)^2]
+	 * and STD or standard error is SQRT(variance/N)
+	 */
+	public double SE;
 	public double SE_r;//standard error of the regression model = sqrt[ (1/n-1)*SSE ]
 	public double SE_m;//standard error of the mean
 	public double SE_f;//standard error of the forecast
@@ -100,6 +107,9 @@ public abstract class Regression {
 	}
 	private void set_SE_f() {
 		this.SE_f = Math.sqrt( Math.pow(this.SE_r, 2) + Math.pow(this.SE_m, 2) );
+	}
+	private void setSE() {
+		//this.SE = 
 	}
 	
 }
