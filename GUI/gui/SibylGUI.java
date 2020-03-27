@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,6 +25,22 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dataframe.DataFrame;
 import machinations.Model;
+
+
+
+/****
+ * TO DO: 
+ * - Add closeable tabs
+ * - Implement a more efficient way of displaying a dataframe
+ * - User inputted regression
+ * - Display confidence intervals
+ * - Model menu
+ * - Pipeline display
+ * - Menu on homescreen
+ * - AND MUCH MORE !
+ * @author Cade
+ *
+ */
 
 public class SibylGUI extends JFrame {
     /** THE KEY TO LIFE */
@@ -64,11 +82,22 @@ public class SibylGUI extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(toolBar, BorderLayout.NORTH);
         this.add(centerTabs, BorderLayout.CENTER);
+        buildHomeMenu();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         pack();
     }
     
+    
+    private void buildHomeMenu() {
+        JPanel homePanel = new JPanel();
+        JLabel startImage = new JLabel(new ImageIcon("BackgroundPics/ai_world.jpg"));
+        JLabel greeting = new JLabel("SIBYL GUI VERSION 0.1");
+        homePanel.setLayout(new BorderLayout());
+        homePanel.add(startImage, BorderLayout.CENTER);
+        homePanel.add(greeting, BorderLayout.NORTH);
+        addTab("Home", homePanel);
+    }
     
     /**
      * Loads a dataframe given a filepath and option.
@@ -114,7 +143,7 @@ public class SibylGUI extends JFrame {
              JPanel panel = new JPanel();
              panel.setLayout(new GridLayout(df.getNumRows() + 1, df.getNumColumns()));
              //Initialize the names of the columns
-             for (int i = 0; i < df.getNumRows(); i++) { 
+             for (int i = 0; i < df.getNumColumns(); i++) { 
                  panel.add(new JLabel(df.getColumn(i).getName()));
              }
              //Add all of the data from the data frame to the display.
@@ -124,10 +153,16 @@ public class SibylGUI extends JFrame {
                      panel.add(textBox);
                  }
              }
-             addTab(dfName + " data", panel);
+             addTab(dfName + " data", new JScrollPane(panel));
          }
      }
     
+     private void refresh() {
+         this.revalidate();
+         this.repaint();
+         this.pack();
+     }
+     
      /**
       * Refreshes the center view of the GUI.
       * @param center the new center. 
@@ -136,7 +171,6 @@ public class SibylGUI extends JFrame {
          centerTabs.addTab(tabName, tab);
          this.revalidate();
          this.repaint();
-         this.pack();
      }
 //    
 //    private JMenu createAlgorithmsMenu() {
