@@ -14,7 +14,9 @@ import javax.swing.SwingUtilities;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.function.Function2D;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -47,7 +49,7 @@ public class Plot extends JPanel{
 	        "X-Axis", "Y-Axis", dataset);
 	    //Changes background color
 	    XYPlot plot = (XYPlot)chart.getPlot();
-	    plot.setBackgroundPaint(new Color(145,130,255));
+	    plot.setBackgroundPaint(new Color(255, 255, 255));
 	    // Create Panel
 	    this.panel = new ChartPanel(chart);
 
@@ -59,83 +61,53 @@ public class Plot extends JPanel{
      * @param y the y column.
      * @param regressionLine the regression line to plot. 
      */
-    public Plot(Column x, Column y, ArrayList<Regression> regression, double regPlotDistance) {
+    public Plot(Column x, Column y, ArrayList<Regression> regressions, int functionSamples) {
         this.x = x;
         this.y = y;
-        XYDataset dataset = regressionLinesAndPlot(x.min - x.std, x.max + x.std, regression, regPlotDistance);
-        JFreeChart chart = ChartFactory.createScatterPlot(
-                x.getName() + " vs. " + y.getName(), 
-                "X-Axis", "Y-Axis", dataset);
-        XYPlot plot = (XYPlot)chart.getPlot();
-        plot.setBackgroundPaint(new Color(145,130,255));
+        XYPlot plot = createPlot(regressions, functionSamples);
+        JFreeChart chart = new JFreeChart("ScatterPlot of " + x.getName() + " vs. " + y.getName(),
+                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         // Create Panel
-        this.panel = new ChartPanel(chart);
+        ChartPanel view = new ChartPanel(chart);
+        this.panel = view;
     }
-    
-	/**
-	 * Plots a set of columns with a regression line.
-	 * @param x the x column.
-	 * @param y the y column.
-	 * @param regressionLine the regression line to plot. 
-	 */
-	public Plot(Column x, Column y, ArrayList<Regression> regression) {
-	    this.x = x;
-	    this.y = y;
-	    XYDataset dataset = regressionLinesAndPlot(x.min - x.std, x.max + x.std, regression, 0.1);
-        JFreeChart chart = ChartFactory.createScatterPlot(
-                x.getName() + " vs. " + y.getName(), 
-                "X-Axis", "Y-Axis", dataset);
-        XYPlot plot = (XYPlot)chart.getPlot();
-        plot.setBackgroundPaint(new Color(145,130,255));
-        // Create Panel
-        this.panel = new ChartPanel(chart);
-	}
 	
-	private XYPlot createPlot(ArrayList<Regression> regressions) {
+	private XYPlot createPlot(ArrayList<Regression> regressions, int functionSamples) {
 	    XYPlot plot = new XYPlot();
-	    XYDataset scatter = getColumnPlot();
-	    plot.setDataset(0, );
+	    plot.setDataset(0, getColumnPlot());
+	    plot.setRenderer(new XYLineAndShapeRenderer(false, true));
+	    plot.setDomainAxis(0, new NumberAxis("Scatterplot domain"));
+        plot.setRangeAxis(0, new NumberAxis("Scatterplot range"));
+	    int count = 1;
+	    for (Regression r : regressions) {
+	        plot.setDataset(count, getRegressionPlot(r, x.min - x.std, x.max + x.std, functionSamples));
+	        plot.setRenderer(count++, new XYLineAndShapeRenderer(true, false));
+	    }
+	    return plot;
 	}
 	
+	private XYDataset getRegressionPlot(Regression r, double startValue, double endValue, int numSamples) {
+	    XYSeries rLine = new XYSeries(r.getEquation(), false);
+	    double step = (endValue - startValue) / (numSamples - 1);
+	    for (double i = startValue; i < endValue; i += step) {
+            double yVal = r.predictY(Particle.resolveType(i));
+            rLine.add(i, yVal);
+        }
+	    XYSeriesCollection data = new XYSeriesCollection();
+	    data.addSeries(rLine);
+	    return data;
+	}
 	
 	private XYDataset getColumnPlot() {
 	    XYSeriesCollection xvsy = new XYSeriesCollection();
-	    for (int i = 0; i < x.getLength(); i++) {
-	        
-	    }
-	}
-	
-	
-	/**
-	 * Creates an XYDataset with a regression line and scatterplot. 
-	 * @param startValue the start value of the regression line. 
-	 * @param endValue the end value of the regression line.
-	 * @param regression the regression object. 
-	 * @return an XYDataset with a regression line and scatterplot. 
-	 */
-	private XYDataset regressionLinesAndPlot(double startValue, double endValue, ArrayList<Regression> regressions, double regDistance) {
-        XYSeriesCollection dataset = new XYSeriesCollection();
         XYSeries series = new XYSeries(x.getName() + " vs. " + y.getName());
         //Plot the points from the two columns. 
         for(int i = 0; i < x.getLength(); i++) {
             series.add(x.getDoubleValue(i), y.getDoubleValue(i));
         }
-        dataset.addSeries(series);
-        //Plot each individual regression line. 
-        for (Regression r : regressions) {
-            XYDataset rLine = new XYSeries(r.getEquation());
-            for (double i = startValue; i < endValue; i += regDistance) {
-                double yVal = r.predictY(Particle.resolveType(i));
-                try {
-                    rLine.add(i, yVal);
-                } catch (Exception e) {
-                    
-                }
-            }
-            
-        }
-        return dataset;
-    }
+        xvsy.addSeries(series);
+        return xvsy;
+	}
 	
 	/**
 	 * Creates an XYDataset containing the values from a data frame.

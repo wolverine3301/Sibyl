@@ -52,7 +52,7 @@ public class ScatterPlotView extends JPanel{
 	/** The name of the current plot. */
 	private String plotName;
 	
-	private JTextField regressionPointFrequency;
+	private JTextField numRegressionSamples;
 	
 	/**
 	 * Constructs a new scatter plot view
@@ -83,7 +83,7 @@ public class ScatterPlotView extends JPanel{
 	 */
 	public void start(boolean plotRegression) {
 	    if (plotRegression) 
-	        scatter = new Plot(col_x, col_y, plottedRegressions);
+	        scatter = new Plot(col_x, col_y, plottedRegressions, 20);
 	    else 
 	        scatter = new Plot(col_x, col_y);
 	    
@@ -129,16 +129,16 @@ public class ScatterPlotView extends JPanel{
 	private JMenu createRegressionMenu() {
 	    JMenu r = new JMenu("Regression");
 	    //Setup the distance input. 
-	    JMenu distance = new JMenu("Regresion Point Frequency");
+	    JMenu distance = new JMenu("Regresion Sample Count");
 	    distance.setToolTipText("Changes the distance bewteen each point\nplotted in a regression line.");
-	    regressionPointFrequency = new JTextField("0.01", 7);
-	    regressionPointFrequency.addActionListener(new ActionListener() {
+	    numRegressionSamples = new JTextField("20", 7);
+	    numRegressionSamples.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 refreshPanel(true);
             }
 	    });
-	    distance.add(regressionPointFrequency);
+	    distance.add(numRegressionSamples);
 	    //Polynomial regression input. 
 	    JMenuItem generatePR = new JMenuItem("Generate Polynomial Regression");
 	    generatePR.addActionListener(new ActionListener() {
@@ -280,11 +280,11 @@ public class ScatterPlotView extends JPanel{
 	    Plot newScatter;
 	    if (plotRegressions && plottedRegressions.size() != 0) {
 	        try {
-	            double distance = Double.parseDouble(regressionPointFrequency.getText());
+	            double distance = Double.parseDouble(numRegressionSamples.getText());
 	            if (distance <= 0.0)
 	                 JOptionPane.showMessageDialog(this, "Error: Distance between regression points cannot be less than or"
 	                         + "equal to zero.", "Error", JOptionPane.ERROR_MESSAGE);
-	            newScatter = new Plot(col_x, col_y, plottedRegressions, distance);
+	            newScatter = new Plot(col_x, col_y, plottedRegressions, (int) distance);
 	        } catch (NumberFormatException e) {
 	            JOptionPane.showMessageDialog(this, "Error with regression point frequency input.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;

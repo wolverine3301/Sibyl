@@ -67,6 +67,9 @@ public abstract class Regression {
 	 * @return
 	 */
 	public abstract double predictY(Particle x_val);
+	
+	
+	
 	/**
 	 * set total sum of squares
 	 */
