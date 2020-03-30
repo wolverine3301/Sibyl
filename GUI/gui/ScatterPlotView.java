@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.SplashScreen;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -14,6 +15,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import dataframe.Column;
 import dataframe.DataFrame;
@@ -44,8 +46,13 @@ public class ScatterPlotView extends JPanel{
 	/** The scatter plot in the current view. */
 	private Plot scatter;
 	
+	/** The current regressions plotted in the view. */
+	private ArrayList<Regression> plottedRegressions; 
+	
 	/** The name of the current plot. */
 	private String plotName;
+	
+	private JTextField regressionPointFrequency;
 	
 	/**
 	 * Constructs a new scatter plot view
@@ -54,34 +61,32 @@ public class ScatterPlotView extends JPanel{
 	public ScatterPlotView(DataFrame df) {
 	    super();
 	    this.df = df;
+	    plottedRegressions = new ArrayList<Regression>();
 	    col_x = df.getColumn(df.numericIndexes.get(0));
 	    col_y = df.getColumn(df.numericIndexes.get(0));
-	    start();
+	    start(false);
 	}
 	
-	public ScatterPlotView(Column x, Column y, Regression regression) {
-	    super();
-	    col_x = x;
-	    col_y = y;
-	    start(regression);
-	}
-	
-	/**
-	 * Starts a view with a polynomial regression.
-	 * @param regression the regression to start the 
-	 */
-	private void start(Regression regression) {
-        scatter = new Plot(col_x, col_y, regression);
-        this.setLayout(new BorderLayout());
-        this.add(optionPanel(), BorderLayout.NORTH);
-        this.add(scatter.panel, BorderLayout.CENTER);
+	public ScatterPlotView(DataFrame df, Regression regression) {
+        super();
+        this.df = df;
+        plottedRegressions = new ArrayList<Regression>();
+        col_x = df.getColumn(df.numericIndexes.get(0));
+        col_y = df.getColumn(df.numericIndexes.get(0));
+	    plottedRegressions = new ArrayList<Regression>();
+	    plottedRegressions.add(regression);
+	    start(true);
 	}
 	
 	/**
 	 * Handles initializing everything in the panel. 
 	 */
-	public void start() {
-		scatter = new Plot(df.getColumn(df.numericIndexes.get(0)), df.getColumn(df.numericIndexes.get(0)));
+	public void start(boolean plotRegression) {
+	    if (plotRegression) 
+	        scatter = new Plot(col_x, col_y, plottedRegressions);
+	    else 
+	        scatter = new Plot(col_x, col_y);
+	    
 		this.setLayout(new BorderLayout());
 		this.add(optionPanel(), BorderLayout.NORTH);
 		this.add(scatter.panel, BorderLayout.CENTER);
@@ -114,8 +119,27 @@ public class ScatterPlotView extends JPanel{
 	    return file;
 	}
 	
+//	private JScrollPanel regressionInfo() {
+//	    JPanel panel;
+//	    for (Regression r : plottedRegressions) { //For each regression, plot it's info. 
+//	        
+//	    }
+//	}
+	
 	private JMenu createRegressionMenu() {
 	    JMenu r = new JMenu("Regression");
+	    //Setup the distance input. 
+	    JMenu distance = new JMenu("Regresion Point Frequency");
+	    distance.setToolTipText("Changes the distance bewteen each point\nplotted in a regression line.");
+	    regressionPointFrequency = new JTextField("0.01", 7);
+	    regressionPointFrequency.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refreshPanel(true);
+            }
+	    });
+	    distance.add(regressionPointFrequency);
+	    //Polynomial regression input. 
 	    JMenuItem generatePR = new JMenuItem("Generate Polynomial Regression");
 	    generatePR.addActionListener(new ActionListener() {
             @Override
@@ -123,6 +147,7 @@ public class ScatterPlotView extends JPanel{
                 regressionInput(RegressionType.POLYNOMIAL);
             }
 	    });
+	    //Linear regression input
 	    JMenuItem generateLin = new JMenuItem("Generate Linear Regression");
 	    generateLin.addActionListener(new ActionListener() {
             @Override
@@ -131,7 +156,7 @@ public class ScatterPlotView extends JPanel{
             }
 	        
 	    });
-	    
+	    //Log regression button
 	    JMenuItem generateLog = new JMenuItem("Generate Logarithmic Regression");
 	    generateLog.addActionListener(new ActionListener() {
             @Override
@@ -139,14 +164,22 @@ public class ScatterPlotView extends JPanel{
                 regressionInput(RegressionType.LOGARITHMIC);
             }
 	    });
+	    
+	    //Distance between points
 	    r.add(generateLin);
 	    r.addSeparator();
 	    r.add(generatePR);
 	    r.addSeparator();
 	    r.add(generateLog);
+	    r.addSeparator();
+	    r.add(distance);
 	    return r;
 	}
 	
+	/**
+	 * Generates a new regression. 
+	 * @param type
+	 */
 	private void regressionInput(RegressionType type) {
 	    switch (type) {
 	        case POLYNOMIAL:
@@ -158,20 +191,20 @@ public class ScatterPlotView extends JPanel{
 	                    break;
 	                }
 	                //showLoadingScreen("Preparing polynomial regression for " + col_x.getName() + " vs. " + col_y.getName()); //NEED THREADS FOR THIS
-	                PolyRegression polyR = new PolyRegression(col_x, col_y, deg);
-	                refreshPanel(polyR);
+	                plottedRegressions.add(new PolyRegression(col_x, col_y, deg));
+	                refreshPanel(true);
 	            } catch (Exception e) {
 	                JOptionPane.showMessageDialog(this, "Error when generating regression.", "Error", JOptionPane.ERROR_MESSAGE);
 	            }
 	            break;
 	        case LOGARITHMIC:
-	                LogRegression logR = new LogRegression(col_x, col_y);
-	                refreshPanel(logR);
+	                plottedRegressions.add(new LogRegression(col_x, col_y));
+	                refreshPanel(true);
 	            break;
 	        case LINEAR:
 	            try {
-	                LinearRegression linR = new LinearRegression(col_x, col_y);
-	                refreshPanel(linR);
+	                plottedRegressions.add(new LinearRegression(col_x, col_y));
+	                refreshPanel(true);
 	            } catch (Exception e) {
 	                JOptionPane.showMessageDialog(this, "Error when generating regression.", "Error", JOptionPane.ERROR_MESSAGE);
 	            }
@@ -190,7 +223,7 @@ public class ScatterPlotView extends JPanel{
 	    cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                refreshPanel();
+                refreshPanel(false);
             }
 	    });
 	    panel.setLayout(new BorderLayout());
@@ -217,14 +250,14 @@ public class ScatterPlotView extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 col_x = df.getColumn_byName((String) xNames.getSelectedItem());
-                refreshPanel();
+                refreshPanel(false);
             } 
         });
         yNames.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 col_y = df.getColumn_byName((String) yNames.getSelectedItem());
-                refreshPanel();
+                refreshPanel(false);
             }
         });
         panel.add(xNames);
@@ -243,8 +276,26 @@ public class ScatterPlotView extends JPanel{
 	/**
 	 * Refreshes the panel. Used to update scatter plot.
 	 */
-	private void refreshPanel() {
-	    Plot newScatter = new Plot(col_x, col_y);
+	private void refreshPanel(boolean plotRegressions) {
+	    Plot newScatter;
+	    if (plotRegressions && plottedRegressions.size() != 0) {
+	        try {
+	            double distance = Double.parseDouble(regressionPointFrequency.getText());
+	            if (distance <= 0.0)
+	                 JOptionPane.showMessageDialog(this, "Error: Distance between regression points cannot be less than or"
+	                         + "equal to zero.", "Error", JOptionPane.ERROR_MESSAGE);
+	            newScatter = new Plot(col_x, col_y, plottedRegressions, distance);
+	        } catch (NumberFormatException e) {
+	            JOptionPane.showMessageDialog(this, "Error with regression point frequency input.", "Error", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        } catch (Exception e) {
+	            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+	    } else {
+	        newScatter = new Plot(col_x, col_y);
+	        plottedRegressions.clear(); // Clear all currently plotted regressions. 
+	    }
 	    this.remove(scatter.panel);
 	    scatter = newScatter;
 	    this.add(scatter.panel, BorderLayout.CENTER);
@@ -253,17 +304,17 @@ public class ScatterPlotView extends JPanel{
 	}
 	
 	/**
-	 * Refreshes panel, used to update scatter plot with a regression. 
+	 * Refreshes panel, used to update scatter plot with a SINGLE regression. 
 	 * @param r the regresssion to plot. 
 	 */
-	private void refreshPanel(Regression r) {
-        Plot newScatter = new Plot(col_x, col_y, r);
-        this.remove(scatter.panel);
-        scatter = newScatter;
-        this.add(scatter.panel, BorderLayout.CENTER);
-        this.revalidate();
-        this.repaint();
-	}
+//	private void refreshPanel(Regression r) {
+//        Plot newScatter = new Plot(col_x, col_y, r);
+//        this.remove(scatter.panel);
+//        scatter = newScatter;
+//        this.add(scatter.panel, BorderLayout.CENTER);
+//        this.revalidate();
+//        this.repaint();
+//	}
 	
 	private enum RegressionType {
 	    POLYNOMIAL, LINEAR, LOGARITHMIC;

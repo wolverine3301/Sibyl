@@ -17,7 +17,7 @@ public class scatterplotRun {
 //        Column y = new Column(a2);
 //        PolyRegression p = new PolyRegression(x,y,4);
 //        ScatterPlotView plot = new ScatterPlotView(x, y, p);
-		DataFrame df = DataFrame_Read.loadcsv_new(file);
+		DataFrame df = DataFrame_Read.loadcsv(file);
 		ScatterPlotView plot = new ScatterPlotView(df);
         JFrame frame = new JFrame("Test");
         frame.add(plot);
