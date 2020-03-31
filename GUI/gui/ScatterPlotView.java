@@ -1,12 +1,19 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -14,7 +21,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import dataframe.Column;
 import dataframe.DataFrame;
@@ -46,12 +56,12 @@ public class ScatterPlotView extends JPanel{
 	private Plot scatter;
 	
 	/** The current regressions plotted in the view. */
-	private ArrayList<Regression> plottedRegressions; 
+	private HashSet<Regression> plottedRegressions; 
 	
-	/** The name of the current plot. */
-	private String plotName;
-	
+	/** The number of regression samples to take for the regression lines. (more samples = smoother line) */
 	private JTextField numRegressionSamples;
+	
+	private JPanel regressionInfo;
 	
 	/**
 	 * Constructs a new scatter plot view
@@ -60,19 +70,23 @@ public class ScatterPlotView extends JPanel{
 	public ScatterPlotView(DataFrame df) {
 	    super();
 	    this.df = df;
-	    plottedRegressions = new ArrayList<Regression>();
+	    plottedRegressions = new HashSet<Regression>();
 	    col_x = df.getColumn(df.numericIndexes.get(0));
 	    col_y = df.getColumn(df.numericIndexes.get(0));
 	    start(false);
 	}
 	
+	/**
+	 * Creates a scatter plot view given a dataframe and already created regression. 
+	 * @param df the dataframe to plot.
+	 * @param regression the regression to plot. 
+	 */
 	public ScatterPlotView(DataFrame df, Regression regression) {
         super();
         this.df = df;
-        plottedRegressions = new ArrayList<Regression>();
         col_x = df.getColumn(df.numericIndexes.get(0));
         col_y = df.getColumn(df.numericIndexes.get(0));
-	    plottedRegressions = new ArrayList<Regression>();
+	    plottedRegressions = new HashSet<Regression>();
 	    plottedRegressions.add(regression);
 	    start(true);
 	}
@@ -85,13 +99,18 @@ public class ScatterPlotView extends JPanel{
 	        scatter = new Plot(col_x, col_y, plottedRegressions, 20);
 	    else 
 	        scatter = new Plot(col_x, col_y);
-	    
+	    regressionPanel();
 		this.setLayout(new BorderLayout());
 		this.add(optionPanel(), BorderLayout.NORTH);
-		this.add(scatter.panel, BorderLayout.CENTER);
+		this.add(scatter.getPlot(), BorderLayout.CENTER);
 		this.add(axisSelectPanel(), BorderLayout.SOUTH);
+		this.add(regressionInfo, BorderLayout.EAST);
 	}
 	
+	/**
+	 * The main option menu/toolbar.
+	 * @return 
+	 */
 	private JMenuBar optionPanel() {
 	    JMenuBar menuBar = new JMenuBar();
 	    JMenu file = createFileMenu();
@@ -118,18 +137,86 @@ public class ScatterPlotView extends JPanel{
 	    return file;
 	}
 	
-//	private JScrollPanel regressionInfo() {
+	private void regressionPanel() {
+	    JPanel panel = new JPanel();
+	    JLabel baseRegressions = new JLabel("Base Regressions");
+	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+	    JCheckBox linear = new JCheckBox("Linear Regression");
+	    linear.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    removeLinearOrLogRegression(RegressionType.LINEAR);
+                } else {
+                    regressionInput(RegressionType.LINEAR);
+                }
+            }
+	    });
+	    JCheckBox log = new JCheckBox("Logarithmic Regression");
+	    log.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    removeLinearOrLogRegression(RegressionType.LOGARITHMIC);
+                } else {
+                    regressionInput(RegressionType.LOGARITHMIC);
+                }
+            }
+        });
+	    JLabel polyLabel = new JLabel("Polynomial Regressions");
+	    JCheckBox poly = new JCheckBox("Polynomial Regression");
+	    poly.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.DESELECTED) {
+
+                } else {
+                    regressionInput(RegressionType.POLYNOMIAL);
+                }
+            }
+        });
+	    panel.add(baseRegressions);
+	    panel.add(linear);
+	    panel.add(log);
+	    panel.add(polyLabel);
+	    panel.add(poly);
+	    regressionInfo = panel;
+	}
+	
+	
+	private void removeLinearOrLogRegression(RegressionType type) {
+	    Regression toRemove = null;
+	    for (Regression r : plottedRegressions) {
+	        if (type == RegressionType.LINEAR && r instanceof LinearRegression) {
+	            toRemove = r; 
+	            break;
+	        } else if (type == RegressionType.LOGARITHMIC && r instanceof LogRegression) {
+	            toRemove = r;
+	            break;
+	        }
+	    }
+	    if (toRemove != null) {
+	        plottedRegressions.remove(toRemove);
+	        refreshPanel(true);
+	    }
+	}
+	
+//	private JScrollPane regressionInfo() {
 //	    JPanel panel;
 //	    for (Regression r : plottedRegressions) { //For each regression, plot it's info. 
 //	        
 //	    }
 //	}
 	
+	/**
+	 * Creates the regression options menu. 
+	 * @return the regression options menu.
+	 */
 	private JMenu createRegressionMenu() {
 	    JMenu r = new JMenu("Regression");
 	    //Setup the distance input. 
 	    JMenu distance = new JMenu("Regresion Sample Count");
-	    distance.setToolTipText("Changes the distance bewteen each point\nplotted in a regression line.");
+	    distance.setToolTipText("Changes the distance bewteen each point\n plotted in a regression line.");
 	    numRegressionSamples = new JTextField("20", 7);
 	    numRegressionSamples.addActionListener(new ActionListener() {
             @Override
@@ -266,7 +353,7 @@ public class ScatterPlotView extends JPanel{
 	}
 	
 	private void refreshPanel(JPanel panel) {
-	    this.remove(scatter.panel);
+	    this.remove(scatter.getPlot());
 	    this.add(panel, BorderLayout.CENTER);
 	    this.revalidate();
 	    this.repaint();
@@ -281,8 +368,8 @@ public class ScatterPlotView extends JPanel{
 	        try {
 	            double distance = Double.parseDouble(numRegressionSamples.getText());
 	            if (distance <= 0.0)
-	                 JOptionPane.showMessageDialog(this, "Error: Distance between regression points cannot be less than or"
-	                         + "equal to zero.", "Error", JOptionPane.ERROR_MESSAGE);
+	                 JOptionPane.showMessageDialog(this, "Error: Regression sample interval cannot be less than or"
+	                         + " equal to zero.", "Error", JOptionPane.ERROR_MESSAGE);
 	            newScatter = new Plot(col_x, col_y, plottedRegressions, (int) distance);
 	        } catch (NumberFormatException e) {
 	            JOptionPane.showMessageDialog(this, "Error with regression point frequency input.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -294,12 +381,22 @@ public class ScatterPlotView extends JPanel{
 	    } else {
 	        newScatter = new Plot(col_x, col_y);
 	        plottedRegressions.clear(); // Clear all currently plotted regressions. 
+	        deselectCheckboxes();
 	    }
-	    this.remove(scatter.panel);
+	    this.remove(scatter.getPlot());
 	    scatter = newScatter;
-	    this.add(scatter.panel, BorderLayout.CENTER);
+	    this.add(scatter.getPlot(), BorderLayout.CENTER);
 	    this.revalidate();
 	    this.repaint();
+	}
+	
+	private void deselectCheckboxes() {
+	    Component[] components = regressionInfo.getComponents();
+	    for (int i = 0; i < components.length; i++) {
+	        if (components[i] instanceof JCheckBox) {
+	            ((JCheckBox) components[i]).setSelected(false);
+	        }
+	    }
 	}
 	
 	/**
@@ -315,6 +412,10 @@ public class ScatterPlotView extends JPanel{
 //        this.repaint();
 //	}
 	
+	/**
+	 * Enum indicating which regression type is being created. 
+	 * @author Cade
+	 */
 	private enum RegressionType {
 	    POLYNOMIAL, LINEAR, LOGARITHMIC;
 	}

@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.swing.JPanel;
 
@@ -30,8 +31,8 @@ public class Plot extends JPanel{
 	private Column x,y;
 	
 	/** The chartpanel which displays the scatter plot. */
-	public ChartPanel panel;
-	
+	private ChartPanel panel;
+
 	/**
 	 * Creates a plot given two columns.
 	 * @param x the x column.
@@ -54,7 +55,7 @@ public class Plot extends JPanel{
      * @param y the y column.
      * @param regressionLine the regression line to plot. 
      */
-    public Plot(Column x, Column y, ArrayList<Regression> regressions, int functionSamples) {
+    public Plot(Column x, Column y, HashSet<Regression> regressions, int functionSamples) {
         this.x = x;
         this.y = y;
         XYPlot plot = createPlot(regressions, functionSamples);
@@ -64,6 +65,14 @@ public class Plot extends JPanel{
         ChartPanel view = new ChartPanel(chart);
         this.panel = view;
     }
+    
+    /**
+     * Returns the created plot in the form of a chartpanel.
+     * @return the created plot in the form of a chartpanel. 
+     */
+    public ChartPanel getPlot() {
+        return panel;
+    }
 	
     /**
      * Creates a plot of the given data. 
@@ -71,7 +80,7 @@ public class Plot extends JPanel{
      * @param functionSamples
      * @return
      */
-	private XYPlot createPlot(ArrayList<Regression> regressions, int functionSamples) {
+	private XYPlot createPlot(HashSet<Regression> regressions, int functionSamples) {
 	    XYPlot plot = new XYPlot();
 	    plot.setDataset(0, getColumnPlot());
 	    plot.setRenderer(new XYLineAndShapeRenderer(false, true));
@@ -93,6 +102,14 @@ public class Plot extends JPanel{
 	    return plot;
 	}
 	
+	/**
+	 * Creates a plot for a given regression.
+	 * @param r the regression.
+	 * @param startValue the value to begin plotting at.
+	 * @param endValue the value to end plotting at.
+	 * @param numSamples the number of samples to take from the plot. Higher sample number, the smoother the line.
+	 * @return An XYDataset containing a regression plot.
+	 */
 	private XYDataset getRegressionPlot(Regression r, double startValue, double endValue, int numSamples) {
 	    XYSeries rLine = new XYSeries(r.getEquation(), false);
 	    double step = (endValue - startValue) / (numSamples - 1);
@@ -105,6 +122,10 @@ public class Plot extends JPanel{
 	    return data;
 	}
 	
+	/**
+	 * Plots the given columns in the axises. 
+	 * @return an XYDataset containing the two columns plotted against eachother. 
+	 */
 	private XYDataset getColumnPlot() {
 	    XYSeriesCollection xvsy = new XYSeriesCollection();
         XYSeries series = new XYSeries(x.getName() + " vs. " + y.getName());
