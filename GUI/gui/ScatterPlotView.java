@@ -56,7 +56,10 @@ public class ScatterPlotView extends JPanel{
 	private Plot scatter;
 	
 	/** The current regressions plotted in the view. */
-	private HashSet<Regression> plottedRegressions; 
+	private HashSet<Regression> allRegressions; 
+	
+	/** The regressions to plot. */
+	private HashSet<Regression> regressionsToPlot;
 	
 	/** The number of regression samples to take for the regression lines. (more samples = smoother line) */
 	private JTextField numRegressionSamples;
@@ -70,7 +73,8 @@ public class ScatterPlotView extends JPanel{
 	public ScatterPlotView(DataFrame df) {
 	    super();
 	    this.df = df;
-	    plottedRegressions = new HashSet<Regression>();
+	    allRegressions = new HashSet<Regression>();
+	    regressionsToPlot = new HashSet<Regression>();
 	    col_x = df.getColumn(df.numericIndexes.get(0));
 	    col_y = df.getColumn(df.numericIndexes.get(0));
 	    start(false);
@@ -86,8 +90,9 @@ public class ScatterPlotView extends JPanel{
         this.df = df;
         col_x = df.getColumn(df.numericIndexes.get(0));
         col_y = df.getColumn(df.numericIndexes.get(0));
-	    plottedRegressions = new HashSet<Regression>();
-	    plottedRegressions.add(regression);
+	    allRegressions = new HashSet<Regression>();
+	    regressionsToPlot = new HashSet<Regression>();
+	    addRegression(regression);
 	    start(true);
 	}
 	
@@ -96,7 +101,7 @@ public class ScatterPlotView extends JPanel{
 	 */
 	public void start(boolean plotRegression) {
 	    if (plotRegression) 
-	        scatter = new Plot(col_x, col_y, plottedRegressions, 20);
+	        scatter = new Plot(col_x, col_y, allRegressions, 20);
 	    else 
 	        scatter = new Plot(col_x, col_y);
 	    regressionPanel();
@@ -139,54 +144,85 @@ public class ScatterPlotView extends JPanel{
 	
 	private void regressionPanel() {
 	    JPanel panel = new JPanel();
-	    JLabel baseRegressions = new JLabel("Base Regressions");
 	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-	    JCheckBox linear = new JCheckBox("Linear Regression");
-	    linear.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.DESELECTED) {
-                    removeLinearOrLogRegression(RegressionType.LINEAR);
-                } else {
-                    regressionInput(RegressionType.LINEAR);
-                }
-            }
-	    });
-	    JCheckBox log = new JCheckBox("Logarithmic Regression");
-	    log.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.DESELECTED) {
-                    removeLinearOrLogRegression(RegressionType.LOGARITHMIC);
-                } else {
-                    regressionInput(RegressionType.LOGARITHMIC);
-                }
-            }
-        });
-	    JLabel polyLabel = new JLabel("Polynomial Regressions");
-	    JCheckBox poly = new JCheckBox("Polynomial Regression");
-	    poly.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.DESELECTED) {
-
-                } else {
-                    regressionInput(RegressionType.POLYNOMIAL);
-                }
-            }
-        });
-	    panel.add(baseRegressions);
-	    panel.add(linear);
-	    panel.add(log);
-	    panel.add(polyLabel);
-	    panel.add(poly);
+	    panel.add(regressionButtons());
+	    JLabel info = new JLabel("Equations: ");
+	    panel.add(info);
 	    regressionInfo = panel;
 	}
 	
+	private JPanel regressionButtons() {
+	    JPanel panel = new JPanel();
+        JLabel baseRegressions = new JLabel("Generate Regressions");
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JButton linear = new JButton("Linear Regression");
+        linear.setSelected(false);
+        linear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                regressionInput(RegressionType.LINEAR);
+            }
+        });
+        JButton log = new JButton("Logarithmic Regression");
+        log.setSelected(false);
+        log.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                regressionInput(RegressionType.LOGARITHMIC);
+            }
+        });
+        JButton poly = new JButton("Polynomial Regression");
+        poly.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                regressionInput(RegressionType.POLYNOMIAL);
+            }
+        });
+        poly.setSelected(false);
+        panel.add(baseRegressions);
+        panel.add(linear);
+        panel.add(log);
+        panel.add(poly);
+        return panel;
+	}
 	
+	
+	private void drawExistingRegression(String regressionFunction) {
+	    Regression toAdd = null;
+	    System.out.println(regressionFunction);
+	    for (Regression r : allRegressions) {
+	        if (r.getEquation().equals(regressionFunction)) {
+	            toAdd = r;
+	            break;
+	        }
+	    }
+	    if (toAdd != null) {
+	        regressionsToPlot.add(toAdd);
+	        refreshPanel(true);
+	    }
+	}
+	
+	private void removePolyRegression(String regressionFunction) {
+	    Regression toRemove = null;
+	    for (Regression r : regressionsToPlot) {
+	        if (r instanceof PolyRegression && r.getEquation().equals(regressionFunction)) {
+	            toRemove = r;
+	            break;
+	        }
+	    }
+	    if (toRemove != null) {
+	        regressionsToPlot.remove(toRemove);
+	        refreshPanel(true);
+	    }
+	}
+	
+	/**
+	 * Removes a linear or logarithmic regression from the plot.
+	 * @param type the regression type to remove. 
+	 */
 	private void removeLinearOrLogRegression(RegressionType type) {
 	    Regression toRemove = null;
-	    for (Regression r : plottedRegressions) {
+	    for (Regression r : regressionsToPlot) {
 	        if (type == RegressionType.LINEAR && r instanceof LinearRegression) {
 	            toRemove = r; 
 	            break;
@@ -195,8 +231,9 @@ public class ScatterPlotView extends JPanel{
 	            break;
 	        }
 	    }
+	    
 	    if (toRemove != null) {
-	        plottedRegressions.remove(toRemove);
+	        regressionsToPlot.remove(toRemove);
 	        refreshPanel(true);
 	    }
 	}
@@ -263,7 +300,7 @@ public class ScatterPlotView extends JPanel{
 	}
 	
 	/**
-	 * Generates a new regression. 
+	 * Generates a new regression based off of the regression tuple passed to it. 
 	 * @param type
 	 */
 	private void regressionInput(RegressionType type) {
@@ -277,25 +314,71 @@ public class ScatterPlotView extends JPanel{
 	                    break;
 	                }
 	                //showLoadingScreen("Preparing polynomial regression for " + col_x.getName() + " vs. " + col_y.getName()); //NEED THREADS FOR THIS
-	                plottedRegressions.add(new PolyRegression(col_x, col_y, deg));
-	                refreshPanel(true);
+	                addRegression(new PolyRegression(col_x, col_y, deg));
 	            } catch (Exception e) {
 	                JOptionPane.showMessageDialog(this, "Error when generating regression.", "Error", JOptionPane.ERROR_MESSAGE);
 	            }
 	            break;
 	        case LOGARITHMIC:
-	                plottedRegressions.add(new LogRegression(col_x, col_y));
-	                refreshPanel(true);
+	                addRegression(new LogRegression(col_x, col_y));
 	            break;
 	        case LINEAR:
 	            try {
-	                plottedRegressions.add(new LinearRegression(col_x, col_y));
+	                addRegression(new LinearRegression(col_x, col_y));
 	                refreshPanel(true);
 	            } catch (Exception e) {
 	                JOptionPane.showMessageDialog(this, "Error when generating regression.", "Error", JOptionPane.ERROR_MESSAGE);
 	            }
 	            break;
 	    }
+	}
+	
+	
+	/**
+	 * Adds a regression to the current plot. 
+	 * @param r the regression to add. 
+	 */
+	private void addRegression(Regression r) {
+	    allRegressions.add(r);
+	    regressionsToPlot.add(r);
+	    JCheckBox reg = new JCheckBox(r.getEquation());
+	    if (r instanceof LogRegression) {
+	        reg.addItemListener(new ItemListener() {
+	            @Override
+	            public void itemStateChanged(ItemEvent e) {
+	                if (e.getStateChange() == ItemEvent.DESELECTED) {
+	                    removeLinearOrLogRegression(RegressionType.LOGARITHMIC);
+	                } else {
+	                    drawExistingRegression(reg.getText());
+	                }
+	            }
+	        });
+	    } else if (r instanceof LinearRegression) {
+	        reg.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (e.getStateChange() == ItemEvent.DESELECTED) {
+                        removeLinearOrLogRegression(RegressionType.LINEAR);
+                    } else {
+                        drawExistingRegression(reg.getText());
+                    }
+                }
+	        });
+	    } else if (r instanceof PolyRegression) {
+	        reg.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (e.getStateChange() == ItemEvent.DESELECTED) {
+                        removePolyRegression(reg.getText());
+                    } else {
+                        drawExistingRegression(reg.getText());
+                    }
+                }
+	        });
+	    }
+	    reg.setSelected(true);
+	    regressionInfo.add(reg);
+	    refreshPanel(true);
 	}
 	
 	/**
@@ -364,13 +447,13 @@ public class ScatterPlotView extends JPanel{
 	 */
 	private void refreshPanel(boolean plotRegressions) {
 	    Plot newScatter;
-	    if (plotRegressions && plottedRegressions.size() != 0) {
+	    if (plotRegressions && regressionsToPlot.size() != 0) {
 	        try {
 	            double distance = Double.parseDouble(numRegressionSamples.getText());
 	            if (distance <= 0.0)
 	                 JOptionPane.showMessageDialog(this, "Error: Regression sample interval cannot be less than or"
 	                         + " equal to zero.", "Error", JOptionPane.ERROR_MESSAGE);
-	            newScatter = new Plot(col_x, col_y, plottedRegressions, (int) distance);
+	            newScatter = new Plot(col_x, col_y, regressionsToPlot, (int) distance);
 	        } catch (NumberFormatException e) {
 	            JOptionPane.showMessageDialog(this, "Error with regression point frequency input.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
@@ -380,23 +463,15 @@ public class ScatterPlotView extends JPanel{
 	        }
 	    } else {
 	        newScatter = new Plot(col_x, col_y);
-	        plottedRegressions.clear(); // Clear all currently plotted regressions. 
-	        deselectCheckboxes();
+	        allRegressions.clear(); // Clear all currently plotted regressions. 
+	        regressionsToPlot.clear();
+	        regressionPanel();
 	    }
 	    this.remove(scatter.getPlot());
 	    scatter = newScatter;
 	    this.add(scatter.getPlot(), BorderLayout.CENTER);
 	    this.revalidate();
 	    this.repaint();
-	}
-	
-	private void deselectCheckboxes() {
-	    Component[] components = regressionInfo.getComponents();
-	    for (int i = 0; i < components.length; i++) {
-	        if (components[i] instanceof JCheckBox) {
-	            ((JCheckBox) components[i]).setSelected(false);
-	        }
-	    }
 	}
 	
 	/**
