@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -189,10 +190,12 @@ public class ScatterPlotView extends JPanel{
 	
 	private void drawExistingRegression(String regressionFunction) {
 	    Regression toAdd = null;
-	    System.out.println(regressionFunction);
+	    printRegressions();
 	    for (Regression r : allRegressions) {
+	        System.out.println(r.getEquation() + "vs." + regressionFunction);
 	        if (r.getEquation().equals(regressionFunction)) {
 	            toAdd = r;
+	            System.out.println("FOUND: " + r.getEquation());
 	            break;
 	        }
 	    }
@@ -234,8 +237,18 @@ public class ScatterPlotView extends JPanel{
 	    
 	    if (toRemove != null) {
 	        regressionsToPlot.remove(toRemove);
+	        printRegressions();
 	        refreshPanel(true);
 	    }
+	}
+	
+	private void printRegressions() {
+	    System.out.println("Plotted Regressions");
+	    for (Regression r : regressionsToPlot)
+	        System.out.println(r.getEquation());
+	    System.out.println("Total Regressions");
+	    for (Regression r : allRegressions)
+	        System.out.println(r.getEquation());
 	}
 	
 //	private JScrollPane regressionInfo() {
@@ -341,6 +354,7 @@ public class ScatterPlotView extends JPanel{
 	private void addRegression(Regression r) {
 	    allRegressions.add(r);
 	    regressionsToPlot.add(r);
+	    JPanel panel = new JPanel();
 	    JCheckBox reg = new JCheckBox(r.getEquation());
 	    if (r instanceof LogRegression) {
 	        reg.addItemListener(new ItemListener() {
@@ -376,9 +390,45 @@ public class ScatterPlotView extends JPanel{
                 }
 	        });
 	    }
+	    JLabel xEquals = new JLabel("x = ");
+	    JTextField input = new JTextField(5);
+	    JButton plot = new JButton("Plot");
+	    plot.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String xStr = input.getText();
+                try {
+                    plotPoint(Double.parseDouble(xStr), reg.getText());
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(input, "Invalid input for x.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+	    });
+	    panel.setLayout(new FlowLayout());
 	    reg.setSelected(true);
-	    regressionInfo.add(reg);
+	    panel.add(reg);
+	    panel.add(xEquals);
+	    panel.add(input);
+	    panel.add(plot);
+	    regressionInfo.add(panel);
 	    refreshPanel(true);
+	}
+	
+	private void plotPoint(Double x, String regFunction) {
+	    Regression regression = null;
+	    for (Regression r : allRegressions) {
+	        if (r.getEquation().equals(regFunction)) {
+	            regression = r;
+	            break;
+	        }
+	    }
+	    if (regression != null) {
+	        this.remove(scatter.getPlot());
+	        scatter.plotPoint(x, regression);
+	        this.add(scatter.getPlot(), BorderLayout.CENTER);
+	        this.revalidate();
+	        this.repaint();
+	    }
 	}
 	
 	/**
@@ -419,14 +469,14 @@ public class ScatterPlotView extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 col_x = df.getColumn_byName((String) xNames.getSelectedItem());
-                refreshPanel(false);
+                createNewPlot();
             } 
         });
         yNames.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 col_y = df.getColumn_byName((String) yNames.getSelectedItem());
-                refreshPanel(false);
+                createNewPlot();
             }
         });
         panel.add(xNames);
@@ -435,6 +485,25 @@ public class ScatterPlotView extends JPanel{
         return panel;
 	}
 	
+	
+	private void createNewPlot() {
+	    Plot newScatter = new Plot(col_x, col_y);
+	    this.remove(scatter.getPlot());
+	    scatter = newScatter;
+	    regressionsToPlot.clear();
+	    allRegressions.clear();
+	    this.remove(regressionInfo);
+	    regressionPanel();
+	    this.add(scatter.getPlot(), BorderLayout.CENTER);
+	    this.add(regressionInfo, BorderLayout.EAST);
+	    this.revalidate();
+	    this.repaint();
+	}
+	
+	/**
+	 * Refreshes the panel to a brand new panel. 
+	 * @param panel
+	 */
 	private void refreshPanel(JPanel panel) {
 	    this.remove(scatter.getPlot());
 	    this.add(panel, BorderLayout.CENTER);
@@ -443,7 +512,7 @@ public class ScatterPlotView extends JPanel{
 	}
 	
 	/**
-	 * Refreshes the panel. Used to update scatter plot.
+	 * Refreshes the panel. Used to update scatter plot with a new regression.
 	 */
 	private void refreshPanel(boolean plotRegressions) {
 	    Plot newScatter;
@@ -462,8 +531,7 @@ public class ScatterPlotView extends JPanel{
 	            return;
 	        }
 	    } else {
-	        newScatter = new Plot(col_x, col_y);
-	        allRegressions.clear(); // Clear all currently plotted regressions. 
+	        newScatter = new Plot(col_x, col_y); // Clear all currently plotted regressions. 
 	        regressionsToPlot.clear();
 	        regressionPanel();
 	    }
@@ -473,19 +541,6 @@ public class ScatterPlotView extends JPanel{
 	    this.revalidate();
 	    this.repaint();
 	}
-	
-	/**
-	 * Refreshes panel, used to update scatter plot with a SINGLE regression. 
-	 * @param r the regresssion to plot. 
-	 */
-//	private void refreshPanel(Regression r) {
-//        Plot newScatter = new Plot(col_x, col_y, r);
-//        this.remove(scatter.panel);
-//        scatter = newScatter;
-//        this.add(scatter.panel, BorderLayout.CENTER);
-//        this.revalidate();
-//        this.repaint();
-//	}
 	
 	/**
 	 * Enum indicating which regression type is being created. 
