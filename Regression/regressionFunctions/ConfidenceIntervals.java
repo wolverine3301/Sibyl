@@ -40,11 +40,15 @@ public class ConfidenceIntervals {
 
 	}
 	private void set_SE_coefficents() {
-		m = 
+		for(int i = this.function.coefficents.length; i >= 0; i--) {
+			
+		}
 	}
+	/*
 	private void upper_intervalY(double predicted_y, double x_val) {
 		return predicted_y + 
 	}
+	*/
 	private void set_Tvalue() {
 		for(int i = 0; i < this.function.function.length; i++) {
 			

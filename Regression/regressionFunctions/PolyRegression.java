@@ -20,7 +20,7 @@ public class PolyRegression extends Regression{
 	private double[][] matrix_x;
 	private double[][] matrix_xy;
 	private double[] coefficent_matrix;
-	
+	private double[] coefficent_t_scores;
 	int degree; // degree of the polynomial
 	/**
 	 * 
@@ -32,6 +32,7 @@ public class PolyRegression extends Regression{
 		super(x,y);
 		this.degree = degree;
 		setRegression();
+		setMeasures();
 	}
 
 	public void setDegree(int degree) {
@@ -259,44 +260,7 @@ public class PolyRegression extends Regression{
         }
     }
 
-	/**
-	 * sets up a symetrical matrix of sum of x^i
-	 * @param a
-	 * @return
-	 */
-	private double[][] matrix_inversion(double[][] a) {
-		int n = a.length;
-        double xx[][] = new double[n][n];
-        double b[][] = new double[n][n];
-        int index[] = new int[n];
-        for (int i=0; i<n; ++i) 
-            b[i][i] = 1;
-        // Transform the matrix into an upper triangle
-        gaussian(a, index);
-        // Update the matrix b[i][j] with the ratios stored
-        for (int i=0; i<n-1; ++i) {
-            for (int j=i+1; j<n; ++j) {
-                for (int k=0; k<n; ++k) {
-                    b[index[j]][k] -= a[index[j]][i]*b[index[i]][k];
 
-                }
-            }
-        }
-        // Perform backward substitutions
-        for (int i=0; i<n; ++i) {
-            xx[n-1][i] = b[index[n-1]][i]/a[index[n-1]][n-1];
-            for (int j=n-2; j>=0; --j) {
-                xx[j][i] = b[index[j]][i];
-                for (int k=j+1; k<n; ++k) {
-                    xx[j][i] -= a[index[j]][k]*xx[k][i];
-                    
-                }
-                xx[j][i] /= a[index[j]][j];
-            }
-        }
-        return xx;
-        
-	}
 	private void degree_sums() {
 		double[] poly_x = new double[this.degree*2];
 		poly_x[0] = super.x.sum;
@@ -363,12 +327,20 @@ public class PolyRegression extends Regression{
 		//}
 		this.matrix_x = x_matrix;
 	}
-
+	public void get_T_coeffiecents() {
+		double[] t = new double[this.coefficent_matrix.length];
+		for(int i = this.coefficent_matrix.length-1; i >= 0; i--) {
+			t[i] = this.coefficent_matrix[i] / this.SE;
+			System.out.println(t[i]);
+		}
+		this.coefficent_t_scores = t;
+	}
 	public void get_SE_coeffiecents() {
 		double[][] m = inverse(this.matrix_x);
 		double[] SE = new double[m.length];
 		for(int i = 0; i < SE.length;i++) {
-			SE[i] = this.RMSD * Math.sqrt(m[i][i]);
+			SE[i] = Math.sqrt( (m[i][i] / (super.x.getLength() * SST) ) );
+			System.out.println(SE[i]);
 		}
 	}
 	public double predictY(Particle x_val) {

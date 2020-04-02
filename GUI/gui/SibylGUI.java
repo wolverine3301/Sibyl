@@ -60,7 +60,7 @@ public class SibylGUI extends JFrame {
     /** The current model in view. */
     private Model currentModel;
     
-    /** The center component of the GUI. */
+    /** The center tabs of the GUI. */
     private JTabbedPane centerTabs;
     
     

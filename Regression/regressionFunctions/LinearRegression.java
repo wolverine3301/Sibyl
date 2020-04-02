@@ -21,13 +21,13 @@ public class LinearRegression extends Regression{
 	}
 	@Override
 	public void setRegression() {
-		super.function = new double[2];
+		super.coefficents = new double[2];
 		this.SP = Stats.zeroSumMultiple_Columns(super.x, super.y); //sum of products
 		this.SST = Stats.zeroSquaredSum(x);
 		setRegression_slopeM();
 		setRegression_interceptB();
-		super.function[0] = this.intercept;
-		super.function[1] = this.slope;
+		super.coefficents[0] = this.intercept;
+		super.coefficents[1] = this.slope;
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class LinearRegression extends Regression{
 	}
 	@Override
 	public String getEquation() {
-		return "Y = "+ super.function[1] +"X" + " + "+ super.function[0];
+		return "Y = "+ super.coefficents[1] +"X" + " + "+ super.coefficents[0];
 	}
 
 

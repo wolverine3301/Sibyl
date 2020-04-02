@@ -6,7 +6,9 @@ import dataframe.DataFrame;
 import dataframe.DataFrame_Read;
 
 public class SibylGUIRunner {
+    
     static DataFrame dataFrame;
+    
     /**
      * Prevents the class from being instantiated.
      */

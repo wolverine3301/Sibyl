@@ -62,12 +62,12 @@ public class LogRegression extends Regression{
 	}
 	@Override
 	protected void setRegression() {
-		super.function = new double[2];
+		super.coefficents = new double[2];
 		setVars();
 		this.slope = log_slopeM();
 		this.intercept = intercept_b();
-		super.function[0] = this.intercept;
-		super.function[1] = this.slope;
+		super.coefficents[0] = this.intercept;
+		super.coefficents[1] = this.slope;
 		
 	}
 	@Override
