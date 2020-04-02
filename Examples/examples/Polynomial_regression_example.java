@@ -15,9 +15,11 @@ public class Polynomial_regression_example {
 		System.out.println("MSE: "+p.MSE);
 		System.out.println("R2: "+p.R2);
 		System.out.println("RMSD: "+p.RMSD);
-
+		p.set_se_ofCoefficents();
+		p.set_T_coeffiecents();
+		//p.print_inverse_x_matrix();
 		//ystem.out.println(p.SE);
-		p.get_T_coeffiecents();
+		//p.get_T_coeffiecents();
 		//p.get_SE_coeffiecents();
 		
 	}
