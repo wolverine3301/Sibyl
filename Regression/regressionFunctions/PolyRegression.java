@@ -22,7 +22,7 @@ public class PolyRegression extends Regression{
 	private double[] coefficent_matrix;
 	private double[] coefficent_se; //std err of each coefficent
 	private double[] coefficent_t_scores;
-	private int[] coefficent_df; //degrees of freedom for coefficents
+	private int coefficent_df; //degrees of freedom for coefficents
 	int degree; // degree of the polynomial
 	/**
 	 * 
@@ -289,14 +289,6 @@ public class PolyRegression extends Regression{
 			cnt_x++;
 			cnt_xy++;
 		}
-		//System.out.println("X:");
-		//for(int h = 0; h < poly_x.length; h++) {
-		//	System.out.println(poly_x[h]);
-		//}
-		//System.out.println("Y:");
-		//for(int h = 0; h < poly_xy.length; h++) {
-		//	System.out.println(poly_xy[h]);
-		//}
 		this.matrix_xy = poly_xy;
 		
 		double[][] x_matrix = new double[this.degree+1][this.degree+1];
@@ -334,6 +326,7 @@ public class PolyRegression extends Regression{
 	/**
 	 * sets the standard error of coefficents
 	 */
+	@Override
 	public void set_se_ofCoefficents() {
 		this.coefficent_se = new double[this.coefficent_matrix.length];
 		double[][] ix = this.inverse(this.matrix_x);
@@ -345,7 +338,8 @@ public class PolyRegression extends Regression{
 	/**
 	 * set the t scores of the coeffiecents
 	 */
-	public void set_T_coeffiecents() {
+	@Override
+	public void set_T_ofCoeffiecents() {
 		double[] t = new double[this.coefficent_matrix.length];
 		for(int i = 0; i < this.coefficent_matrix.length; i++) {
 			t[i] = this.coefficent_matrix[i] / this.coefficent_se[i];
@@ -353,9 +347,17 @@ public class PolyRegression extends Regression{
 		}
 		this.coefficent_t_scores = t;
 	}
-	public void set_df_coefficents() {
-		
+	/**
+	 * set degrees of freedom for coefficents
+	 */
+	@Override
+	public void setDegFree() {
+		super.degree_freedom = x.getLength() - degree-1;
+	
 	}
+	/**
+	 * prints the (X^T X) matrix
+	 */
 	public void print_x_matrix() {
 		for(int i = 0; i < this.matrix_x.length;i++) {
 			for(int j = 0; j < this.matrix_x.length;j++) {
@@ -364,6 +366,9 @@ public class PolyRegression extends Regression{
 			System.out.println();
 		}
 	}
+	/**
+	 * prints the (X^T X)^-1 matrix
+	 */
 	public void print_inverse_x_matrix() {
 		double[][] ix = this.inverse(this.matrix_x);
 		for(int i = 0; i < ix.length;i++) {

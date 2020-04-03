@@ -1,4 +1,6 @@
 package regressionFunctions;
+import java.util.HashMap;
+
 import dataframe.Column;
 import forensics.Stats;
 import particles.Particle;
@@ -33,8 +35,12 @@ public abstract class Regression {
 	public double MAE; //mean absolute error
 	public double MSE; //mean squared error
 	public double RMSD;//Root mean squared deviation
-	public double[] coefficents;
-	
+	public double[] coefficents; //coefficents of the regression
+	private double[] coefficent_se; //std err of each coefficent
+	private double[] coefficent_t_scores; //t score of each coefficent
+	protected int degree_freedom;
+	private HashMap<String,Double> model_report;
+	private HashMap<String,HashMap<String,Double>> regression_report;
 	/**
 	 * abstract regression class for all types of regression functions
 	 * slope. the y intercept is always the last index of the double array
@@ -55,6 +61,20 @@ public abstract class Regression {
 	 * @return
 	 */
 	public abstract String getEquation();
+	
+	/**
+	 * set the standard error of coefficients
+	 */
+	protected abstract void set_se_ofCoefficents();
+	/**
+	 * set the t scores of the coefficients
+	 */
+	public abstract void set_T_ofCoeffiecents();
+	/**
+	 * set degrees of freedom
+	 */
+	protected abstract void setDegFree();
+		
 	/**
 	 * prints the string representation of the regression function
 	 */
@@ -77,6 +97,8 @@ public abstract class Regression {
 		setRMSD();
 		set_rSquared();
 		setSE();
+		set_se_ofCoefficents();
+		set_T_ofCoeffiecents();
 	}
 	/**
 	 * set total sum of squares
@@ -142,6 +164,51 @@ public abstract class Regression {
 	private void setSE() {
 		//this.SE = 1- Math.sqrt( (this.SSE / (x.getLength() - 2)) / Math.sqrt(this.getSST()));
 		this.SE = Math.sqrt(this.SSE / (x.getLength() - 2));
+	}
+	/**
+	 * report on the overall model performance
+	 * @return HashMap<String,String>
+	 */
+	public HashMap<String,Double> modelReport(){
+		this.model_report = new HashMap<String,Double>();
+		model_report.put("R-SQUARED", this.R2);
+		model_report.put("SSE", this.SSE);
+		model_report.put("SSR", this.SSR);
+		model_report.put("MAE", this.MAE);
+		model_report.put("MSE", this.MSE);
+		model_report.put("RMSD",this.RMSD);
+		return this.model_report;
+	}
+	/**
+	 * more in depth report on the regression function
+	 * @return
+	 */
+	public HashMap<String,HashMap<String,Double>> regressionReport() {
+		this.regression_report = new HashMap<String,HashMap<String,Double>>();
+		HashMap<String,Double> coefficients = new HashMap<String,Double>();
+		HashMap<String,Double> stderr = new HashMap<String,Double>();
+		HashMap<String,Double> tscores = new HashMap<String,Double>();
+		HashMap<String,Double> pvalues = new HashMap<String,Double>();
+		
+		for(int i = 0; i < this.coefficents.length;i++) {
+			String s = "C".concat(String.valueOf(i));
+			coefficients.put(s, (this.coefficents[i]));
+			stderr.put(s, (this.coefficent_se[i]));
+			tscores.put(s, (this.coefficent_t_scores[i]));
+		}
+		this.regression_report.put("Coefficients", coefficients);
+		this.regression_report.put("SE", coefficients);
+		this.regression_report.put("T", coefficients);
+		this.regression_report.put("P", coefficients);
+		return this.regression_report;
+		
+	}
+	public void printModelReport() {
+		modelReport();
+		this.printEquation();
+		for(String i : this.model_report.keySet()) {
+			System.out.println(i+":  "+model_report.get(i));
+		}
 	}
 	
 }
