@@ -14,6 +14,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import dataframe.Column;
+import particles.DoubleParticle;
 import particles.Particle;
 import regressionFunctions.Regression;
 
@@ -30,6 +31,8 @@ public class Plot extends JPanel{
     /** The two columns to plot against eachother. */
 	private Column x,y;
 	
+	private XYPlot plot;
+	
 	/** The chartpanel which displays the scatter plot. */
 	private ChartPanel panel;
 
@@ -41,7 +44,7 @@ public class Plot extends JPanel{
 	public Plot(Column x, Column y) {
 		this.x = x;
 		this.y = y;
-	    XYPlot plot = createPlot(null, 20);
+	    plot = createPlot(null, 20);
         JFreeChart chart = new JFreeChart("ScatterPlot of " + x.getName() + " vs. " + y.getName(),
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
 	    // Create Panel
@@ -58,12 +61,11 @@ public class Plot extends JPanel{
     public Plot(Column x, Column y, HashSet<Regression> regressions, int functionSamples) {
         this.x = x;
         this.y = y;
-        XYPlot plot = createPlot(regressions, functionSamples);
+        plot = createPlot(regressions, functionSamples);
         JFreeChart chart = new JFreeChart("ScatterPlot of " + x.getName() + " vs. " + y.getName(),
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         // Create Panel
-        ChartPanel view = new ChartPanel(chart);
-        this.panel = view;
+        this.panel = new ChartPanel(chart);
     }
     
     /**
@@ -120,6 +122,46 @@ public class Plot extends JPanel{
 	    XYSeriesCollection data = new XYSeriesCollection();
 	    data.addSeries(rLine);
 	    return data;
+	}
+	
+	/**
+	 * Plots a regression. 
+	 * @param r the regression.
+	 * @param numSamples the number of smaples to take from the plot. Higher sample number, the smoother the line. 
+	 */
+	public void plotRegression(Regression r, int numSamples) {
+        XYSeries rLine = new XYSeries(r.getEquation(), false);
+        double startValue = x.min - x.std;
+        double endValue = x.max + x.std;
+        double step = (endValue - startValue) / (numSamples - 1);
+        for (double i = startValue; i < endValue; i += step) {
+            double yVal = r.predictY(Particle.resolveType(i));
+            rLine.add(i, yVal);
+        }
+        XYSeriesCollection data = new XYSeriesCollection();
+        data.addSeries(rLine);
+        plot.setDataset(plot.getSeriesCount(), data);
+        JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
+                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+        panel = new ChartPanel(chart);
+        
+	}
+	
+	/**
+	 * Plots a given point on the chart. 
+	 * @param x the x value to plot. 
+	 * @param r the regression function to use to calculate y.
+	 */
+	public void plotPoint(double x, Regression r) {
+	    double y = r.predictY(new DoubleParticle(x));
+	    XYSeries point = new XYSeries("x = " + x + ", y = " + y);
+	    point.add(x, y);
+	    XYSeriesCollection data = new XYSeriesCollection();
+	    data.addSeries(point);
+	    plot.setDataset(plot.getSeriesCount(), data);
+        JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
+                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+        panel = new ChartPanel(chart);
 	}
 	
 	/**
