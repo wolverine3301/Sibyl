@@ -2,6 +2,7 @@ package examples;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import dataframe.DataFrame_Read;
 import transform.Standardize;
 
 public class Standardize_example {
@@ -9,7 +10,7 @@ public class Standardize_example {
 	public static void main(String[] args) {
 		
 		DataFrame iris = new DataFrame();
-		iris = DataFrame.read_csv("testfiles/iris.txt");
+		iris = DataFrame_Read.loadcsv("testfiles/iris.txt");
 		DataFrame df = Standardize.standardize_df(iris);
 		for(Column i : df.columns) {
 			System.out.println(i.getName() + " Mean: "+ i.mean);

@@ -20,7 +20,9 @@ public class PolyRegression extends Regression{
 	private double[][] matrix_x;
 	private double[][] matrix_xy;
 	private double[] coefficent_matrix;
+	private double[] coefficent_se; //std err of each coefficent
 	private double[] coefficent_t_scores;
+	private int[] coefficent_df; //degrees of freedom for coefficents
 	int degree; // degree of the polynomial
 	/**
 	 * 
@@ -260,7 +262,9 @@ public class PolyRegression extends Regression{
         }
     }
 
-
+    /**
+     * set the x matrix
+     */
 	private void degree_sums() {
 		double[] poly_x = new double[this.degree*2];
 		poly_x[0] = super.x.sum;
@@ -327,14 +331,49 @@ public class PolyRegression extends Regression{
 		//}
 		this.matrix_x = x_matrix;
 	}
-	public void get_T_coeffiecents() {
+	/**
+	 * sets the standard error of coefficents
+	 */
+	public void set_se_ofCoefficents() {
+		this.coefficent_se = new double[this.coefficent_matrix.length];
+		double[][] ix = this.inverse(this.matrix_x);
+		for(int i = 0; i < ix.length;i++) {
+			this.coefficent_se[i] = Math.sqrt(this.RMSD* ix[i][i]);
+			System.out.println(this.coefficent_se[i]);
+		}
+	}
+	/**
+	 * set the t scores of the coeffiecents
+	 */
+	public void set_T_coeffiecents() {
 		double[] t = new double[this.coefficent_matrix.length];
-		for(int i = this.coefficent_matrix.length-1; i >= 0; i--) {
-			t[i] = this.coefficent_matrix[i] / this.SE;
+		for(int i = 0; i < this.coefficent_matrix.length; i++) {
+			t[i] = this.coefficent_matrix[i] / this.coefficent_se[i];
 			System.out.println(t[i]);
 		}
 		this.coefficent_t_scores = t;
 	}
+	public void set_df_coefficents() {
+		
+	}
+	public void print_x_matrix() {
+		for(int i = 0; i < this.matrix_x.length;i++) {
+			for(int j = 0; j < this.matrix_x.length;j++) {
+				System.out.print(matrix_x[i][j]+"  ");
+			}
+			System.out.println();
+		}
+	}
+	public void print_inverse_x_matrix() {
+		double[][] ix = this.inverse(this.matrix_x);
+		for(int i = 0; i < ix.length;i++) {
+			for(int j = 0; j < ix.length;j++) {
+				System.out.print(ix[i][j]+"  ");
+			}
+			System.out.println();
+		}
+	}
+
 	public void get_SE_coeffiecents() {
 		double[][] m = inverse(this.matrix_x);
 		double[] SE = new double[m.length];

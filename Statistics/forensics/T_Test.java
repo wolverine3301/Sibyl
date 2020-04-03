@@ -43,10 +43,19 @@ public class T_Test {
 	 * @return the p-value
 	 */
 	public double equal_variance_tValue() {
+		equal_variance_DegreesFreedom();
 		return (x.mean- y.mean) / (Math.sqrt( (((x.getLength()-1) * Math.pow(x.variance,2)) + ((y.getLength()-1) * Math.pow(y.variance,2))) / ((2 * x.getLength()-2)) ) * Math.sqrt( (1/x.getLength()) + (1/y.getLength())));
 	}
 	public double unequal_variance_tValue() {
+		unequal_variance_DegreesFreedom();
 		return (x.mean - y.mean) / Math.sqrt( (Math.pow(x.variance, 2) / x.getLength()) + (Math.pow(y.variance, 2) / y.getLength()) );
+	}
+	public double get_Tvalue() {
+		System.out.println((double)1/x.getLength());
+		System.out.println((1/x.getLength()) + (1/y.getLength()));
+		System.out.println(Math.sqrt( (1/x.getLength()) + (1/y.getLength())));
+		System.out.println(  (x.mean-y.mean) / ( (( (x.getLength()-1) * Math.pow(x.variance, 2) )) + ( (y.getLength() -1) * Math.pow(y.variance, 2) )) /((x.getLength()+y.getLength()-2)) * Math.sqrt( (1/x.getLength()) + (1/y.getLength())) );
+		return (x.mean-y.mean) / ((( (x.getLength()-1) * Math.pow(x.variance, 2) ) + ( (y.getLength() -1) * Math.pow(y.variance, 2) )) / ((x.getLength()+y.getLength()-2)) * Math.sqrt( ((double)1/x.getLength()) + ((double)1/y.getLength())) );
 	}
 	
 

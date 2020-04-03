@@ -16,7 +16,7 @@ public abstract class Regression {
 	public double SST; //total sum of squares	= E(y_i - Y_mean)^2
 	public double SSY; //total sum of squares	= E(y_i - Y_mean)^2
 	public double SSE; //sum of squared errors	= E(y_i - f_i)^2  ||residual sum of squares
-	public double SSR; //sum of squared regression = E(f_i - y_i)^2 ||explained sum of squares
+	public double SSR; //sum of squared regression = E(f_i - y_mean)^2 ||explained sum of squares
 	public double SP;  //sum of products
 	
 	public double R2;  //r squared
@@ -73,8 +73,8 @@ public abstract class Regression {
 	protected void setMeasures() {
 		setSST();
 		set_SSR_SSE();
-		setRMSD();
 		setMSE();
+		setRMSD();
 		set_rSquared();
 		setSE();
 	}
@@ -101,7 +101,7 @@ public abstract class Regression {
 		
 		for(int i = 0; i < x.getLength(); i++) {
 			sr = sr + Math.pow( y.getDoubleValue(i) - y.mean,2);
-			ssr = ssr + Math.pow( this.predictY(x.getParticle(i)) - y.getDoubleValue(i),2);
+			ssr = ssr + Math.pow( this.predictY(x.getParticle(i)) - y.mean,2);
 			sse = sse + Math.pow( y.getDoubleValue(i) - this.predictY(x.getParticle(i)),2);
 		}
 		this.SSY = sr;
@@ -112,7 +112,7 @@ public abstract class Regression {
 	 * set root mean squared deviation
 	 */
 	protected void setRMSD() {
-		this.RMSD = Math.sqrt( (this.SSR / x.getLength()) );
+		this.RMSD = Math.sqrt( this.MSE );
 	}
 	/**
 	 * set mean standard error
