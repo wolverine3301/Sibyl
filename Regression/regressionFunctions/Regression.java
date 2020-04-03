@@ -67,14 +67,34 @@ public abstract class Regression {
 	 */
 	protected abstract void set_se_ofCoefficents();
 	/**
+	 * get array of standard errors
+	 * @return double[]
+	 */
+	public double[] get_se_coefficients() {
+		return this.coefficent_se;
+	}
+	/**
 	 * set the t scores of the coefficients
 	 */
-	public abstract void set_T_ofCoeffiecents();
+	protected abstract void set_T_ofCoeffiecents();
+	/**
+	 * get array of t scores
+	 * @return
+	 */
+	public double[] get_T_coefficients() {
+		return this.coefficent_t_scores;
+	}
 	/**
 	 * set degrees of freedom
 	 */
 	protected abstract void setDegFree();
-		
+	/**
+	 * get degrees of freedom
+	 * @return
+	 */
+	public int get_degrees_freedom() {
+		return this.degree_freedom;
+	}
 	/**
 	 * prints the string representation of the regression function
 	 */
