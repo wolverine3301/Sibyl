@@ -92,7 +92,7 @@ public abstract class Regression {
 		return SST;
 	}
 	/**
-	 * set sum of squared residuals
+	 * set sum of squared residuals and sum of squared errors
 	 */
 	protected void set_SSR_SSE() {
 		double ssr = 0;
