@@ -36,8 +36,8 @@ public abstract class Regression {
 	public double MSE; //mean squared error
 	public double RMSD;//Root mean squared deviation
 	public double[] coefficents; //coefficents of the regression
-	private double[] coefficent_se; //std err of each coefficent
-	private double[] coefficent_t_scores; //t score of each coefficent
+	protected double[] coefficent_se; //std err of each coefficent
+	protected double[] coefficent_t_scores; //t score of each coefficent
 	protected int degree_freedom;
 	private HashMap<String,Double> model_report;
 	private HashMap<String,HashMap<String,Double>> regression_report;

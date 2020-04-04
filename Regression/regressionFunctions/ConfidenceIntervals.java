@@ -21,11 +21,14 @@ public class ConfidenceIntervals {
 	
 	private Regression function;
 	private float alpha;
-	private int confidence_level = 90;
+	private int confidence_level = 90; //default is 90% confidence
 	private float critical_prob;
-
+	private float[] upper;
+	private float[] lower;
 	public ConfidenceIntervals(Regression f) {
 		this.function = f;
+		setUpper();
+		setLower();
 	}
 	/**
 	 * set the confidence level, common ones are 90, 95, 99
@@ -34,6 +37,7 @@ public class ConfidenceIntervals {
 	public void setConfidenceLevel(int c) {
 		this.confidence_level = c;
 		setAlpha();
+
 	}
 	/**
 	 * set the alpha level
@@ -44,12 +48,45 @@ public class ConfidenceIntervals {
 	private void setCritical_prob() {
 		this.critical_prob = 1 - (this.alpha/2);
 	}
-
-	/*
-	private void upper_intervalY(double predicted_y, double x_val) {
-		return predicted_y + 
+	/**
+	 * set the upper inteval
+	 */
+	private void setUpper() {
+		this.upper = new float[this.function.coefficents.length];
+		for(int i = 0; i < this.function.coefficents.length; i++) {
+			upper[i] = (float) ((float)( this.function.coefficents[i]) + (this.function.coefficent_t_scores[i] * this.function.coefficent_se[i]));
+		}
 	}
-	*/
+	private void setLower() {
+		this.lower = new float[this.function.coefficents.length];
+		for(int i = 0; i < this.function.coefficents.length; i++) {
+			lower[i] = (float) ((float)( this.function.coefficents[i]) - (this.function.coefficent_t_scores[i] * this.function.coefficent_se[i]));
+		}
+	}
+	/**
+	 * return the upper bound confidince for a given x
+	 * @param x_val
+	 * @return
+	 */
+	public double upper_intervalY(Particle x_val) {
+		double p = 0;
+		for(int i = this.function.coefficents.length-1; i >= 0; i--) {
+			p = p + upper[i] * Math.pow(x_val.getDoubleValue(), i);
+		}
+		return p;
+	}
+	/**
+	 * return the lower bound confidince for a given x
+	 * @param x_val
+	 * @return
+	 */
+	public double lower_intervalY(Particle x_val) {
+		double p = 0;
+		for(int i = this.function.coefficents.length-1; i >= 0; i--) {
+			p = p + lower[i] * Math.pow(x_val.getDoubleValue(), i);
+		}
+		return p;
+	}
 
 
 	
