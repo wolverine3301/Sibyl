@@ -69,7 +69,7 @@ public class T_Test {
      * drawn from populations with the same true variance. Otherwise, The data
      * arrays are allowed to be drawn from populations with unequal variances.
      */
-    public static TTest test(Column x, Column y, boolean equalVariance) {
+    public static T_Test test(Column x, Column y, boolean equalVariance) {
         if (equalVariance) {
             int n1 = x.getLength();
             int n2 = y.getLength();
