@@ -1,5 +1,7 @@
 package gui;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -16,6 +18,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import dataframe.Column;
 import particles.DoubleParticle;
 import particles.Particle;
+import regressionFunctions.ConfidenceIntervals;
 import regressionFunctions.Regression;
 
 /**
@@ -23,7 +26,7 @@ import regressionFunctions.Regression;
  * @author Cade Reynoldson
  * @version 1.0
  */
-public class Plot extends JPanel{
+public class Plot extends JPanel {
 	
     /** Serial bullshit */
     private static final long serialVersionUID = 1031343868335382809L;
@@ -31,11 +34,18 @@ public class Plot extends JPanel{
     /** The two columns to plot against eachother. */
 	private Column x,y;
 	
+	/** The plot which contains all the data. */
 	private XYPlot plot;
 	
 	/** The chartpanel which displays the scatter plot. */
 	private ChartPanel panel;
 
+	/** Notifies the plot that a change has been made. */
+	private PropertyChangeSupport notifyPlot = new PropertyChangeSupport(this);
+	
+	/** The number of datasets contained in this chart. */
+	private int datasetCount;
+	
 	/**
 	 * Creates a plot given two columns.
 	 * @param x the x column.
@@ -45,6 +55,7 @@ public class Plot extends JPanel{
 		this.x = x;
 		this.y = y;
 	    plot = createPlot(null, 20);
+	    datasetCount = 1;
         JFreeChart chart = new JFreeChart("ScatterPlot of " + x.getName() + " vs. " + y.getName(),
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
 	    // Create Panel
@@ -78,9 +89,9 @@ public class Plot extends JPanel{
 	
     /**
      * Creates a plot of the given data. 
-     * @param regressions
-     * @param functionSamples
-     * @return
+     * @param regressions to plot upon creation. Can be null if there are no regressions to plot. 
+     * @param functionSamples the number of samples to take from each regression.  
+     * @return an XYPlot which contains all of the initialized data. 
      */
 	private XYPlot createPlot(HashSet<Regression> regressions, int functionSamples) {
 	    XYPlot plot = new XYPlot();
@@ -90,11 +101,11 @@ public class Plot extends JPanel{
 	    NumberAxis yAxis = new NumberAxis(y.getName());
 	    plot.setDomainAxis(0, xAxis);
         plot.setRangeAxis(0, yAxis);
-	    int count = 1;
+	    datasetCount = 1;
 	    if (regressions != null) {
 	        for (Regression r : regressions) {
-	            plot.setDataset(count, getRegressionPlot(r, x.min - x.std, x.max + x.std, functionSamples));
-	            plot.setRenderer(count++, new XYLineAndShapeRenderer(true, false));
+	            plot.setDataset(datasetCount, getRegressionPlot(r, x.min - x.std, x.max + x.std, functionSamples));
+	            plot.setRenderer(datasetCount++, new XYLineAndShapeRenderer(true, false));
 	        }
 	    }
 	    xAxis.setLowerBound(x.min - x.std);
@@ -103,6 +114,14 @@ public class Plot extends JPanel{
 	    yAxis.setUpperBound(y.max + y.std);
 	    return plot;
 	}
+	
+    public void addRegression(Regression r, int functionSamples) {
+        plot.setDataset(datasetCount, getRegressionPlot(r, x.min - x.std, x.max + x.std, functionSamples));
+        plot.setRenderer(datasetCount++, new XYLineAndShapeRenderer(true, false));
+        
+        
+        notifyPlot.firePropertyChange("Regression Added.", null, null);
+    }
 	
 	/**
 	 * Creates a plot for a given regression.
@@ -158,10 +177,12 @@ public class Plot extends JPanel{
 	    point.add(x, y);
 	    XYSeriesCollection data = new XYSeriesCollection();
 	    data.addSeries(point);
-	    plot.setDataset(plot.getSeriesCount(), data);
+	    plot.setDataset(datasetCount, data);
+	    plot.setRenderer(datasetCount++, new XYLineAndShapeRenderer(false, true));
         JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         panel = new ChartPanel(chart);
+        notifyPlot.firePropertyChange("Regression Added.", null, null);
 	}
 	
 	/**
@@ -178,4 +199,40 @@ public class Plot extends JPanel{
         xvsy.addSeries(series);
         return xvsy;
 	}
+	
+	/**
+	 * 
+	 * @param interval
+	 * @param startValue
+	 * @param endValue
+	 * @param numSamples
+	 */
+	public void addConfidenceInterval(ConfidenceIntervals interval, double startValue, double endValue, int numSamples) {
+	    XYSeriesCollection interv = new XYSeriesCollection();
+	    XYSeries lower = new XYSeries("Lower", false);
+	    XYSeries upper = new XYSeries("Upper", false);
+        double step = (endValue - startValue) / (numSamples - 1);
+        for (double i = startValue; i < endValue; i += step) {
+            DoubleParticle x = new DoubleParticle(i);
+            lower.add(i, interval.lower_intervalY(x));
+            upper.add(i, interval.upper_intervalY(x));
+        }
+        interv.addSeries(lower);
+        interv.addSeries(upper);
+        plot.setDataset(datasetCount, interv);
+        plot.setRenderer(datasetCount++, new XYLineAndShapeRenderer(true, false));
+        JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
+                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+        panel = new ChartPanel(chart);
+        notifyPlot.firePropertyChange("Regression Added.", null, null);
+	}
+	
+	
+    /**
+     * Adds a property change listener to the panel.
+     * @param theListener the listener to be added.
+     */
+    public void addPropertyChangeListener(final PropertyChangeListener theListener) {
+        notifyPlot.addPropertyChangeListener(theListener);
+    }
 }
