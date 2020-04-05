@@ -23,6 +23,7 @@ public class Polynomial_regression_example {
 		System.out.println(c.upper_intervalY(x.getParticle(2)));
 		//p.set_se_ofCoefficents();
 		//p.set_T_coeffiecents();
+		
 		//p.print_inverse_x_matrix();
 		//ystem.out.println(p.SE);
 		//p.get_T_coeffiecents();
