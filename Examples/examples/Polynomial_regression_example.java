@@ -19,6 +19,8 @@ public class Polynomial_regression_example {
 		//p.printModelReport();
 		//System.out.println(p.coefficents.length);
 		ConfidenceIntervals c = new ConfidenceIntervals(p);
+		System.out.println(p.predictY(x.getParticle(2)));
+		System.out.println(c.upper_intervalY(x.getParticle(2)));
 		//p.set_se_ofCoefficents();
 		//p.set_T_coeffiecents();
 		//p.print_inverse_x_matrix();
