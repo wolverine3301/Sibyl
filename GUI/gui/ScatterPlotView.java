@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -27,8 +29,11 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import org.jfree.chart.ChartPanel;
+
 import dataframe.Column;
 import dataframe.DataFrame;
+import regressionFunctions.ConfidenceIntervals;
 import regressionFunctions.LinearRegression;
 import regressionFunctions.LogRegression;
 import regressionFunctions.PolyRegression;
@@ -39,7 +44,7 @@ import regressionFunctions.Regression;
  * @author Cade Reynoldson & Logan Collier
  * @version 1.0
  */
-public class ScatterPlotView extends JPanel{
+public class ScatterPlotView extends JPanel implements PropertyChangeListener {
     
     /** The bullshit ID. */
     private static final long serialVersionUID = 9137857479069749287L;
@@ -60,7 +65,7 @@ public class ScatterPlotView extends JPanel{
 	private HashSet<Regression> allRegressions; 
 	
 	/** The regressions to plot. */
-	private HashSet<Regression> regressionsToPlot;
+	private HashSet<Regression> plottedRegressions;
 	
 	/** The number of regression samples to take for the regression lines. (more samples = smoother line) */
 	private JTextField numRegressionSamples;
@@ -75,7 +80,7 @@ public class ScatterPlotView extends JPanel{
 	    super();
 	    this.df = df;
 	    allRegressions = new HashSet<Regression>();
-	    regressionsToPlot = new HashSet<Regression>();
+	    plottedRegressions = new HashSet<Regression>();
 	    col_x = df.getColumn(df.numericIndexes.get(0));
 	    col_y = df.getColumn(df.numericIndexes.get(0));
 	    start(false);
@@ -92,9 +97,9 @@ public class ScatterPlotView extends JPanel{
         col_x = df.getColumn(df.numericIndexes.get(0));
         col_y = df.getColumn(df.numericIndexes.get(0));
 	    allRegressions = new HashSet<Regression>();
-	    regressionsToPlot = new HashSet<Regression>();
-	    addRegression(regression);
+	    plottedRegressions = new HashSet<Regression>();
 	    start(true);
+	    addRegression(regression);
 	}
 	
 	/**
@@ -143,6 +148,20 @@ public class ScatterPlotView extends JPanel{
 	    return file;
 	}
 	
+	private int getNumSamples() {
+        try {
+            double distance = Double.parseDouble(numRegressionSamples.getText());
+            if (distance <= 0.0)
+                 JOptionPane.showMessageDialog(this, "Error: Regression sample interval cannot be less than or"
+                         + " equal to zero.", "Error", JOptionPane.ERROR_MESSAGE);
+            else
+                return (int) distance;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error with regression point frequency input.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return -1;
+	}
+	
 	private void regressionPanel() {
 	    JPanel panel = new JPanel();
 	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -179,53 +198,70 @@ public class ScatterPlotView extends JPanel{
                 regressionInput(RegressionType.POLYNOMIAL);
             }
         });
+        JButton confidence = new JButton("Confidence Interval");
+        confidence.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addConfidenceInterval();
+                
+            }
+        });
         poly.setSelected(false);
         panel.add(baseRegressions);
         panel.add(linear);
         panel.add(log);
         panel.add(poly);
+        panel.add(confidence);
         return panel;
 	}
 	
+	
+	private void addConfidenceInterval() {
+	    for (Regression r : plottedRegressions) {
+	        scatter.addConfidenceInterval(new ConfidenceIntervals(r), col_x.min - col_x.std, col_x.max + col_x.std, getNumSamples());
+	    }
+	}
 	
 	private void drawExistingRegression(String regressionFunction) {
 	    Regression toAdd = null;
 	    printRegressions();
 	    for (Regression r : allRegressions) {
-	        System.out.println(r.getEquation() + "vs." + regressionFunction);
 	        if (r.getEquation().equals(regressionFunction)) {
 	            toAdd = r;
-	            System.out.println("FOUND: " + r.getEquation());
 	            break;
 	        }
 	    }
 	    if (toAdd != null) {
-	        regressionsToPlot.add(toAdd);
-	        refreshPanel(true);
+	        addRegression(toAdd);
 	    }
 	}
 	
+	/**
+	 * TODO: RE IMPLEMENT!
+	 * @param regressionFunction
+	 */
 	private void removePolyRegression(String regressionFunction) {
 	    Regression toRemove = null;
-	    for (Regression r : regressionsToPlot) {
+	    for (Regression r : plottedRegressions) {
 	        if (r instanceof PolyRegression && r.getEquation().equals(regressionFunction)) {
 	            toRemove = r;
 	            break;
 	        }
 	    }
 	    if (toRemove != null) {
-	        regressionsToPlot.remove(toRemove);
-	        refreshPanel(true);
+	        plottedRegressions.remove(toRemove);
+	        //refreshPanel(true);
 	    }
 	}
 	
 	/**
 	 * Removes a linear or logarithmic regression from the plot.
+	 * TODO: RE IMPLEMENT!
 	 * @param type the regression type to remove. 
 	 */
 	private void removeLinearOrLogRegression(RegressionType type) {
 	    Regression toRemove = null;
-	    for (Regression r : regressionsToPlot) {
+	    for (Regression r : plottedRegressions) {
 	        if (type == RegressionType.LINEAR && r instanceof LinearRegression) {
 	            toRemove = r; 
 	            break;
@@ -236,15 +272,15 @@ public class ScatterPlotView extends JPanel{
 	    }
 	    
 	    if (toRemove != null) {
-	        regressionsToPlot.remove(toRemove);
+	        plottedRegressions.remove(toRemove);
 	        printRegressions();
-	        refreshPanel(true);
+
 	    }
 	}
 	
 	private void printRegressions() {
 	    System.out.println("Plotted Regressions");
-	    for (Regression r : regressionsToPlot)
+	    for (Regression r : plottedRegressions)
 	        System.out.println(r.getEquation());
 	    System.out.println("Total Regressions");
 	    for (Regression r : allRegressions)
@@ -259,7 +295,8 @@ public class ScatterPlotView extends JPanel{
 //	}
 	
 	/**
-	 * Creates the regression options menu. 
+	 * Creates the regression options menu.
+	 * TODO: UPDATE REGRESSIONS SAMPLES 
 	 * @return the regression options menu.
 	 */
 	private JMenu createRegressionMenu() {
@@ -271,7 +308,7 @@ public class ScatterPlotView extends JPanel{
 	    numRegressionSamples.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                refreshPanel(true);
+                
             }
 	    });
 	    distance.add(numRegressionSamples);
@@ -338,7 +375,6 @@ public class ScatterPlotView extends JPanel{
 	        case LINEAR:
 	            try {
 	                addRegression(new LinearRegression(col_x, col_y));
-	                refreshPanel(true);
 	            } catch (Exception e) {
 	                JOptionPane.showMessageDialog(this, "Error when generating regression.", "Error", JOptionPane.ERROR_MESSAGE);
 	            }
@@ -352,8 +388,9 @@ public class ScatterPlotView extends JPanel{
 	 * @param r the regression to add. 
 	 */
 	private void addRegression(Regression r) {
-	    allRegressions.add(r);
-	    regressionsToPlot.add(r);
+	    if (!allRegressions.contains(r))
+	        allRegressions.add(r);
+	    plottedRegressions.add(r);
 	    JPanel panel = new JPanel();
 	    JCheckBox reg = new JCheckBox(r.getEquation());
 	    if (r instanceof LogRegression) {
@@ -405,15 +442,20 @@ public class ScatterPlotView extends JPanel{
             }
 	    });
 	    panel.setLayout(new FlowLayout());
-	    reg.setSelected(true);
+//	    reg.setSelected(true);
 	    panel.add(reg);
 	    panel.add(xEquals);
 	    panel.add(input);
 	    panel.add(plot);
 	    regressionInfo.add(panel);
-	    refreshPanel(true);
+	    scatter.addRegression(r, getNumSamples());
 	}
 	
+	/**
+	 * Plots a point on the 
+	 * @param x
+	 * @param regFunction
+	 */
 	private void plotPoint(Double x, String regFunction) {
 	    Regression regression = null;
 	    for (Regression r : allRegressions) {
@@ -431,26 +473,26 @@ public class ScatterPlotView extends JPanel{
 	    }
 	}
 	
-	/**
-	 * Shows a loading screen for a given message. 
-	 * @param message the message to display with the loading screen. 
-	 */
-	private void showLoadingScreen(String message) {
-	    JPanel panel = new JPanel();
-	    ImageIcon loading = new ImageIcon("GUI_Icons/ajax-loader.gif");
-	    JButton cancel = new JButton("Cancel");
-	    cancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                refreshPanel(false);
-            }
-	    });
-	    panel.setLayout(new BorderLayout());
-	    panel.add(new JLabel(message), BorderLayout.NORTH);
-	    panel.add(new JLabel(loading), BorderLayout.CENTER);
-	    panel.add(cancel, BorderLayout.SOUTH);
-	    refreshPanel(panel);
-	}
+//	/**
+//	 * Shows a loading screen for a given message. 
+//	 * @param message the message to display with the loading screen. 
+//	 */
+//	private void showLoadingScreen(String message) {
+//	    JPanel panel = new JPanel();
+//	    ImageIcon loading = new ImageIcon("GUI_Icons/ajax-loader.gif");
+//	    JButton cancel = new JButton("Cancel");
+//	    cancel.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                refreshPanel(false);
+//            }
+//	    });
+//	    panel.setLayout(new BorderLayout());
+//	    panel.add(new JLabel(message), BorderLayout.NORTH);
+//	    panel.add(new JLabel(loading), BorderLayout.CENTER);
+//	    panel.add(cancel, BorderLayout.SOUTH);
+//	    refreshPanel(panel);
+//	}
 	
 	/**
 	 * Creates a jpanel which contains combo boxes for selection of the x and y axis. 
@@ -485,12 +527,15 @@ public class ScatterPlotView extends JPanel{
         return panel;
 	}
 	
-	
+	/**
+	 * Creates a new plot. 
+	 */
 	private void createNewPlot() {
 	    Plot newScatter = new Plot(col_x, col_y);
 	    this.remove(scatter.getPlot());
 	    scatter = newScatter;
-	    regressionsToPlot.clear();
+	    scatter.addPropertyChangeListener(this);
+	    plottedRegressions.clear();
 	    allRegressions.clear();
 	    this.remove(regressionInfo);
 	    regressionPanel();
@@ -512,42 +557,21 @@ public class ScatterPlotView extends JPanel{
 	}
 	
 	/**
-	 * Refreshes the panel. Used to update scatter plot with a new regression.
-	 */
-	private void refreshPanel(boolean plotRegressions) {
-	    Plot newScatter;
-	    if (plotRegressions && regressionsToPlot.size() != 0) {
-	        try {
-	            double distance = Double.parseDouble(numRegressionSamples.getText());
-	            if (distance <= 0.0)
-	                 JOptionPane.showMessageDialog(this, "Error: Regression sample interval cannot be less than or"
-	                         + " equal to zero.", "Error", JOptionPane.ERROR_MESSAGE);
-	            newScatter = new Plot(col_x, col_y, regressionsToPlot, (int) distance);
-	        } catch (NumberFormatException e) {
-	            JOptionPane.showMessageDialog(this, "Error with regression point frequency input.", "Error", JOptionPane.ERROR_MESSAGE);
-	            return;
-	        } catch (Exception e) {
-	            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-	            return;
-	        }
-	    } else {
-	        newScatter = new Plot(col_x, col_y); // Clear all currently plotted regressions. 
-	        regressionsToPlot.clear();
-	        regressionPanel();
-	    }
-	    this.remove(scatter.getPlot());
-	    scatter = newScatter;
-	    this.add(scatter.getPlot(), BorderLayout.CENTER);
-	    this.revalidate();
-	    this.repaint();
-	}
-	
-	/**
 	 * Enum indicating which regression type is being created. 
 	 * @author Cade
 	 */
 	private enum RegressionType {
 	    POLYNOMIAL, LINEAR, LOGARITHMIC;
 	}
+
+	/**
+	 * Refreshes the panel given a property change in the plot view. ASSUMES THE MIDDLE PLOT HAS BEEN REMOVED PRIOR! 
+	 */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        this.add(scatter.getPlot(), BorderLayout.CENTER);
+        this.revalidate();
+        this.repaint();
+    }
 	
 }
