@@ -1,6 +1,7 @@
 package examples;
 
 import dataframe.Column;
+import regressionFunctions.ConfidenceIntervals;
 import regressionFunctions.PolyRegression;
 
 public class Polynomial_regression_example {
@@ -15,7 +16,9 @@ public class Polynomial_regression_example {
 		//System.out.println("MSE: "+p.MSE);
 		//System.out.println("R2: "+p.R2);
 		//System.out.println("RMSD: "+p.RMSD);
-		p.printModelReport();
+		//p.printModelReport();
+		//System.out.println(p.coefficents.length);
+		ConfidenceIntervals c = new ConfidenceIntervals(p);
 		//p.set_se_ofCoefficents();
 		//p.set_T_coeffiecents();
 		//p.print_inverse_x_matrix();

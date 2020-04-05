@@ -19,7 +19,6 @@ public class PolyRegression extends Regression{
 	private Column y;
 	private double[][] matrix_x;
 	private double[][] matrix_xy;
-	private double[] coefficent_matrix;
 	private double[] coefficent_se; //std err of each coefficent
 	private double[] coefficent_t_scores;
 	private int coefficent_df; //degrees of freedom for coefficents
@@ -46,35 +45,36 @@ public class PolyRegression extends Regression{
 	 */
 	private void setCoefficentMatrix() {
 		double[][] m = multiply(inverse(this.matrix_x), this.matrix_xy);
-		this.coefficent_matrix = new double[m.length];
+		super.coefficents = new double[m.length];
 		for(int i = m.length-1; i>= 0; i--) {
-			this.coefficent_matrix[i] = m[i][0];
+			super.coefficents[i] = m[i][0];
 		}
 	}
 	@Override
 	protected void setRegression() {
 		degree_sums();
 		setCoefficentMatrix();
+		
 	}
 	@Override
 	public String getEquation() {
 		String eq = "y = ";
-		for (int i = this.coefficent_matrix.length-1; i >= 0; i--) {
+		for (int i = super.coefficents.length-1; i >= 0; i--) {
 			if(i == 1) {
-				eq = eq.concat(String.valueOf(this.coefficent_matrix[i]));
+				eq = eq.concat(String.valueOf(super.coefficents[i]));
 				eq = eq.concat("X");
-				if(this.coefficent_matrix[i-1] >= 0) {
+				if(super.coefficents[i-1] >= 0) {
 					eq = eq.concat(" + ");
 				}
 			}else if(i == 0) {
-				eq = eq.concat(String.valueOf(this.coefficent_matrix[i]));
+				eq = eq.concat(String.valueOf(super.coefficents[i]));
 				return eq;
 			}else {
-				eq = eq.concat(String.valueOf(this.coefficent_matrix[i]));
+				eq = eq.concat(String.valueOf(super.coefficents[i]));
 				eq = eq.concat("X");
 				eq = eq.concat("^");
 				eq = eq.concat(String.valueOf(i));
-				if(this.coefficent_matrix[i-1] >= 0) {
+				if(super.coefficents[i-1] >= 0) {
 					eq = eq.concat(" + ");
 				}
 			}
@@ -83,7 +83,7 @@ public class PolyRegression extends Regression{
 	}
 
 	public void print_coefficentMatrix() {
-		for (double i : this.coefficent_matrix)
+		for (double i : super.coefficents)
 			System.out.print(i + " ");
 		System.out.println();
 	}
@@ -328,11 +328,11 @@ public class PolyRegression extends Regression{
 	 */
 	@Override
 	public void set_se_ofCoefficents() {
-		this.coefficent_se = new double[this.coefficent_matrix.length];
+		super.coefficent_se = new double[super.coefficents.length];
 		double[][] ix = this.inverse(this.matrix_x);
 		for(int i = 0; i < ix.length;i++) {
-			this.coefficent_se[i] = Math.sqrt(this.RMSD* ix[i][i]);
-			System.out.println(this.coefficent_se[i]);
+			super.coefficent_se[i] = Math.sqrt(this.RMSD* ix[i][i]);
+			System.out.println(super.coefficent_se[i]);
 		}
 	}
 	/**
@@ -340,12 +340,10 @@ public class PolyRegression extends Regression{
 	 */
 	@Override
 	public void set_T_ofCoeffiecents() {
-		double[] t = new double[this.coefficent_matrix.length];
-		for(int i = 0; i < this.coefficent_matrix.length; i++) {
-			t[i] = this.coefficent_matrix[i] / this.coefficent_se[i];
-			System.out.println(t[i]);
+		super.coefficent_t_scores = new double[super.coefficents.length];
+		for(int i = 0; i < super.coefficents.length; i++) {
+			super.coefficent_t_scores[i] = super.coefficents[i] / super.coefficent_se[i];
 		}
-		this.coefficent_t_scores = t;
 	}
 	/**
 	 * set degrees of freedom for coefficents
@@ -389,8 +387,8 @@ public class PolyRegression extends Regression{
 	}
 	public double predictY(Particle x_val) {
 		double y = 0;
-		for(int i = coefficent_matrix.length-1; i >= 0; i--) {
-			y = y + (coefficent_matrix[i] * Math.pow(x_val.getDoubleValue(),i));
+		for(int i = super.coefficents.length-1; i >= 0; i--) {
+			y = y + (super.coefficents[i] * Math.pow(x_val.getDoubleValue(),i));
 		}
 		return y;
 	}

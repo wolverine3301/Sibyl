@@ -52,8 +52,10 @@ public class ConfidenceIntervals {
 	 * set the upper inteval
 	 */
 	private void setUpper() {
+		System.out.println("HERE "+this.function.coefficents.length);
 		this.upper = new float[this.function.coefficents.length];
 		for(int i = 0; i < this.function.coefficents.length; i++) {
+			System.out.println(this.function.coefficent_t_scores[i]);
 			upper[i] = (float) ((float)( this.function.coefficents[i]) + (this.function.coefficent_t_scores[i] * this.function.coefficent_se[i]));
 		}
 	}
