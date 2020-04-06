@@ -1,5 +1,6 @@
 package regressionFunctions;
 
+import forensics.T_Test;
 import particles.Particle;
 
 /**
@@ -55,13 +56,28 @@ public class ConfidenceIntervals {
 
 		this.upper = new float[this.function.coefficents.length];
 		for(int i = 0; i < this.function.coefficents.length; i++) {
+			System.out.println(this.function.coefficent_t_scores[i]);
 			upper[i] = (float) ((float)( this.function.coefficents[i]) + (this.function.coefficent_t_scores[i] * this.function.coefficent_se[i]));
 		}
 	}
 	private void setLower() {
 		this.lower = new float[this.function.coefficents.length];
 		for(int i = 0; i < this.function.coefficents.length; i++) {
+			
+			T_Test test = T_Test.test(this.function.coefficents[i],this.function.degree_freedom);
+			System.out.println("T: "+test.pvalue+ " FT: "+this.function.coefficent_t_scores[i]);
 			lower[i] = (float) ((float)( this.function.coefficents[i]) - (this.function.coefficent_t_scores[i] * this.function.coefficent_se[i]));
+			//lower[i] = (float) (this.function.coefficent_t_scores[i] * this.function.coefficent_se[i]);
+		}
+	}
+	public void printUpper() {
+		for(float i : this.upper) {
+			System.out.println(i);
+		}
+	}
+	public void printLower() {
+		for(float i : this.lower) {
+			System.out.println(i);
 		}
 	}
 	/**
@@ -74,7 +90,7 @@ public class ConfidenceIntervals {
 		for(int i = this.function.coefficents.length-1; i >= 0; i--) {
 			p = p + upper[i] * Math.pow(x_val.getDoubleValue(), i);
 		}
-		return p;
+		return this.function.predictY(x_val) + p;
 	}
 	/**
 	 * return the lower bound confidince for a given x
@@ -86,7 +102,7 @@ public class ConfidenceIntervals {
 		for(int i = this.function.coefficents.length-1; i >= 0; i--) {
 			p = p + lower[i] * Math.pow(x_val.getDoubleValue(), i);
 		}
-		return p;
+		return this.function.predictY(x_val) - p;
 	}
 
 

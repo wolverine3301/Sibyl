@@ -332,7 +332,6 @@ public class PolyRegression extends Regression{
 		double[][] ix = this.inverse(this.matrix_x);
 		for(int i = 0; i < ix.length;i++) {
 			super.coefficent_se[i] = Math.sqrt(this.RMSD* ix[i][i]);
-			System.out.println(super.coefficent_se[i]);
 		}
 	}
 	/**
@@ -344,13 +343,13 @@ public class PolyRegression extends Regression{
 		for(int i = 0; i < super.coefficents.length; i++) {
 			super.coefficent_t_scores[i] = super.coefficents[i] / super.coefficent_se[i];
 		}
-	}
+	} 
 	/**
 	 * set degrees of freedom for coefficents
 	 */
 	@Override
 	public void setDegFree() {
-		super.degree_freedom = x.getLength() - degree-1;
+		super.degree_freedom = super.x.getLength() - this.degree-1;
 	
 	}
 	/**
@@ -382,7 +381,6 @@ public class PolyRegression extends Regression{
 		double[] SE = new double[m.length];
 		for(int i = 0; i < SE.length;i++) {
 			SE[i] = Math.sqrt( (m[i][i] / (super.x.getLength() * SST) ) );
-			System.out.println(SE[i]);
 		}
 	}
 	public double predictY(Particle x_val) {

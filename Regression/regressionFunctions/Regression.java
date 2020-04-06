@@ -119,6 +119,7 @@ public abstract class Regression {
 		setSE();
 		set_se_ofCoefficents();
 		set_T_ofCoeffiecents();
+		setDegFree();
 	}
 	/**
 	 * set total sum of squares
