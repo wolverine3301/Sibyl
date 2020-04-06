@@ -22,7 +22,7 @@ public class ConfidenceIntervals {
 	
 	private Regression function;
 	private float alpha;
-	private int confidence_level = 90; //default is 90% confidence
+	private int confidence_level = 80; //default is 90% confidence
 	private float critical_prob;
 	private float[] upper;
 	private float[] lower;
@@ -57,7 +57,7 @@ public class ConfidenceIntervals {
 		this.upper = new float[this.function.coefficents.length];
 		for(int i = 0; i < this.function.coefficents.length; i++) {
 			System.out.println(this.function.coefficent_t_scores[i]);
-			upper[i] = (float) ((float)( this.function.coefficents[i]) + (this.function.coefficent_t_scores[i] * this.function.coefficent_se[i]));
+			upper[i] = (float) ((float)( this.function.coefficents[i]) + (this.function.coefficent_t_scores[i] * (this.function.coefficent_se[i] / Math.sqrt(this.function.x.getLength() ))) );
 		}
 	}
 	private void setLower() {
@@ -66,7 +66,7 @@ public class ConfidenceIntervals {
 			
 			T_Test test = T_Test.test(this.function.coefficents[i],this.function.degree_freedom);
 			System.out.println("T: "+test.pvalue+ " FT: "+this.function.coefficent_t_scores[i]);
-			lower[i] = (float) ((float)( this.function.coefficents[i]) - (this.function.coefficent_t_scores[i] * this.function.coefficent_se[i]));
+			lower[i] = (float) ((float)( this.function.coefficents[i]) - (this.function.coefficent_t_scores[i] * (this.function.coefficent_se[i] / Math.sqrt(this.function.x.getLength() ))) );
 			//lower[i] = (float) (this.function.coefficent_t_scores[i] * this.function.coefficent_se[i]);
 		}
 	}
@@ -90,7 +90,7 @@ public class ConfidenceIntervals {
 		for(int i = this.function.coefficents.length-1; i >= 0; i--) {
 			p = p + upper[i] * Math.pow(x_val.getDoubleValue(), i);
 		}
-		return this.function.predictY(x_val) + p;
+		return p;
 	}
 	/**
 	 * return the lower bound confidince for a given x
@@ -102,7 +102,7 @@ public class ConfidenceIntervals {
 		for(int i = this.function.coefficents.length-1; i >= 0; i--) {
 			p = p + lower[i] * Math.pow(x_val.getDoubleValue(), i);
 		}
-		return this.function.predictY(x_val) - p;
+		return p;
 	}
 
 
