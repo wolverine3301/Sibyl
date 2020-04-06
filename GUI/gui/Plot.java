@@ -1,15 +1,20 @@
 package gui;
 
+import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Stack;
 
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.StandardXYToolTipGenerator;
+import org.jfree.chart.labels.XYToolTipGenerator;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
@@ -43,6 +48,8 @@ public class Plot extends JPanel {
 	/** Notifies the plot that a change has been made. */
 	private PropertyChangeSupport notifyPlot = new PropertyChangeSupport(this);
 	
+	private Stack<Color> colorsToUse;
+	
 	/** The number of datasets contained in this chart. */
 	private int datasetCount;
 	
@@ -54,6 +61,7 @@ public class Plot extends JPanel {
 	public Plot(Column x, Column y) {
 		this.x = x;
 		this.y = y;
+		colorsToUse = createColorStack();
 	    plot = createPlot(null, 20);
 	    datasetCount = 1;
         JFreeChart chart = new JFreeChart("ScatterPlot of " + x.getName() + " vs. " + y.getName(),
@@ -72,6 +80,7 @@ public class Plot extends JPanel {
     public Plot(Column x, Column y, HashSet<Regression> regressions, int functionSamples) {
         this.x = x;
         this.y = y;
+        colorsToUse = createColorStack();
         plot = createPlot(regressions, functionSamples);
         JFreeChart chart = new JFreeChart("ScatterPlot of " + x.getName() + " vs. " + y.getName(),
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
@@ -115,14 +124,6 @@ public class Plot extends JPanel {
 	    return plot;
 	}
 	
-    public void addRegression(Regression r, int functionSamples) {
-        plot.setDataset(datasetCount, getRegressionPlot(r, x.min - x.std, x.max + x.std, functionSamples));
-        plot.setRenderer(datasetCount++, new XYLineAndShapeRenderer(true, false));
-        
-        
-        notifyPlot.firePropertyChange("Regression Added.", null, null);
-    }
-	
 	/**
 	 * Creates a plot for a given regression.
 	 * @param r the regression.
@@ -159,11 +160,12 @@ public class Plot extends JPanel {
         }
         XYSeriesCollection data = new XYSeriesCollection();
         data.addSeries(rLine);
-        plot.setDataset(plot.getSeriesCount(), data);
+        plot.setDataset(datasetCount, data);
+        plot.setRenderer(datasetCount++, customRenderer(true, false, 1));
         JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         panel = new ChartPanel(chart);
-        
+        notifyPlot.firePropertyChange("Regression Added", null, null);
 	}
 	
 	/**
@@ -178,11 +180,11 @@ public class Plot extends JPanel {
 	    XYSeriesCollection data = new XYSeriesCollection();
 	    data.addSeries(point);
 	    plot.setDataset(datasetCount, data);
-	    plot.setRenderer(datasetCount++, new XYLineAndShapeRenderer(false, true));
+	    plot.setRenderer(datasetCount++, customRenderer(false, true, 1));
         JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         panel = new ChartPanel(chart);
-        notifyPlot.firePropertyChange("Regression Added.", null, null);
+        notifyPlot.firePropertyChange("Point Added.", null, null);
 	}
 	
 	/**
@@ -200,14 +202,18 @@ public class Plot extends JPanel {
         return xvsy;
 	}
 	
+	public void removeRegression() {
+	    
+	}
+	
 	/**
-	 * 
+	 * Adds a confidence interval to the plot. 
 	 * @param interval
 	 * @param startValue
 	 * @param endValue
 	 * @param numSamples
 	 */
-	public void addConfidenceInterval(ConfidenceIntervals interval, double startValue, double endValue, int numSamples) {
+	public void plotConfidenceInterval(ConfidenceIntervals interval, double startValue, double endValue, int numSamples) {
 	    XYSeriesCollection interv = new XYSeriesCollection();
 	    XYSeries lower = new XYSeries("Lower", false);
 	    XYSeries upper = new XYSeries("Upper", false);
@@ -220,11 +226,11 @@ public class Plot extends JPanel {
         interv.addSeries(lower);
         interv.addSeries(upper);
         plot.setDataset(datasetCount, interv);
-        plot.setRenderer(datasetCount++, new XYLineAndShapeRenderer(true, false));
+        plot.setRenderer(datasetCount++, customRenderer(true, false, 2));
         JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         panel = new ChartPanel(chart);
-        notifyPlot.firePropertyChange("Regression Added.", null, null);
+        notifyPlot.firePropertyChange("Confidence Interval Added.", null, null);
 	}
 	
 	
@@ -235,4 +241,26 @@ public class Plot extends JPanel {
     public void addPropertyChangeListener(final PropertyChangeListener theListener) {
         notifyPlot.addPropertyChangeListener(theListener);
     }
+    
+    private Stack<Color> createColorStack() {
+        Stack<Color> colors = new Stack<Color>();
+        colors.add(Color.GREEN);
+        colors.add(Color.GRAY);
+        colors.add(Color.RED);
+        colors.add(Color.BLUE);
+        colors.add(Color.BLACK);
+        return colors;
+    }
+    
+    private XYLineAndShapeRenderer customRenderer(boolean renderLines, boolean renderShape, int numLines) {
+        if (colorsToUse.isEmpty()) 
+            colorsToUse = createColorStack();
+        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(renderLines, renderShape);
+        Color currentColor = colorsToUse.pop();
+        for (int i = 0; i < numLines; i++) {
+            renderer.setSeriesPaint(i, currentColor);
+        }
+        return renderer;
+    }
 }
+

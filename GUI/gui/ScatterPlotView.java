@@ -70,6 +70,7 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	/** The number of regression samples to take for the regression lines. (more samples = smoother line) */
 	private JTextField numRegressionSamples;
 	
+	/** The JPanel which will contain regression info. */
 	private JPanel regressionInfo;
 	
 	/**
@@ -218,7 +219,7 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	
 	private void addConfidenceInterval() {
 	    for (Regression r : plottedRegressions) {
-	        scatter.addConfidenceInterval(new ConfidenceIntervals(r), col_x.min - col_x.std, col_x.max + col_x.std, getNumSamples());
+	        scatter.plotConfidenceInterval(new ConfidenceIntervals(r), col_x.min - col_x.std, col_x.max + col_x.std, getNumSamples());
 	    }
 	}
 	
@@ -448,7 +449,7 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	    panel.add(input);
 	    panel.add(plot);
 	    regressionInfo.add(panel);
-	    scatter.addRegression(r, getNumSamples());
+	    scatter.plotRegression(r, getNumSamples());
 	}
 	
 	/**
