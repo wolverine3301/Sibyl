@@ -56,7 +56,6 @@ public class SibylGUI extends JFrame implements PropertyChangeListener {
     /** A hashmap of the dataframes loaded in. */ 
     private HashMap<String, DataFrame> loadedDataFrames;
     
-    
     private MainToolBar toolBar;
     
     /** A HashSet of plots. */

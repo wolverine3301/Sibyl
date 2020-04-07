@@ -86,6 +86,7 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	    super();
 	    this.df = df;
 	    regressionPanel = new RegressionPanel();
+	    regressionPanel.addPropertyChangeListener(this);
 	    plotInfo = new JTabbedPane();
 	    col_x = df.getColumn(df.numericIndexes.get(0));
 	    col_y = df.getColumn(df.numericIndexes.get(0));
@@ -205,6 +206,7 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	    }
 	    if (r != null) {
 	        scatter.plotRegression(r, getNumSamples());
+	        notifyPlot.firePropertyChange("PLOT", null, null);
 	    }
 	}
 	
@@ -312,16 +314,17 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	 */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        String option = (String) evt.getSource();
+        String option = evt.getPropertyName();
         if (option.equals("PLOT")) { //Re plot an existing regression
-            
             this.revalidate();
             this.repaint();
         } else if (option.equals("POINT")) { //Plot a point.
             
         } else if (option.equals("DELETE")) { //Delete a something fix this later cade
             
-        } 
+        } else if (option.equals("REG")) { //Update the regression panel. 
+            
+        }
     }
 	
     
