@@ -1,4 +1,4 @@
-package gui;
+package main_gui;
 
 import java.awt.*;
 import javax.swing.JFrame;

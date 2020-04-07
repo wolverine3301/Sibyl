@@ -1,4 +1,4 @@
-package gui;
+package plotting;
 
 import javax.swing.JFrame;
 

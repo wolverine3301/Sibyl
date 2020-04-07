@@ -1,4 +1,4 @@
-package gui;
+package plotting;
 
 import java.awt.Color;
 import java.beans.PropertyChangeListener;
@@ -165,7 +165,7 @@ public class Plot extends JPanel {
         JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         panel = new ChartPanel(chart);
-        notifyPlot.firePropertyChange("Regression Added", null, null);
+        notifyPlot.firePropertyChange("PLOT", null, null);
 	}
 	
 	/**
@@ -184,7 +184,7 @@ public class Plot extends JPanel {
         JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         panel = new ChartPanel(chart);
-        notifyPlot.firePropertyChange("Point Added.", null, null);
+        notifyPlot.firePropertyChange("PLOT", null, null);
 	}
 	
 	/**
@@ -230,7 +230,7 @@ public class Plot extends JPanel {
         JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         panel = new ChartPanel(chart);
-        notifyPlot.firePropertyChange("Confidence Interval Added.", null, null);
+        notifyPlot.firePropertyChange("PLOT", null, null);
 	}
 	
 	

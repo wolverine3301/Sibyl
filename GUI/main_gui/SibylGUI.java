@@ -1,4 +1,4 @@
-package gui;
+package main_gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -6,6 +6,8 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +27,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dataframe.DataFrame;
 import machinations.Model;
+import plotting.ScatterPlotView;
 
 
 
@@ -42,7 +45,8 @@ import machinations.Model;
  *
  */
 
-public class SibylGUI extends JFrame {
+public class SibylGUI extends JFrame implements PropertyChangeListener {
+    
     /** THE KEY TO LIFE */
     private static final long serialVersionUID = -3696717041450563682L;
 
@@ -51,6 +55,7 @@ public class SibylGUI extends JFrame {
     
     /** A hashmap of the dataframes loaded in. */ 
     private HashMap<String, DataFrame> loadedDataFrames;
+    
     
     private MainToolBar toolBar;
     
@@ -126,9 +131,14 @@ public class SibylGUI extends JFrame {
         }
     }
     
-    
+    /**
+     * Adds a plot tab to the
+     * @param dfName
+     */
     public void addPlotDisplay(String dfName) {
         ScatterPlotView plot = new ScatterPlotView(loadedDataFrames.get(dfName));
+        plots.add(plot);
+        plot.addPropertyChangeListener(this);
         addTab(dfName + " Plot", plot);
     }
     
@@ -176,6 +186,14 @@ public class SibylGUI extends JFrame {
 //    private JMenu createAlgorithmsMenu() {
 //        
 //    }
+
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("PLOT")) {
+            refresh();
+        }
+    }
     
     /***********************************
      * OLD CODE !!!! 
