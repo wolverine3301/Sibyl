@@ -19,8 +19,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
+import particles.DoubleParticle;
+import regressionFunctions.ConfidenceIntervals;
 import regressionFunctions.LinearRegression;
 import regressionFunctions.LogRegression;
 import regressionFunctions.PolyRegression;
@@ -57,6 +60,14 @@ public class RegressionPanel extends JPanel{
         start();
     }
     
+    public void clear() {
+        allRegressions.clear();
+        plottedRegressions.clear();
+        this.removeAll();
+        start();
+        notifyPlot.firePropertyChange("GEN", null, null);
+    }
+    
     /**
      * 
      */
@@ -65,6 +76,7 @@ public class RegressionPanel extends JPanel{
         JLabel label = new JLabel("Regressions");
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(label);
+        this.add(ScatterPlotView.horizontalSep());
     }
     
     
@@ -74,6 +86,7 @@ public class RegressionPanel extends JPanel{
         JPanel regPanel = generateRegressionPanel(r);
         regressionSubPanels.add(regPanel);
         this.add(regPanel);
+        this.add(ScatterPlotView.horizontalSep());
         notifyPlot.firePropertyChange("PLOT", r.getEquation(), null);
     }
     
@@ -99,10 +112,35 @@ public class RegressionPanel extends JPanel{
         });
         box.setSelected(true);
         panel.add(box);
+        //Confidence Inteval stuff
+        JPanel conf = new JPanel();
+        conf.setLayout(new BoxLayout(conf, BoxLayout.X_AXIS));
+        conf.add(new JLabel("Confidence Interval: Conf level = "));
+        JTextField confLevel = new JTextField("90", 5);
+        confLevel.setMaximumSize(new Dimension(50, confLevel.getMaximumSize().height));
+        JButton confButton = new JButton("Plot Interval");
+        ActionListener confListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                double x = getConfLevel(confLevel);
+                if (x == Double.MAX_VALUE) {
+                    JOptionPane.showInputDialog(confButton, "Invalid input for x.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    plotInterval(x, box.getText());
+                }
+            } 
+        };
+        confLevel.addActionListener(confListener);
+        conf.add(confLevel);
+        confButton.addActionListener(confListener);
+        conf.add(confButton);
+        
+        //Point Plotting Stuff
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
-        inputPanel.add(new JLabel("x = "));
+        inputPanel.add(new JLabel("Plot point: x = "));
         JTextField xVal = new JTextField(5);
+        xVal.setMaximumSize(new Dimension(50, xVal.getMaximumSize().height));
         inputPanel.add(xVal);
         ActionListener pointListener = new ActionListener() {
             @Override
@@ -111,7 +149,7 @@ public class RegressionPanel extends JPanel{
                 if (x == Double.MIN_VALUE) {
                     JOptionPane.showInputDialog(xVal, "Invalid input for x.", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    notifyPlot.firePropertyChange("POINT", box.getText(), x);
+                    plotPoint(x, box.getText(), inputPanel);
                 }
             }
         };
@@ -120,12 +158,24 @@ public class RegressionPanel extends JPanel{
         plotPoint.addActionListener(pointListener);
         inputPanel.add(xVal);
         inputPanel.add(plotPoint);
+        inputPanel.add(new JLabel(" Points: "));
+        
+        //Put it all together
+        inputPanel.setAlignmentX(LEFT_ALIGNMENT);
+        info.setAlignmentX(LEFT_ALIGNMENT);
+        conf.setAlignmentX(LEFT_ALIGNMENT);
         panel.add(inputPanel);
+        panel.add(conf);
         panel.add(info);
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, info.getMinimumSize().height * 4));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, info.getMinimumSize().height * 6));
         return panel;
     }
     
+    /**
+     * Parses the xinput from a value. 
+     * @param field
+     * @return
+     */
     private double getXInput(JTextField field) {
         String val = field.getText();
         try {
@@ -137,13 +187,51 @@ public class RegressionPanel extends JPanel{
         return Double.MIN_VALUE;
     }
     
+    private double getConfLevel(JTextField field) {
+        String val = field.getText();
+        try {
+            double x = Double.parseDouble(val);
+            if (x < 0 || x > 100) {
+                JOptionPane.showConfirmDialog(this, "Invalid input for confidence level.", "Error", JOptionPane.ERROR_MESSAGE);
+                return Double.MIN_VALUE;
+            }
+            return x;
+        } catch (Exception e) {
+            JOptionPane.showConfirmDialog(this, "Invalid input for confidence level.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return Double.MIN_VALUE;
+    }
+    
+    private void plotInterval(double confidenceLevel, String regFunction) {
+        ConfidenceIntervals interval = new ConfidenceIntervals(allRegressions.get(regFunction));
+        interval.setConfidenceLevel((int) confidenceLevel);
+        notifyPlot.firePropertyChange("CONF", interval, null);
+    }
+    
+    /**
+     * Creates a regression info string for display.
+     * @param r the regression whos info is to be displayed.
+     * @return a jlabel which contins information about the given regression. 
+     */
     private JLabel createRegressionInfo(Regression r) {
         String r2 = "R^2 = " + r.R2;
         String mse = "MSE = " + r.MSE;
         String mae = "MAE = " + r.RMSD;
         return new JLabel(r2 + ", " + mse + ", " + mae);
     }
+
     
+    /**
+     * Plots a point on the 
+     * @param x
+     * @param regFunction
+     */
+     private void plotPoint(double x, String regFunction, JPanel infoPanel) {
+         Regression r = allRegressions.get(regFunction);
+         double y = r.predictY(new DoubleParticle(x));
+         infoPanel.add(new JLabel(" (" + x + ", " + y + ") "));
+         notifyPlot.firePropertyChange("POINT", x, r);
+     }
 //    private void drawExistingRegression(String regressionFunction) {
 //        Regression toAdd = null;
 //        printRegressions();

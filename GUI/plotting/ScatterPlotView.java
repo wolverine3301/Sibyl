@@ -2,6 +2,7 @@ package plotting;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -70,6 +71,8 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	/** The number of regression samples to take for the regression lines. (more samples = smoother line) */
 	private JTextField numRegressionSamples;
 	
+	private ChartPanel currentPlot;
+	
 	private JPanel plotPanel; 
 	
 	/** The JPanel which will contain regression info. */
@@ -111,10 +114,13 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	    scatter = new Plot(col_x, col_y);
 	    plotPanel = new JPanel();
 	    plotPanel.setLayout(new BorderLayout());
-	    plotPanel.add(scatter.getPlot(), BorderLayout.CENTER);
+	    currentPlot = scatter.getPlot();
+	    plotPanel.add(currentPlot, BorderLayout.CENTER);
 	    JPanel optionPanel = new JPanel();
 	    optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
+	    optionPanel.add(horizontalSep());
 	    optionPanel.add(axisSelectPanel());
+	    optionPanel.add(horizontalSep());
 	    optionPanel.add(regressionButtons());
 	    plotPanel.add(optionPanel, BorderLayout.SOUTH);
 	}
@@ -151,6 +157,7 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
             }
         });
         numRegressionSamples = new JTextField("20");
+        numRegressionSamples.setMaximumSize(new Dimension(50, numRegressionSamples.getMaximumSize().height));
         poly.setSelected(false);
         panel.add(baseRegressions);
         panel.add(linear);
@@ -224,28 +231,6 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
         return 20;
     }
 	
-//	/**
-//	 * Plots a point on the 
-//	 * @param x
-//	 * @param regFunction
-//	 */
-//	private void plotPoint(Double x, String regFunction) {
-//	    Regression regression = null;
-//	    for (Regression r : RegressionPanel.getAllRegressions()) {
-//	        if (r.getEquation().equals(regFunction)) {
-//	            regression = r;
-//	            break;
-//	        }
-//	    }
-//	    if (regression != null) {
-//	        this.remove(scatter.getPlot());
-//	        scatter.plotPoint(x, regression);
-//	        this.add(scatter.getPlot(), BorderLayout.CENTER);
-//	        this.revalidate();
-//	        this.repaint();
-//	    }
-//	}
-	
     /**
      * Adds a property change listener to the panel.
      * @param theListener the listener to be added.
@@ -292,13 +277,13 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	 * Creates a new plot. 
 	 */
 	private void createNewPlot() {
-	    Plot newScatter = new Plot(col_x, col_y);
-	    plotPanel.remove(scatter.getPlot());
-	    scatter = newScatter;
-	    plotPanel.add(scatter.getPlot());
-	    scatter.addPropertyChangeListener(this);
-	    this.revalidate();
-	    this.repaint();
+	    plotPanel.remove(currentPlot);
+	    scatter = new Plot(col_x, col_y);
+	    currentPlot = scatter.getPlot();
+	    plotPanel.add(currentPlot);
+	    regressionPanel.clear();
+        this.revalidate();
+        this.repaint();
 	}
 	
 	/**
@@ -315,19 +300,30 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String option = evt.getPropertyName();
-        if (option.equals("PLOT")) { //Re plot an existing regression
+        if (option.equals("GEN")) { //Used for general refreshing of the panel.
             this.revalidate();
             this.repaint();
         } else if (option.equals("POINT")) { //Plot a point.
-            
+            scatter.plotPoint((Double) evt.getOldValue(), (Regression) evt.getNewValue());
+            this.revalidate();
+            this.repaint();
         } else if (option.equals("DELETE")) { //Delete a something fix this later cade
             
-        } else if (option.equals("REG")) { //Update the regression panel. 
+        } else if (option.equals("PLOT")) { //Update plot. 
+            System.out.println("REFRESHING PLOT!");
+            this.revalidate();
+            this.repaint();
+        } else if (option.equals("CONF")) { //Plot a confidence interval
+            scatter.plotConfidenceInterval((ConfidenceIntervals) evt.getOldValue(), col_x.min - col_x.std, col_x.max + col_x.std, getNumSamples());
             
         }
     }
 	
-    
+    public static JSeparator horizontalSep() {
+        JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+        sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        return sep;
+    }
 //  /**
 //  * Shows a loading screen for a given message. 
 //  * @param message the message to display with the loading screen. 

@@ -31,7 +31,7 @@ import regressionFunctions.Regression;
  * @author Cade Reynoldson
  * @version 1.0
  */
-public class Plot extends JPanel {
+public class Plot {
 	
     /** Serial bullshit */
     private static final long serialVersionUID = 1031343868335382809L;
@@ -204,6 +204,20 @@ public class Plot extends JPanel {
 	
 	public void removeRegression() {
 	    
+	}
+	
+	public void changePlot(Column x, Column y) {
+        this.x = x;
+        this.y = y;
+        colorsToUse = createColorStack();
+        plot = createPlot(null, 20);
+        datasetCount = 1;
+        JFreeChart chart = new JFreeChart("ScatterPlot of " + x.getName() + " vs. " + y.getName(),
+                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+        // Create Panel
+        panel = new ChartPanel(chart);
+        System.out.println("HERE");
+        notifyPlot.firePropertyChange("PLOT", null, null);
 	}
 	
 	/**
