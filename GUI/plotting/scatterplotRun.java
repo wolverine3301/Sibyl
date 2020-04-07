@@ -10,7 +10,7 @@ import regressionFunctions.PolyRegression;
 public class scatterplotRun {
 
 	public static void main(String[] args) {
-		String file = "testfiles/iris.txt";
+		String file = "testfiles/set1.csv";
 //        double[] a1 = {-1,0,1,2,3,5,7,9};
 //        double[] a2 = {-1,3,2.5,5,4,2,5,4};
 //        Column x = new Column(a1);

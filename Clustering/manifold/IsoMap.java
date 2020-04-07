@@ -147,6 +147,7 @@ public class IsoMap implements Serializable {
             d = eigen.getEigenValues().length;
         }
 
+        
         DenseMatrix V = eigen.getEigenVectors();
         double[][] coordinates = new double[n][d];
         for (int j = 0; j < d; j++) {

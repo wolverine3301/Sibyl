@@ -34,6 +34,7 @@ public class DataFrame_Read {
 	                currentParticle.setIndex(count); //Set the index of this particle in the column. 
 	                currentRow.add(currentParticle);
 	            }
+	            
 	            df.addRow(currentRow); //Add the current row to the dataframe. This method handles initializing position in columns too.
 	            count++;
 	        }

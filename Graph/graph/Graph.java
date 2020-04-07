@@ -120,7 +120,6 @@ public interface Graph {
      */
     Edge getEdge(int source, int target);
 
-   
     /**
      * Creates a new edge in this graph, going from the source vertex to the
      * target vertex, and returns the created edge.

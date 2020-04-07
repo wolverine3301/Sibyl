@@ -4,7 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 public class SplashScreen extends JWindow{
 
-   Image splashScreen;
+   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+Image splashScreen;
    ImageIcon imageIcon;
    JLabel imageLabel = new JLabel();
    public SplashScreen() {
