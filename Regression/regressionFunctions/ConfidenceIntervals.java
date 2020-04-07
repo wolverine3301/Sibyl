@@ -18,6 +18,7 @@ import particles.Particle;
  *
  */
 
+
 public class ConfidenceIntervals {
 	
 	private Regression function;
