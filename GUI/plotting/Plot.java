@@ -1,10 +1,13 @@
 package plotting;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Point;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
 
@@ -31,16 +34,16 @@ import regressionFunctions.Regression;
  * @author Cade Reynoldson
  * @version 1.0
  */
-public class Plot {
-	
-    /** Serial bullshit */
-    private static final long serialVersionUID = 1031343868335382809L;
+public class Plot extends JPanel {
+
+    
+    private static final long serialVersionUID = -551974310810305557L;
 
     /** The two columns to plot against eachother. */
 	private Column x,y;
 	
 	/** The plot which contains all the data. */
-	private XYPlot plot;
+	private XYPlot masterPlot;
 	
 	/** The chartpanel which displays the scatter plot. */
 	private ChartPanel panel;
@@ -48,10 +51,34 @@ public class Plot {
 	/** Notifies the plot that a change has been made. */
 	private PropertyChangeSupport notifyPlot = new PropertyChangeSupport(this);
 	
+	/** The stack of colors to use for plotting data */
 	private Stack<Color> colorsToUse;
+	
+	/** The regressions to skip when rendering the plot. */
+	private HashSet<Regression> regressionsToSkip;
+	
+	/** The regressions plotted mapped to their color. */
+	private HashMap<Regression, XYLineAndShapeRenderer> plottedRegressions;
+
+	/** The intervals to skip when rendering the plot. */
+	private HashSet<ConfidenceIntervals> intervalsToSkip;
+	
+	/** The plotted confidence intervals mapped to their color. */
+	private HashMap<ConfidenceIntervals, XYLineAndShapeRenderer> plottedIntervals;
+	
+	private HashSet<DoublePoint> pointsToSkip;
+	
+	/** The plotted points on the chart mapped to their color. */
+	private HashMap<DoublePoint, XYLineAndShapeRenderer> plottedPoints;
+	
+	
 	
 	/** The number of datasets contained in this chart. */
 	private int datasetCount;
+	
+	private double xStart;
+	
+	private double xEnd;
 	
 	/**
 	 * Creates a plot given two columns.
@@ -61,14 +88,19 @@ public class Plot {
 	public Plot(Column x, Column y) {
 		this.x = x;
 		this.y = y;
+		xStart = x.min - x.std;
+		xEnd = x.max + x.std;
+        this.setLayout(new BorderLayout());
 		colorsToUse = createColorStack();
-	    plot = createPlot(null, 20);
+	    masterPlot = createPlot(null, 20);
+	    initDataStructures();
 	    datasetCount = 1;
         JFreeChart chart = new JFreeChart("ScatterPlot of " + x.getName() + " vs. " + y.getName(),
-                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+                JFreeChart.DEFAULT_TITLE_FONT, masterPlot, true);
 	    // Create Panel
         ChartPanel view = new ChartPanel(chart);
         this.panel = view;
+        this.add(panel, BorderLayout.CENTER);
 	}
 	
     /**
@@ -80,12 +112,16 @@ public class Plot {
     public Plot(Column x, Column y, HashSet<Regression> regressions, int functionSamples) {
         this.x = x;
         this.y = y;
+        this.setLayout(new BorderLayout());
+        xStart = x.min - x.std;
+        xEnd = x.max + x.std;
         colorsToUse = createColorStack();
-        plot = createPlot(regressions, functionSamples);
+        masterPlot = createPlot(regressions, functionSamples);
         JFreeChart chart = new JFreeChart("ScatterPlot of " + x.getName() + " vs. " + y.getName(),
-                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+                JFreeChart.DEFAULT_TITLE_FONT, masterPlot, true);
         // Create Panel
         this.panel = new ChartPanel(chart);
+        this.add(panel);
     }
     
     /**
@@ -113,13 +149,13 @@ public class Plot {
 	    datasetCount = 1;
 	    if (regressions != null) {
 	        for (Regression r : regressions) {
-	            plot.setDataset(datasetCount, getRegressionPlot(r, x.min - x.std, x.max + x.std, functionSamples));
+	            plot.setDataset(datasetCount, getRegressionPlot(r, functionSamples));
 	            plot.setRenderer(datasetCount++, new XYLineAndShapeRenderer(true, false));
 	        }
 	    }
-	    xAxis.setLowerBound(x.min - x.std);
+	    xAxis.setLowerBound(xStart);
 	    yAxis.setLowerBound(y.min - y.std);
-	    xAxis.setUpperBound(x.max + x.std);
+	    xAxis.setUpperBound(xEnd);
 	    yAxis.setUpperBound(y.max + y.std);
 	    return plot;
 	}
@@ -132,10 +168,10 @@ public class Plot {
 	 * @param numSamples the number of samples to take from the plot. Higher sample number, the smoother the line.
 	 * @return An XYDataset containing a regression plot.
 	 */
-	private XYDataset getRegressionPlot(Regression r, double startValue, double endValue, int numSamples) {
+	private XYDataset getRegressionPlot(Regression r, int numSamples) {
 	    XYSeries rLine = new XYSeries(r.getEquation(), false);
-	    double step = (endValue - startValue) / (numSamples - 1);
-	    for (double i = startValue; i < endValue; i += step) {
+	    double step = (xEnd - xStart) / (numSamples - 1);
+	    for (double i = xStart; i < xEnd; i += step) {
             double yVal = r.predictY(Particle.resolveType(i));
             rLine.add(i, yVal);
         }
@@ -150,21 +186,26 @@ public class Plot {
 	 * @param numSamples the number of smaples to take from the plot. Higher sample number, the smoother the line. 
 	 */
 	public void plotRegression(Regression r, int numSamples) {
+	    XYLineAndShapeRenderer render;
+	    if (regressionsToSkip.contains(r)) {
+	        regressionsToSkip.remove(r);
+	        render = plottedRegressions.get(r);
+	    } else {
+	        render = customRenderer(true, false, 1);
+	        plottedRegressions.put(r, render);
+	    }
         XYSeries rLine = new XYSeries(r.getEquation(), false);
-        double startValue = x.min - x.std;
-        double endValue = x.max + x.std;
-        double step = (endValue - startValue) / (numSamples - 1);
-        for (double i = startValue; i < endValue; i += step) {
+        double step = (xEnd - xStart) / (numSamples - 1);
+        for (double i = xStart; i < xEnd; i += step) {
             double yVal = r.predictY(Particle.resolveType(i));
             rLine.add(i, yVal);
         }
         XYSeriesCollection data = new XYSeriesCollection();
         data.addSeries(rLine);
-        plot.setDataset(datasetCount, data);
-        plot.setRenderer(datasetCount++, customRenderer(true, false, 1));
-        JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
-                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        panel = new ChartPanel(chart);
+        masterPlot.setDataset(datasetCount, data);
+        masterPlot.setRenderer(datasetCount++, render);
+        updatePlot();
+        System.out.println("PLOTTED REGRESSION");
         notifyPlot.firePropertyChange("PLOT", null, null);
 	}
 	
@@ -173,18 +214,28 @@ public class Plot {
 	 * @param x the x value to plot. 
 	 * @param r the regression function to use to calculate y.
 	 */
-	public void plotPoint(double x, Regression r) {
-	    double y = r.predictY(new DoubleParticle(x));
-	    XYSeries point = new XYSeries("x = " + x + ", y = " + y);
-	    point.add(x, y);
-	    XYSeriesCollection data = new XYSeriesCollection();
-	    data.addSeries(point);
-	    plot.setDataset(datasetCount, data);
-	    plot.setRenderer(datasetCount++, customRenderer(false, true, 1));
-        JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
-                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        panel = new ChartPanel(chart);
+	public void plotPoint(double x, double y) {
+	    XYLineAndShapeRenderer render;
+	    DoublePoint p = containsSkippedPoint(x, y);
+	    if (p == null) {
+	        p = new DoublePoint(x, y);
+	        render = customRenderer(false, true, 1);
+	        plottedPoints.put(p, render);
+	    } else {
+	        render = plottedPoints.get(p);
+	    }
+	    masterPlot.setDataset(datasetCount, getPointPlot(x, y));
+	    masterPlot.setRenderer(datasetCount++, render);
+	    updatePlot();
         notifyPlot.firePropertyChange("PLOT", null, null);
+	}
+	
+	private DoublePoint containsSkippedPoint(double x, double y) {
+	    for (DoublePoint p : pointsToSkip) {
+	        if (p.equals(x, y))
+	            return p;
+	    }
+	    return null;
 	}
 	
 	/**
@@ -202,22 +253,127 @@ public class Plot {
         return xvsy;
 	}
 	
-	public void removeRegression() {
-	    
+	/**
+	 * Cannot remove an already plotted regression. A new plot must be created.
+	 * Upon creation, scatterplotview will be notifited to refresh. 
+	 * @param r the regression to remove. 
+	 */
+	public void removeRegression(Regression toRemove, int functionSamples) {
+        regressionsToSkip.add(toRemove);
+        rebuildAfterRemoval(functionSamples);
+        notifyPlot.firePropertyChange("PLOT", null, null);
 	}
+	
+	public void removeInterval(ConfidenceIntervals interval, int functionSamples) {
+	    intervalsToSkip.add(interval);
+	    rebuildAfterRemoval(functionSamples);
+	    notifyPlot.firePropertyChange("PLOT", null, null);
+	}
+	
+	public void removePoint(double x, double y, int functionSamples) {
+	    DoublePoint point = null;
+	    for (DoublePoint p : plottedPoints.keySet()) {
+	        if ((p.getX() == x) && (p.getY() == y)) {
+	            point = p;
+	            break;
+	        }
+	    }
+	    if (point != null) {
+	        pointsToSkip.add(point);
+	        rebuildAfterRemoval(functionSamples);
+	        notifyPlot.firePropertyChange("PLOT", null, null);
+	    }
+	}
+	
+	/**
+	 * Rebuilds the plot after the removal of a plotted feature.
+	 */
+	private void rebuildAfterRemoval(int functionSamples) {
+	    masterPlot = new XYPlot();
+	    datasetCount = 0;
+        masterPlot.setDataset(datasetCount++, getColumnPlot());
+        masterPlot.setRenderer(new XYLineAndShapeRenderer(false, true));
+        NumberAxis xAxis = new NumberAxis(x.getName());
+        NumberAxis yAxis = new NumberAxis(y.getName());
+        masterPlot.setDomainAxis(0, xAxis);
+        masterPlot.setRangeAxis(0, yAxis);
+        xAxis.setLowerBound(xStart);
+        yAxis.setLowerBound(y.min - y.std);
+        xAxis.setUpperBound(xEnd);
+        yAxis.setUpperBound(y.max + y.std);
+        for (Regression r : plottedRegressions.keySet()) {
+            if (!regressionsToSkip.contains(r)) {
+                   masterPlot.setDataset(datasetCount, getRegressionPlot(r, functionSamples));
+                   masterPlot.setRenderer(datasetCount++, plottedRegressions.get(r));
+            }
+        }
+        for (ConfidenceIntervals i : plottedIntervals.keySet()) {
+            if (!intervalsToSkip.contains(i)) {
+                masterPlot.setDataset(datasetCount, getIntervalPlot(i, functionSamples));
+                masterPlot.setRenderer(datasetCount++, plottedIntervals.get(i));
+            }
+        }
+        for (DoublePoint p : plottedPoints.keySet()) {
+            if (!pointsToSkip.contains(p)) {
+                masterPlot.setDataset(datasetCount, getPointPlot(p.getX(), p.getY()));
+                masterPlot.setRenderer(datasetCount++, plottedPoints.get(p));
+            }
+        }
+        updatePlot();
+	}
+	
+	
+	private XYDataset getPointPlot(double x, double y) {
+	       XYSeries point = new XYSeries("(" + x + ", " + y + ")");
+	       point.add(x, y);
+	       XYSeriesCollection data = new XYSeriesCollection();
+	       data.addSeries(point);
+	       return data;
+	}
+	
+	private XYDataset getIntervalPlot(ConfidenceIntervals interval, int numSamples) {
+        XYSeriesCollection interv = new XYSeriesCollection();
+        XYSeries lower = new XYSeries("Lower", false);
+        XYSeries upper = new XYSeries("Upper", false);
+        double step = (xEnd - xStart) / (numSamples - 1);
+        for (double i = xStart; i < xEnd; i += step) {
+            DoubleParticle x = new DoubleParticle(i);
+            lower.add(i, interval.lower_intervalY(x));
+            upper.add(i, interval.upper_intervalY(x));
+        }
+        interv.addSeries(lower);
+        interv.addSeries(upper);
+        return interv;
+	}
+	
 	
 	public void changePlot(Column x, Column y) {
         this.x = x;
         this.y = y;
         colorsToUse = createColorStack();
-        plot = createPlot(null, 20);
+        masterPlot = createPlot(null, 20);
+        clearDataStructures();
         datasetCount = 1;
-        JFreeChart chart = new JFreeChart("ScatterPlot of " + x.getName() + " vs. " + y.getName(),
-                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        // Create Panel
-        panel = new ChartPanel(chart);
-        System.out.println("HERE");
+        updatePlot();
         notifyPlot.firePropertyChange("PLOT", null, null);
+	}
+	
+	private void initDataStructures() {
+        regressionsToSkip = new HashSet<Regression>();
+        plottedRegressions = new HashMap<Regression, XYLineAndShapeRenderer>();
+        intervalsToSkip = new HashSet<ConfidenceIntervals>();
+        plottedIntervals = new HashMap<ConfidenceIntervals, XYLineAndShapeRenderer>();
+        pointsToSkip = new HashSet<DoublePoint>();
+        plottedPoints = new HashMap<DoublePoint, XYLineAndShapeRenderer>();
+	}
+	
+	private void clearDataStructures() {
+	    regressionsToSkip.clear();
+        plottedRegressions.clear();
+        intervalsToSkip.clear();
+        plottedIntervals.clear();
+        pointsToSkip.clear();
+        plottedPoints.clear();
 	}
 	
 	/**
@@ -227,26 +383,28 @@ public class Plot {
 	 * @param endValue
 	 * @param numSamples
 	 */
-	public void plotConfidenceInterval(ConfidenceIntervals interval, double startValue, double endValue, int numSamples) {
-	    XYSeriesCollection interv = new XYSeriesCollection();
-	    XYSeries lower = new XYSeries("Lower", false);
-	    XYSeries upper = new XYSeries("Upper", false);
-        double step = (endValue - startValue) / (numSamples - 1);
-        for (double i = startValue; i < endValue; i += step) {
-            DoubleParticle x = new DoubleParticle(i);
-            lower.add(i, interval.lower_intervalY(x));
-            upper.add(i, interval.upper_intervalY(x));
-        }
-        interv.addSeries(lower);
-        interv.addSeries(upper);
-        plot.setDataset(datasetCount, interv);
-        plot.setRenderer(datasetCount++, customRenderer(true, false, 2));
-        JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
-                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        panel = new ChartPanel(chart);
+	public void plotConfidenceInterval(ConfidenceIntervals interval, int numSamples) {
+	    XYLineAndShapeRenderer render;
+	    if (intervalsToSkip.contains(interval)) {
+	        render = plottedIntervals.get(interval);
+	    } else {
+	        render = customRenderer(true, false, 2);
+	        plottedIntervals.put(interval, render);
+	    }
+	    XYDataset interv = getIntervalPlot(interval, numSamples);
+        masterPlot.setDataset(datasetCount, interv);
+        masterPlot.setRenderer(datasetCount++, render);
+        updatePlot();
         notifyPlot.firePropertyChange("PLOT", null, null);
 	}
 	
+	private void updatePlot() {
+	    this.remove(panel);
+        JFreeChart chart = new JFreeChart("ScatterPlot of " + this.x.getName() + " vs. " + this.y.getName(),
+                JFreeChart.DEFAULT_TITLE_FONT, masterPlot, true);
+        panel = new ChartPanel(chart);
+        this.add(panel, BorderLayout.CENTER);
+	}
 	
     /**
      * Adds a property change listener to the panel.
@@ -266,6 +424,13 @@ public class Plot {
         return colors;
     }
     
+    /** 
+     * Creates a custom renderer for a given dataset. Allows "custom" colors. 
+     * @param renderLines if the renderer is to render lines. 
+     * @param renderShape if the renderer is to render shapes.
+     * @param numLines the total number of lines (or datasets) this renderer is responsable to render. 
+     * @return a custom renderer.
+     */
     private XYLineAndShapeRenderer customRenderer(boolean renderLines, boolean renderShape, int numLines) {
         if (colorsToUse.isEmpty()) 
             colorsToUse = createColorStack();
@@ -275,6 +440,28 @@ public class Plot {
             renderer.setSeriesPaint(i, currentColor);
         }
         return renderer;
+    }
+    
+    private class DoublePoint {
+        private double x;
+        private double y;
+        
+        public DoublePoint(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+        
+        public double getX() {
+            return x;
+        }
+        
+        public double getY() {
+            return y;
+        }
+        
+        public boolean equals(double x, double y) {
+            return this.x == x && this.y == y;
+        }
     }
 }
 
