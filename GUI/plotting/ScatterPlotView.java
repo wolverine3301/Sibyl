@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -70,9 +71,7 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	
 	/** The number of regression samples to take for the regression lines. (more samples = smoother line) */
 	private JTextField numRegressionSamples;
-	
-	private ChartPanel currentPlot;
-	
+
 	private JPanel plotPanel; 
 	
 	/** The JPanel which will contain regression info. */
@@ -112,10 +111,10 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	 */
 	private void initPlotPanel() {
 	    scatter = new Plot(col_x, col_y);
+	    scatter.addPropertyChangeListener(this);
 	    plotPanel = new JPanel();
 	    plotPanel.setLayout(new BorderLayout());
-	    currentPlot = scatter.getPlot();
-	    plotPanel.add(currentPlot, BorderLayout.CENTER);
+	    plotPanel.add(scatter, BorderLayout.CENTER);
 	    JPanel optionPanel = new JPanel();
 	    optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
 	    optionPanel.add(horizontalSep());
@@ -213,7 +212,6 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	    }
 	    if (r != null) {
 	        scatter.plotRegression(r, getNumSamples());
-	        notifyPlot.firePropertyChange("PLOT", null, null);
 	    }
 	}
 	
@@ -277,10 +275,10 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	 * Creates a new plot. 
 	 */
 	private void createNewPlot() {
-	    plotPanel.remove(currentPlot);
+	    plotPanel.remove(scatter);
 	    scatter = new Plot(col_x, col_y);
-	    currentPlot = scatter.getPlot();
-	    plotPanel.add(currentPlot);
+	    scatter.addPropertyChangeListener(this);
+	    plotPanel.add(scatter, BorderLayout.CENTER);
 	    regressionPanel.clear();
         this.revalidate();
         this.repaint();
@@ -295,7 +293,7 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	}
 
 	/**
-	 * Refreshes the panel given a property change in the plot view. ASSUMES THE MIDDLE PLOT HAS BEEN REMOVED PRIOR! NOTE: This might not be needed?
+	 * Refreshes the panel given a property change in the plot view. ASSUMES THE MIDDLE PLOT HAS BEEN REMOVED PRIOR!
 	 */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -304,19 +302,31 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
             this.revalidate();
             this.repaint();
         } else if (option.equals("POINT")) { //Plot a point.
-            scatter.plotPoint((Double) evt.getOldValue(), (Regression) evt.getNewValue());
-            this.revalidate();
-            this.repaint();
-        } else if (option.equals("DELETE")) { //Delete a something fix this later cade
-            
-        } else if (option.equals("PLOT")) { //Update plot. 
-            System.out.println("REFRESHING PLOT!");
+            scatter.plotPoint((Double) evt.getOldValue(), (Double) evt.getNewValue());
+        } else if (option.equals("REMOVE")) { //Remove a regression. 
+            Object toRemove = evt.getOldValue();
+            if (toRemove instanceof Regression) {
+                System.out.println("DELETING ");
+                scatter.removeRegression((Regression) toRemove, getNumSamples());
+            } else if (toRemove instanceof Point) {
+                
+            }
+        } else if (option.equals("PLOT")) { //Refreshes the plot. 
+            System.out.println("REFRESHING PLOT");
             this.revalidate();
             this.repaint();
         } else if (option.equals("CONF")) { //Plot a confidence interval
-            scatter.plotConfidenceInterval((ConfidenceIntervals) evt.getOldValue(), col_x.min - col_x.std, col_x.max + col_x.std, getNumSamples());
+            scatter.plotConfidenceInterval((ConfidenceIntervals) evt.getOldValue(), getNumSamples());
             
+        } else if (option.equals("REPLOT")) { //Re-plot a regression or confidence interval.
+            Object toPlot = evt.getOldValue();
+            if (toPlot instanceof Regression) {
+                scatter.plotRegression((Regression) toPlot, getNumSamples());
+            } else if (toPlot instanceof ConfidenceIntervals) {
+                scatter.plotConfidenceInterval((ConfidenceIntervals) evt.getOldValue(), getNumSamples());
+            }
         }
+    
     }
 	
     public static JSeparator horizontalSep() {

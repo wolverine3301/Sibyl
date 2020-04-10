@@ -15,6 +15,7 @@ import java.util.HashSet;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -40,6 +41,7 @@ public class RegressionPanel extends JPanel{
     /** The regressions to plot. */
     private HashMap<String, Regression> plottedRegressions;
     
+    private HashMap<String, ConfidenceIntervals> plottedIntervals;
     
     private HashSet<JPanel> regressionSubPanels;
     
@@ -87,7 +89,6 @@ public class RegressionPanel extends JPanel{
         regressionSubPanels.add(regPanel);
         this.add(regPanel);
         this.add(ScatterPlotView.horizontalSep());
-        notifyPlot.firePropertyChange("PLOT", r.getEquation(), null);
     }
     
     /**
@@ -104,9 +105,9 @@ public class RegressionPanel extends JPanel{
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.DESELECTED) {
-                    notifyPlot.firePropertyChange("DELETE", box.getText(), null);
+                    notifyPlot.firePropertyChange("REMOVE", plottedRegressions.get(box.getText()), null);
                 } else {
-                    notifyPlot.firePropertyChange("PLOT", box.getText(), null);
+                    notifyPlot.firePropertyChange("REPLOT", plottedRegressions.get(box.getText()), null);
                 }
             }
         });
@@ -142,6 +143,7 @@ public class RegressionPanel extends JPanel{
         JTextField xVal = new JTextField(5);
         xVal.setMaximumSize(new Dimension(50, xVal.getMaximumSize().height));
         inputPanel.add(xVal);
+        JComboBox<String> plottedPoints = new JComboBox<String>();
         ActionListener pointListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -149,7 +151,7 @@ public class RegressionPanel extends JPanel{
                 if (x == Double.MIN_VALUE) {
                     JOptionPane.showInputDialog(xVal, "Invalid input for x.", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    plotPoint(x, box.getText(), inputPanel);
+                    plotPoint(x, box.getText(), plottedPoints);
                 }
             }
         };
@@ -170,6 +172,7 @@ public class RegressionPanel extends JPanel{
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, info.getMinimumSize().height * 6));
         return panel;
     }
+    
     
     /**
      * Parses the xinput from a value. 
@@ -226,11 +229,11 @@ public class RegressionPanel extends JPanel{
      * @param x
      * @param regFunction
      */
-     private void plotPoint(double x, String regFunction, JPanel infoPanel) {
+     private void plotPoint(double x, String regFunction, JComboBox box) {
          Regression r = allRegressions.get(regFunction);
          double y = r.predictY(new DoubleParticle(x));
-         infoPanel.add(new JLabel(" (" + x + ", " + y + ") "));
-         notifyPlot.firePropertyChange("POINT", x, r);
+         
+         notifyPlot.firePropertyChange("POINT", x, y);
      }
 //    private void drawExistingRegression(String regressionFunction) {
 //        Regression toAdd = null;
