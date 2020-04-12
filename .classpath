@@ -30,6 +30,7 @@
 	</classpathentry>
 	<classpathentry kind="src" path="Graph"/>
 	<classpathentry kind="src" path="Matrix"/>
+	<classpathentry kind="src" path="math"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
 		<attributes>
 			<attribute name="module" value="true"/>
