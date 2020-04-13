@@ -1,9 +1,13 @@
 package manifold;
 
 import java.io.Serializable;
-
+import java.util.Optional;
 import graph.Graph;
 import graph.Graph.Edge;
+import math.MathEx;
+import matrix.DenseMatrix;
+import matrix.EVD;
+import matrix.Matrix;
 /**
  * Isometric feature mapping. Isomap is a widely used low-dimensional embedding methods,
  * where geodesic distances on a weighted graph are incorporated with the
