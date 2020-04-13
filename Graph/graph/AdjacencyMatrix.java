@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import math.MathEx;
 import matrix.Matrix;
 
 public class AdjacencyMatrix implements Graph {

@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import math.MathEx;
+
 //import smile.math.MathEx;
 //import smile.util.Strings;
 

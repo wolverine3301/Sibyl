@@ -8,6 +8,9 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import matrix.Matrix;
+import matrix.SparseMatrix;
+
 public class AdjacencyList implements Graph {
 
     /**

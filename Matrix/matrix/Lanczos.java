@@ -1,5 +1,7 @@
 package matrix;
 
+import math.MathEx;
+
 /**
  * The Lanczos algorithm is a direct algorithm devised by Cornelius Lanczos
  * that is an adaptation of power methods to find the most useful eigenvalues

@@ -1,5 +1,7 @@
 package matrix;
 
+import math.MathEx;
+
 public interface DenseMatrix extends Matrix, MatrixMultiplication<DenseMatrix, DenseMatrix> {
     /** Returns the array that backs this matrix (optional operation). */
     double[] data();

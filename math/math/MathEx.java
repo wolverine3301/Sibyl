@@ -3,9 +3,10 @@ package math;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+
+import sort.Sort;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.exp;
@@ -59,7 +60,7 @@ public class MathEx {
      */
     public static final Root root = new Root();
     /**
-     * The Broyden–Fletcher–Goldfarb–Shanno (BFGS) algorithm
+     * The Broydenï¿½Fletcherï¿½Goldfarbï¿½Shanno (BFGS) algorithm
      * for unconstrained nonlinear optimization problems.
      */
     public static final BFGS BFGS = new BFGS();
@@ -79,7 +80,7 @@ public class MathEx {
     /**
      * High quality random number generator.
      */
-    private static ThreadLocal<Random> random = new ThreadLocal<smile.math.Random>() {
+    private static ThreadLocal<math.Random> random = new ThreadLocal<math.Random>() {
         protected synchronized Random initialValue() {
             // For the first RNG, we use the default seed so that we can
             // get repeatable results for random algorithms.

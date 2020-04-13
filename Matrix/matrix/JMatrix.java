@@ -2,6 +2,9 @@ package matrix;
 
 import java.util.Arrays;
 
+import math.Complex;
+import math.MathEx;
+
 /**
  * A pure Java implementation of DenseMatrix whose data is stored in a single 1D array of
  * doubles in column major order.
