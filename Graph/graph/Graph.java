@@ -1,6 +1,8 @@
 package graph;
 import java.util.Collection;
 
+import matrix.Matrix;
+
 /**
  * 
  * @author logan.collier

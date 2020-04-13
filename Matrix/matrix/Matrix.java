@@ -12,6 +12,9 @@ import java.util.Scanner;
 //import smile.stat.distribution.GaussianDistribution;
 //import smile.util.SparseArray;
 
+import distribution.GaussianDistribution;
+import util.SparseArray;
+
 /**
  * An abstract interface of matrix. The most important method is the matrix vector
  * multiplication, which is the only operation needed in many iterative matrix
