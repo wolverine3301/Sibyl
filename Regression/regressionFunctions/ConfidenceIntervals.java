@@ -23,7 +23,7 @@ public class ConfidenceIntervals {
 	private Regression function;
 	private float alpha;
 	private int confidence_level = 80; //default is 90% confidence
-	private float critical_prob;
+	private float critical_val;
 	private float[] upper;
 	private float[] lower;
 	public ConfidenceIntervals(Regression f) {
@@ -46,8 +46,8 @@ public class ConfidenceIntervals {
 	private void setAlpha() {
 		this.alpha = 1-(this.confidence_level / 100);
 	}
-	private void setCritical_prob() {
-		this.critical_prob = 1 - (this.alpha/2);
+	private void setCritical_val() {
+		this.critical_val = 1 - (this.alpha/2);
 	}
 	/**
 	 * set the upper inteval
@@ -87,11 +87,17 @@ public class ConfidenceIntervals {
 	 */
 	public double upper_intervalY(Particle x_val) {
 		double p = 0;
-		for(int i = this.function.coefficents.length-1; i >= 0; i--) {
-			p = p + upper[i] * Math.pow(x_val.getDoubleValue(), i);
+		if(this.function.method.contentEquals("Logrithmic")) {
+			p= p + upper[1] * Math.log(x_val.getDoubleValue())+upper[0];
+			return p;
+		}else {
+			for(int i = this.function.coefficents.length-1; i >= 0; i--) {
+				p = p + upper[i] * Math.pow(x_val.getDoubleValue(), i);
+			}
+			return p;
 		}
-		return p;
 	}
+	
 	/**
 	 * return the lower bound confidince for a given x
 	 * @param x_val
@@ -99,10 +105,15 @@ public class ConfidenceIntervals {
 	 */
 	public double lower_intervalY(Particle x_val) {
 		double p = 0;
-		for(int i = this.function.coefficents.length-1; i >= 0; i--) {
-			p = p + lower[i] * Math.pow(x_val.getDoubleValue(), i);
+		if(this.function.method.contentEquals("Logrithmic")) {
+			p= p + lower[1] * Math.log(x_val.getDoubleValue())+lower[0];
+			return p;
+		}else {
+			for(int i = this.function.coefficents.length-1; i >= 0; i--) {
+				p = p + lower[i] * Math.pow(x_val.getDoubleValue(), i);
+			}
+			return p;
 		}
-		return p;
 	}
 
 

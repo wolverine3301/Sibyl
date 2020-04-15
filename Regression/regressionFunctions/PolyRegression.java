@@ -19,9 +19,6 @@ public class PolyRegression extends Regression{
 	private Column y;
 	private double[][] matrix_x;
 	private double[][] matrix_xy;
-	private double[] coefficent_se; //std err of each coefficent
-	private double[] coefficent_t_scores;
-	private int coefficent_df; //degrees of freedom for coefficents
 	int degree; // degree of the polynomial
 	/**
 	 * 
@@ -30,7 +27,8 @@ public class PolyRegression extends Regression{
 	 * @param degree - max degree of polynomial
 	 */
 	public PolyRegression(Column x, Column y, int degree) {
-		super(x,y);
+		super(x,y,"Polynomial");
+		
 		this.degree = degree;
 		setRegression();
 		setMeasures();

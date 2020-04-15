@@ -22,8 +22,9 @@ public class LogRegression extends Regression{
 	protected double intercept;
 	
 	public LogRegression(Column x, Column y) {
-		super(x, y);
+		super(x, y,"Logrithmic");
 		setRegression();
+		setMeasures();
 	}
 	/**
 	 * return the slop of the best fitted logrithm using least squares fitting , E y_i  - b * E(ln(x_i)) / n
@@ -58,7 +59,7 @@ public class LogRegression extends Regression{
 	}
 	
 	public double predictY(Particle x_val) {
-		return (slope * Math.log((double) x_val.getValue())) + intercept;
+		return (slope * Math.log( x_val.getDoubleValue())) + intercept;
 	}
 	@Override
 	protected void setRegression() {
@@ -73,6 +74,24 @@ public class LogRegression extends Regression{
 	@Override
 	public String getEquation() {
 		return "Y = " + this.slope + "log("+"X"+")"+ " + "+this.intercept;
+	}
+	@Override
+	protected void set_se_ofCoefficents() {
+		super.coefficent_se = new double[2];
+		double f = super.RMSD / super.x.getLength();
+		super.coefficent_se[0] = f  * ( 1+(Math.pow(x.mean, 2)/x.variance) );
+		super.coefficent_se[1] = f * (1/x.std);
+		
+	}
+	@Override
+	protected void set_T_ofCoeffiecents() {
+		super.coefficent_t_scores = new double[2];
+		super.coefficent_t_scores[0] = super.coefficents[0] / super.coefficent_se[0];
+		super.coefficent_t_scores[1] = super.coefficents[1] / super.coefficent_se[1];
+	}
+	@Override
+	protected void setDegFree() {
+		super.degree_freedom = super.x.getLength()-1;
 	}
 
 }

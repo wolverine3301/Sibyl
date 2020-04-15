@@ -16,8 +16,9 @@ public class LinearRegression extends Regression{
 	public double intercept;
 	
 	public LinearRegression(Column x, Column y) {
-		super(x, y);
+		super(x, y,"Linear");
 		setRegression();
+		setMeasures();
 	}
 	@Override
 	public void setRegression() {
@@ -28,6 +29,7 @@ public class LinearRegression extends Regression{
 		setRegression_interceptB();
 		super.coefficents[0] = this.intercept;
 		super.coefficents[1] = this.slope;
+		
 	}
 
 	/**
@@ -63,22 +65,31 @@ public class LinearRegression extends Regression{
 		this.SSR = sum2;
 		this.R2 = 1 - (this.SSE / this.SST);
 	}
-	private void standard_error() {
-		for(int i = 0; i < y.getLength();i++) {
-			
-		}
-	}
 
 	public double predictY(Particle x_val) {
-		return (slope * (double) x_val.getValue()) + intercept;
+		return (slope * x_val.getDoubleValue()) + intercept;
 	}
 	@Override
 	public String getEquation() {
 		return "Y = "+ super.coefficents[1] +"X" + " + "+ super.coefficents[0];
 	}
-
-
-
-
+	@Override
+	protected void set_se_ofCoefficents() {
+		super.coefficent_se = new double[2];
+		double f = super.RMSD / super.x.getLength();
+		super.coefficent_se[0] = f  * ( 1+(Math.pow(x.mean, 2)/x.variance) );
+		super.coefficent_se[1] = f * (1/x.std);
+		
+	}
+	@Override
+	protected void set_T_ofCoeffiecents() {
+		super.coefficent_t_scores = new double[2];
+		super.coefficent_t_scores[0] = super.coefficents[0] / super.coefficent_se[0];
+		super.coefficent_t_scores[1] = super.coefficents[1] / super.coefficent_se[1];
+	}
+	@Override
+	protected void setDegFree() {
+		super.degree_freedom = super.x.getLength()-1;
+	}
 
 }

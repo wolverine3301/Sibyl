@@ -8,7 +8,7 @@ import particles.Particle;
 public abstract class Regression {
 	protected Column x;
 	protected Column y;
-
+	protected final String method;
 	/**
 	 *  Y = mean of observed data ( the target ) = 1/n * E y_i
 	 *  y_i = an observed value in target column
@@ -47,9 +47,10 @@ public abstract class Regression {
 	 * @param x
 	 * @param y
 	 */
-	public Regression(Column x, Column y) {
+	public Regression(Column x, Column y,String method) {
 		this.x = x;
 		this.y = y;
+		this.method = method;
 	}
 
 	/**
