@@ -15,6 +15,8 @@ public class Correlation_example {
 		Column col3 = df.getColumn(2);
 		LinearRegression test = new LinearRegression(col2,col3);
 	
+		
+		
         Pearson p = new Pearson();
         System.out.println(p.getCorrelation(col2, col3));
         Correlations c = new Correlations(df,p);

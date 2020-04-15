@@ -10,7 +10,11 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.17</version>
 		</dependency>
-		
+		<dependency>
+    		<groupId>com.object-refinery</groupId>
+    		<artifactId>orsoncharts</artifactId>
+    		<version>1.7</version>
+		</dependency>
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
