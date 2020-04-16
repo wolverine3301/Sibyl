@@ -48,7 +48,7 @@ public class ScatterPlot3DDemo1 extends JFrame {
      * @return A panel containing the content for the demo.
      */
     public static JPanel createDemoPanel() {
-        DemoPanel content = new DemoPanel(new BorderLayout());
+        Plot_3D_Panel content = new Plot_3D_Panel(new BorderLayout());
         content.setPreferredSize(new Dimension(760, 480));
         XYZDataset dataset = createDataset();
         Chart3D chart = createChart(dataset);
@@ -93,15 +93,15 @@ public class ScatterPlot3DDemo1 extends JFrame {
 		Column col2 = df.getColumn(1);
 		Column col3 = df.getColumn(2);
     	XYZSeries<String> s1 = createRandomSeries("S1", 10);
-        XYZSeries<String> s2 = createRandomSeries("S2", 50);
-        XYZSeries<String> s3 = createRandomSeries("S3", 150);	
+        //XYZSeries<String> s2 = createRandomSeries("S2", 50);
+        //XYZSeries<String> s3 = createRandomSeries("S3", 150);	
         ///XYZSeries<String> s1 = createRandomSeries("S1", 10);
         //XYZSeries<String> s2 = createRandomSeries("S2", 50);
         //XYZSeries<String> s3 = createRandomSeries("S3", 150);
         XYZSeriesCollection<String> dataset = new XYZSeriesCollection<String>();
         dataset.add(s1);
-        dataset.add(s2);
-        dataset.add(s3);
+        //dataset.add(s2);
+        //dataset.add(s3);
         return dataset;
     }
     

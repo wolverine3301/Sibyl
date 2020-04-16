@@ -164,7 +164,7 @@ public class T_Test {
 	/**
 	 * LOOK! MATH!
 	 * @return the p-value
-	 */
+	 
 	public double equal_variance_tValue() {
 		equal_variance_DegreesFreedom();
 		return (x.mean- y.mean) / (Math.sqrt( (((x.getLength()-1) * Math.pow(x.variance,2)) + ((y.getLength()-1) * Math.pow(y.variance,2))) / ((2 * x.getLength()-2)) ) * Math.sqrt( (1/x.getLength()) + (1/y.getLength())));

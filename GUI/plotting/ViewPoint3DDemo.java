@@ -29,6 +29,7 @@ public class ViewPoint3DDemo extends JFrame {
     List<Point3D> zlist;
     Panel3D panel3D;
     
+    
     /**
      * Creates a new test app.
      *
