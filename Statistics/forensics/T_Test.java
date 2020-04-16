@@ -2,6 +2,7 @@ package forensics;
 
 import dataframe.Column;
 import forensics.Beta_f;
+
 /**
  * 
  * @author logan

@@ -159,9 +159,15 @@ public class Chi2Independents {
 			}
 			table.put(key1,vals);
 		}
+		
 		//fill
 		for(int j = 0; j < target.getLength();j++) {
+			try {
 			table.get(target.getParticle(j).getValue()).replace(col.getParticle(j).getValue(), table.get(target.getParticle(j).getValue()).get(col.getParticle(j).getValue())+1);
+		
+			}catch (Exception e){
+				System.out.println(e);
+			}
 		}
 		if(col.getType() != 'N')
 			this.obs_table.put(target.getName().concat(" x ").concat(col.getName()),table);

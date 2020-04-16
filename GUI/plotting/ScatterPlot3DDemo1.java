@@ -22,6 +22,7 @@ import com.orsoncharts.renderer.xyz.ScatterXYZRenderer;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import dataframe.Util;
 
 /**
  * A demonstration of a scatter plot in 3D.
@@ -29,13 +30,16 @@ import dataframe.DataFrame;
 @SuppressWarnings("serial")
 public class ScatterPlot3DDemo1 extends JFrame {
 
+	private DataFrame df;
+	private DataFrame[] classes;
     /**
      * Creates a new test app.
      *
      * @param title  the frame title.
      */
-    public ScatterPlot3DDemo1(String title) {
-        super(title);
+    public ScatterPlot3DDemo1(DataFrame df) {
+        super(df.getName());
+        this.df = df;
         addWindowListener(null);
         getContentPane().add(createDemoPanel());
     }
@@ -67,6 +71,7 @@ public class ScatterPlot3DDemo1 extends JFrame {
      * @return A scatter chart. 
      */
     private static Chart3D createChart(XYZDataset dataset) {
+
         Chart3D chart = Chart3DFactory.createScatterChart("IRIS", 
                 "species", dataset, "X", "Y", "Z");
         XYZPlot plot = (XYZPlot) chart.getPlot();
@@ -87,12 +92,14 @@ public class ScatterPlot3DDemo1 extends JFrame {
      * 
      * @return A sample dataset.
      */
-    private static XYZDataset<String> createDataset() {
+    private static XYZDataset<String> createDataset(DataFrame[] c) {
 		String file = "testfiles/iris.txt";
         DataFrame df = DataFrame.read_csv(file);
 		Column col2 = df.getColumn(1);
 		Column col3 = df.getColumn(2);
-    	XYZSeries<String> s1 = createRandomSeries("S1", 10);
+		for(DataFrame i : c) {
+			XYZSeries<String> s = createRandomSeries(i.getName(), i.getNumRows());
+			
         //XYZSeries<String> s2 = createRandomSeries("S2", 50);
         //XYZSeries<String> s3 = createRandomSeries("S3", 150);	
         ///XYZSeries<String> s1 = createRandomSeries("S1", 10);
@@ -104,7 +111,12 @@ public class ScatterPlot3DDemo1 extends JFrame {
         //dataset.add(s3);
         return dataset;
     }
-    
+    private static XYZSeries<String> createSeries(String name, int count) {
+    	XYZSeries<String> s = new XYZSeries<String>(name);
+        for (int i = 0; i < count; i++) {
+            s.add(Math.random() * 100, Math.random() / 100, Math.random() * 100);
+        }
+    }
     private static XYZSeries<String> createRandomSeries(String name, int count) {
         XYZSeries<String> s = new XYZSeries<String>(name);
         for (int i = 0; i < count; i++) {
