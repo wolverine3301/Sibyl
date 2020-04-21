@@ -17,7 +17,7 @@ public class LogTransform {
      * @param dataFrame the data frame to be transformed.
      * @return a data frame in which all numeric values are changed to their log_10 representation.
      */
-    public static DataFrame transformBase10(DataFrame dataFrame) {
+    public static DataFrame transform_DF_Base10(DataFrame dataFrame) {
         for (int i = 0; i < dataFrame.getNumColumns(); i++) {
             Column c = dataFrame.getColumn(i);
             if (c.getType() == 'N') {
@@ -35,7 +35,7 @@ public class LogTransform {
      * @param dataFrame the data frame to be transformed.
      * @return a data frame in which all numeric values are changed to their log_e representation.
      */
-    public static DataFrame transformNaturalLog(DataFrame dataFrame) {
+    public static DataFrame transform_DF_NaturalLog(DataFrame dataFrame) {
         for (int i = 0; i < dataFrame.getNumColumns(); i++) {
             Column c = dataFrame.getColumn(i);
             if (c.getType() == 'N') {
@@ -46,5 +46,18 @@ public class LogTransform {
             }
         }
         return dataFrame;
+    }
+    public static Column transformNaturalLog(Column c) {
+           Column a = new Column(c.getName(),'N');
+            if (c.getType() == 'N') {
+                for (int j = 0; j < c.getLength(); j++) {
+                    Particle p = new DoubleParticle(Math.log((Double) c.getParticle(j).value));
+                    a.add(p);
+                }
+                return a;
+            }else {
+            	return null;
+            }
+        
     }
 }
