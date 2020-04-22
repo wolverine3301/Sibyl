@@ -5,5 +5,5 @@ package ranker;
  *
  */
 public enum Rank {
-	GINI_INDEX , INFROMATION_GAIN , GAIN_RATIO , CHI_SQUARED
+	GINI_INDEX , INFROMATION_GAIN , GAIN_RATIO , CHI_SQUARED, 
 }
