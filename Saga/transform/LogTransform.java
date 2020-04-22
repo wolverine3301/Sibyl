@@ -51,7 +51,7 @@ public class LogTransform {
            Column a = new Column(c.getName(),'N');
             if (c.getType() == 'N') {
                 for (int j = 0; j < c.getLength(); j++) {
-                    Particle p = new DoubleParticle(Math.log((Double) c.getParticle(j).value));
+                    Particle p = new DoubleParticle(Math.log(c.getDoubleValue(j)));
                     a.add(p);
                 }
                 return a;

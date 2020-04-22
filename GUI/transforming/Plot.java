@@ -28,6 +28,7 @@ import particles.DoubleParticle;
 import particles.Particle;
 import regressionFunctions.ConfidenceIntervals;
 import regressionFunctions.Regression;
+import transform.LogTransform;
 import transform.Standardize;
 
 /**
@@ -35,51 +36,54 @@ import transform.Standardize;
  * @author Cade Reynoldson
  * @version 1.0
  */
-public class Plot extends JPanel {
+public abstract class Plot extends JPanel {
 
     
     private static final long serialVersionUID = -551974310810305557L;
 
     /** The two columns to plot against eachother. */
-	private Column x,y;
+	protected Column x;
+
+	protected Column y;
 	
 	/** The plot which contains all the data. */
-	private XYPlot masterPlot;
+	protected XYPlot masterPlot;
 	
 	/** The chartpanel which displays the scatter plot. */
-	private ChartPanel panel;
+	protected ChartPanel panel;
 
 	/** Notifies the plot that a change has been made. */
-	private PropertyChangeSupport notifyPlot = new PropertyChangeSupport(this);
+	protected PropertyChangeSupport notifyPlot = new PropertyChangeSupport(this);
 	
 	/** The stack of colors to use for plotting data */
-	private Stack<Color> colorsToUse;
+	protected Stack<Color> colorsToUse;
 	
 	/** The regressions to skip when rendering the plot. */
-	private HashSet<Regression> regressionsToSkip;
+	protected HashSet<Regression> regressionsToSkip;
 	
 	/** The regressions plotted mapped to their color. */
-	private HashMap<Regression, XYLineAndShapeRenderer> plottedRegressions;
+	protected HashMap<Regression, XYLineAndShapeRenderer> plottedRegressions;
 
 	/** The intervals to skip when rendering the plot. */
-	private HashSet<ConfidenceIntervals> intervalsToSkip;
+	protected HashSet<ConfidenceIntervals> intervalsToSkip;
 	
 	/** The plotted confidence intervals mapped to their color. */
-	private HashMap<ConfidenceIntervals, XYLineAndShapeRenderer> plottedIntervals;
+	protected HashMap<ConfidenceIntervals, XYLineAndShapeRenderer> plottedIntervals;
 	
-	private HashSet<DoublePoint> pointsToSkip;
+	protected HashSet<DoublePoint> pointsToSkip;
 	
 	/** The plotted points on the chart mapped to their color. */
-	private HashMap<DoublePoint, XYLineAndShapeRenderer> plottedPoints;
+	protected HashMap<DoublePoint, XYLineAndShapeRenderer> plottedPoints;
 	
 	
 	
 	/** The number of datasets contained in this chart. */
-	private int datasetCount;
+	protected int datasetCount;
 	
-	private double xStart;
-	
-	private double xEnd;
+	protected double xStart;
+	protected double xEnd;
+	protected double yStart;
+	protected double yEnd;
 	
 	/**
 	 * Creates a plot given two columns.
@@ -89,8 +93,7 @@ public class Plot extends JPanel {
 	public Plot(Column x, Column y) {
 		this.x = x;
 		this.y = y;
-		xStart = -4;
-		xEnd = 4;
+
         this.setLayout(new BorderLayout());
 		colorsToUse = createColorStack();
 	    masterPlot = createPlot(null, 20);
@@ -103,27 +106,10 @@ public class Plot extends JPanel {
         this.panel = view;
         this.add(panel, BorderLayout.CENTER);
 	}
-	
-    /**
-     * Plots a set of columns with a regression line.
-     * @param x the x column.
-     * @param y the y column.
-     * @param regressionLine the regression line to plot. 
-     */
-    public Plot(Column x, Column y, HashSet<Regression> regressions, int functionSamples) {
-        this.x = x;
-        this.y = y;
-        this.setLayout(new BorderLayout());
-        xStart = -4;
-        xEnd = 4;
-        colorsToUse = createColorStack();
-        masterPlot = createPlot(regressions, functionSamples);
-        JFreeChart chart = new JFreeChart("ScatterPlot of " + x.getName() + " vs. " + y.getName(),
-                JFreeChart.DEFAULT_TITLE_FONT, masterPlot, true);
-        // Create Panel
-        this.panel = new ChartPanel(chart);
-        this.add(panel);
-    }
+	protected abstract void setXStart();
+	protected abstract void setXEnd();
+	protected abstract void setYStart();
+	protected abstract void setYEnd();
     
     /**
      * Returns the created plot in the form of a chartpanel.
@@ -139,7 +125,7 @@ public class Plot extends JPanel {
      * @param functionSamples the number of samples to take from each regression.  
      * @return an XYPlot which contains all of the initialized data. 
      */
-	private XYPlot createPlot(HashSet<Regression> regressions, int functionSamples) {
+	protected XYPlot createPlot(HashSet<Regression> regressions, int functionSamples) {
 	    XYPlot plot = new XYPlot();
 	    plot.setDataset(0, getColumnPlot());
 	    plot.setRenderer(new XYLineAndShapeRenderer(false, true));
@@ -155,9 +141,9 @@ public class Plot extends JPanel {
 	        }
 	    }
 	    xAxis.setLowerBound(xStart);
-	    yAxis.setLowerBound(-3);
+	    yAxis.setLowerBound(yStart);
 	    xAxis.setUpperBound(xEnd);
-	    yAxis.setUpperBound(3);
+	    yAxis.setUpperBound(yEnd);
 	    return plot;
 	}
 	
@@ -242,34 +228,14 @@ public class Plot extends JPanel {
 	/**
 	 * Plots the given columns in the axises. 
 	 * @return an XYDataset containing the two columns plotted against eachother. 
-
-	private XYDataset getColumnPlot() {
-	    XYSeriesCollection xvsy = new XYSeriesCollection();
-        XYSeries series = new XYSeries(x.getName() + " vs. " + y.getName());
-        //Plot the points from the two columns. 
-        for(int i = 0; i < x.getLength(); i++) {
-            series.add(x.getDoubleValue(i), y.getDoubleValue(i));
-        }
-        xvsy.addSeries(series);
-        return xvsy;
-	}
 	*/
+	protected abstract XYDataset getColumnPlot();
+
 	/**
-	 * plots the normalized values, z-values, of 2 columns
+	 * plots values of 2 columns
 	 * @return an XYDataset containing the normalized two columns plotted against eachother. 
 	 */
-	private XYDataset getColumnPlot() {
-	    XYSeriesCollection xvsy = new XYSeriesCollection();
-        XYSeries series = new XYSeries(x.getName() + " vs. " + y.getName());
-        Column a = Standardize.standardize_col(x);
-        Column b = Standardize.standardize_col(y);
-        //Plot the points from the two columns. 
-        for(int i = 0; i < a.getLength(); i++) {
-            series.add(a.getDoubleValue(i), b.getDoubleValue(i));
-        }
-        xvsy.addSeries(series);
-        return xvsy;
-	}
+
 	/**
 	 * Cannot remove an already plotted regression. A new plot must be created.
 	 * Upon creation, scatterplotview will be notifited to refresh. 
@@ -375,7 +341,7 @@ public class Plot extends JPanel {
         notifyPlot.firePropertyChange("PLOT", null, null);
 	}
 	
-	private void initDataStructures() {
+	protected void initDataStructures() {
         regressionsToSkip = new HashSet<Regression>();
         plottedRegressions = new HashMap<Regression, XYLineAndShapeRenderer>();
         intervalsToSkip = new HashSet<ConfidenceIntervals>();
@@ -431,7 +397,7 @@ public class Plot extends JPanel {
         notifyPlot.addPropertyChangeListener(theListener);
     }
     
-    private Stack<Color> createColorStack() {
+    protected Stack<Color> createColorStack() {
         Stack<Color> colors = new Stack<Color>();
         colors.add(Color.GREEN);
         colors.add(Color.GRAY);

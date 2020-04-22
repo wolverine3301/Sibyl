@@ -64,15 +64,16 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	private Column col_y;
 	
 	/** The scatter plot in the current view. */
-	private Plot scatter;
-	
+	private RawPlot scatterRaw;
+	private LogPlot scatterLog;
+	private StandardPlot scatterSTD;
 	/** Contains the infromation from plotted regressions, clusters, etc. */
 	private JTabbedPane plotInfo;
 	
 	/** The number of regression samples to take for the regression lines. (more samples = smoother line) */
 	private JTextField numRegressionSamples;
 
-	private JPanel plotPanel; 
+	private JPanel[] plotPanel; 
 	
 	/** The JPanel which will contain regression info. */
 	private RegressionPanel regressionPanel;
@@ -87,11 +88,12 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	public ScatterPlotView(DataFrame df) {
 	    super();
 	    this.df = df;
+	    
 	    regressionPanel = new RegressionPanel();
 	    regressionPanel.addPropertyChangeListener(this);
 	    plotInfo = new JTabbedPane();
 	    col_x = df.getColumn(df.numericIndexes.get(0));
-	    col_y = df.getColumn(df.numericIndexes.get(0));
+	    col_y = df.getColumn(df.numericIndexes.get(1));
 	    start();
 	}
 	
@@ -101,7 +103,9 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	public void start() {
 	    initPlotPanel();
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		this.add(plotPanel);
+		this.add(plotPanel[0]);
+		this.add(plotPanel[1]);
+		this.add(plotPanel[2]);
 		plotInfo.add(regressionPanel, "Regressions");
 		this.add(plotInfo);
 	}
@@ -110,18 +114,36 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	 * Initializes the plot panel.
 	 */
 	private void initPlotPanel() {
-	    scatter = new Plot(col_x, col_y);
-	    scatter.addPropertyChangeListener(this);
-	    plotPanel = new JPanel();
-	    plotPanel.setLayout(new BorderLayout());
-	    plotPanel.add(scatter, BorderLayout.CENTER);
+	    scatterRaw = new RawPlot(col_x, col_y);
+	    scatterLog = new LogPlot(col_x, col_y);
+	    scatterSTD = new StandardPlot(col_x, col_y);
+	    
+	    scatterRaw.addPropertyChangeListener(this);
+	    scatterLog.addPropertyChangeListener(this);
+	    scatterSTD.addPropertyChangeListener(this);
+	    
+	    plotPanel = new JPanel[3];
+	    for(int i = 0; i < plotPanel.length; i++) {
+	    	plotPanel[i] = new JPanel();
+	    }
+	    plotPanel[0].setLayout(new BorderLayout());
+	    plotPanel[1].setLayout(new BorderLayout());
+	    plotPanel[2].setLayout(new BorderLayout());
+	    
+	    plotPanel[0].add(scatterRaw, BorderLayout.CENTER);
+	    plotPanel[1].add(scatterSTD, BorderLayout.CENTER);
+	    plotPanel[2].add(scatterLog, BorderLayout.CENTER);
+	    
 	    JPanel optionPanel = new JPanel();
 	    optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
 	    optionPanel.add(horizontalSep());
 	    optionPanel.add(axisSelectPanel());
 	    optionPanel.add(horizontalSep());
 	    optionPanel.add(regressionButtons());
-	    plotPanel.add(optionPanel, BorderLayout.SOUTH);
+	    
+	    plotPanel[0].add(optionPanel, BorderLayout.SOUTH);
+	    plotPanel[1].add(optionPanel, BorderLayout.SOUTH);
+	    plotPanel[2].add(optionPanel, BorderLayout.SOUTH);
 	}
 	
 	/**
@@ -211,7 +233,10 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
                 break;
 	    }
 	    if (r != null) {
-	        scatter.plotRegression(r, getNumSamples());
+	    	//TODO
+	        scatterRaw.plotRegression(r, getNumSamples());
+	        scatterLog.plotRegression(r, getNumSamples());
+	        scatterSTD.plotRegression(r, getNumSamples());
 	    }
 	}
 	
@@ -275,10 +300,20 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	 * Creates a new plot. 
 	 */
 	private void createNewPlot() {
-	    plotPanel.remove(scatter);
-	    scatter = new Plot(col_x, col_y);
-	    scatter.addPropertyChangeListener(this);
-	    plotPanel.add(scatter, BorderLayout.CENTER);
+	    plotPanel[0].remove(scatterRaw);
+	    plotPanel[1].remove(scatterSTD);
+	    plotPanel[2].remove(scatterLog);
+	    scatterRaw = new RawPlot(col_x, col_y);
+	    scatterLog = new LogPlot(col_x, col_y);
+	    scatterSTD = new StandardPlot(col_x, col_y);
+	    
+	    scatterRaw.addPropertyChangeListener(this);
+	    scatterLog.addPropertyChangeListener(this);
+	    scatterSTD.addPropertyChangeListener(this);
+	    
+	    plotPanel[0].add(scatterRaw, BorderLayout.CENTER);
+	    plotPanel[1].add(scatterSTD, BorderLayout.CENTER);
+	    plotPanel[2].add(scatterLog, BorderLayout.CENTER);
 	    regressionPanel.clear();
         this.revalidate();
         this.repaint();
@@ -302,12 +337,18 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
             this.revalidate();
             this.repaint();
         } else if (option.equals("POINT")) { //Plot a point.
-            scatter.plotPoint((Double) evt.getOldValue(), (Double) evt.getNewValue());
+        	//TODO
+            scatterRaw.plotPoint((Double) evt.getOldValue(), (Double) evt.getNewValue());
+            scatterRaw.plotPoint((Double) evt.getOldValue(), (Double) evt.getNewValue());
+            scatterRaw.plotPoint((Double) evt.getOldValue(), (Double) evt.getNewValue());
         } else if (option.equals("REMOVE")) { //Remove a regression. 
             Object toRemove = evt.getOldValue();
             if (toRemove instanceof Regression) {
                 System.out.println("DELETING ");
-                scatter.removeRegression((Regression) toRemove, getNumSamples());
+                //TODO
+                scatterRaw.removeRegression((Regression) toRemove, getNumSamples());
+                scatterRaw.removeRegression((Regression) toRemove, getNumSamples());
+                scatterRaw.removeRegression((Regression) toRemove, getNumSamples());
             } else if (toRemove instanceof Point) {
                 
             }
@@ -316,14 +357,22 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
             this.revalidate();
             this.repaint();
         } else if (option.equals("CONF")) { //Plot a confidence interval
-            scatter.plotConfidenceInterval((ConfidenceIntervals) evt.getOldValue(), getNumSamples());
-            
+        	//TODO
+            scatterRaw.plotConfidenceInterval((ConfidenceIntervals) evt.getOldValue(), getNumSamples());
+            scatterRaw.plotConfidenceInterval((ConfidenceIntervals) evt.getOldValue(), getNumSamples());
+            scatterRaw.plotConfidenceInterval((ConfidenceIntervals) evt.getOldValue(), getNumSamples());
         } else if (option.equals("REPLOT")) { //Re-plot a regression or confidence interval.
             Object toPlot = evt.getOldValue();
             if (toPlot instanceof Regression) {
-                scatter.plotRegression((Regression) toPlot, getNumSamples());
+            	//TODO
+                scatterRaw.plotRegression((Regression) toPlot, getNumSamples());
+                scatterRaw.plotRegression((Regression) toPlot, getNumSamples());
+                scatterRaw.plotRegression((Regression) toPlot, getNumSamples());
             } else if (toPlot instanceof ConfidenceIntervals) {
-                scatter.plotConfidenceInterval((ConfidenceIntervals) evt.getOldValue(), getNumSamples());
+            	//TODO
+                scatterRaw.plotConfidenceInterval((ConfidenceIntervals) evt.getOldValue(), getNumSamples());
+                scatterRaw.plotConfidenceInterval((ConfidenceIntervals) evt.getOldValue(), getNumSamples());
+                scatterRaw.plotConfidenceInterval((ConfidenceIntervals) evt.getOldValue(), getNumSamples());
             }
         }
     
