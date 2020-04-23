@@ -25,7 +25,7 @@ public class SumSquaresRatio implements FeatureRanking {
      * @return the sum of squares ratio of between-groups to within-groups.
      */
     public static double[] of(DataFrame df) {
-    	Column y = df.getColumn(df.targetIndexes.get(0));
+    	Column y = df.getColumn(4);
         int k = y.getTotalUniqueValues(); // number of classes
         
         int n = df.getNumRows();
