@@ -1,5 +1,8 @@
 package ranker;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import dataframe.Column;
 import dataframe.DataFrame;
 import math.MathEx;
@@ -23,39 +26,48 @@ public class SumSquaresRatio implements FeatureRanking {
      */
     public static double[] of(DataFrame df) {
     	Column y = df.getColumn(df.targetIndexes.get(0));
-        int k = y.getTotalUniqueValues();
+        int k = y.getTotalUniqueValues(); // number of classes
         
-
         int n = df.getNumRows();
-        int p = df.ge;
-        int[] nc = new int[k];
-        double[] mu = new double[p];
-        double[][] condmu = new double[k][p];
-
+        int p = df.numNumeric;
+        HashMap<Object,Integer> nc = new HashMap<Object,Integer>(); //classes
+        double[] mu = new double[p]; //probability
+        //double[][] condmu = new double[k][p]; //conditional probability
+        HashMap<Object,Double[]> condmu = new HashMap<Object,Double[]>();
+        //initiallize
+        for(Object i : y.getUniqueValues()) {
+        	nc.put(i, 0);
+        	Double[] tmp = new Double[p];
+        	condmu.put(i,tmp);
+        }
+        //fill fill fill rows
         for (int i = 0; i < n; i++) {
-            int yi = y[i];
-            nc[yi]++;
+            Object yi = y.getParticle(i).getValue();
+            nc.replace(yi, nc.get(yi)+1);
+            //columns
             for (int j = 0; j < p; j++) {
-                mu[j] += x[i][j];
-                condmu[yi][j] += x[i][j];
+                mu[j] += df.numeric_columns.get(j).getDoubleValue(i);
+                condmu.get(yi)[j] += df.numeric_columns.get(j).getDoubleValue(i);
             }
         }
-
+        //columns
         for (int j = 0; j < p; j++) {
             mu[j] /= n;
-            for (int i = 0; i < k; i++) {
-                condmu[i][j] /= nc[i];
+            //classes
+            for (Object i : y.getUniqueValues()){
+                condmu.get(i)[j] /= nc.get(i);
             }
         }
 
         double[] wss = new double[p];
         double[] bss = new double[p];
-
+        //rows
         for (int i = 0; i < n; i++) {
-            int yi = y[i];
+            Object yi = y.getParticle(i).getValue();
+            //columns
             for (int j = 0; j < p; j++) {
-                bss[j] += MathEx.sqr(condmu[yi][j] - mu[j]);
-                wss[j] += MathEx.sqr(x[i][j] - condmu[yi][j]);
+                bss[j] += MathEx.sqr(condmu.get(yi)[j] - mu[j]);
+                wss[j] += MathEx.sqr(df.numeric_columns.get(j).getDoubleValue(i)- condmu.get(yi)[j]);
             }
         }
 
