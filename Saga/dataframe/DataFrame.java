@@ -33,6 +33,19 @@ public class DataFrame {
 	
 	/** The ArrayList of columns */
 	public ArrayList<Column> columns;
+	/** ArrayList of only numeric columns */
+	public ArrayList<Column> numeric_columns;
+	/** ArrayList of Categorical Columns */
+	public ArrayList<Column> categorical_columns;
+	/** ArrayList of Target Columns */
+	public ArrayList<Column> target_columns;
+	/** ArrayList of meta columns */
+	public ArrayList<Column> meta_columns;
+	
+	public int numNumeric;
+	public int numCategory;
+	public int numTargets;
+	public int numMeta;
 	
 	/** The ArrayList of rows */
 	protected ArrayList<Row> rows;
@@ -48,6 +61,11 @@ public class DataFrame {
 	 */
 	public DataFrame() {
 		this.columns = new ArrayList<Column>();
+		this.numeric_columns = new ArrayList<Column>();
+		this.categorical_columns = new ArrayList<Column>();
+		this.target_columns = new ArrayList<Column>();
+		this.meta_columns = new ArrayList<Column>();
+		
 		this.rows = new ArrayList<Row>();
 		this.columnNames = new ArrayList<String>();
 		this.columnTypes = new ArrayList<Character>();
@@ -79,6 +97,31 @@ public class DataFrame {
         else if (numRows == 0 && numColumns != 0)
             numRows = getColumn(0).getLength();
     }
+    //TODO
+    /** when a column is changed/deleted/added;
+     * update the counts and list of column types accordingly
+     * @param changed
+     * @param newType
+     
+    public void updateColumnSets(Column changed,char newType) {
+		//update target indexes
+		if(newType == 'T'){
+			this.targetIndexes.add(changed.index);
+			this.target_columns.add(changed);
+			this.numTargets++;
+		}else if(newType == 'N') {
+			this.numericIndexes.add(changed.index);
+			this.numeric_columns.add(changed);
+			this.numNumeric++;
+		}else if(newType == 'M') {
+			this.meta_columns.add(changed);
+			this.numMeta++;
+		}else {
+			this.categorical_columns.add(changed);
+			this.numCategory++;
+		}
+    }
+    */
 	/**
 	 * Set column to certain type given the column's name.
 	 * @param columnName the name of the column.
@@ -93,10 +136,7 @@ public class DataFrame {
 			}
 		}
 		getColumn(index).setType(newType);
-		//update target indexes
-		if(newType == 'T'){
-			this.targetIndexes.add(index);
-		}
+
 		columnTypes.set(index, newType);
 	}
 	

@@ -9,7 +9,7 @@ public class SumSquaresRatio implements FeatureRanking {
 
     @Override
     public double[] rank(DataFrame df) {
-        return of(x, y);
+        return of(df);
     }
 
     /**
@@ -26,8 +26,8 @@ public class SumSquaresRatio implements FeatureRanking {
         int k = y.getTotalUniqueValues();
         
 
-        int n = x.length;
-        int p = x[0].length;
+        int n = df.getNumRows();
+        int p = df.ge;
         int[] nc = new int[k];
         double[] mu = new double[p];
         double[][] condmu = new double[k][p];
