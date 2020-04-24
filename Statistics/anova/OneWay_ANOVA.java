@@ -58,6 +58,7 @@ public class OneWay_ANOVA {
 			this.MSB.put(df.getColumn(i).getName(), MS);
 			this.meanSquaresError.put(df.getColumn(i).getName(), MSE);
 			this.F_RATIO.put(df.getColumn(i).getName(), F);
+			System.out.println("HERE"+MSB);
 		}
 	}
 	/**

@@ -14,6 +14,32 @@ public class Hypothesis {
 	 */
 	public Hypothesis(DataFrame df) {
 		
+		
 	}
+	/**
+	 * perform a chi2 independents test
+	 */
+	private void chi2() {
+		
+	}
+	/**
+	 * perform a t-test
+	 */
+	private void ttest() {
+		
+	}
+	/**
+	 * perform perason correlation
+	 */
+	private void pearsonCorr() {
+		
+	}
+	/**
+	 * perfrom spearman correlation
+	 */
+	private void spearmanCorr() {
+		
+	}
+	
 
 }
