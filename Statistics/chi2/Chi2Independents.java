@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import forensics.Gamma;
 
 import java.util.Set;
 
@@ -37,6 +38,7 @@ public class Chi2Independents {
 		this.exp_table = new HashMap<String, HashMap<Object, HashMap<Object, Double>>>();
 		targets = new ArrayList<Column>();
 		setTargets();
+		chi2IndependentsAll();
 	}
 	public ArrayList<Column> ranked(int targetIndex){
 		HashMap<String, HashMap<String, Double>> chi = chi2IndependentsAll();
@@ -111,8 +113,10 @@ public class Chi2Independents {
 			for(Object key2 : observed.get(key1).keySet()) {
 				sum = sum + Math.pow((observed.get(key1).get(key2) - expected.get(key1).get(key2)), 2) / expected.get(key1).get(key2) ;
 			}
+			
 		}
-
+		System.out.println(sum);
+		System.out.println("P  "+ p_value(sum, 1));
 		return p_value(sum, degreesFreedom(target,col));
 	}
 	/**
@@ -180,7 +184,8 @@ public class Chi2Independents {
 	 * @return double
 	 */
 	public double p_value(double chi2, int df) {
-		return (Math.pow(chi2, (df/2)-1) * Math.pow(Math.E,(-1)*(chi2/2))) / (Math.pow(2, (df/2)) * gamma((double)df/2));
+		//return (Math.pow(chi2, (df/2)-1) * Math.pow(Math.E,(-1)*(chi2/2))) / (Math.pow(2, (df/2)) * gamma((double)df/2));
+		return Gamma.regularizedUpperIncompleteGamma(0.5 * df, 0.5 * chi2);
 	}
 	/**
 	 * compute gamma function

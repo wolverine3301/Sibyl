@@ -17,6 +17,7 @@ public class TTest_example {
 		T_Test tt = T_Test.test(col1,col2);
 		System.out.println(tt.method);
 		System.out.println(tt.t);
+		System.out.println(tt.pvalue);
 		System.out.println(col1.mean);
 		System.out.println(col1.variance);
 	}

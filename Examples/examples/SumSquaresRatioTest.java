@@ -11,6 +11,7 @@ public class SumSquaresRatioTest {
 		df = DataFrame_Read.loadcsv("testfiles/iris.txt");
 		df.setColumnType(4, 'T');
 		double[] h = SumSquaresRatio.of(df);
+		System.out.println();
 		for(int i =0; i < h.length;i++) {
 			System.out.println("h: "+h[i]);
 		}

@@ -9,12 +9,19 @@ import dataframe.DataFrame_Read;
 public class Chi2_example {
 
 	public static void main(String[] args) {
-		String file = "testfiles/heart_disease.csv";
+		String file = "testfiles/catTest.txt";
 		DataFrame  df = DataFrame_Read.loadcsv(file);
-        df.setColumnType("gender", 'T');//set target column
+        df.setColumnType("Color", 'T');//set target column
+        
+        
 		Chi2Independents chi2 = new Chi2Independents(df);
+		//chi2.ranked(0);
+		chi2.printObsContengencyTables();
+		chi2.printEXPContengencyTables();
 		
 		chi2.printResults();
+		System.out.println();
+
 
 	}
 
