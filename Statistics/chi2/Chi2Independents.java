@@ -32,6 +32,12 @@ public class Chi2Independents {
 	private HashMap<Object, HashMap<Object, Integer>> deg_free; //degrees freedom
 	private HashMap<String, HashMap<String, Double>> p_values; //p-values
 	
+	public final String description = "Chi Squared Test of Independents\n"
+			+ "- This test determines if two categorical attributes are independent of each other\n"
+			+ "- If the p-value is low the higher the chance that that these variables are related\n"
+			+ "  to one another, or they are dependent\n";
+			
+	
 	public Chi2Independents(DataFrame df){
 		this.df = df;
 		this.obs_table = new HashMap<String ,HashMap<Object, HashMap<Object, Integer>>>();
@@ -115,8 +121,6 @@ public class Chi2Independents {
 			}
 			
 		}
-		System.out.println(sum);
-		System.out.println("P  "+ p_value(sum, 1));
 		return p_value(sum, degreesFreedom(target,col));
 	}
 	/**
