@@ -10,7 +10,6 @@ public class KNN_example {
         //df.printDataFrame();
         df.convertNANS_mode();
         df.getColumn_byName("species").setType('T'); //set target column
-        KNN knn = new KNN();
         
     }
 }

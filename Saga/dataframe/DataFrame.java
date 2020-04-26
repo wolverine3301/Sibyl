@@ -7,6 +7,7 @@ import particles.DoubleParticle;
 import particles.IntegerParticle;
 import particles.NANParticle;
 import particles.Particle;
+
 /**
  * DataFrame
  * the main object for data manipulation, most functions and all models will contructed with his object as input
@@ -17,7 +18,8 @@ import particles.Particle;
  */
 public class DataFrame {
 	
-    protected String DataFrameName;
+    /** The name of the data frame. */
+    protected String dataFrameName;
     
 	/** The names of the columns */
 	protected ArrayList<String> columnNames;
@@ -33,18 +35,29 @@ public class DataFrame {
 	
 	/** The ArrayList of columns */
 	public ArrayList<Column> columns;
+	
 	/** ArrayList of only numeric columns */
 	public ArrayList<Column> numeric_columns;
+	
 	/** ArrayList of Categorical Columns */
 	public ArrayList<Column> categorical_columns;
+	
 	/** ArrayList of Target Columns */
 	public ArrayList<Column> target_columns;
+	
 	/** ArrayList of meta columns */
 	public ArrayList<Column> meta_columns;
 	
+	/** The number of numeric columns contained in this data frame. */ 
 	public int numNumeric;
-	public int numCategory;
+	
+	/** The number of categorical columns contained in this data frame. */ 
+	public int numCategorical;
+	
+	/** The number of target columns contained in this data frame. */ 
 	public int numTargets;
+	
+	/** The number of meta columns contained in this data frame. */ 
 	public int numMeta;
 	
 	/** The ArrayList of rows */
@@ -73,7 +86,10 @@ public class DataFrame {
 		this.targetIndexes = new ArrayList<Integer>();
 		numRows = 0;
 		numColumns = 0;
-		
+		numNumeric = 0;
+		numCategorical = 0;
+		numTargets = 0;
+		numMeta = 0;
 	}
 	
 	/*
@@ -84,7 +100,7 @@ public class DataFrame {
 	 * ##################################################################
 	 */
 	public void setName(String name) {
-		this.DataFrameName = name;
+		this.dataFrameName = name;
 	}
     /**
      * Updates the number of rows in this column. Note: this does not create new rows when changing the size.
@@ -97,33 +113,10 @@ public class DataFrame {
         else if (numRows == 0 && numColumns != 0)
             numRows = getColumn(0).getLength();
     }
-    //TODO
-    /** when a column is changed/deleted/added;
-     * update the counts and list of column types accordingly
-     * @param changed
-     * @param newType
-     
-    public void updateColumnSets(Column changed,char newType) {
-		//update target indexes
-		if(newType == 'T'){
-			this.targetIndexes.add(changed.index);
-			this.target_columns.add(changed);
-			this.numTargets++;
-		}else if(newType == 'N') {
-			this.numericIndexes.add(changed.index);
-			this.numeric_columns.add(changed);
-			this.numNumeric++;
-		}else if(newType == 'M') {
-			this.meta_columns.add(changed);
-			this.numMeta++;
-		}else {
-			this.categorical_columns.add(changed);
-			this.numCategory++;
-		}
-    }
-    */
+    
 	/**
 	 * Set column to certain type given the column's name.
+	 * NOTE: DO NOT SET COLUMN TYPES WHILE INITIALIZING A DATAFRAME MANUALLY! USE SET STATISTICS!
 	 * @param columnName the name of the column.
 	 * @param newType the new data type of the column.
 	 */
@@ -135,28 +128,81 @@ public class DataFrame {
 				break;
 			}
 		}
+		changeColumnReferences(getColumn(index), newType);
 		getColumn(index).setType(newType);
-
 		columnTypes.set(index, newType);
 	}
 	
 	/**
 	 * Set a column at a specified index's data type. 
+	 * NOTE: DO NOT SET COLUMN TYPES WHILE INITIALIZING A DATAFRAME MANUALLY! USE SET STATISTICS!
 	 * @param columnIndex the index of the column.
 	 * @param newType the new data type of the column.
 	 */
 	public void setColumnType(int columnIndex, char newType) {
-        getColumn(columnIndex).setType(newType);
+	    changeColumnReferences(getColumn(columnIndex), newType);
+	    getColumn(columnIndex).setType(newType);
         columnTypes.set(columnIndex, newType);
     }
 	
 	/**
 	 * Updates/Initializes all of the Columns contained in the DataFrame statistics. 
 	 */
-	public void setStatistics() {
-	    for (Column c : columns) {
+    public void setStatistics() {
+        for (int i = 0; i < columns.size(); i++) {
+            Column c = columns.get(i);
+            c.resolveType();
             c.setStatistics();
-	    }
+            char columnType = c.getType();
+            if (columnType == 'T') {
+                target_columns.add(c);
+                numTargets++;
+            } else if (columnType == 'N') {
+                numeric_columns.add(c);
+                numNumeric++;
+            } else if (columnType == 'C') {
+                categorical_columns.add(c);
+                numCategorical++;
+            } else if (columnType == 'M') {
+                meta_columns.add(c);
+                numMeta++;
+            }
+        }
+    }
+	/**
+	 * Handles swapping column storage when changing the type of a column. Helper method for set column type method.
+	 * @param c 
+	 * @param newType
+	 */
+	private void changeColumnReferences(Column c, char newType) {
+        char oldType = c.getType();
+        if (oldType == 'T') {
+            target_columns.remove(c);
+            numTargets--;
+        } else if (oldType == 'N') {
+            numeric_columns.remove(c);
+            numNumeric--;
+        } else if (oldType == 'C') {
+            categorical_columns.remove(c);
+            numCategorical--;
+        } else if (oldType == 'M') {
+            meta_columns.remove(c);
+            numMeta--;
+        }
+ 
+        if (newType == 'T') {
+            target_columns.add(c);
+            numTargets++;
+        } else if (newType == 'N') {
+            numeric_columns.add(c);
+            numNumeric++;
+        } else if (newType == 'C') {
+            categorical_columns.add(c);
+            numCategorical++;
+        } else if (newType == 'M') {
+            meta_columns.add(c);
+            numMeta++;
+        }
 	}
 	
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
@@ -167,9 +213,12 @@ public class DataFrame {
 	 * 
 	 * ##################################################################
 	 */
+	
+	
     public String getName() {
-    	return this.DataFrameName;
+    	return this.dataFrameName;
     }
+    
 	/**
 	 * Returns an indexed row from the data frame.
 	 * @param index the index of the row.
@@ -178,6 +227,7 @@ public class DataFrame {
 	public Row getRow_byIndex(int index) {
 	    return rows.get(index);
 	}
+	
 	/**
 	 * getColumn returns a single column by name from the dataframe.
 	 * @param name The name of the desired column.
@@ -249,6 +299,7 @@ public class DataFrame {
 		}
 		return cols;
 	}
+	
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
 	/*
 	 * ##################################################################
@@ -546,19 +597,52 @@ public class DataFrame {
             System.out.println();
         }
     }
-   // public void setStuff() {
-    //	for(Column i : columns) {
-    //		i.setUniqueValues();
-    //		i.setUniqueValCnt();
-    ///		i.setMode();
-    //		if(i.type == 'N') {
-	//    		i.setSum();
-	//    		i.setMean();
-	//    		i.setVariance();
-	//    		i.setStandardDeviation();
-	//    		i.setEntropy();
-    //		}
-    		//i.setFeatureStats();
 	
+    /**
+     * Prints ALL of the data contained in the dataframe. 
+     */
+    public void printAllData(boolean printStats) {
+        System.out.println("Dataframe: " + dataFrameName);
+        for(int i = 0; i < columnNames.size(); i++) {
+            System.out.print(columnNames.get(i) + " ");
+        }
+        System.out.println();
+        for(int z = 0 ; z < numRows; z++) {
+            rows.get(z).printRow();
+            System.out.println();
+        }
+        
+        System.out.println("\nNumeric Columns: (count = " + numNumeric + "): ");
+        for (Column c : numeric_columns) {
+            System.out.println(c.toString());
+            if (printStats) {
+                System.out.println(c.toStringStatistics());
+            }
+        }
+        
+        System.out.println("\nCategorical Columns (count = " + numCategorical + "): ");
+        for (Column c : categorical_columns) {
+            System.out.println(c.toString());
+            if (printStats) {
+                System.out.println(c.toStringStatistics());
+            }
+        }
+        
+        System.out.println("\nTarget Columns (count = " + numTargets + "): ");
+        for (Column c : target_columns) {
+            System.out.println(c.toString());
+            if (printStats) {
+                System.out.println(c.toStringStatistics());
+            }
+        }
+        
+        System.out.println("\nMeta Columns (count = " + numMeta + "): ");
+        for (Column c : meta_columns) {
+            System.out.println(c.toString());
+            if (printStats) {
+                System.out.println(c.toStringStatistics());
+            }
+        }
+    }
 
 }

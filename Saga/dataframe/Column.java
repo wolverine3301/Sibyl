@@ -28,6 +28,7 @@ public class Column {
      * 'G' - a custom object column
      * 'O' - a ordinal column (Ordered categorys such as A,B, and C grades)
      * 'N' - a numerical column
+     * 'U' - a column whos type has not been initialized. 
      *  */
     protected char type; 
     
@@ -139,6 +140,7 @@ public class Column {
         featureStats = new HashMap<Object, Double>();
         uniqueValueCounts = new HashMap<Object, Integer>();
         readyForStats = false;
+        type = 'U';
     }
     
     /**
@@ -226,6 +228,8 @@ public class Column {
      * @param theColumn the columns stats to copy.
      */ 
     public void copyStats(Column theColumn) {
+        if (!theColumn.readyForStats) //If the column to copy has not had it's stats initialized, return. 
+            return;
         if (type == 'N') {
             sum = theColumn.sum; //SUM
             mode = theColumn.mode;//MODE

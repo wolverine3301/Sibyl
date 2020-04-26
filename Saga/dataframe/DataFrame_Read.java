@@ -34,20 +34,12 @@ public class DataFrame_Read {
 	                currentParticle.setIndex(count); //Set the index of this particle in the column. 
 	                currentRow.add(currentParticle);
 	            }
-	            
 	            df.addRow(currentRow); //Add the current row to the dataframe. This method handles initializing position in columns too.
 	            count++;
 	        }
             df.numRows = df.rows.size();
             df.numColumns = df.columns.size();
-	        for (int i = 0; i < df.numColumns; i++) { //For each column in the row, initialize it's type and it's statistics. 
-	            Column c = df.getColumn(i);
-	            c.resolveType();
-	            df.columnTypes.add(c.getType());
-	            if (c.getType() == 'N')
-	                df.numericIndexes.add(i);
-	            c.setStatistics();
-	        }
+            df.setStatistics();
 	        br.close();
 	    } catch (Exception e) {
 	        // TODO Auto-generated catch block
@@ -55,6 +47,7 @@ public class DataFrame_Read {
 	    }
 	    return df;
 	}
+	
     /**
      * Loads a tsv formatted file.
      * @param filePath the filepath of the file to read in.
