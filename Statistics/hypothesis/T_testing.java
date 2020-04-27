@@ -1,4 +1,4 @@
-package probe;
+package hypothesis;
 
 import java.util.HashMap;
 import dataframe.DataFrame;
@@ -19,8 +19,7 @@ public class T_testing {
 	
 	public T_testing(DataFrame[] df) {
 		this.df = df;
-
-		 initiallizeTable();
+		initiallizeTable();
 	}
 	/**
 	 * compare the means of every numeric column for each dataframe

@@ -20,8 +20,11 @@ public class Correlations {
 	private DataFrame num_df;
 	private HashMap<String,Double> correlations;
 	Correlation function;
+	
 	public Correlations(DataFrame df,Correlation function) {
 		this.num_df = df.shallowCopy_columnIndexes(df.numericIndexes);
+		System.out.println(df.numNumeric);
+		System.out.println(num_df.numNumeric);
 		this.function = function;
 		correlations = new HashMap<String,Double>();
 		getCorrelations();
