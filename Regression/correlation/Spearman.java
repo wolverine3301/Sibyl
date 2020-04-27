@@ -23,6 +23,7 @@ public class Spearman extends Correlation{
 	private double ranked_std_x, ranked_std_y;
 	private double ranked_covariance;
 	private double correlation;
+	public final String method = "Spearman";
 	
 	public Spearman() {
 		

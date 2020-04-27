@@ -38,7 +38,7 @@ public class Hypothesis {
 			t0.start();
 			t1.start();
 			t2.start();
-
+			
 			try {
 			    t0.join();
 			    t1.join();

@@ -1,5 +1,6 @@
 package correlation;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,22 +18,20 @@ import dataframe.DataFrame;
  */
 public class Correlations {
 	 	
-	private DataFrame num_df;
+	private ArrayList<Column> num_df;
 	private HashMap<String,Double> correlations;
 	Correlation function;
 	
 	public Correlations(DataFrame df,Correlation function) {
-		this.num_df = df.shallowCopy_columnIndexes(df.numericIndexes);
-		System.out.println(df.numNumeric);
-		System.out.println(num_df.numNumeric);
+		this.num_df = df.numeric_columns;
 		this.function = function;
 		correlations = new HashMap<String,Double>();
 		getCorrelations();
 	}
 	private void getCorrelations() {
 		HashMap<String, Double> corr = new HashMap<String, Double>();
-		for(Column i : num_df.columns) {
-			for(Column j : num_df.columns) {
+		for(Column i : num_df) {
+			for(Column j : num_df) {
 				if(j == i) {
 					continue;
 				}else {

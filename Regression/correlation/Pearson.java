@@ -9,6 +9,8 @@ import forensics.Stats;
  *
  */
 public class Pearson extends Correlation{
+	public final String method = "Pearson";
+	
 	public Pearson() {
 		
 	}
