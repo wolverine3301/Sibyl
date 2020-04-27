@@ -158,6 +158,7 @@ public class Column {
         uniqueValueCounts = new HashMap<Object, Integer>();
         readyForStats = false;
     }
+    
     /**
      * Copy constructor.
      * @param theColumn

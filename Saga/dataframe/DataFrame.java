@@ -24,17 +24,17 @@ public class DataFrame {
 	/** The names of the columns */
 	protected ArrayList<String> columnNames;
 	
-	/** The type of each column */
-	protected ArrayList<Character> columnTypes;
-	
-	/** The numeric indexes of the dataframe. */
-	public ArrayList<Integer> numericIndexes;
-	
-	/** The target indexes of the dataframe. */
-	public ArrayList<Integer> targetIndexes;
-	
 	/** The ArrayList of columns */
 	public ArrayList<Column> columns;
+	
+	   /** The ArrayList of rows */
+    protected ArrayList<Row> rows;
+    
+    /** The number of rows in the data frame */
+    protected int numRows;
+    
+    /** The number of columns in the data frame */
+    protected int numColumns;
 	
 	/** ArrayList of only numeric columns */
 	public ArrayList<Column> numeric_columns;
@@ -60,30 +60,18 @@ public class DataFrame {
 	/** The number of meta columns contained in this data frame. */ 
 	public int numMeta;
 	
-	/** The ArrayList of rows */
-	protected ArrayList<Row> rows;
-	
-	/** The number of rows in the data frame */
-	protected int numRows;
-	
-	/** The number of columns in the data frame */
-	protected int numColumns;
-	
 	/**
 	 * Create a new, empty data frame.
 	 */
 	public DataFrame() {
 		this.columns = new ArrayList<Column>();
+	    this.rows = new ArrayList<Row>();
 		this.numeric_columns = new ArrayList<Column>();
 		this.categorical_columns = new ArrayList<Column>();
 		this.target_columns = new ArrayList<Column>();
 		this.meta_columns = new ArrayList<Column>();
-		
 		this.rows = new ArrayList<Row>();
 		this.columnNames = new ArrayList<String>();
-		this.columnTypes = new ArrayList<Character>();
-		this.numericIndexes = new ArrayList<Integer>();
-		this.targetIndexes = new ArrayList<Integer>();
 		numRows = 0;
 		numColumns = 0;
 		numNumeric = 0;
@@ -99,9 +87,15 @@ public class DataFrame {
 	 * 
 	 * ##################################################################
 	 */
+	
+	/**
+	 * Changes the name of the dataframe. 
+	 * @param name the new name of the dataframe. 
+	 */
 	public void setName(String name) {
 		this.dataFrameName = name;
 	}
+	
     /**
      * Updates the number of rows in this column. Note: this does not create new rows when changing the size.
      */
@@ -130,7 +124,6 @@ public class DataFrame {
 		}
 		changeColumnReferences(getColumn(index), newType);
 		getColumn(index).setType(newType);
-		columnTypes.set(index, newType);
 	}
 	
 	/**
@@ -142,7 +135,6 @@ public class DataFrame {
 	public void setColumnType(int columnIndex, char newType) {
 	    changeColumnReferences(getColumn(columnIndex), newType);
 	    getColumn(columnIndex).setType(newType);
-        columnTypes.set(columnIndex, newType);
     }
 	
 	/**
@@ -150,27 +142,67 @@ public class DataFrame {
 	 */
     public void setStatistics() {
         for (int i = 0; i < columns.size(); i++) {
-            Column c = columns.get(i);
-            c.resolveType();
-            c.setStatistics();
-            char columnType = c.getType();
-            if (columnType == 'T') {
-                target_columns.add(c);
-                numTargets++;
-            } else if (columnType == 'N') {
-                numeric_columns.add(c);
-                numNumeric++;
-            } else if (columnType == 'C') {
-                categorical_columns.add(c);
-                numCategorical++;
-            } else if (columnType == 'M') {
-                meta_columns.add(c);
-                numMeta++;
-            }
+            setStatistics(i);
         }
     }
+    
+    /** 
+     * Sets the statistics of a single column at the parameterized index. 
+     * @param index the index of the column who's statistics are to be changed. 
+     */
+    public void setStatistics(int index) {
+        Column c = columns.get(index);
+        if (c.type == 'U') 
+            c.resolveType();
+        if (!c.readyForStats)
+            c.setStatistics();
+        char columnType = c.getType();
+        if (columnType == 'T') {
+            target_columns.add(c);
+            numTargets++;
+        } else if (columnType == 'N') {
+            numeric_columns.add(c);
+            numNumeric++;
+        } else if (columnType == 'C') {
+            categorical_columns.add(c);
+            numCategorical++;
+        } else if (columnType == 'M') {
+            meta_columns.add(c);
+            numMeta++;
+        }
+    }
+    
+    /**
+     * Adds a **NEW** column to the statisics contained within the dataframe.
+     * Do not use this method unless you're cade handing the saga code or 
+     * some fool who doesn't know the reprocussions of non properly formatted data.
+     * There is a reason this is private. You fool. Dont use it. Ill find out if you did. 
+     * @param c The column to add to the statistics contained in the dataframe. 
+     * @param isEmpty if the column is empty, mark this as true so that statistics are 
+     * not automatically calculated. 
+     */
+    private void addColumnStatistics(Column c, boolean isEmpty) {
+        char columnType = c.getType();
+        if (!isEmpty && !c.readyForStats)
+            c.setStatistics();
+        if (columnType == 'T') {
+            target_columns.add(c);
+            numTargets++;
+        } else if (columnType == 'N') {
+            numeric_columns.add(c);
+            numNumeric++;
+        } else if (columnType == 'C') {
+            categorical_columns.add(c);
+            numCategorical++;
+        } else if (columnType == 'M') {
+            meta_columns.add(c);
+            numMeta++;
+        }
+    }
+    
 	/**
 	 * Handles swapping column storage when changing the type of a column. Helper method for set column type method.
+	 * Not reccommended to use unless you're very familiar with saga
 	 * @param c 
 	 * @param newType
 	 */
@@ -316,7 +348,7 @@ public class DataFrame {
     public void addColumnFromArray(String name, Object arr[]) {
     	Particle p = Particle.resolveType(arr[0]);
     	Column c;
-    	c = new Column(name,p.getType());
+    	c = new Column(name, p.getType());
     	c.add(p);
     	rows.get(0).add(p);
     	for(int i = 1; i < arr.length;i++) {
@@ -325,7 +357,7 @@ public class DataFrame {
     		c.add(p);
     	}
     	columnNames.add(name);
-    	columnTypes.add(c.getType());
+    	addColumnStatistics(c, false);
     	columns.add(c);
     	numColumns++;
     }
@@ -337,18 +369,11 @@ public class DataFrame {
             throw new IllegalArgumentException("Addition of new column name would cause uneven column names length vs column length.");
     }
     
-    public void addColumnType(char type) {
-        if (columnTypes.size() == columns.size() - 1)
-            columnTypes.add(type);
-        else
-            throw new IllegalArgumentException("Addition of new column name would cause uneven column types length vs column length.");
-    }
-    
     /**
-     * Adds a row to the data frame from an array. Mostly used by the distance matrix method.
+     * Adds a row to the data frame from an array. Does NOT update the statistics of the already contained columns.
      * @param arr the new row to be added. 
      */
-    public void addRowFromArray(Object arr[]) { //THIS NEEDS WORK! 
+    public void addRowFromArray(Object arr[]) { 
         Particle p = Particle.resolveType(arr[0]);
         Row r = new Row();
         r.add(p);
@@ -363,7 +388,8 @@ public class DataFrame {
     }
     
     /**
-     * Adds a row to the data frame. Assumes columns for the row to initialize have already been created.
+     * Adds a row to the data frame. Assumes columns for the row to initialize have already been created. 
+     * Does NOT update the statistics of the columns already contained.
      * @param r the row to be added.
      */
     public void addRow(Row r) {
@@ -374,6 +400,7 @@ public class DataFrame {
     }
 	/**
 	 * Replaces a row in the data frame.
+	 * Does NOT update the statistics of the columns already contained. 
 	 * @param index the index of the row to be replaced
 	 * @param row the row to be added in place of the row at the passed index.
 	 */
@@ -385,12 +412,13 @@ public class DataFrame {
 	}
     /**
      * Adds a column to the data frame.
+     * It's statistics will automatically be added. 
      * @param c the column to be added.
      */
     public void addColumn(Column c) {
         columns.add(c);
         columnNames.add(c.getName());
-        columnTypes.add(c.getType());
+        addColumnStatistics(c, false);
         numColumns++;
         for (int i = 0; i < c.getLength(); i++) {
             try {
@@ -404,19 +432,22 @@ public class DataFrame {
     }
 
     /**
-	 * Adds a new empty column to the data frame.
+	 * Adds a new empty column to the data frame. Using this method will not initialize the statistics of the 
+	 * column, as it is empty. DataFrame.setStatistics(int index) is what you will need to use to update. 
 	 * @param name The name of the new column.
 	 */
 	public void addBlankColumn(String name) {
 		Column c = new Column(name);
 		columnNames.add(name);
-		columnTypes.add('n');
 		columns.add(c);
+
 		numColumns++;
 	}
 	
 	/**
 	 * Adds a new empty column of a certain data type to the data frame.
+	 * Will add the column to the dataframes statistics, however it will not initialize the final values
+	 * as the column is empty. 
 	 * @param name the name of the new column.
 	 * @param dataType the data type of the new column.
 	 */
@@ -424,14 +455,29 @@ public class DataFrame {
 		Column c;
 		c = new Column(name, dataType);
 	    columnNames.add(name);
-	    columnTypes.add(dataType);
 	    columns.add(c);
+	    addColumnStatistics(c, true);
 	    numColumns++;
 	}
+	
+	/**
+	 * Adds a blank row to the dataframe.
+	 */
+	public void addBlankRow() {
+	    rows.add(new Row());
+	    numRows++;
+	}
+	
+	/**
+	 * Replaces a column in the dataframe. 
+	 * @param index
+	 * @param newColumn
+	 */
 	public void replaceColumn(int index, Column newColumn) {
 		this.columns.remove(index);
 		this.columns.add(index, newColumn);
 	}
+	
 	/**
 	 * Replaces a particle at a given row index (position in row) and column index (position in column).
 	 * @param rowIndex the position of the particle in the row being replaced.
@@ -450,6 +496,33 @@ public class DataFrame {
 	        throw new IllegalArgumentException("Particle to be replaced does not match the column's type.\nColumn type: " 
 	                            + columns.get(rowIndex).getType() + "\nParticle Type: " + p.type);
 	    } 
+	}
+	
+	/**
+	 * Removes the column at a given index from the dataframe. 
+	 * @param index the index of the column to remove. 
+	 */
+	public void removeColumn(int index) {
+	    columnNames.remove(index);
+	    Column c = columns.get(index);
+        char oldType = c.getType();
+        if (oldType == 'T') {
+            target_columns.remove(c);
+            numTargets--;
+        } else if (oldType == 'N') {
+            numeric_columns.remove(c);
+            numNumeric--;
+        } else if (oldType == 'C') {
+            categorical_columns.remove(c);
+            numCategorical--;
+        } else if (oldType == 'M') {
+            meta_columns.remove(c);
+            numMeta--;
+        }
+        numColumns--;
+        for (Row r : rows) {
+            r.removeParticle(index);
+        }
 	}
 	
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//

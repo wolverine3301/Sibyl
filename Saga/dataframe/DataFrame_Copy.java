@@ -65,29 +65,50 @@ public final class DataFrame_Copy {
         }
         return DataFrame_Copy.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
     }
+    
     /**
      * Deep copy of a dataframe
      * @param theDataFrame
      * @return
      */
     public static DataFrame deepCopy(DataFrame df) {
-        DataFrame newdf = new DataFrame();
-        for (int i = 0; i < df.numColumns; i++) {
-       		newdf.addColumn(new Column(df.getColumn(i)));
+        DataFrame newDataFrame = new DataFrame();
+        newDataFrame.dataFrameName = df.dataFrameName + "-copy";
+        newDataFrame.columnNames = deepColumnNames(df);
+        for (int i = 0; i < newDataFrame.numColumns; i++) { //Initialize blank columns. 
+            newDataFrame.addBlankColumn(newDataFrame.columnNames.get(i), df.getColumn(i).getType());
         }
-        return newdf;
+        for (Row r : df.rows) {
+            Row newRow = new Row();
+            for (int i = 0; i < r.getLength(); i++) {
+                newRow.add(r.getParticle(i).deepCopy());
+            }
+            newDataFrame.addRow(newRow);
+        }
+        df.setStatistics();
+        return df;
     }
+    
+    /**
+     * Creates a deep copy of the names of the columns in a dataframe. 
+     * @param df
+     * @return
+     */
+    private static ArrayList<String> deepColumnNames(DataFrame df) {
+        ArrayList<String> names = new ArrayList<String>();
+        for (String s : df.getColumnNames()) {
+            names.add(new String(s));
+        }
+        return names;
+    }
+    
     /**
      * Shallow copy of a dataframe
      * @param theDataFrame
      * @return
      */
     public static DataFrame shallowCopy(DataFrame theDataFrame) {
-        DataFrame newDataFrame = new DataFrame();
-        for (String name : theDataFrame.columnNames) {
-            Column c = theDataFrame.getColumn_byName(name);
-            newDataFrame.addColumn(c);
-        }
+        DataFrame newDataFrame = theDataFrame;
         return newDataFrame;
     }
   //TODO for some reason calling this does not include the first row in the new copied dataframe
@@ -103,6 +124,8 @@ public final class DataFrame_Copy {
          for (Integer i : columnIndexes) {
         		newDataFrame.addColumn(new Column(theDataFrame.getColumn(i)));
          }
+         newDataFrame.columnNames = deepColumnNames(newDataFrame);
+         newDataFrame.setStatistics();
          return newDataFrame;
      }
     
@@ -117,11 +140,13 @@ public final class DataFrame_Copy {
         for (String name : columnNames) { // Create the columns
         	newDataFrame.addColumn(new Column(theDataFrame.getColumn_byName(name)));
         }
+        newDataFrame.columnNames = deepColumnNames(newDataFrame);
+        newDataFrame.setStatistics();
         return newDataFrame;
     }
     
     /**
-     * Creates a new shallow copied data frame internally from a list of column names.
+     * Creates a new shallow copied data frame internally from a list of column types.
      * @param theDataFrame the data frame to copy.
      * @param columnNames the names of the columns to be added to the new data frame
      * @return a new DataFrame consisting of the columns passed to the method.
@@ -129,8 +154,11 @@ public final class DataFrame_Copy {
     public static DataFrame deepCopy_columnTypes(DataFrame theDataFrame, Collection<Character> columnTypes) {
         DataFrame newDataFrame = new DataFrame();
         for (int i = 0; i < theDataFrame.getNumColumns(); i++) {
+            if (columnTypes.contains(newDataFrame.getColumn(i).getType()))
             	newDataFrame.addColumn(new Column(theDataFrame.getColumn(i)));
         }
+        newDataFrame.columnNames = deepColumnNames(newDataFrame);
+        newDataFrame.setStatistics();
         return newDataFrame;
     }
 
@@ -149,6 +177,7 @@ public final class DataFrame_Copy {
         for (Integer rowIndex : rowIndexes) {
             newDataFrame.addRow(new Row(theDataFrame.getRow_byIndex(rowIndex)));
         }
+        newDataFrame.columnNames = deepColumnNames(newDataFrame);
         newDataFrame.setStatistics();
         return newDataFrame;
     }
@@ -209,6 +238,7 @@ public final class DataFrame_Copy {
         for (Integer i : columnIndexes) {
             newDataFrame.addColumn(theDataFrame.getColumn(i));
         }
+        newDataFrame.setStatistics();
         return newDataFrame;
     }
     
@@ -224,6 +254,7 @@ public final class DataFrame_Copy {
             Column c = theDataFrame.getColumn_byName(name);
             newDataFrame.addColumn(c);
         }
+        newDataFrame.setStatistics();
         return newDataFrame;
     }
     
@@ -240,6 +271,7 @@ public final class DataFrame_Copy {
                 newDataFrame.addColumn(theDataFrame.getColumn(i));
             }
         }
+        newDataFrame.setStatistics();
         return newDataFrame;
     }
     
@@ -259,7 +291,6 @@ public final class DataFrame_Copy {
         }
         newDataFrame.setNumRows();
         newDataFrame.setStatistics();
-        newDataFrame.targetIndexes = theDataFrame.targetIndexes;
         return newDataFrame;
     } 
     
@@ -298,7 +329,6 @@ public final class DataFrame_Copy {
                 set.add(j); 
             }
             DataFrame temp = shallowCopy_rowIndexes(df, set);
-            temp.setStatistics();
             partitions.add(temp);
         }
         return partitions;

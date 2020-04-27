@@ -1,10 +1,7 @@
 package dataframe;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
 
 import particles.Particle;
 
@@ -78,14 +75,7 @@ public class DataFrame_Read {
 	        }
             df.numRows = df.rows.size();
             df.numColumns = df.columns.size();
-	        for (int i = 0; i < df.numColumns; i++) { //For each column in the row, initialize it's type and it's statistics. 
-	            Column c = df.getColumn(i);
-	            c.resolveType();
-	            df.columnTypes.add(c.getType());
-	            if (c.getType() == 'N')
-	                df.numericIndexes.add(i);
-	            c.setStatistics();
-	        }
+            df.setStatistics();
 	        br.close();
 	    } catch (Exception e) {
 	        // TODO Auto-generated catch block

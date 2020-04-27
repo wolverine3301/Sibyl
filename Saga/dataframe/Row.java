@@ -10,11 +10,13 @@ public class Row {
 	
 	/** The length of the row (how many particles are stored in this row */
 	public int rowLength;
-	//public ArrayList<String> columnNames;
+	
+	/**
+	 * Creates a new empty row. 
+	 */
 	public Row() {
 		this.row = new ArrayList<Particle>();
 		rowLength = 0;
-		//this.columnNames = new ArrayList<String>();
 	}
 	
 	/**
@@ -29,8 +31,8 @@ public class Row {
 	}
 	
 	/**
-	 * Adds a particle object to list 
-	 * @param p
+	 * Adds a particle to the row. 
+	 * @param p the particle to add to the row. 
 	 */
 	public void add(Particle p) {
 	    if (!row.isEmpty()) {
@@ -41,25 +43,45 @@ public class Row {
 	}
 	
 	/**
-	 * return a particle object from list
-	 * @param index
-	 * @return
+	 * Removes the particle at a given index in the row.
+	 * @param index the index of the particle to remove. 
+	 */
+	public void removeParticle(int index) {
+	    row.remove(index);
+	    rowLength--;
+	}
+	
+	/**
+	 * Returns the particle at a given index in the row. 
+	 * @param index the index of the particle to return. 
+	 * @return the particle at a given index in the row. 
 	 */
 	public Particle getParticle(int index) {
 		return row.get(index);
 	}
+	
 	/**
-	 * return length of row
-	 * @return
+	 * Returns the length of the row. 
+	 * @return the length of the row. 
 	 */
 	public int getLength() {
 		return rowLength;
 	}
 	
+	/**
+	 * Changes the value (in the form of a particle) at a given index of the row. 
+	 * @param index the index of the value to change. 
+	 * @param p the value to change the index to. 
+	 */
 	public void changeValue(int index, Particle p) {
 	    row.set(index, p);
 	}
 	
+	/**
+	 * Returns if the row is equal to another row. 
+	 * @param r the row to check for equality. 
+	 * @return true if the two rows contain identical values, false otherwise.
+	 */
 	public boolean equals(Row r) {
 	    if (rowLength == r.rowLength) {
 	        for (int i = 0; i < rowLength; i++) {
@@ -72,10 +94,20 @@ public class Row {
 	        return false;
 	}
 	
+	
+	/**
+	 * Returns the row in the form of an arraylist of particles. 
+	 * @return the row in the form of an arraylist of particles. 
+	 */
 	public ArrayList<Particle> getRow() {
 	    return row;
 	}
-	
+
+	/**
+	 * Returns a string representation of this row. 
+	 * @return a string representation of this row. 
+	 */
+	@Override
 	public String toString() {
 	    String s = "";
 	    for(int i = 0; i < row.size(); i++) {
@@ -85,7 +117,7 @@ public class Row {
 	}
 	
 	/**
-	 * print out row values
+	 * Prints out the values contained in the row. 
 	 */
 	public void printRow() {
 		for(int i = 0;i < row.size();i++) {
