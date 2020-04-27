@@ -1,8 +1,5 @@
 package transform;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import dataframe.Column;
 import dataframe.DataFrame;
 import particles.DoubleParticle;
@@ -17,7 +14,7 @@ public class Standardize {
 	public DataFrame std_df;
 	private DataFrame df;
 	public Standardize(DataFrame data) {
-		this.df = data.shallowCopy_columnIndexes(data.numericIndexes);
+		this.df = data.shallowCopy_columnType('N');
 		this.std_df = new DataFrame();
 	}
 

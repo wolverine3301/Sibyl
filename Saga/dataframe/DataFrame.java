@@ -284,6 +284,30 @@ public class DataFrame {
     public Column getColumn(int index) {
         return columns.get(index);
     }
+    
+    /**
+     * Returns a shallow copy of the columns of a certain type. 
+     * @param type the type of columns to fetch.
+     * @return a shallow copy of the columns of a certian type. 
+     */
+    public ArrayList<Column> getColumns(char type) {
+        if (type == 'T') {
+            return target_columns;
+        } else if (type == 'N') {
+            return numeric_columns;
+        } else if (type == 'C') {
+            return categorical_columns;
+        } else if (type == 'M') {
+            return meta_columns;
+        }
+        //If acquiring a type of column which is not stored as a field. 
+        ArrayList<Column> cols = new ArrayList<Column>();
+        for (Column c : columns) {
+            if (c.type == type)
+                cols.add(c);
+        }
+        return cols;
+    }
 
 	
 	/**
@@ -550,6 +574,8 @@ public class DataFrame {
 	 * 
 	 * ##################################################################
 	 */
+	
+	
 	public DataFrame deepCopy() {
 		return DataFrame_Copy.deepCopy(this);
 	}
@@ -562,33 +588,55 @@ public class DataFrame {
     public DataFrame deepCopy_columnIndexes(Collection<Integer> columnIndexes) {
     	return DataFrame_Copy.deepCopy_columnIndexes(this, columnIndexes);
     }
+    
     public DataFrame deepCopy_columnNames(Collection<String> columnNames) {
     	return DataFrame_Copy.deepCopy_columnNames(this, columnNames);
     }
+    
+    public DataFrame deepCopy_columnType(char columnType) {
+        return DataFrame_Copy.deepCopy_columnType(this, columnType);
+    }
+    
+    public DataFrame deepCopy_columnTypes(Collection<Character> columnTypes){
+        return DataFrame_Copy.shallowCopy_columnTypes(this, columnTypes);
+    }
+    
     public DataFrame deepCopy_rowIndexes(Collection<Integer> rowIndexes) {
     	return DataFrame_Copy.deepCopy_rowIndexes(this, rowIndexes);
     }
+    
     public DataFrame exclude(Collection<Integer> columnIndexes) {
     	return DataFrame_Copy.exclude(this, columnIndexes);
     }
+    
     public DataFrame shallowCopy_columnIndexes(Collection<Integer> columnIndexes) {
     	return DataFrame_Copy.shallowCopy_columnIndexes(this, columnIndexes);
     }
+    
     public DataFrame shallowCopy_columnNames(Collection<String> columnNames){
     	return DataFrame_Copy.shallowCopy_columnNames(this, columnNames);
     }
+    
+    public DataFrame shallowCopy_columnType(char columnType) {
+        return DataFrame_Copy.shallowCopy_columnType(this, columnType);
+    }
+    
     public DataFrame shallowCopy_columnTypes(Collection<Character> columnTypes){
     	return DataFrame_Copy.shallowCopy_columnTypes(this, columnTypes);
     }
+    
     public DataFrame shallowCopy_rowIndexes(Collection<Integer> rowIndexes){
     	return DataFrame_Copy.shallowCopy_rowIndexes(this, rowIndexes);
     }
+    
     public void sortByColumn(int columnIndex){
     	DataFrame_Copy.sortByColumn(this, columnIndex);
     }
+    
     public ArrayList<DataFrame> split(int n) {
     	return DataFrame_Copy.split(this, n);
     }
+    
     public DataFrame shuffle(DataFrame df) {
     	DataFrame newdf = df;
     	DataFrame_Copy.shuffle(newdf);

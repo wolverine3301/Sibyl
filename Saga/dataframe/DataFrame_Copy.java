@@ -146,6 +146,23 @@ public final class DataFrame_Copy {
     }
     
     /**
+     * Returns a deep copy of a dataframe which only consists of the one parameterized column type. 
+     * @param theDataFrame the dataframe to create a deep copy of. 
+     * @param columnType the column type which the new dataframe will only consist of. 
+     * @return a deep copy of a dataframe which only consists of the one parameterized column type. 
+     */
+    public static DataFrame deepCopy_columnType(DataFrame theDataFrame, char columnType) {
+        DataFrame newDataFrame = new DataFrame();
+        ArrayList<Column> columns = theDataFrame.getColumns(columnType);
+        for (Column c : columns) {
+            newDataFrame.addColumn(new Column(c));
+        }
+        newDataFrame.columnNames = deepColumnNames(newDataFrame);
+        newDataFrame.setStatistics();
+        return newDataFrame;
+    }
+    
+    /**
      * Creates a new shallow copied data frame internally from a list of column types.
      * @param theDataFrame the data frame to copy.
      * @param columnNames the names of the columns to be added to the new data frame
@@ -161,7 +178,7 @@ public final class DataFrame_Copy {
         newDataFrame.setStatistics();
         return newDataFrame;
     }
-
+    
     /**
      * Creates a new deep copied data frame internally from a list of row indexes.
      * @param theDataFrame the data frame to copy.
@@ -252,6 +269,22 @@ public final class DataFrame_Copy {
         DataFrame newDataFrame = new DataFrame();
         for (String name : columnNames) {
             Column c = theDataFrame.getColumn_byName(name);
+            newDataFrame.addColumn(c);
+        }
+        newDataFrame.setStatistics();
+        return newDataFrame;
+    }
+    
+    /**
+     * Returns a shallow copy of a dataframe which consists of only one type.
+     * @param theDataFrame the dataframe to make a shallow copy of. 
+     * @param columnType the column type which every column in the new DataFrame will consist of. 
+     * @return a shallow copy of a dataframe which only consists of the parameterized type. 
+     */
+    public static DataFrame shallowCopy_columnType(DataFrame theDataFrame, char columnType) {
+        DataFrame newDataFrame = new DataFrame();
+        ArrayList<Column> cols = theDataFrame.getColumns(columnType);
+        for (Column c : cols) {
             newDataFrame.addColumn(c);
         }
         newDataFrame.setStatistics();
