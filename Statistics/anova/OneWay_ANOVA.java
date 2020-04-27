@@ -44,20 +44,20 @@ public class OneWay_ANOVA {
 		HashMap<String, Double> MS;
 		HashMap<String, Double> MSE;
 		HashMap<String, Double> F;
-		for(Integer i : df.targetIndexes) {
+		for(Column i : df.target_columns) {
 			MS = new HashMap<String, Double>();
 			MSE = new HashMap<String, Double>();
 			F = new HashMap<String, Double>();
-			for(Integer j : df.numericIndexes) {
+			for(int j = 0; j < df.numeric_columns.size(); j++) {
 				for(DataFrame[] k : classes) {
-					MS.put(df.getColumn(j).getName(), sumOfSquaresOfTreatment(k, j));
-					MSE.put(df.getColumn(j).getName(), SumOfSquaresOfError(k,j));
-					F.put(df.getColumn(j).getName(), MS.get(df.getColumn(j).getName()) / MSE.get(df.getColumn(j).getName()) );
+					MS.put(i.getName(), sumOfSquaresOfTreatment(k, j));
+					MSE.put(i.getName(), SumOfSquaresOfError(k,j));
+					F.put(i.getName(), MS.get(df.numeric_columns.get(j).getName() ) / MSE.get(df.numeric_columns.get(j).getName() ) );
 				}
 			}
-			this.MSB.put(df.getColumn(i).getName(), MS);
-			this.meanSquaresError.put(df.getColumn(i).getName(), MSE);
-			this.F_RATIO.put(df.getColumn(i).getName(), F);
+			this.MSB.put(i.getName(), MS);
+			this.meanSquaresError.put(i.getName(), MSE);
+			this.F_RATIO.put(i.getName(), F);
 			System.out.println("HERE"+MSB);
 		}
 	}
@@ -65,17 +65,17 @@ public class OneWay_ANOVA {
 	 * initiallizing for all targets
 	 */
 	public void initializeAll_anova() {
-		for(Integer i : df.targetIndexes) {
+		for(Column i : df.target_columns) {
 			initiallize_anova(i);
 		}
 	}
 	//break up dataframe into target groups
-	private void initiallize_anova(int target_index) {
-		Set<Object> targets = df.getColumn(target_index).getUniqueValues();
+	private void initiallize_anova(Column target_index) {
+		Set<Object> targets = target_index.getUniqueValues();
 		DataFrame[] target_class = new DataFrame[targets.size()];
 		int cnt = 0;
 		String[] args = new String[3];
-		args[0] = df.getColumn(target_index).getName();
+		args[0] = target_index.getName();
 		args[1] = "==";
 		for(Object i : targets) {
 			args[2] = i.toString();

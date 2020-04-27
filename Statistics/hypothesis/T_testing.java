@@ -35,9 +35,9 @@ public class T_testing {
 	 */
 	private void initiallizeTable() {
 		comparisonTable = new HashMap<String,HashMap<String,Double>>();
-		for(Integer i : df[0].numericIndexes) {
+		for(int i = 0; i < df[0].numeric_columns.size(); i++) {
 			
-			comparisonTable.put(df[0].getColumn(i).getName(), new HashMap<String,Double>());
+			comparisonTable.put(df[0].numeric_columns.get(i).getName(), new HashMap<String,Double>());
 			HashMap<String,Double> tmp = new HashMap<String,Double>();
 			for(int j = 0;j < df.length-1; j++) {
 				for(int c = 0; c < df.length; c++) {
@@ -45,11 +45,11 @@ public class T_testing {
 						continue;
 					}
 					if(c == j)continue;
-					T_Test t = T_Test.test(df[j].getColumn(i),df[c].getColumn(i));
+					T_Test t = T_Test.test(df[j].numeric_columns.get(i),df[c].numeric_columns.get(i));
 					tmp.put(df[j].getName().concat(" vs. " +df[c].getName()),t.pvalue);
 				}				
 			}
-			comparisonTable.put(df[0].getColumn(i).getName(),tmp);
+			comparisonTable.put(df[0].numeric_columns.get(i).getName(),tmp);
 		}
 		System.out.println(comparisonTable);
 	}
