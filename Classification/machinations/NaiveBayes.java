@@ -7,6 +7,7 @@ import java.util.List;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.Row;
+import dataframe.Util;
 import particles.Particle;
 
 /**
@@ -159,7 +160,9 @@ public class NaiveBayes extends Model{
 	}
 	//arraylist of df[] for a df for every unique value in a target column
 	private void setClasses() {
+		System.out.println("ND: "+super.trainDF_targets.getNumColumns());
 		for(int i = 0; i < super.trainDF_targets.getNumColumns();i++) {
+			System.out.println("ND: "+super.trainDF_targets.getColumn(i).getName()+" "+super.trainDF_targets.getColumn(i).getTotalUniqueValues());
 			classes(i);
 		}
 	}
@@ -175,12 +178,13 @@ public class NaiveBayes extends Model{
 		arg[1] = "==";
 		//split dataframe based on current target columns classes, result is 
 		//n dataframes each with rows containing 1 value in the target column
-		for(int i = 0; i < targetClasses.length; i++) {
-			arg[0] = super.trainDF_targets.getColumn(targetNum).getName();
-			arg[2] = targetClasses[i].toString();
-			classes[i] = super.rawTrain.acquire(arg);
-		}
-		this.classes.add(classes);
+		//for(int i = 0; i < targetClasses.length; i++) {
+		//	arg[0] = super.trainDF_targets.getColumn(targetNum).getName();
+		//	arg[2] = targetClasses[i].toString();
+		//	classes[i] = super.rawTrain.acquire(arg);
+		//}
+		System.out.println("NB: "+super.trainDF_targets.getNumColumns());
+		this.classes.add(Util.splitOnTarget(super.trainDF_targets, super.trainDF_targets.getColumn(targetNum)));
 	}
 	public double getCategoricalProbability(String targetName, Object targetValue, String variable, Object variableValue) {
 		return cat_Naive_Bayes.get(targetName).get(targetValue).get(variable).get(variableValue);

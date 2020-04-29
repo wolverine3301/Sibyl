@@ -251,7 +251,7 @@ public class Chi2Independents {
 	public void printResults() {
 		HashMap<String, HashMap<String, Double>> map = chi2IndependentsAll();
 		for(String i : map.keySet()) {
-			System.out.println(i);
+			System.out.println("TARGET: "+i);
 			for(String j : map.get(i).keySet()) {
 				System.out.println(j + " "+ map.get(i).get(j));
 			}

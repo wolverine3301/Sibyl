@@ -51,6 +51,9 @@ public class T_testing {
 			}
 			comparisonTable.put(df[0].numeric_columns.get(i).getName(),tmp);
 		}
+		//System.out.println(comparisonTable);
+	}
+	public void printComparisonTable() {
 		System.out.println(comparisonTable);
 	}
 }

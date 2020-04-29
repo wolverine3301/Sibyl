@@ -1,5 +1,6 @@
 package hypothesis;
 
+import chi2.Chi2Independents;
 import correlation.Correlations;
 import correlation.Pearson;
 import correlation.Spearman;
@@ -20,8 +21,14 @@ public class Hypothesis {
 	private Correlations pearson;
 	private Correlations spearman;
 	private T_testing t;
+	private Chi2Independents chi2;
 	
 	private DataFrame df;
+	
+	private static Thread T0;
+	private static Thread T1;
+	private static Thread T2;
+	private static Thread T3;
 	public Hypothesis(DataFrame df) {
 		this.df = df;
 		System.out.println("TARGET VARIABLES:");
@@ -44,9 +51,12 @@ public class Hypothesis {
 			    t1.join();
 			    t2.join();
 			} catch (InterruptedException e) { /* NOP */ }
+			System.out.println("PEARSON");
 			pearson.printCorrelations();
+			System.out.println("SPEARMAN");
 			spearman.printCorrelations();
-		
+			System.out.println("T-TEST");
+			t.printComparisonTable();
 	        
 		}
 		
@@ -71,17 +81,14 @@ public class Hypothesis {
 	 * @return 
 	 */
 	private Correlations pearsonCorr() {
-		System.out.println("PEARSON");
 		Pearson p = new Pearson();
 		return new Correlations(df,p);
-		
 	}
 	/**
 	 * perfrom spearman correlation
 	 * @return 
 	 */
 	private Correlations spearmanCorr() {
-		System.out.println("SPEARMAN");
 		Spearman s = new Spearman();
         return new Correlations(df,s);
 	}

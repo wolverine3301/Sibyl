@@ -46,7 +46,7 @@ public class EqualFrequencyBinning {
 	}
 	/**
 	 * place column into bins and return new column
-	 * @return
+	 * @return new column
 	 */
 	public Column binColumn() {
 		Column newCol = new Column(col.getName()+"_"+numbins);

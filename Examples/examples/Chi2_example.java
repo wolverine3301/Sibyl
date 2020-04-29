@@ -16,8 +16,8 @@ public class Chi2_example {
         
 		Chi2Independents chi2 = new Chi2Independents(df);
 		//chi2.ranked(0);
-		//chi2.printObsContengencyTables();
-		//chi2.printEXPContengencyTables();
+		chi2.printObsContengencyTables();
+		chi2.printEXPContengencyTables();
 		
 		chi2.printResults();
 		System.out.println();

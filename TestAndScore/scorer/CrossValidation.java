@@ -29,6 +29,8 @@ public class CrossValidation {
 	 * @param model - a model object to be tested
 	 */
 	public CrossValidation(DataFrame df, int N, Model model) {
+		System.out.println("CV: "+df.numTargets);
+		System.out.println(df.target_columns.get(0).getName());
 		this.N = N;
 		this.df = df.shuffle(df);
 		scores = new ArrayList<Score>();
