@@ -319,6 +319,19 @@ public class DataFrame {
 	}
 	
 	/**
+	 * Returns the index of the column with a given name.
+	 * @param columnName the name of the column whos index to return. 
+	 * @return the index of the column with a given name. Returns -1 if the column name is not contained. 
+	 */
+	public int getColumnIndex(String columnName) {
+	    for (int i = 0; i < columnNames.size(); i++) {
+	        if (columnNames.get(i).equals(columnName))
+	            return i;
+	    }
+	    return -1;
+	}
+	
+	/**
 	 * Returns the amount of rows in the data frame.
 	 * @return the amount of rows in the data frame.
 	 */
@@ -588,6 +601,15 @@ public class DataFrame {
         for (Row r : rows) {
             r.removeParticle(index);
         }
+	}
+	
+	/**
+	 * Removes a column with the first instance of a given column name in the dataframe. 
+	 * @param columnName the name of the column to remove. 
+	 */
+	public void removeColumn(String columnName) {
+	    int index = getColumnIndex(columnName);
+	    removeColumn(index);
 	}
 	
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
