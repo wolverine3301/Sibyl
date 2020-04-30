@@ -23,8 +23,9 @@ public class NaiveBayes_example {
 		String file = "testfiles/iris.txt";
         DataFrame df = DataFrame.read_csv(file);
         df.convertNANS_mode();
-        df.getColumn_byName("species").setType('T'); //set target column
-
+        df.setColumnType(4, 'T');
+        //df.getColumn_byName("species").setType('T'); //set target column
+        System.out.println(df.numTargets);
         //System.out.println(df.getColumn_byName("species").getUniqueValues());
         //print column means
         for(Column i : df.columns) {
@@ -35,10 +36,12 @@ public class NaiveBayes_example {
         //df = Standardize.standardize_df(df); //Standardize the DF into z scores
         df = df.shuffle(df);
         NaiveBayes nb = new NaiveBayes();
+        System.out.println(df.numTargets);
         //nb.initiallize();
         CrossValidation cv = new CrossValidation(df, 10, nb);
-        cv.printScores();
-        //cv.printMatrixs();
+        //cv.printScores();
+        //cv.avgScores();
+        cv.printMatrixs();
         //cv.printMatrixs();
         //cv.printScores();
         //nb.printProbTable();

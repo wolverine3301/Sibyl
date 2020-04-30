@@ -57,7 +57,6 @@ public abstract class Model {
 	public void train(DataFrame df) {
 		this.rawTrain = df;
 	    this.trainDF_targets = DataFrame_Copy.shallowCopy_columnTypes(df, set_targets());
-	    System.out.println("MODEL: "+this.trainDF_targets.target_columns.get(0).getName() + " "+"MODEL: "+this.trainDF_targets.target_columns.get(0).getTotalUniqueValues());
 	    this.trainDF_variables = DataFrame_Copy.shallowCopy_columnTypes(df, set_variables());
 	}
 	

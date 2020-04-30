@@ -99,7 +99,6 @@ public class NaiveBayes extends Model{
 	 */
 	private Double[] set_continuousColumnProbability(Column c) {
 		Double[] meanVar = {c.mean , c.variance};
-
 		return meanVar;
 	}
 	/**
@@ -160,9 +159,7 @@ public class NaiveBayes extends Model{
 	}
 	//arraylist of df[] for a df for every unique value in a target column
 	private void setClasses() {
-		System.out.println("ND: "+super.trainDF_targets.getNumColumns());
 		for(int i = 0; i < super.trainDF_targets.getNumColumns();i++) {
-			System.out.println("ND: "+super.trainDF_targets.getColumn(i).getName()+" "+super.trainDF_targets.getColumn(i).getTotalUniqueValues());
 			classes(i);
 		}
 	}
@@ -176,15 +173,8 @@ public class NaiveBayes extends Model{
 		DataFrame[] classes = new DataFrame[targetClasses.length];
 		String[] arg = new String[3];
 		arg[1] = "==";
-		//split dataframe based on current target columns classes, result is 
-		//n dataframes each with rows containing 1 value in the target column
-		//for(int i = 0; i < targetClasses.length; i++) {
-		//	arg[0] = super.trainDF_targets.getColumn(targetNum).getName();
-		//	arg[2] = targetClasses[i].toString();
-		//	classes[i] = super.rawTrain.acquire(arg);
-		//}
-		System.out.println("NB: "+super.trainDF_targets.getNumColumns());
-		this.classes.add(Util.splitOnTarget(super.trainDF_targets, super.trainDF_targets.getColumn(targetNum)));
+		this.classes.add(Util.splitOnTarget(super.rawTrain, super.rawTrain.target_columns.get(targetNum)));
+		//System.out.println("VBVB: "+this.classes.get(0)[0].getNumColumns());
 	}
 	public double getCategoricalProbability(String targetName, Object targetValue, String variable, Object variableValue) {
 		return cat_Naive_Bayes.get(targetName).get(targetValue).get(variable).get(variableValue);
@@ -200,8 +190,11 @@ public class NaiveBayes extends Model{
 				if(super.trainDF_variables.getColumn(i).getType() == 'N') {
 					prob = prob * getContinuousProbability(super.trainDF_targets.getColumn(target).getName(),z,super.trainDF_variables.getColumn(i).getName(),row.getParticle(i));
 				}else {
-					
-					prob = prob * cat_Naive_Bayes.get(super.trainDF_targets.getColumn(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(row.getParticle(i).getValue());
+					try {
+						prob = prob * cat_Naive_Bayes.get(super.trainDF_targets.getColumn(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(row.getParticle(i).getValue());
+					}catch(Exception e) {
+						continue;
+					}
 				}
 				if(super.trainDF_variables.getColumn(i).getType() == 'N') {
 					prob = prob * getContinuousProbability(super.trainDF_targets.getColumn(target).getName(),z,super.trainDF_variables.getColumn(i).getName(),row.getParticle(i));

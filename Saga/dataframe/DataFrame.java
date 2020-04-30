@@ -453,8 +453,49 @@ public class DataFrame {
                 rows.get(i).add(c.getParticle(i));
             }
         }
+        if (c.getType() == 'T') {
+            target_columns.add(c);
+            numTargets++;
+        } else if (c.getType() == 'N') {
+            numeric_columns.add(c);
+            numNumeric++;
+        } else if (c.getType() == 'C') {
+            categorical_columns.add(c);
+            numCategorical++;
+        } else if (c.getType() == 'M') {
+            meta_columns.add(c);
+            numMeta++;
+        }
     }
-
+    //Adds a column at a specified index
+    public void addColumnAtIndex(int index, Column c) {
+        columns.add(index,c);
+        columnNames.add(index,c.getName());
+        addColumnStatistics(c, false);
+        numColumns++;
+        for (int i = 0; i < c.getLength(); i++) {
+            try {
+                rows.get(i).add(c.getParticle(i));
+            } catch (Exception e) {
+                rows.add(new Row());
+                numRows++;
+                rows.get(i).add(c.getParticle(i));
+            }
+        }
+        if (c.getType() == 'T') {
+            target_columns.add(c);
+            numTargets++;
+        } else if (c.getType() == 'N') {
+            numeric_columns.add(c);
+            numNumeric++;
+        } else if (c.getType() == 'C') {
+            categorical_columns.add(c);
+            numCategorical++;
+        } else if (c.getType() == 'M') {
+            meta_columns.add(c);
+            numMeta++;
+        }
+    }
     /**
 	 * Adds a new empty column to the data frame. Using this method will not initialize the statistics of the 
 	 * column, as it is empty. DataFrame.setStatistics(int index) is what you will need to use to update. 
@@ -498,8 +539,8 @@ public class DataFrame {
 	 * @param newColumn
 	 */
 	public void replaceColumn(int index, Column newColumn) {
-		this.columns.remove(index);
-		this.columns.add(index, newColumn);
+		this.removeColumn(index);
+		this.addColumnAtIndex(index, newColumn);
 	}
 	
 	/**
