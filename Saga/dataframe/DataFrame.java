@@ -552,8 +552,39 @@ public class DataFrame {
 	 * @param newColumn
 	 */
 	public void replaceColumn(int index, Column newColumn) {
-		this.removeColumn(index);
-		this.addColumnAtIndex(index, newColumn);
+	    Column c = columns.get(index);
+	    columnNames.set(index, newColumn.name);
+	    columns.set(index, newColumn);
+	    char oldType = c.getType();
+        if (oldType == 'T') {
+            target_columns.remove(c);
+            numTargets--;
+        } else if (oldType == 'N') {
+            numeric_columns.remove(c);
+            numNumeric--;
+        } else if (oldType == 'C') {
+            categorical_columns.remove(c);
+            numCategorical--;
+        } else if (oldType == 'M') {
+            meta_columns.remove(c);
+            numMeta--;
+        }
+        for (Row r : rows) {
+            r.removeParticle(index);
+        }
+        if (newColumn.getType() == 'T') {
+            target_columns.add(newColumn);
+            numTargets++;
+        } else if (newColumn.getType() == 'N') {
+            numeric_columns.add(newColumn);
+            numNumeric++;
+        } else if (newColumn.getType() == 'C') {
+            categorical_columns.add(newColumn);
+            numCategorical++;
+        } else if (newColumn.getType() == 'M') {
+            meta_columns.add(newColumn);
+            numMeta++;
+        }
 	}
 	
 	/**

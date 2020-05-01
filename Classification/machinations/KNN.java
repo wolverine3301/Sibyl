@@ -113,10 +113,15 @@ public class KNN extends Model {
         return predictions;
     }
 
+    /**
+     * Predicts the "value" of a row's missing value. Returns the value of the highest probability
+     * of a targets value. 
+     * @return the value with the highest probability from the dataset.
+     */
     @Override
     public Object predict(Row row) {
-        // TODO Auto-generated method stub
-        return null;
+        HashMap<String, HashMap<Object, Double>> probabilityMap = probability(row);
+        
     }
 
     @Override
