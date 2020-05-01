@@ -22,6 +22,11 @@ public class CrossValidation {
 	/** The training data used to test predictive models. */
 	public DataFrame testDF_variables;
 	ArrayList<TestTrainFit> trials;
+	
+	HashMap<String, HashMap<Object, Double>> total_recall;
+	HashMap<String, HashMap<Object, Double>> total_precision;
+	HashMap<String, HashMap<Object, Double>> total_f1;
+	HashMap<String, HashMap<Object, Double>> total_mcc;
 	/**
 	 * Cross Validation
 	 * @param df - the dataframe 
@@ -127,6 +132,10 @@ public class CrossValidation {
 				mcc.get(j).replace(z, mcc.get(j).get(z) / scores.size());
 			}
 		}
+		this.total_recall = recall;
+		this.total_precision = precision;
+		this.total_f1 = F1;
+		this.total_mcc = mcc;
 		//System.out.println("Recall: "+recall.toString());
 		//System.out.println("Precicion: "+precision.toString());
 		//System.out.println("F1: "+F1.toString());
@@ -146,6 +155,16 @@ public class CrossValidation {
 			i.printMatrix();
 			cnt++;
 		}
+	}
+	public void printOverAllScore() {
+		System.out.println("RECALL:");
+		System.out.println(this.total_recall);
+		System.out.println("PRECISION:");
+		System.out.println(this.total_precision);
+		System.out.println("F!: ");
+		System.out.println(this.total_f1);
+		System.out.println("MCC:");
+		System.out.println(this.total_mcc);
 	}
 	
 

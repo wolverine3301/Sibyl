@@ -40,8 +40,10 @@ public class NaiveBayes_example {
         //nb.initiallize();
         CrossValidation cv = new CrossValidation(df, 10, nb);
         //cv.printScores();
-        //cv.avgScores();
-        cv.printMatrixs();
+        
+        cv.avgScores();
+        cv.printOverAllScore();
+        //cv.printMatrixs();
         //cv.printMatrixs();
         //cv.printScores();
         //nb.printProbTable();
