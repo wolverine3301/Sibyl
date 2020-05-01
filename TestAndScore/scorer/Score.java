@@ -118,6 +118,9 @@ public class Score {
 			}
 		}
 	}
+	public ConfusionMatrix getConfusionMatrix() {
+		return this.matrix;
+	}
 	
 	/**
 	 * prints scores

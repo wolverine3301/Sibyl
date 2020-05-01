@@ -20,7 +20,6 @@ public abstract class Model {
 	public DataFrame rawTrain;
 	/** The target data for the data frame. */
 	public DataFrame trainDF_targets;
-	
 	/** The training data used by predictive models. */
 	public DataFrame trainDF_variables;
 	
