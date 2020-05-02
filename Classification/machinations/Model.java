@@ -66,6 +66,30 @@ public abstract class Model {
 	public abstract HashMap<String , HashMap<Object , Double>>  probability(Row row);
 	
 	/**
+	 * Prints the probabilities along with the values of the row. 
+	 * @param probablility the probability data structure. 
+	 * @param row the row print as well. 
+	 */
+	public static void printProbablility(HashMap<String, HashMap<Object, Double>> probability, Row row) {
+	    System.out.print("Row Values: ");
+	    for (int i = 0; i < row.rowLength; i++) { //Print the row
+	        if (i != row.rowLength - 1) 
+	            System.out.print(row.getParticle(i) + ", ");
+	        else
+	            System.out.println(row.getParticle(i));
+	    }
+	    System.out.println("---------------------");
+	    for (String target : probability.keySet()) { //Print each target.
+	        System.out.println("Predictions for target \"" + target + "\": ");
+	        for (Object o : probability.get(target).keySet()) {
+	            System.out.println("Value - " + o + ": Probability - " + probability.get(target).get(o));
+	        }
+	        System.out.println("---------------------");
+	    }
+	    
+	}
+	
+	/**
 	 * Make a prediction on a row of data
 	 * @param row
 	 * @return

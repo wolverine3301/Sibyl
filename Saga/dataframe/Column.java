@@ -423,6 +423,7 @@ public class Column {
     	Collections.sort(this.sorted_column);
     	//System.out.println(this.sorted_column);
     }
+    
     /**
      * Prepares the column's statistic based fields. 
      */

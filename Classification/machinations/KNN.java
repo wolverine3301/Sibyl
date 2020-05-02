@@ -121,7 +121,7 @@ public class KNN extends Model {
     @Override
     public Object predict(Row row) {
         HashMap<String, HashMap<Object, Double>> probabilityMap = probability(row);
-        
+        return null; 
     }
 
     @Override

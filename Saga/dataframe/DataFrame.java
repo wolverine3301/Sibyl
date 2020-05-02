@@ -173,6 +173,55 @@ public class DataFrame {
     }
     
     /**
+     * Updates the statistics of the entire dataframe. 
+     */
+    public void updateStatistics() {
+        for (int i = 0; i < numColumns; i++) {
+            updateStatistics(i);
+        }
+    }
+    
+    /**
+     * Updates the statistics of a single column at the parameterized index. 
+     * @param index the index to update. 
+     */
+    public void updateStatistics(int index) {
+        Column c = columns.get(index);        
+        char oldType = c.getType();
+        c.setStatistics();
+        if (oldType != c.getType()) { //If the type of the column just happened to change. 
+            if (oldType == 'T') {
+                target_columns.remove(c);
+                numTargets--;
+            } else if (oldType == 'N') {
+                numeric_columns.remove(c);
+                numNumeric--;
+            } else if (oldType == 'C') {
+                categorical_columns.remove(c);
+                numCategorical--;
+            } else if (oldType == 'M') {
+                meta_columns.remove(c);
+                numMeta--;
+            }
+            c.setStatistics();
+            char columnType = c.getType();
+            if (columnType == 'T') {
+                target_columns.add(c);
+                numTargets++;
+            } else if (columnType == 'N') {
+                numeric_columns.add(c);
+                numNumeric++;
+            } else if (columnType == 'C') {
+                categorical_columns.add(c);
+                numCategorical++;
+            } else if (columnType == 'M') {
+                meta_columns.add(c);
+                numMeta++;
+            }
+        }
+    }
+    
+    /**
      * Adds a **NEW** column to the statisics contained within the dataframe.
      * Do not use this method unless you're cade handing the saga code or 
      * some fool who doesn't know the reprocussions of non properly formatted data.
@@ -435,7 +484,8 @@ public class DataFrame {
         for (int i = 0; i < r.getLength(); i++) 
             columns.get(i).add(r.getParticle(i));
     }
-	/**
+	
+    /**
 	 * Replaces a row in the data frame.
 	 * Does NOT update the statistics of the columns already contained. 
 	 * @param index the index of the row to be replaced
@@ -447,6 +497,20 @@ public class DataFrame {
 	        columns.get(i).changeValue(index, row.getParticle(i));
 	    }
 	}
+	
+	/**
+	 * Removes a row in the dataframe. 
+	 * Does NOT update the 
+	 * @param index the index of the row to remove. 
+	 */
+	public void removeRow(int index) {
+	    rows.remove(index);
+	    for (Column c : columns) {
+	        c.removeIndex(index);
+	    }
+	}
+	
+	
     /**
      * Adds a column to the data frame.
      * It's statistics will automatically be added. 
