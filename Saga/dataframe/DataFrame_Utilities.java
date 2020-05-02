@@ -45,8 +45,6 @@ public class DataFrame_Utilities {
      * @return the row to predict which will have the target indexes chopped out. 
      */
     public static Row prepareForModel(DataFrame df, int rowToPredict, Collection<Object> targets) {
-        Row r = df.getRow_byIndex(rowToPredict);
-        df.removeRow(rowToPredict);
         int[] arr = new int[targets.size()];
         int counter = 0;
         for (Object o : targets) {
