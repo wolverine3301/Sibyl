@@ -34,6 +34,7 @@
 	<classpathentry kind="src" path="sort"/>
 	<classpathentry kind="src" path="util"/>
 	<classpathentry kind="src" path="apriori"/>
+	<classpathentry kind="src" path="NeuralNet"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
 		<attributes>
 			<attribute name="module" value="true"/>
