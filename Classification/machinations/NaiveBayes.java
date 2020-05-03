@@ -205,7 +205,6 @@ public class NaiveBayes extends Model{
 				}else {
 					//System.out.println(super.trainDF_variables.getColumn(i).getName()+" "+row.getParticle(i).getValue());
 					prob = prob * cat_Naive_Bayes.get(super.trainDF_targets.getColumn(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(row.getParticle(i).getValue());
-					
 				}
 			}
 			//System.out.println(z+" "+prob);
@@ -271,10 +270,15 @@ public class NaiveBayes extends Model{
 	public HashMap<String , ArrayList<Object>> predictDF(DataFrame df) {
 		HashMap<String , ArrayList<Object>> preds = new HashMap<String , ArrayList<Object>> ();
 		ArrayList<Object> p = new ArrayList<Object>();
+		
+		System.out.println("NB TOT PREDS: "+df.getNumRows());
+		this.printProbTable();
 		for(int j = 0; j < super.trainDF_targets.getNumColumns();j ++) {
 			p.clear();
+			
 			for(int i = 0; i < df.getNumRows(); i++) {
 				p.add(predict(df.getRow_byIndex(i)));
+				
 				//System.out.println("PRED: " +predict(df.getRow_byIndex(i)) + " ACTUAL: "+ this.trainDF_targets.getRow_byIndex(i).getParticle(0));
 			}
 			preds.put(super.trainDF_targets.getColumn(j).getName(), p);

@@ -38,7 +38,7 @@ public class NaiveBayes_example {
         NaiveBayes nb = new NaiveBayes();
         System.out.println(df.numTargets);
         //nb.initiallize();
-        CrossValidation cv = new CrossValidation(df, 10, nb);
+        CrossValidation cv = new CrossValidation(df, 3, nb);
         //cv.printScores();
         
         cv.avgScores();

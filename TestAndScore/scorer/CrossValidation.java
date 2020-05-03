@@ -51,7 +51,10 @@ public class CrossValidation {
 			model.train(trials.get(i).raw_train);
 			model.initiallize();
 			HashMap<String, ArrayList<Object>> predicts = model.predictDF(trials.get(i).trial_test_variables);
-			System.out.println(predicts);
+			
+			//System.out.println(i+" "+" "+predicts);
+			
+			//trials.get(i).trial_test_targets.printDataFrame();
 			score = new Score(trials.get(i).trial_test_targets,predicts);
 			scores.add(score);
 		}
@@ -82,8 +85,8 @@ public class CrossValidation {
 	        	}
 	        	
 	        }
-	        //System.out.println("TRAIN SET: "+set2.size());
-	        //System.out.println("Test set: "+set1.size());
+	        System.out.println("TRAIN SET: "+set2.size());
+	        System.out.println("Test set: "+set1.size());
 	        trial = new TestTrainFit(this.df.shallowCopy_rowIndexes(set2), this.df.shallowCopy_rowIndexes(set1));
 	        trials.add(trial);
 	    }
