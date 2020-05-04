@@ -18,7 +18,6 @@ class Discretize_Test {
 	void setUp() throws Exception {
 		iris = DataFrame.read_csv("testfiles/iris.txt");
 	}
-
 	@Test
 	void testEqualFrequencyBinning() {
 		EqualFrequencyBinning e = new EqualFrequencyBinning(10, iris.getColumn(0));

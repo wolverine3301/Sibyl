@@ -20,7 +20,6 @@ import transform.Standardize;
 public class NaiveBayes_example {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-
 		String file = "testfiles/iris.txt";
         DataFrame df = DataFrame.read_csv(file);
         df.convertNANS_mode();

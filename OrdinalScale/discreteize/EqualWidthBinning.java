@@ -21,7 +21,6 @@ public class EqualWidthBinning extends Binning{
 		super(bins,col,"Equal Width");
 		makeBins();
 	}
-	
 	/**
 	 * make bin objects
 	 */

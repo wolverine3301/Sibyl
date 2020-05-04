@@ -27,7 +27,6 @@ public class ConfusionMatrix {
 		falseNegative = new HashMap<String, HashMap<Object, Integer>>();
 		setTable();
 		test_score();
-		
 	}
 	/**
 	 * set up confusion matrix arrays

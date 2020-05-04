@@ -18,7 +18,6 @@ import particles.Particle;
  */
 public class NaiveBayes extends Model{
 	
-	private List<Column> targets;
 	
 	public HashMap<String , HashMap<Object, HashMap<String, Double[]>>> cont_Naive_Bayes;
 	public HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>> cat_Naive_Bayes;
@@ -148,7 +147,6 @@ public class NaiveBayes extends Model{
 		}
 		return cat_columns_probabilities;
 	}
-
 	/**
 	 * returns a hashmap of values in a column and the proportion the make up of Class k
 	 * @param c - The column

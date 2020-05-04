@@ -38,6 +38,5 @@ public class EqualFrequencyBinning extends Binning{
 			w = w + n;
 		}
 		BINS.add(new Bin(s.get(w).getDoubleValue()-0.00001,col.max));
-		
 	}
 }

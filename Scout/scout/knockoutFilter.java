@@ -9,6 +9,7 @@ import scorer.CrossValidation;
 public class knockoutFilter {
 
 	public static void main(String[] args) {
+		
 		String file = "testfiles/knockoutset.csv";
         DataFrame df = DataFrame.read_csv(file);
         EqualFrequencyBinning e = new EqualFrequencyBinning(8, df.getColumn(11));

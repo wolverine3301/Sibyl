@@ -15,6 +15,11 @@ public class Util {
 			targets[cnt].setName(i.toString());
 			cnt++;
 		}
+		
+		System.out.println("UTIL :"+targets[0].target_columns.toString());
+		System.out.println("UTIL :"+targets[1].numTargets);
+		System.out.println("UTIL :"+targets[0].numCategorical);
+		System.out.println("UTIL :"+targets[1].numCategorical);
 		return targets;
 		
 	}

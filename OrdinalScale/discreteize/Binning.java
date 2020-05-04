@@ -66,9 +66,15 @@ public abstract class Binning {
 		}
 		System.out.println("}");
 	}
+	/**
+	 * @return number of bins
+	 */
 	public int getNumBins() {
 		return this.numbins;
 	}
+	/**
+	 * @return binning method
+	 */
 	public String getMethod() {
 		return this.method;
 	}
