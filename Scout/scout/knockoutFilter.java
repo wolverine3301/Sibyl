@@ -23,7 +23,7 @@ public class knockoutFilter {
 		System.out.println();
         System.out.println(df.getColumn(10).getUniqueValueCounts());
         NaiveBayes nb = new NaiveBayes();
-        CrossValidation cv = new CrossValidation(df, 10, nb);
+        CrossValidation cv = new CrossValidation(df, 4, nb);
         cv.avgScores();
         cv.sumConfusionMatrix();
         cv.printOverAllScore();

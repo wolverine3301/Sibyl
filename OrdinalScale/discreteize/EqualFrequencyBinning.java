@@ -9,11 +9,8 @@ import particles.Particle;
  * @author logan.collier
  *
  */
-public class EqualFrequencyBinning {
+public class EqualFrequencyBinning extends Binning{
 	
-	private Column col;
-	private int numbins;
-	private ArrayList<Bin> BINS;
 	/**
 	 * make numerical data into categorical
 	 * make bins that contain an equal number of instances(data) 
@@ -24,17 +21,16 @@ public class EqualFrequencyBinning {
 	 * @param col - column to bin (must be numeric)
 	 */
 	public EqualFrequencyBinning(int bins,Column col) {
-		this.numbins = bins;
-		this.col = col;
+		super(bins,col,"Equal Frequency");
 		makeBins();
 	}
-	private void makeBins() {
+	@Override
+	protected void makeBins() {
 		this.BINS = new ArrayList<Bin>(numbins);
 		col.sort_column();
 		ArrayList<Particle> s = col.getSortedValues();
 		int n = (int)(col.getLength()/numbins);
 		int w = 0;
-		double iter = col.min-0.0001;
 		//BINS.add(new Bin(col.min,s.get(w).getDoubleValue()-0.0001));
 		for(int j = 0; j < numbins-1;j++) {
 			if(w+n>=col.getLength()) break;
@@ -43,30 +39,5 @@ public class EqualFrequencyBinning {
 		}
 		BINS.add(new Bin(s.get(w).getDoubleValue()-0.00001,col.max));
 		
-	}
-	/**
-	 * place column into bins and return new column
-	 * @return new column
-	 */
-	public Column binColumn() {
-		Column newCol = new Column(col.getName()+"_"+numbins);
-		for(int i = 0; i < this.col.getLength(); i++) {
-			for(Bin j : BINS) {
-				if(j.inBinDouble(this.col.getParticle(i).getDoubleValue())){
-					newCol.add(j.toString());
-					break;
-				}
-			}
-		}
-		newCol.setStatistics();
-		return newCol;
-	}
-	public void printBins() {
-		System.out.print("BINS = {");
-		for(Bin i : this.BINS) {
-			i.printBin();
-			System.out.print(", ");
-		}
-		System.out.println("}");
 	}
 }

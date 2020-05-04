@@ -214,6 +214,7 @@ public class NaiveBayes extends Model{
 		
 	}
 	public void printProbTable() {
+		System.out.println("NB: "+cat_Naive_Bayes);
 		for(String i : cont_Naive_Bayes.keySet()) {
 			System.out.println(i);
 			for(Object j : cont_Naive_Bayes.get(i).keySet()) {

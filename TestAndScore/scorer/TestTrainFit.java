@@ -15,11 +15,14 @@ public class TestTrainFit {
 	
 	DataFrame trial_train_variables; //just variables
 	DataFrame trial_train_targets;
+	
 	//just set training df
 	public TestTrainFit(DataFrame train_df) {
 		this.raw_train = train_df;
 		trial_train_variables = new DataFrame();
+		trial_train_variables.setName("Train Variables");
 		trial_train_targets = new DataFrame();
+		trial_train_targets.setName("Trial Targets");
 		setTrain();
 	}
 	public TestTrainFit(DataFrame train_df, DataFrame test_df) {
