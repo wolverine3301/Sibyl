@@ -156,6 +156,7 @@ public class DataFrame {
             c.resolveType();
         if (!c.readyForStats)
             c.setStatistics();
+        /*
         char columnType = c.getType();
         if (columnType == 'T') {
             target_columns.add(c);
@@ -170,6 +171,7 @@ public class DataFrame {
             meta_columns.add(c);
             numMeta++;
         }
+        */
     }
     
     /**

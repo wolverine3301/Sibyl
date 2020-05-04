@@ -48,9 +48,9 @@ public class NaiveBayes_example {
         //df = Standardize.standardize_df(df); //Standardize the DF into z scores
         df = df.shuffle(df);
         NaiveBayes nb = new NaiveBayes();
-        nb.setTrain(df);
+        //nb.setTrain(df);
         
-        nb.printProbTable();
+        //nb.printProbTable();
 
         //nb.initiallize();
         CrossValidation cv = new CrossValidation(df, 3, nb);

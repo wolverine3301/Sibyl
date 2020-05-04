@@ -322,7 +322,7 @@ public final class DataFrame_Copy {
         for (Integer rowIndex : rowIndexes) {
             newDataFrame.addRow(theDataFrame.getRow_byIndex(rowIndex));
         }
-        newDataFrame.setNumRows();
+        newDataFrame.setNumRows();  
         newDataFrame.setStatistics();
         return newDataFrame;
     } 
