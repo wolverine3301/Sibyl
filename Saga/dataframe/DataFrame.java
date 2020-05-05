@@ -156,7 +156,7 @@ public class DataFrame {
             c.resolveType();
         if (!c.readyForStats)
             c.setStatistics();
-        /*
+        
         char columnType = c.getType();
         if (columnType == 'T') {
             target_columns.add(c);
@@ -171,7 +171,6 @@ public class DataFrame {
             meta_columns.add(c);
             numMeta++;
         }
-        */
     }
     
     /**
@@ -619,8 +618,6 @@ public class DataFrame {
 	 */
 	public void replaceColumn(int index, Column newColumn) {
 	    Column c = columns.get(index);
-	    columnNames.set(index, newColumn.name);
-	    columns.set(index, newColumn);
 	    char oldType = c.getType();
         if (oldType == 'T') {
             target_columns.remove(c);
@@ -635,8 +632,10 @@ public class DataFrame {
             meta_columns.remove(c);
             numMeta--;
         }
+        int cnt = 0;
         for (Row r : rows) {
-            r.removeParticle(index);
+        	r.changeValue(index, newColumn.getParticle(cnt));
+            cnt++;
         }
         if (newColumn.getType() == 'T') {
             target_columns.add(newColumn);
@@ -651,6 +650,8 @@ public class DataFrame {
             meta_columns.add(newColumn);
             numMeta++;
         }
+        columns.set(index, newColumn);
+        columnNames.set(index, newColumn.name);
 	}
 	
 	/**

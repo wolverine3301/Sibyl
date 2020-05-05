@@ -16,8 +16,9 @@ public class Util {
 			cnt++;
 		}
 		
-		System.out.println("UTIL 1:"+targets[0].target_columns.toString());
-		System.out.println("UTIL 2:"+targets[1].target_columns.toString());
+		System.out.println("UTIL 1: "+targets[0].target_columns.size());
+		System.out.println(targets[0].target_columns.get(0).getName()+"  "+targets[0].target_columns.get(1).getName());
+		System.out.println("UTIL 2: "+targets[1].target_columns.size());
 
 		return targets;
 		

@@ -30,13 +30,14 @@ public class NaiveBayes_example {
         
         EqualFrequencyBinning a = new EqualFrequencyBinning(8, df.getColumn(0));
         df.replaceColumn(0, a.binColumn());
-        df.setColumnType(0, 'C');
         EqualFrequencyBinning b = new EqualFrequencyBinning(8, df.getColumn(1));
         df.replaceColumn(1, b.binColumn());
-        df.setColumnType(1, 'C');
         EqualFrequencyBinning c = new EqualFrequencyBinning(8, df.getColumn(2));
         df.replaceColumn(2, c.binColumn());
-        df.setColumnType(2, 'C');
+        EqualFrequencyBinning d = new EqualFrequencyBinning(8, df.getColumn(3));
+        //df.getColumn(3).printCol();
+        System.out.println("SIZE: "+df.columns.size());
+        df.replaceColumn(3, d.binColumn());
         
         System.out.println("NUM CAT: "+df.numCategorical);
         System.out.println("NUM NUM: "+df.numNumeric);
@@ -49,10 +50,10 @@ public class NaiveBayes_example {
         df = df.shuffle(df);
         NaiveBayes nb = new NaiveBayes();
         //nb.setTrain(df);
-        
+        //nb.initiallize();
         //nb.printProbTable();
 
-        //nb.initiallize();
+        //
         CrossValidation cv = new CrossValidation(df, 3, nb);
         //cv.printScores();
         cv.avgScores();

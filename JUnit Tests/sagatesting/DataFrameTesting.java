@@ -14,6 +14,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
+import dataframe.DataFrame_Read;
 
 class DataFrameTesting {
     
@@ -23,7 +24,7 @@ class DataFrameTesting {
     @Test
     void testLengthsCreation() {
         DataFrame testFrame = new DataFrame();
-        testFrame.loadcsv("testfiles/testing.csv");
+        testFrame = DataFrame_Read.loadcsv("testfiles/testing.csv");
         assertEquals(6, testFrame.getNumColumns(), "Data frame has incorrect number of columns upon creation.");
         assertEquals(6, testFrame.getNumRows(), "Data frame has incorrect number of rows upon creation");
         List<Integer> columnIndexes = new ArrayList<Integer>();
@@ -38,7 +39,7 @@ class DataFrameTesting {
     @Test
     void testLengthsColumnCopy() {
         DataFrame testFrame = new DataFrame();
-        testFrame.loadcsv("testfiles/testing.csv");
+        testFrame = DataFrame_Read.loadcsv("testfiles/testing.csv");
         List<Integer> columnIndexes = new ArrayList<Integer>();
         columnIndexes.add(0);
         columnIndexes.add(1);
@@ -51,7 +52,7 @@ class DataFrameTesting {
     @Test
     void testLengthsRowIndexCopy() {
         DataFrame testFrame = new DataFrame();
-        testFrame.loadcsv("testfiles/testing.csv");
+        testFrame = DataFrame_Read.loadcsv("testfiles/testing.csv");
         List<Integer> rowIndexes = new ArrayList<Integer>();
         rowIndexes.add(0);
         rowIndexes.add(1);
@@ -60,13 +61,35 @@ class DataFrameTesting {
         assertEquals(6, temp.getNumColumns(), "Data frame has incorrect number of columns upon copy.");
         assertEquals(3, temp.getNumRows(), "Data frame has incorrect number of rows upon copy.");
     }
-    
+	@Test
+	void testChangingColumns() {
+		DataFrame iris = DataFrame_Read.loadcsv("testfiles/iris.txt");
+		System.out.println("Total Columns: "+iris.getNumColumns());
+		System.out.println("Total Numeric: "+iris.numNumeric);
+		System.out.println("Total Category: "+iris.numCategorical);
+		System.out.println("Total Meta: "+iris.numMeta);
+		System.out.println();
+		System.out.println("Numeric Array length: "+iris.numeric_columns.size());
+		System.out.println("Categorical Array length: "+iris.categorical_columns.size());
+		System.out.println("Meta Array length: "+iris.meta_columns.size());
+		iris.setColumnType(0, 'M');
+		iris.setColumnType(1, 'C');
+		System.out.println();
+		System.out.println("Total Columns: "+iris.getNumColumns());
+		System.out.println("Total Numeric: "+iris.numNumeric);
+		System.out.println("Total Category: "+iris.numCategorical);
+		System.out.println("Total Meta: "+iris.numMeta);
+		System.out.println();
+		System.out.println("Numeric Array length: "+iris.numeric_columns.size());
+		System.out.println("Categorical Array length: "+iris.categorical_columns.size());
+		System.out.println("Meta Array length: "+iris.meta_columns.size());
+	}
     @Test
     void testThroughPut() {
         DataFrame largeDataFrame = new DataFrame();
         Date startDate = new Date();
         long startTime = startDate.getTime();
-        largeDataFrame.loadcsv("testfiles/nasdaq.csv");
+        largeDataFrame = DataFrame_Read.loadcsv("testfiles/testing.csv");
         Date finishDate = new Date();
         long finishTime = finishDate.getTime();
         long totmylistTime = (finishTime - startTime);    
