@@ -25,9 +25,9 @@ public class NaiveBayes_example {
         df.convertNANS_mode();
         df.setColumnType(4, 'T');
         //df.getColumn_byName("species").setType('T'); //set target column
-        System.out.println(df.numTargets);
+        System.out.println("Number of targets: " + df.numTargets);
         
-        
+        System.out.println("Binning columns: ");
         EqualFrequencyBinning a = new EqualFrequencyBinning(8, df.getColumn(0));
         df.replaceColumn(0, a.binColumn());
         EqualFrequencyBinning b = new EqualFrequencyBinning(8, df.getColumn(1));
@@ -36,9 +36,10 @@ public class NaiveBayes_example {
         df.replaceColumn(2, c.binColumn());
         EqualFrequencyBinning d = new EqualFrequencyBinning(8, df.getColumn(3));
         //df.getColumn(3).printCol();
-        System.out.println("SIZE: "+df.columns.size());
+        System.out.println("\nPost binning: ");
+        System.out.println("Size of column arraylist: "+ df.columns.size() + " - Recorded Num of columns: " + df.getNumColumns());
         df.replaceColumn(3, d.binColumn());
-        
+        System.out.println("Size of column arraylist: "+ df.columns.size() + " - Recorded Num of columns: " + df.getNumColumns());
         System.out.println("NUM CAT: "+df.numCategorical);
         System.out.println("NUM NUM: "+df.numNumeric);
         System.out.println("NUM COL: "+df.getNumColumns());

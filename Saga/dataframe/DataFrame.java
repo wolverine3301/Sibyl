@@ -60,6 +60,9 @@ public class DataFrame {
 	/** The number of meta columns contained in this data frame. */ 
 	public int numMeta;
 	
+	/** Indicates whether the data frames statistics are initialized or not. */
+	public boolean statsInitialized;
+	
 	/**
 	 * Create a new, empty data frame.
 	 */
@@ -78,6 +81,7 @@ public class DataFrame {
 		numCategorical = 0;
 		numTargets = 0;
 		numMeta = 0;
+		statsInitialized = false;
 	}
 	
 	/*
@@ -138,12 +142,13 @@ public class DataFrame {
     }
 	
 	/**
-	 * Updates/Initializes all of the Columns contained in the DataFrame statistics. 
+	 * Initializes all of the Columns contained in the DataFrame statistics. 
 	 */
     public void setStatistics() {
         for (int i = 0; i < columns.size(); i++) {
             setStatistics(i);
         }
+        statsInitialized = true;
     }
     
     /** 
@@ -151,25 +156,26 @@ public class DataFrame {
      * @param index the index of the column who's statistics are to be changed. 
      */
     public void setStatistics(int index) {
-        Column c = columns.get(index);
-        if (c.type == 'U') 
-            c.resolveType();
-        if (!c.readyForStats)
-            c.setStatistics();
-        
-        char columnType = c.getType();
-        if (columnType == 'T') {
-            target_columns.add(c);
-            numTargets++;
-        } else if (columnType == 'N') {
-            numeric_columns.add(c);
-            numNumeric++;
-        } else if (columnType == 'C') {
-            categorical_columns.add(c);
-            numCategorical++;
-        } else if (columnType == 'M') {
-            meta_columns.add(c);
-            numMeta++;
+        if (!statsInitialized) {
+            Column c = columns.get(index);
+            if (c.type == 'U') 
+                c.resolveType();
+            if (!c.readyForStats) 
+                c.setStatistics();
+            char columnType = c.getType();
+            if (columnType == 'T') {
+                target_columns.add(c);
+                numTargets++;
+            } else if (columnType == 'N') {
+                numeric_columns.add(c);
+                numNumeric++;
+            } else if (columnType == 'C') {
+                categorical_columns.add(c);
+                numCategorical++;
+            } else if (columnType == 'M') {
+                meta_columns.add(c);
+                numMeta++;
+            }
         }
     }
     
@@ -204,7 +210,6 @@ public class DataFrame {
                 meta_columns.remove(c);
                 numMeta--;
             }
-            c.setStatistics();
             char columnType = c.getType();
             if (columnType == 'T') {
                 target_columns.add(c);
@@ -583,14 +588,12 @@ public class DataFrame {
 		Column c = new Column(name);
 		columnNames.add(name);
 		columns.add(c);
-
 		numColumns++;
 	}
 	
 	/**
 	 * Adds a new empty column of a certain data type to the data frame.
-	 * Will add the column to the dataframes statistics, however it will not initialize the final values
-	 * as the column is empty. 
+     * DOES NOT ADD A COLUMN TO THE STATISTICS! Use set statistics. 
 	 * @param name the name of the new column.
 	 * @param dataType the data type of the new column.
 	 */
@@ -599,7 +602,6 @@ public class DataFrame {
 		c = new Column(name, dataType);
 	    columnNames.add(name);
 	    columns.add(c);
-	    addColumnStatistics(c, true);
 	    numColumns++;
 	}
 	
@@ -880,6 +882,53 @@ public class DataFrame {
         }
     }
 	
+    public void printDataCounts(boolean printStats) {
+        System.out.println("Dataframe: " + dataFrameName);
+        for(int i = 0; i < columnNames.size(); i++) {
+            System.out.print(columnNames.get(i) + " ");
+        }
+        
+        System.out.println("\nNumeric Columns: (count = " + numNumeric + "): ");
+        for (Column c : numeric_columns) {
+            System.out.println(c.getName());
+            if (printStats) {
+                System.out.println(c.toStringStatistics());
+            }
+        }
+        
+        System.out.println("\nNumeric Columns: (count = " + numNumeric + "): ");
+        for (Column c : numeric_columns) {
+            System.out.println(c.getName());
+            if (printStats) {
+                System.out.println(c.toStringStatistics());
+            }
+        }
+        
+        System.out.println("\nCategorical Columns (count = " + numCategorical + "): ");
+        for (Column c : categorical_columns) {
+            System.out.println(c.getName());
+            if (printStats) {
+                System.out.println(c.toStringStatistics());
+            }
+        }
+        
+        System.out.println("\nTarget Columns (count = " + numTargets + "): ");
+        for (Column c : target_columns) {
+            System.out.println(c.getName());
+            if (printStats) {
+                System.out.println(c.toStringStatistics());
+            }
+        }
+        
+        System.out.println("\nMeta Columns (count = " + numMeta + "): ");
+        for (Column c : meta_columns) {
+            System.out.println(c.getName());
+            if (printStats) {
+                System.out.println(c.toStringStatistics());
+            }
+        }
+    }
+    
     /**
      * Prints ALL of the data contained in the dataframe. 
      */
