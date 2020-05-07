@@ -9,6 +9,7 @@ import java.util.List;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import dataframe.Util;
 import discreteize.EqualFrequencyBinning;
 import machinations.NaiveBayes;
 import particles.Particle;
@@ -40,22 +41,29 @@ public class NaiveBayes_example {
         System.out.println("Size of column arraylist: "+ df.columns.size() + " - Recorded Num of columns: " + df.getNumColumns());
         df.replaceColumn(3, d.binColumn());
         System.out.println("Size of column arraylist: "+ df.columns.size() + " - Recorded Num of columns: " + df.getNumColumns());
-        System.out.println("NUM CAT: "+df.numCategorical);
-        System.out.println("NUM NUM: "+df.numNumeric);
-        System.out.println("NUM COL: "+df.getNumColumns());
+        df.setColumnType(3, 'T');
+        ArrayList<DataFrame[]> classes = setClasses(df);
+        for(int i = 0; i< classes.size();i++) {
+        	System.out.println("TARGET ITERATION: "+i);
+        	System.out.println("SUB-DATAFRAMES: "+classes.get(i).length);
+        	for(int j = 0; j < classes.get(i).length; j++) {
+        		System.out.println(classes.get(i)[j].getName());
+        		System.out.println(classes);
+        	}
+        }
         //System.out.println(df.getColumn_byName("species").getUniqueValues());
         //print column means
         
         //df.convertNANS_mean(); // conevert any NAN's to the mean of column 
         //df = Standardize.standardize_df(df); //Standardize the DF into z scores
-        df = df.shuffle(df);
+        //df = df.shuffle(df);
         NaiveBayes nb = new NaiveBayes();
         //nb.setTrain(df);
         //nb.initiallize();
         //nb.printProbTable();
 
         //
-        CrossValidation cv = new CrossValidation(df, 3, nb);
+        CrossValidation cv = new CrossValidation(df, 10, nb);
         //cv.printScores();
         cv.avgScores();
         cv.printOverAllScore();
@@ -69,5 +77,12 @@ public class NaiveBayes_example {
         //nb.predictDF(df);
         //nb.probabilityDF(df1.get(1));
         
+	}
+	private static ArrayList<DataFrame[]> setClasses(DataFrame df) {
+		ArrayList<DataFrame[]> classes = new ArrayList<DataFrame[]>();
+		for(Column i : df.target_columns) {
+			classes.add(Util.splitOnTarget(df, i));
+		}
+		return classes;
 	}
 }
