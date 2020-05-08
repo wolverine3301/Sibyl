@@ -50,6 +50,7 @@ public class CrossValidation {
 		for(int i = 0;i < this.trials.size(); i++) {
 			model.train(trials.get(i).raw_train);
 			model.initiallize();
+			//System.out.println("CV: "+trials.get(i).trial_test_variables.columnNamesToString());
 			HashMap<String, ArrayList<Object>> predicts = model.predictDF(trials.get(i).trial_test_variables);
 			
 			//System.out.println(i+" "+" "+predicts);
@@ -213,10 +214,10 @@ public class CrossValidation {
 		}
 	}
 	public void printOverAllMatrix() {
-		System.out.println(this.total_truePositive);
-		System.out.println(this.total_falsePositive);
-		System.out.println(this.total_trueNegative);
-		System.out.println(this.total_falseNegative);
+		System.out.println("TRUE POSITIVES: "+this.total_truePositive);
+		System.out.println("FALSE POSITIVES: "+this.total_falsePositive);
+		System.out.println("TRUE NEGATIVES: "+this.total_trueNegative);
+		System.out.println("FALSE NEGATIVES: "+this.total_falseNegative);
 	}
 	public void printOverAllScore() {
 		System.out.println("RECALL:");

@@ -1,7 +1,10 @@
 package machinations;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import dataframe.Column;
 import dataframe.DataFrame;
@@ -25,6 +28,9 @@ public class NaiveBayes2 extends Model{
 		initialize_probability_tables();
 		setProbabilityTable();
 		
+	}
+	private void setTrain() {
+		this.df = super.rawTrain;
 	}
 	/**
 	 * breaks up dataframe into an array based on targets
@@ -154,7 +160,26 @@ public class NaiveBayes2 extends Model{
 					prob = prob * getContinuousProbability(this.df.target_columns.get(target).getName(),z,super.trainDF_variables.getColumn(i).getName(),row.getParticle(i));
 				}else {
 					//System.out.println(super.trainDF_variables.getColumn(i).getName()+" "+row.getParticle(i).getValue());
-					prob = prob * cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(row.getParticle(i).getValue());
+					//System.out.println(cat_Naive_Bayes.containsKey(this.df.target_columns.get(target).getName()));
+					//System.out.println(cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).keySet());
+					//System.out.println(cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).containsKey(row.getParticle(i).getValue())+" "+row.getParticle(i)  );
+					/**
+					 * possible to change, if a value that has not been seen under a test set what do?
+					 * possibilities:
+					 * 1. multiply by 0 since none of a particular class in the test set has ever had such a value
+					 * 2. use the next most occurring value
+					 */
+					if(!cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).containsKey(row.getParticle(i).getValue()) ) {
+						Double max = 0.0;
+						for(Object j : cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).keySet() ) {
+							if(cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(j) > max) {
+								max = cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(j);
+							}
+						}
+						prob = prob * max;
+					}else {
+						prob = prob * cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(row.getParticle(i).getValue());
+					}
 				}
 			}
 			//System.out.println(z+" "+prob);
@@ -180,24 +205,31 @@ public class NaiveBayes2 extends Model{
 		// [num of target columns] [num of unique vals in target column]
 		HashMap<String , HashMap<Object , Double>> probabilities = new HashMap<String , HashMap<Object , Double>>();
 		//for each target to predict
-		for(int j = 0; j < super.trainDF_targets.getNumColumns(); j++) {
-			probabilities.put(super.trainDF_targets.getColumn(j).getName(), probabilityForClass(row,j));
+		for(int j = 0; j < this.df.target_columns.size(); j++) {
+			probabilities.put(this.df.target_columns.get(j).getName(), probabilityForClass(row,j));
 		}
 		return probabilities;
 	}
+	/**
+	 * Target name -> target class k -> probability
+	 */
 	@Override
 	public Object predict(Row row) {
 		HashMap<String , HashMap<Object , Double>> probs = probability(row);
 		Object pred = null;
 		double max = 0;
+
 		//System.out.println(probs);
 		for(String i : probs.keySet()) {
 			for(Object j : probs.get(i).keySet()) {
+				
 				if(probs.get(i).get(j) > max) {
 					max = probs.get(i).get(j);
 					pred = j;
 					//System.out.println(i+" "+pred);
 				}
+				//System.out.println();
+				//System.out.println(pred+" "+probs.get(i).get(j));
 			}
 		}
 		
@@ -209,14 +241,14 @@ public class NaiveBayes2 extends Model{
 		HashMap<String , ArrayList<Object>> preds = new HashMap<String , ArrayList<Object>> ();
 		ArrayList<Object> p = new ArrayList<Object>();
 		
-		System.out.println("NB TOT PREDS: "+df.getNumRows());
+		//System.out.println("NB TOT PREDS: "+df.getNumRows());
 		for(int j = 0; j < super.trainDF_targets.getNumColumns();j ++) {
 			p.clear();
 			
-			for(int i = 0; i < df.getNumRows(); i++) {
-				p.add(predict(df.getRow_byIndex(i)));
-				
-				//System.out.println("PRED: " +predict(df.getRow_byIndex(i)) + " ACTUAL: "+ this.trainDF_targets.getRow_byIndex(i).getParticle(0));
+			for(int i = 0; i < testDF.getNumRows(); i++) {
+				p.add(predict(testDF.getRow_byIndex(i)));
+				//if(predict(testDF.getRow_byIndex(i)) == null)
+					//System.out.println("PRED: " +predict(testDF.getRow_byIndex(i)));
 			}
 			preds.put(super.trainDF_targets.getColumn(j).getName(), p);
 		}
@@ -225,8 +257,23 @@ public class NaiveBayes2 extends Model{
 
 	@Override
 	public void initiallize() {
-		// TODO Auto-generated method stub
+		//super.train(df);
+		//this.df = df;
+		setTrain();
+		setClasses();
+		initialize_probability_tables();
+		setProbabilityTable();
+		
 		
 	}
+	
+	@Override
+	public void saveModel(String fileName) {
+		NaiveBayes_A nb = new NaiveBayes_A();
+		nb.setCat_Naive_Bayes(this.cat_Naive_Bayes);
+		nb.setCont_Naive_Bayes(this.cont_Naive_Bayes);
+		nb.saveModel("NB");
+	}
+	
 
 }

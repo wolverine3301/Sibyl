@@ -1,5 +1,7 @@
 package machinations;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,7 +13,7 @@ import dataframe.DataFrame_Copy;
 import dataframe.Row;
 import particles.Particle;
 
-public abstract class Model {
+public abstract class Model implements java.io.Serializable{
 
     public List<Object[]> predictions;
 	
@@ -106,5 +108,6 @@ public abstract class Model {
 	
 	public abstract void initiallize();
 	
+	public abstract void saveModel(String fileName);
 
 }
