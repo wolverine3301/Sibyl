@@ -6,10 +6,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import bayes.NaiveBayes2;
 import dataframe.Column;
 import dataframe.DataFrame;
 import discreteize.EqualFrequencyBinning;
-import machinations.NaiveBayes2;
 
 class NaiveBayes_Test {
 	

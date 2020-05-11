@@ -1,4 +1,4 @@
-package machinations;
+package decisionTree;
 
 public class DecisionTree {
 

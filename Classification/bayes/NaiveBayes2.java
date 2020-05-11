@@ -1,4 +1,4 @@
-package machinations;
+package bayes;
 
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
@@ -10,6 +10,7 @@ import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.Row;
 import dataframe.Util;
+import machinations.Model;
 import particles.Particle;
 
 public class NaiveBayes2 extends Model{

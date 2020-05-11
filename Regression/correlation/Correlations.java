@@ -26,9 +26,9 @@ public class Correlations {
 		this.num_df = df.numeric_columns;
 		this.function = function;
 		correlations = new HashMap<String,Double>();
-		getCorrelations();
+		setCorrelations();
 	}
-	private void getCorrelations() {
+	private void setCorrelations() {
 		HashMap<String, Double> corr = new HashMap<String, Double>();
 		for(Column i : num_df) {
 			for(Column j : num_df) {
@@ -62,6 +62,13 @@ public class Correlations {
             temp.put(aa.getKey(), aa.getValue()); 
         }
         this.correlations = temp;
+	}
+	/**
+	 * returns map of features and their correlation
+	 * @return HashMap<String, Double>
+	 */
+	public HashMap<String, Double> getCorrelations() {
+		return this.correlations;
 	}
 	public void printCorrelations() {
 		System.out.println(correlations.toString());

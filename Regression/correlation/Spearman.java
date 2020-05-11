@@ -11,7 +11,13 @@ import particles.Particle;
 /**
  * @author logan.collier
  * is a measure of how well the relationship between two variables can be described by a monotonic function.
- * PRO: Less sensitive to outliers
+ * PROS:
+ * - Less sensitive to outliers
+ * - covers parametric and non-parametric data
+ * - does not assume normal distribution
+ * NOTE:
+ * - can only be used between 10-30 sets
+ * 
  */
 public class Spearman extends Correlation{
 	

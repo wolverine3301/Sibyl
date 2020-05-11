@@ -30,6 +30,10 @@ public class GiniIndex extends Gain{
      */
     @Override
     public ArrayList<Column> gain(int index) {
+    	//if there are no categorical columns
+		if(super.categoricalColumns == null) {
+			return null;
+		}
         PriorityQueue<GainInformation> infoGain = new PriorityQueue<GainInformation>(categoricalColumns.getNumColumns(), new Comparator<GainInformation>() {
             @Override
             public int compare(GainInformation o1, GainInformation o2) {

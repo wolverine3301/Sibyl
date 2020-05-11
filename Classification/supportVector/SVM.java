@@ -1,4 +1,4 @@
-package machinations;
+package supportVector;
 /**
  * Support Vector Machine
  * @author logan.collier

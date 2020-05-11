@@ -1,4 +1,4 @@
-package machinations;
+package bayes;
 
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;

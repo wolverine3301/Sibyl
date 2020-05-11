@@ -31,7 +31,10 @@ public class InformationGain extends Gain{
 	 * @return a "sorted" array list of columns, with the lowest index (0) representing most gain, and highest index (list.size() - 1) representing least gain.
 	 */
 	public ArrayList<Column> gain(int index) {
-		
+		//if there are no categorical columns
+		if(super.categoricalColumns == null) {
+			return null;
+		}
 	    double targetEntropy = targetColumns.getColumn(index).entropy;
 	    //Holds the calculated info gain in a max heap style.
 	    PriorityQueue<GainInformation> infoGain = new PriorityQueue<GainInformation>(categoricalColumns.getNumColumns(), new Comparator<GainInformation>() {

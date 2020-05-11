@@ -1,9 +1,9 @@
 package scout;
 
+import bayes.NaiveBayes;
 import dataframe.Column;
 import dataframe.DataFrame;
 import discreteize.EqualFrequencyBinning;
-import machinations.NaiveBayes;
 import scorer.CrossValidation;
 
 public class knockoutFilter {

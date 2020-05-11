@@ -21,8 +21,12 @@ public abstract class Gain {
      * @param theDataFrame the data frame to format for gain based calculations.
      */
     public Gain(DataFrame theDataFrame) {
-        categoricalColumns = DataFrame_Copy.shallowCopy_columnTypes(theDataFrame, setVariables());
-        targetColumns = DataFrame_Copy.shallowCopy_columnTypes(theDataFrame, setTargets());
+    	if(theDataFrame.numCategorical < 1) {
+    		
+    	}else {
+    		categoricalColumns = DataFrame_Copy.shallowCopy_columnTypes(theDataFrame, setVariables());
+    		targetColumns = DataFrame_Copy.shallowCopy_columnTypes(theDataFrame, setTargets());
+    	}
     }
     
     /**

@@ -1,4 +1,4 @@
-package machinations;
+package bayes;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,7 @@ import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.Row;
 import dataframe.Util;
+import machinations.Model;
 import particles.Particle;
 
 /**

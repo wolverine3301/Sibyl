@@ -3,10 +3,10 @@ package scout;
 import java.util.ArrayList;
 import java.util.List;
 
+import bayes.NaiveBayes;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
-import machinations.NaiveBayes;
 import scorer.CrossValidation;
 import transform.Standardize;
 /**
@@ -30,13 +30,15 @@ public class Invoke {
 		NaiveBayes nb = new NaiveBayes();
         CrossValidation cv = new CrossValidation(df, 2, nb);
         //cv.avgScores();
-        cv.printScores();
-        cv.printMatrixs();
+        //cv.printScores();
+        //cv.printMatrixs();
         //System.out.println(df.columnNamesToString());
+        NR = new NumericRanker(df,0);
+        //System.out.println(NR.getSpearman());
         CR = new CategoryRanker(df, 0);
-		//NR = new NumericRanker(df);
+		
 		//CR.printRankings();
-		generateRecollection(2, 5);
+		generateRecollection(2, 4);
 
 	}
 	/**
@@ -51,33 +53,38 @@ public class Invoke {
 		ArrayList<DataFrame> recollection = new ArrayList<DataFrame>();
 		List<String> variableColumns = new ArrayList<String>();
 		for(int cnt = initialNumColumns; cnt < terminate; cnt++) {
-			// INFO GAIN
-			for(int i = 0; i < cnt; i++) {
-				if(i == CR.GAIN.size()) break;
-				variableColumns.add(CR.GAIN.get(i).getName());
+			if(CR.ranked) {
+				// INFO GAIN
+				for(int i = 0; i < cnt; i++) {
+					if(i == CR.GAIN.size()) break;
+					variableColumns.add(CR.GAIN.get(i).getName());
+				}
+				recollection.add(DataFrame_Copy.shallowCopy_columnNames(df, variableColumns));
+				variableColumns.clear();
+				// GAIN RATIO
+				for(int i = 0; i < cnt; i++) {
+					if(i == CR.GAIN_RATIO.size()) break;
+					variableColumns.add(CR.GAIN_RATIO.get(i).getName());
+				}
+				recollection.add(DataFrame_Copy.shallowCopy_columnNames(df, variableColumns));
+				variableColumns.clear();
+				// GINI
+				for(int i = 0; i < cnt; i++) {
+					if(i == CR.GINI.size()) break;
+					variableColumns.add(CR.GINI.get(i).getName());
+				}
+				recollection.add(DataFrame_Copy.shallowCopy_columnNames(df, variableColumns));
+				variableColumns.clear();
+				// CHI SQUARED
+				for(int i = 0; i < cnt; i++) {
+					if(i == CR.CHI2.size()) break;
+					variableColumns.add(CR.CHI2.get(i).getName());
+				}
+				recollection.add(DataFrame_Copy.shallowCopy_columnNames(df, variableColumns));
 			}
-			recollection.add(DataFrame_Copy.shallowCopy_columnNames(df, variableColumns));
-			variableColumns.clear();
-			// GAIN RATIO
 			for(int i = 0; i < cnt; i++) {
-				if(i == CR.GAIN_RATIO.size()) break;
-				variableColumns.add(CR.GAIN_RATIO.get(i).getName());
+				if(i == NR.getPearson().size()) break;
 			}
-			recollection.add(DataFrame_Copy.shallowCopy_columnNames(df, variableColumns));
-			variableColumns.clear();
-			// GINI
-			for(int i = 0; i < cnt; i++) {
-				if(i == CR.GINI.size()) break;
-				variableColumns.add(CR.GINI.get(i).getName());
-			}
-			recollection.add(DataFrame_Copy.shallowCopy_columnNames(df, variableColumns));
-			variableColumns.clear();
-			// CHI SQUARED
-			for(int i = 0; i < cnt; i++) {
-				if(i == CR.CHI2.size()) break;
-				variableColumns.add(CR.CHI2.get(i).getName());
-			}
-			recollection.add(DataFrame_Copy.shallowCopy_columnNames(df, variableColumns));
 		}
 		System.out.println(recollection.size());
 		return recollection;

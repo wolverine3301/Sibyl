@@ -25,6 +25,10 @@ public class GainRatio extends Gain{
      */
     @Override
     public ArrayList<Column> gain(int index) {
+    	//if there are no categorical columns
+		if(super.categoricalColumns == null) {
+			return null;
+		}
         double targetEntropy = targetColumns.getColumn(index).entropy;
         //Holds the calculated info gain in a max heap style.
         PriorityQueue<GainInformation> gainRatios = new PriorityQueue<GainInformation>(categoricalColumns.getNumColumns(), new Comparator<GainInformation>() {

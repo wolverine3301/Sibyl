@@ -2,10 +2,10 @@ package classificationExamples;
 
 import java.util.ArrayList;
 
+import bayes.NaiveBayes2;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Utilities;
 import discreteize.EqualFrequencyBinning;
-import machinations.NaiveBayes2;
 import scorer.CrossValidation;
 
 public class NaiveBayes_test2 {

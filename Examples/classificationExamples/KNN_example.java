@@ -6,7 +6,7 @@ import dataframe.DataFrame_Read;
 import dataframe.DataFrame_Utilities;
 import dataframe.Row;
 import distances.Euclidean;
-import machinations.KNN;
+import knn.KNN;
 import machinations.Model;
 
 public class KNN_example {

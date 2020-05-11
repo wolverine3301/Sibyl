@@ -1,9 +1,9 @@
 package classificationExamples;
 
+import bayes.NaiveBayes2;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.Row;
-import machinations.NaiveBayes2;
 import particles.Particle;
 
 public class NaiveBayes2_test {

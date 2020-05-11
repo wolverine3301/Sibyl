@@ -1,4 +1,4 @@
-package machinations;
+package knn;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -8,6 +8,7 @@ import java.util.PriorityQueue;
 import dataframe.DataFrame;
 import dataframe.Row;
 import distances.Distance;
+import machinations.Model;
 import particles.DistanceParticle;
 
 /**
@@ -128,5 +129,11 @@ public class KNN extends Model {
     public void initiallize() {
         // TODO Auto-generated method stub
         
-    } 
+    }
+
+	@Override
+	public void saveModel(String fileName) {
+		// TODO Auto-generated method stub
+		
+	} 
 }

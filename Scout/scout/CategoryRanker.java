@@ -27,22 +27,28 @@ public class CategoryRanker {
 	public ArrayList<Column> GINI;
 	public ArrayList<Column> CHI2;
 	public final int rankers = 4; //number of ranker methods used
+	public boolean ranked;
 	/**
 	 * Category Ranker
 	 * @param df - the dataframe
 	 * @param targetIndex - dataframe keeps a list of target columns, if there is one target it will be 0
 	 */
 	public CategoryRanker(DataFrame df, int targetIndex) {
-		this.targetIndex = targetIndex;
-		this.df = df;
-		this.gain_ratio = new GainRatio(df);
-		this.gain = new InformationGain(df);
-		this.gini = new GiniIndex(df);
-		this.chi2 = new Chi2Independents(df);
-		makeGain();
-		makeGini();
-		makeGainRatio();
-		makeChi2();
+		if(df.numCategorical < 1) {
+			ranked = false;
+		}else {
+			this.targetIndex = targetIndex;
+			this.df = df;
+			this.gain_ratio = new GainRatio(df);
+			this.gain = new InformationGain(df);
+			this.gini = new GiniIndex(df);
+			this.chi2 = new Chi2Independents(df);
+			makeGain();
+			makeGini();
+			makeGainRatio();
+			makeChi2();
+			ranked = true;
+		}
 	}
 	public void printRankings() {
 		System.out.println("GAIN: ");

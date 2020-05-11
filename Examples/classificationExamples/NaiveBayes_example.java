@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import bayes.NaiveBayes;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.Util;
 import discreteize.EqualFrequencyBinning;
-import machinations.NaiveBayes;
 import particles.Particle;
 import regressionFunctions.LinearRegression;
 import regressionFunctions.LogRegression;
