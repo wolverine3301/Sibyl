@@ -247,6 +247,10 @@ public class NaiveBayes extends Model{
 		//printProbTable();
 		return p;
 	}
+	/**
+	 * predict the outcome of a single row
+	 * the class with the highest probability is the prediction
+	 */
 	@Override
 	public Object predict(Row row) {
 		HashMap<String , HashMap<Object , Double>> probs = probability(row);

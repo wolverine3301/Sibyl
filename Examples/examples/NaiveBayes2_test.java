@@ -26,7 +26,7 @@ public class NaiveBayes2_test {
         row.add(p2);
         row.add(p3);
         System.out.println(nb.predict(row));
-        
+        nb.printCategorical_probabilityTable();
 	}
 
 }

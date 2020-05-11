@@ -16,7 +16,7 @@ public class NaiveBayes2 extends Model{
 
 	public HashMap<String , HashMap<Object, HashMap<String, Double[]>>> cont_Naive_Bayes;
 	public HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>> cat_Naive_Bayes;
-	private HashMap<String,DataFrame[]> classes = new HashMap<String,DataFrame[]>(); //key -> target column name, value df array of classes in target column
+	public HashMap<String,DataFrame[]> classes = new HashMap<String,DataFrame[]>(); //key -> target column name, value df array of classes in target column
 	private DataFrame df;
 	
 	public NaiveBayes2() {
@@ -171,12 +171,14 @@ public class NaiveBayes2 extends Model{
 					 */
 					if(!cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).containsKey(row.getParticle(i).getValue()) ) {
 						Double max = 0.0;
+						/*
 						for(Object j : cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).keySet() ) {
 							if(cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(j) > max) {
 								max = cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(j);
 							}
 						}
-						prob = prob * max;
+						*/
+						prob = prob * 0.0000001;
 					}else {
 						prob = prob * cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(row.getParticle(i).getValue());
 					}
@@ -192,7 +194,19 @@ public class NaiveBayes2 extends Model{
 	/*				PRINT METHODS						*/
 	/****************************************************/
 	public void printCategorical_probabilityTable() {
-		System.out.println(this.cat_Naive_Bayes);
+		for(String i : this.cat_Naive_Bayes.keySet()) {
+			System.out.println("TARGET: "+i);
+			for(Object j : this.cat_Naive_Bayes.get(i).keySet()) {
+				System.out.println("CLASS: "+j);
+				for(String z : this.cat_Naive_Bayes.get(i).get(j).keySet()) {
+					System.out.println("VARIABLE: "+z);
+					for(Object x : this.cat_Naive_Bayes.get(i).get(j).get(z).keySet()) {
+						System.out.println("VALUE: "+x +" PROBABILITY: "+this.cat_Naive_Bayes.get(i).get(j).get(z).get(x));
+					}
+				}
+			}
+		}
+		//System.out.println(this.cat_Naive_Bayes);
 	}
 	/****************************************************/
 	/*				MODEL OVERRIDES						*/
