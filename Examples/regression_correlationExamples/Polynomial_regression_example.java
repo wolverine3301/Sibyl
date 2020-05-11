@@ -1,4 +1,4 @@
-package examples;
+package regression_correlationExamples;
 
 import dataframe.Column;
 import regressionFunctions.ConfidenceIntervals;

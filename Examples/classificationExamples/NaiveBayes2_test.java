@@ -1,4 +1,4 @@
-package examples;
+package classificationExamples;
 
 import dataframe.Column;
 import dataframe.DataFrame;

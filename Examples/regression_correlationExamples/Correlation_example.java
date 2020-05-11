@@ -1,4 +1,4 @@
-package examples;
+package regression_correlationExamples;
 
 import correlation.Correlations;
 import correlation.Pearson;

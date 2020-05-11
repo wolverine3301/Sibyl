@@ -1,4 +1,4 @@
-package examples;
+package classificationExamples;
 
 import java.util.ArrayList;
 

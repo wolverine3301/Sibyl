@@ -1,4 +1,4 @@
-package examples;
+package sagaExamples;
 
 import dataframe.Column;
 import dataframe.DataFrame;

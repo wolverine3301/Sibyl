@@ -1,4 +1,4 @@
-package examples;
+package classificationExamples;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

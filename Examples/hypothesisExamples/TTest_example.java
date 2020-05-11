@@ -1,4 +1,4 @@
-package examples;
+package hypothesisExamples;
 
 import dataframe.Column;
 import dataframe.DataFrame;

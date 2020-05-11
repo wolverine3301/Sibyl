@@ -1,4 +1,4 @@
-package examples;
+package hypothesisExamples;
 
 import java.util.Set;
 

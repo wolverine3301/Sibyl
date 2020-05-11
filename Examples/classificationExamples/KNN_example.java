@@ -1,4 +1,4 @@
-package examples;
+package classificationExamples;
 
 import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
