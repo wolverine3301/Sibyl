@@ -17,14 +17,22 @@ public class NaiveBayes2 extends Model{
 
 	public HashMap<String , HashMap<Object, HashMap<String, Double[]>>> cont_Naive_Bayes;
 	public HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>> cat_Naive_Bayes;
-	public HashMap<String,DataFrame[]> classes = new HashMap<String,DataFrame[]>(); //key -> target column name, value df array of classes in target column
+	public HashMap<String,DataFrame[]> classes; //key -> target column name, value df array of classes in target column
 	private DataFrame df;
 	
-	public NaiveBayes2() {
+	public NaiveBayes2(HashMap<String , HashMap<Object, HashMap<String, Double[]>>> cont_Naive_Bayes,  HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>> cat_Naive_Bayes) {
+		this.cont_Naive_Bayes = cont_Naive_Bayes;
+		this.cat_Naive_Bayes = cat_Naive_Bayes;
 	}
+	/**
+	 * Simple train constructor.
+	 * plug in a train dataframe, boom you got a model
+	 * @param df
+	 */
 	public NaiveBayes2(DataFrame df) {
 		super.train(df);
 		this.df = df;
+		this.classes = new HashMap<String,DataFrame[]>();
 		setClasses();
 		initialize_probability_tables();
 		setProbabilityTable();
@@ -287,7 +295,7 @@ public class NaiveBayes2 extends Model{
 		NaiveBayes_A nb = new NaiveBayes_A();
 		nb.setCat_Naive_Bayes(this.cat_Naive_Bayes);
 		nb.setCont_Naive_Bayes(this.cont_Naive_Bayes);
-		nb.saveModel("NB");
+		nb.saveModel(fileName);
 	}
 	
 

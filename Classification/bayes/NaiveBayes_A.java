@@ -1,7 +1,12 @@
 package bayes;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NaiveBayes_A implements java.io.Serializable{
@@ -17,17 +22,47 @@ public class NaiveBayes_A implements java.io.Serializable{
 		this.cat_Naive_Bayes = cat_Naive_Bayes;
 	}
 	public void saveModel(String fileName) {
-		
 		try { 
             FileOutputStream fileOut = new FileOutputStream(fileName+".ser");
             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
             objectOut.writeObject(this);
             objectOut.close();
             System.out.println("The Object  was succesfully written to a file");
+            System.out.println(fileOut.getFD());
+            fileOut.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 		
 	}
+	
+	/**
+	 * load a model file
+	 * @param filePath
+	 * @return
+	 * @throws IOException
+	 */
+	public static NaiveBayes_A loadModel(String filePath) throws IOException {
+	    NaiveBayes_A nb = new NaiveBayes_A();
+        FileInputStream fileIn = new FileInputStream(filePath);
+        ObjectInputStream in = null;
+		try {
+			in = new ObjectInputStream(fileIn);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+         try {
+			nb = (NaiveBayes_A) in.readObject();
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+         //System.out.println(nb.cat_Naive_Bayes);
+         in.close();
+         fileIn.close();
+         return nb;
+		}
+	
 	
 }
