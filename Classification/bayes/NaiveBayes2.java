@@ -297,6 +297,13 @@ public class NaiveBayes2 extends Model{
 		nb.setCont_Naive_Bayes(this.cont_Naive_Bayes);
 		nb.saveModel(fileName);
 	}
+	public void save_cat() {
+		NaiveBayes_A nb = new NaiveBayes_A();
+		nb.setCat_Naive_Bayes(this.cat_Naive_Bayes);
+		nb.setCont_Naive_Bayes(this.cont_Naive_Bayes);
+		nb.save_cat();
+		nb.save_cont();
+	}
 	
 
 }

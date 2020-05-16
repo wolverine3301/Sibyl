@@ -37,6 +37,7 @@ public class knockoutFilter {
         NaiveBayes2 nb = new NaiveBayes2(df);
         nb.printCategorical_probabilityTable();
         nb.saveModel("MODEL");
+        nb.save_cat();
         NaiveBayes_A a = NaiveBayes_A.loadModel("MODEL.ser");
         //CrossValidation cv = new CrossValidation(df, 2, nb);
         /*
