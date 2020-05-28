@@ -73,7 +73,7 @@ public class Hypothesis {
 	 * @return 
 	 */
 	private T_testing ttest() {
-		DataFrame[] hh = Util.splitOnTarget(df, 4);
+		DataFrame[] hh = Util.splitOnTarget(df, df.getColumn(4));
 		return new T_testing(hh);
 	}
 	/**

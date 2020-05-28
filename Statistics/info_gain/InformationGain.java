@@ -35,7 +35,9 @@ public class InformationGain extends Gain{
 		if(super.categoricalColumns == null) {
 			return null;
 		}
+		
 	    double targetEntropy = targetColumns.getColumn(index).entropy;
+	    
 	    //Holds the calculated info gain in a max heap style.
 	    PriorityQueue<GainInformation> infoGain = new PriorityQueue<GainInformation>(categoricalColumns.getNumColumns(), new Comparator<GainInformation>() {
             @Override
@@ -46,6 +48,7 @@ public class InformationGain extends Gain{
 	    for (int i = 0; i < categoricalColumns.getNumColumns(); i++) { //Calculate info gain of every column compared to the target column
             double currentEntropy = categoricalColumns.getColumn(i).entropy;
             infoGain.add(new GainInformation(i, targetEntropy - currentEntropy));
+            addInfo(targetEntropy - currentEntropy);
 	    }
 	    ArrayList<Column> sortedGains = new ArrayList<Column>();
 	    while(!infoGain.isEmpty())

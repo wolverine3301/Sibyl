@@ -39,9 +39,10 @@ public class GainRatio extends Gain{
         });
         for (int i = 0; i < categoricalColumns.getNumColumns(); i++) { //Calculate info gain of every column compared to the target column
             double tempEntropy = categoricalColumns.getColumn(i).entropy;
-            if (tempEntropy != 0) //avoid deviding by 0.
+            if (tempEntropy != 0) {//avoid deviding by 0.
                 gainRatios.add(new GainInformation(i, (targetEntropy - tempEntropy) / tempEntropy)); //Only difference: add information gain devided by the temp entropy.
-            else
+                addInfo((targetEntropy - tempEntropy) / tempEntropy);
+            }else
                 gainRatios.add(new GainInformation(i, 0)); //Bad choice, no diversity in the column --- Only on rare occasions.
         }
         ArrayList<Column> sortedGains = new ArrayList<Column>();

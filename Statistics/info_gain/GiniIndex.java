@@ -47,6 +47,7 @@ public class GiniIndex extends Gain{
                 double prob = probabilities.get(o);
                 gain += prob * (1 - prob);
             }
+            addInfo(gain);
             infoGain.add(new GainInformation(i, gain));
             System.out.println("GINI IMPURITY OF COLUMN " + categoricalColumns.getColumn(i).getName() + ": " + gain);
         }

@@ -16,6 +16,7 @@ public abstract class Gain {
     /** The target columns for the algorithms to run off of. */
     DataFrame targetColumns;
     
+    public ArrayList<Double> info;
     /**
      * Sets up the fields for use in gain methods.
      * @param theDataFrame the data frame to format for gain based calculations.
@@ -26,6 +27,7 @@ public abstract class Gain {
     	}else {
     		categoricalColumns = DataFrame_Copy.shallowCopy_columnTypes(theDataFrame, setVariables());
     		targetColumns = DataFrame_Copy.shallowCopy_columnTypes(theDataFrame, setTargets());
+    		info = new ArrayList<Double>();
     	}
     }
     
@@ -81,7 +83,9 @@ public abstract class Gain {
       System.out.println("Entropy: " + entropy);
         return entropy;
     }
-    
+    protected void addInfo(double e) {
+    	info.add(e);
+    }
     /**
      * Used for optimizing entropy calculations & fetching columns.
      * @author Cade Reynoldson
