@@ -18,10 +18,10 @@ public class TestFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        jPanel1 = new Data_Label_Panel();
-
+        //jPanel1 = new Data_Panel();
+    	jPanel1 = new Data_Panel();
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1200, 700));
+        setPreferredSize(new java.awt.Dimension(1000, 700));
         add(jPanel1);
         pack();
     }// </editor-fold>                    

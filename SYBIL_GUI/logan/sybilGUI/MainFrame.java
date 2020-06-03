@@ -1,20 +1,17 @@
 package logan.sybilGUI;
 
-
 import java.awt.Color;
-import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.JButton;
+import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
+import javax.swing.JLabel;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.plaf.basic.BasicButtonUI;
-
+import java.awt.Image;
 /**
  *
  * @author Owner
@@ -26,18 +23,16 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
-        JButton[] buttons = {jButton1,jButton2,jButton3,jButton4,jButton5};
+        JButton[] buttons = {data_btn,stats_btn,preProcess_btn,AI_btn,score_btn};
         for(final JButton btn : buttons){
             btn.setBackground(new Color(22,22,22));
             btn.setUI(new BasicButtonUI());
             btn.addMouseListener(new MouseListener(){
-            
+
                 public void mouseClicked(MouseEvent e) {
                 }
-
                 public void mousePressed(MouseEvent e) {
                 }
-
                 public void mouseReleased(MouseEvent e) {
                 }
                 public void mouseEntered(MouseEvent e) {
@@ -60,127 +55,235 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         root_panel = new javax.swing.JPanel();
+        main_panel = new javax.swing.JPanel();
         side_panel = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        home_btn_panel = new javax.swing.JPanel();
+        home_btn = new javax.swing.JButton();
+        data_btn = new javax.swing.JButton();
+        stats_btn = new javax.swing.JButton();
+        preProcess_btn = new javax.swing.JButton();
+        AI_btn = new javax.swing.JButton();
+        score_btn = new javax.swing.JButton();
+        
+        open_pjct_btn = new javax.swing.JButton();
+        new_project_btn = new javax.swing.JButton();
+        
         center_panel = new javax.swing.JPanel();
+        top_panel = new javax.swing.JPanel();
+        sybilLogo_panel = new javax.swing.JPanel();
+        logo_label = new javax.swing.JLabel();
+        bottom_panel = new javax.swing.JPanel();
+
+        jLabel1 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        root_panel.setPreferredSize(new java.awt.Dimension(1200, 900));
         root_panel.setLayout(new java.awt.BorderLayout());
 
-        side_panel.setBackground(new java.awt.Color(22, 22, 22));
-        side_panel.setPreferredSize(new java.awt.Dimension(100, 700));
-        jPanel1.setBackground(new java.awt.Color(22, 22, 22));
+        main_panel.setBackground(new java.awt.Color(34, 40, 44));
+        main_panel.setPreferredSize(new java.awt.Dimension(1100, 700));
+        main_panel.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
+        bottom_panel.setBackground(new java.awt.Color(34, 40, 44));
+        bottom_panel.setPreferredSize(new java.awt.Dimension(1100, 100));
+        
+        new_project_btn.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        new_project_btn.setBackground(new java.awt.Color(34, 40, 44));
+        new_project_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_plus_2_math_50px_2.png",50,50));
+        new_project_btn.setText("New Project");
+        
+        open_pjct_btn.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        open_pjct_btn.setBackground(new java.awt.Color(34,40,44));
+        open_pjct_btn.setForeground(new java.awt.Color(153, 153, 153));
+        open_pjct_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_opened_folder_50px_1.png",50,50)); // NOI18N
+        open_pjct_btn.setText("Open Project");
+        
+        //BOTTOM PANEL
+        javax.swing.GroupLayout bottom_panelLayout = new javax.swing.GroupLayout(bottom_panel);
+        bottom_panel.setLayout(bottom_panelLayout);
+        bottom_panelLayout.setHorizontalGroup(
+            bottom_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(bottom_panelLayout.createSequentialGroup()
+                .addGap(148, 148, 148)
+                .addComponent(open_pjct_btn)
+                .addGap(57, 57, 57)
+                .addComponent(new_project_btn)
+                .addContainerGap(597, Short.MAX_VALUE))
+        );
+        bottom_panelLayout.setVerticalGroup(
+            bottom_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(bottom_panelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(bottom_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(new_project_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(open_pjct_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(42, Short.MAX_VALUE))
+        );
+
+        main_panel.add(bottom_panel, java.awt.BorderLayout.SOUTH);
+        
+        //BOTTOM PANEL
+        
+        //TOP PANEL
+        top_panel.setBackground(new java.awt.Color(34, 40, 44));
+        top_panel.setPreferredSize(new java.awt.Dimension(1000, 100));
+        top_panel.setRequestFocusEnabled(false);
+        
+        //LOGO
+        sybilLogo_panel.setBackground(new java.awt.Color(34, 40, 44));
+        sybilLogo_panel.setPreferredSize(new java.awt.Dimension(300, 100));
+
+        logo_label.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/sybilLOGO.png",300,100)); // NOI18N
+        logo_label.setText("");
+        logo_label.setPreferredSize(new java.awt.Dimension(300, 100));
+        sybilLogo_panel.add(logo_label);
+        
+        javax.swing.GroupLayout top_panelLayout = new javax.swing.GroupLayout(top_panel);
+        top_panel.setLayout(top_panelLayout);
+        top_panelLayout.setHorizontalGroup(
+            top_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(top_panelLayout.createSequentialGroup()
+                .addComponent(sybilLogo_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 800, Short.MAX_VALUE))
+        );
+        top_panelLayout.setVerticalGroup(
+            top_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, top_panelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(sybilLogo_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        main_panel.add(top_panel, java.awt.BorderLayout.NORTH);
+        //TOP PANEL
+        
+        //CENTER PANEL
+        center_panel.setBackground(new java.awt.Color(34, 40, 44));
+        center_panel.setPreferredSize(new java.awt.Dimension(1000, 700));
+        
+        jLabel4.setFont(new java.awt.Font("Courier New", 0, 48)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel4.setText("Recent Projects");
+        jLabel4.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        
+        
+        main_panel.add(center_panel, java.awt.BorderLayout.CENTER);
+        
+        //CENTER PANEL
+        
+        root_panel.add(main_panel, java.awt.BorderLayout.LINE_END);
+        
+        //SIDE PANEL
+        side_panel.setBackground(new java.awt.Color(22, 22, 22));
+        side_panel.setPreferredSize(new java.awt.Dimension(100, 900));
+        
+        home_btn_panel.setBackground(new java.awt.Color(22, 22, 22));
+        home_btn_panel.setPreferredSize(new java.awt.Dimension(100, 200));
+
+        home_btn.setBackground(new java.awt.Color(22, 22, 22));
+        home_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_home_50px_3.png",50,50)); // NOI18N
+        home_btn.setPreferredSize(new java.awt.Dimension(50, 50));
+
+        home_btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                home_btn_ActionPerformed(evt);
+            }
+        });
+        
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(home_btn_panel);
+        home_btn_panel.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(17, Short.MAX_VALUE)
+                .addComponent(home_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(63, 63, 63)
+                .addComponent(home_btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(87, Short.MAX_VALUE))
         );
-
-        side_panel.add(jPanel1);
-
-        jButton1.setBackground(new java.awt.Color(20, 20, 20));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
         
-        
-		jButton1.setIcon(getIcon("oct.png"));
-        //jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_octahedron_50px_1.png"))); // NOI18N
-        jButton1.setPreferredSize(new java.awt.Dimension(50, 50));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        side_panel.add(home_btn_panel);
+
+        data_btn.setBackground(new java.awt.Color(22, 22, 22));
+        data_btn.setForeground(new java.awt.Color(255, 255, 255));
+        data_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/oct.png",50,50)); // NOI18N
+        data_btn.setPreferredSize(new java.awt.Dimension(50, 50));
+        data_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                data_btn_ActionPerformed(evt);
             }
         });
-        side_panel.add(jButton1);
+        side_panel.add(data_btn);
 
-        jButton2.setBackground(new java.awt.Color(20, 20, 20));
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        
-        
-        
-        jButton2.setIcon(getIcon("oct.png"));
-        jButton2.setPreferredSize(new java.awt.Dimension(50, 50));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        stats_btn.setBackground(new java.awt.Color(22, 22, 22));
+        stats_btn.setForeground(new java.awt.Color(255, 255, 255));
+        stats_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_combo_chart_50px_1.png",50,50)); // NOI18N
+        stats_btn.setPreferredSize(new java.awt.Dimension(50, 50));
+        stats_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                stats_btn_ActionPerformed(evt);
             }
         });
-        side_panel.add(jButton2);
+        side_panel.add(stats_btn);
 
-        
-        jButton3.setBackground(new java.awt.Color(20, 20, 20));
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setIcon(getIcon("oct.png"));
-        jButton3.setPreferredSize(new java.awt.Dimension(50, 50));
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        preProcess_btn.setBackground(new java.awt.Color(22, 22, 22));
+        preProcess_btn.setForeground(new java.awt.Color(255, 255, 255));
+        preProcess_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_filter_50px_2.png",50,50)); // NOI18N
+        preProcess_btn.setPreferredSize(new java.awt.Dimension(50, 50));
+        preProcess_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
-        side_panel.add(jButton3);
-        
-        jButton4.setBackground(new java.awt.Color(20, 20, 20));
-        jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setIcon(getIcon("oct.png"));
-        jButton4.setPreferredSize(new java.awt.Dimension(50, 50));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        side_panel.add(preProcess_btn);
+
+        AI_btn.setBackground(new java.awt.Color(22, 22, 22));
+        AI_btn.setForeground(new java.awt.Color(255, 255, 255));
+        AI_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_artificial_intelligence_50px.png",50,50)); // NOI18N
+        AI_btn.setPreferredSize(new java.awt.Dimension(50, 50));
+        AI_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
             }
         });
-        side_panel.add(jButton4);
-        
-        jButton5.setBackground(new java.awt.Color(20, 20, 20));
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setIcon(getIcon("oct.png"));
-        jButton5.setPreferredSize(new java.awt.Dimension(50, 50));
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        side_panel.add(AI_btn);
+
+        score_btn.setBackground(new java.awt.Color(22, 22, 22));
+        score_btn.setForeground(new java.awt.Color(255, 255, 255));
+        score_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_define_location_50px.png",50,50)); // NOI18N
+        score_btn.setPreferredSize(new java.awt.Dimension(50, 50));
+        score_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
-        side_panel.add(jButton5);
+        side_panel.add(score_btn);
 
         root_panel.add(side_panel, java.awt.BorderLayout.WEST);
-
-        center_panel.setBackground(new java.awt.Color(34, 40, 44));
-        center_panel.setPreferredSize(new java.awt.Dimension(1100, 700));
-
-        javax.swing.GroupLayout center_panelLayout = new javax.swing.GroupLayout(center_panel);
-        center_panel.setLayout(center_panelLayout);
-        center_panelLayout.setHorizontalGroup(
-            center_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1100, Short.MAX_VALUE)
-        );
-        center_panelLayout.setVerticalGroup(
-            center_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
-        );
-
-        root_panel.add(center_panel, java.awt.BorderLayout.LINE_END);
-
         getContentPane().add(root_panel, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>                        
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // TODO add your handling code here:
+    private void data_btn_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+		center_panel.removeAll();
+		center_panel.add(DATA_VIEW);
+		center_panel.repaint();
+		center_panel.revalidate();
     }                                        
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // TODO add your handling code here:
+    private void stats_btn_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+		center_panel.removeAll();
+		center_panel.add(STATS_VIEW);
+		center_panel.repaint();
+		center_panel.revalidate();
     }                                        
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -193,6 +296,12 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here:
+    }         
+    private void home_btn_ActionPerformed(java.awt.event.ActionEvent evt)  {
+			center_panel.removeAll();
+			//center_panel.add(data_label_panel);
+			center_panel.repaint();
+			center_panel.revalidate();
     }
     private ImageIcon getIcon(String File) {
     	BufferedImage icon = null;
@@ -210,7 +319,6 @@ public class MainFrame extends javax.swing.JFrame {
 		ImageIcon imageIcon = new ImageIcon(dimg);
 		return imageIcon;
     }
-
     /**
      * @param args the command line arguments
      */
@@ -247,14 +355,29 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify                     
+    private javax.swing.JPanel bottom_panel;
     private javax.swing.JPanel center_panel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton data_btn;
+    private javax.swing.JButton stats_btn;
+    private javax.swing.JButton preProcess_btn;
+    private javax.swing.JButton AI_btn;
+    private javax.swing.JButton score_btn;
+    private javax.swing.JButton home_btn;
+    private javax.swing.JButton open_pjct_btn;
+    private javax.swing.JButton new_project_btn;
+
+    
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel home_btn_panel;
+    private javax.swing.JLabel logo_label;
     private javax.swing.JPanel root_panel;
     private javax.swing.JPanel side_panel;
-    // End of variables declaration                   
+    private javax.swing.JPanel sybilLogo_panel;
+    private javax.swing.JPanel top_panel;
+    private javax.swing.JPanel main_panel;
+    // End of variables declaration
+    //OTHER VIEWS
+    private javax.swing.JPanel DATA_VIEW = new Data_Panel();
+    private javax.swing.JPanel STATS_VIEW = new Stats_Panel();
 }

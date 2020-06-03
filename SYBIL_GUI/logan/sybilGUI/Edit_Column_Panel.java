@@ -56,7 +56,7 @@ public class Edit_Column_Panel extends javax.swing.JPanel{
        jPanel2.setBackground(new java.awt.Color(51, 51, 51));
 
        jComboBox1.setBackground(new java.awt.Color(51, 51, 51));
-       jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Categorical", "Numeric", "Target" }));
+       jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Categorical", "Numeric", "Target", "Meta"}));
        if(type == 'C')
     	   jComboBox1.setSelectedIndex(0);
        if(type == 'N')
@@ -74,8 +74,10 @@ public class Edit_Column_Panel extends javax.swing.JPanel{
     	            ctrl.changeCol(name, 'C');
     	        } else if (selected == 1) {
     	        	ctrl.changeCol(name, 'N');
-    	        }else {
+    	        }else if(selected == 2){
     	        	ctrl.changeCol(name, 'T');
+    	        }else {
+    	        	ctrl.changeCol(name, 'M');
     	        }
     	        //System.out.println(type);
     	    }
