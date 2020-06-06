@@ -5,11 +5,14 @@ package logan.sybilGUI;
 * @author Owner
 */
 public class Data_Handler_Panel extends javax.swing.JPanel {
-
+	private int W;
+	private int H;
    /**
     * Creates new form Data_Handler_Panel
     */
-   public Data_Handler_Panel() {
+   public Data_Handler_Panel(int W,int H) {
+	   this.W=W;
+	   this.H=H;
        initComponents();
    }
 
@@ -52,12 +55,12 @@ public class Data_Handler_Panel extends javax.swing.JPanel {
        standardize_btn = new javax.swing.JRadioButton();
 
        setBackground(new java.awt.Color(34, 40, 44));
-       setPreferredSize(new java.awt.Dimension(900, 700));
+       setPreferredSize(new java.awt.Dimension(W, H));
        setLayout(new java.awt.BorderLayout());
 
        top_panel.setBackground(new java.awt.Color(20, 20, 20));
-       top_panel.setMinimumSize(new java.awt.Dimension(900, 38));
-       top_panel.setPreferredSize(new java.awt.Dimension(900, 60));
+       top_panel.setMinimumSize(new java.awt.Dimension(W, 60));
+       top_panel.setPreferredSize(new java.awt.Dimension(W, 70));
        top_panel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 100, 5));
 
        jLabel1.setFont(new java.awt.Font("Courier New", 0, 24)); // NOI18N
@@ -83,8 +86,7 @@ public class Data_Handler_Panel extends javax.swing.JPanel {
        add(top_panel, java.awt.BorderLayout.NORTH);
 
        center_panel.setBackground(new java.awt.Color(34, 40, 44));
-       center_panel.setMinimumSize(new java.awt.Dimension(900, 45));
-       center_panel.setPreferredSize(new java.awt.Dimension(900, 700));
+       center_panel.setPreferredSize(new java.awt.Dimension(W, H-60));
 
        impute_panel.setBackground(new java.awt.Color(34, 40, 44));
        impute_panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));

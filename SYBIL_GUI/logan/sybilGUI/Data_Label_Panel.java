@@ -16,10 +16,14 @@ import javax.swing.JDialog;
 */
 public class Data_Label_Panel extends javax.swing.JPanel {
 
+	int W;
+	int H;
    /**
     * Creates new form Data_Label_Panel2
     */
-   public Data_Label_Panel() {
+   public Data_Label_Panel(int width,int height) {
+	   W = width;
+	   H = height;
 	   controller = new Data_Label_Controller();
        initComponents();
    }
@@ -59,21 +63,21 @@ public class Data_Label_Panel extends javax.swing.JPanel {
        num_misc_label = new javax.swing.JLabel();
        top_panel = new javax.swing.JPanel();
        file_name_label = new javax.swing.JLabel();
-       label_file = new javax.swing.JLabel();
        fileSize_label = new javax.swing.JLabel();
        label_size = new javax.swing.JLabel();
        label_rows = new javax.swing.JLabel();
        numOfRows_label = new javax.swing.JLabel();
        label_column = new javax.swing.JLabel();
        numOfColumns_label = new javax.swing.JLabel();
-
+       file_sel_btn = new javax.swing.JButton();
+       
        setBackground(new java.awt.Color(34, 40, 44));
-       setMinimumSize(new java.awt.Dimension(900, 700));
-       setPreferredSize(new java.awt.Dimension(900, 700));
+       setMinimumSize(new java.awt.Dimension(W, H));
+       setPreferredSize(new java.awt.Dimension(W, H));
        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
        side_panel.setBackground(new java.awt.Color(24, 30, 40));
-       side_panel.setPreferredSize(new java.awt.Dimension(200, 700));
+       side_panel.setPreferredSize(new java.awt.Dimension(180, H));
 
        //ADD side panel stuff
        ArrayList<String> names = controller.getColumnNames();
@@ -81,10 +85,10 @@ public class Data_Label_Panel extends javax.swing.JPanel {
        for(int i = 0; i< names.size(); i++) {
     	   make_button(names.get(i),types.get(i));
        }
-       add(side_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 700));
+       add(side_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 0, 150, H));
 
        bottom_panel.setBackground(new java.awt.Color(34, 40, 44));
-       bottom_panel.setPreferredSize(new java.awt.Dimension(700, 500));
+       bottom_panel.setPreferredSize(new java.awt.Dimension(W-200, H-200));
        bottom_panel.setLayout(new java.awt.GridLayout(1, 5));
 
        numeric_panel.setBackground(new java.awt.Color(34, 40, 44));
@@ -200,11 +204,18 @@ public class Data_Label_Panel extends javax.swing.JPanel {
        file_name_label.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
        file_name_label.setForeground(new java.awt.Color(153, 153, 153));
        file_name_label.setText(controller.getFileName());
-
-       label_file.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
-       label_file.setForeground(new java.awt.Color(153, 153, 153));
-       label_file.setText("FILE: ");
-
+       
+       file_sel_btn.setBackground(new java.awt.Color(34, 40, 44));
+       file_sel_btn.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+       file_sel_btn.setForeground(new java.awt.Color(153, 153, 153));
+       file_sel_btn.setText("FILE: ");
+       file_sel_btn.addActionListener(new ActionListener() {
+    	   public void actionPerformed(ActionEvent e) {
+    		   file_select_action();
+    	   }
+       });
+       
+       
        fileSize_label.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
        fileSize_label.setForeground(new java.awt.Color(153, 153, 153));
        fileSize_label.setText("SIZE: ");
@@ -237,7 +248,7 @@ public class Data_Label_Panel extends javax.swing.JPanel {
                .addGroup(top_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                    .addGroup(top_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                        .addGroup(top_panelLayout.createSequentialGroup()
-                           .addComponent(label_file)
+                           .addComponent(file_sel_btn)
                            .addGap(18, 18, 18)
                            .addComponent(file_name_label))
                        .addGroup(top_panelLayout.createSequentialGroup()
@@ -262,7 +273,7 @@ public class Data_Label_Panel extends javax.swing.JPanel {
            .addGroup(top_panelLayout.createSequentialGroup()
                .addContainerGap()
                .addGroup(top_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                   .addComponent(label_file, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                   .addComponent(file_sel_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                    .addComponent(file_name_label, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                .addGap(10, 10, 10)
                .addGroup(top_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -320,6 +331,15 @@ public class Data_Label_Panel extends javax.swing.JPanel {
        buttons.put(name,btn);
        side_panel.add(btn);
    }
+   //open file selector
+   private void file_select_action() {
+  		JDialog fileSel = new JDialog();
+  		fileSel.setSize(500, 650);
+  		File_Select_Panel files = new File_Select_Panel(controller);
+        fileSel.add(files);
+        fileSel.setVisible(true);
+        
+   }
    private void setBtnIcon(JButton btn, char t) {
        if(t == 'T')
     	   btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/icons8_t_20px_2.png",20,20)); // NOI18N
@@ -347,7 +367,6 @@ public class Data_Label_Panel extends javax.swing.JPanel {
    private javax.swing.JLabel jLabel28;
    private javax.swing.JLabel jLabel34;
    private javax.swing.JLabel label_column;
-   private javax.swing.JLabel label_file;
    private javax.swing.JLabel label_rows;
    private javax.swing.JLabel label_size;
    private javax.swing.JPanel meta_panel;
@@ -363,6 +382,9 @@ public class Data_Label_Panel extends javax.swing.JPanel {
    private javax.swing.JPanel side_panel;
    private javax.swing.JPanel target_panel;
    private javax.swing.JPanel top_panel;
+   
+   
+   private javax.swing.JButton file_sel_btn;
    // End of variables declaration    
    private HashMap<String,JButton> buttons;
    private Data_Label_Controller controller;

@@ -1,16 +1,24 @@
 package scout;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import bayes.NaiveBayes;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
+import logan.sybilGUI.TextAreaOutputStream;
 import scorer.CrossValidation;
 import transform.Standardize;
 /**
- * என்னை அழைத்துச் செல்லுங்கள்
  * @author logan.collier
  *
  */
@@ -21,6 +29,26 @@ public class Invoke {
 	private static NumericRanker NR; 
 	private static DataFrame  df;
 	public static void main(String[] args) {
+		
+		
+        JFrame frame = new JFrame();
+        frame.add( new JLabel(" out " ), BorderLayout.NORTH );
+
+        JTextArea ta = new JTextArea();
+        ta.setBackground(Color.black);
+        ta.setForeground(Color.gray);
+        TextAreaOutputStream taos = new TextAreaOutputStream( ta, 60 );
+        PrintStream ps = new PrintStream( taos );
+        System.setOut( ps );
+        System.setErr( ps );
+
+
+        frame.add( new JScrollPane( ta )  );
+
+        frame.pack();
+        frame.setVisible( true );
+        frame.setSize(800,600);
+
 		String file = "testfiles/iris.txt";
         df = DataFrame.read_csv(file);
         df.setColumnType("species", 'T');//set target column

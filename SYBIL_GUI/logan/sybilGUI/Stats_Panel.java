@@ -1,11 +1,14 @@
 package logan.sybilGUI;
 
 public class Stats_Panel extends javax.swing.JPanel {
-
+	private int W;
+	private int H;
     /**
      * Creates new form Stats_Panel
      */
-    public Stats_Panel() {
+    public Stats_Panel(int W,int H) {
+    	this.W = W-200;
+    	this.H = H-200;
         initComponents();
     }
 
@@ -32,18 +35,21 @@ public class Stats_Panel extends javax.swing.JPanel {
         setBackground(new java.awt.Color(34, 40, 44));
 
         side_panel.setBackground(new java.awt.Color(34, 34, 34));
-        side_panel.setPreferredSize(new java.awt.Dimension(700, 100));
+        side_panel.setPreferredSize(new java.awt.Dimension(100, H));
 
         test.setBackground(new java.awt.Color(34, 34, 34));
         test.setIcon(GUI_Util.getIcon("SYBIL_GUI/stats_icons/icons8_Millenium_Eye_50px_1.png",50,50)); // NOI18N
+        test.setToolTipText("all seeing eye");
         side_panel.add(test);
 
         scatter_plt_btn.setBackground(new java.awt.Color(34, 34, 34));
-        scatter_plt_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/stats_icons/icons8_scatter_plot_50px.png",50,50)); // NOI18N // NOI18N  ""
+        scatter_plt_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/stats_icons/icons8_scatter_plot_50px.png",50,50)); // NOI18N // NOI18N 
+        scatter_plt_btn.setToolTipText("scatter");
         side_panel.add(scatter_plt_btn);
 
         regression.setBackground(new java.awt.Color(34, 34, 34));
         regression.setIcon(GUI_Util.getIcon("SYBIL_GUI/stats_icons/icons8_coordinate_system_50px.png",50,50)); // NOI18N
+        regression.setToolTipText("regression");
         side_panel.add(regression);
 
         distribution.setBackground(new java.awt.Color(34, 34, 34));
@@ -67,13 +73,14 @@ public class Stats_Panel extends javax.swing.JPanel {
         side_panel.add(pie_chart_btn);
 
         main_panel.setBackground(new java.awt.Color(34, 40, 44));
-        main_panel.setPreferredSize(new java.awt.Dimension(1000, 700));
-
+        main_panel.setPreferredSize(new java.awt.Dimension(W-200, H));
+        
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(main_panel);
+
         main_panel.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 994, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -87,13 +94,14 @@ public class Stats_Panel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(side_panel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(main_panel, javax.swing.GroupLayout.DEFAULT_SIZE, 994, Short.MAX_VALUE))
+                .addComponent(main_panel, javax.swing.GroupLayout.DEFAULT_SIZE, W, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(side_panel, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+            .addComponent(side_panel, javax.swing.GroupLayout.DEFAULT_SIZE, H, Short.MAX_VALUE)
             .addComponent(main_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+        
     }// </editor-fold>                        
 
 

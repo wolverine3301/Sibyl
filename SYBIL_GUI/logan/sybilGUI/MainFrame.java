@@ -1,14 +1,20 @@
 package logan.sybilGUI;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import java.awt.Image;
@@ -17,13 +23,15 @@ import java.awt.Image;
  * @author Owner
  */
 public class MainFrame extends javax.swing.JFrame {
-
+	
+	private int window_width = 1800;
+	private int window_height = 900;
     /**
      * Creates new form MainFrame
      */
     public MainFrame() {
         initComponents();
-        JButton[] buttons = {data_btn,stats_btn,preProcess_btn,AI_btn,score_btn};
+        JButton[] buttons = {home_btn,data_btn,stats_btn,preProcess_btn,AI_btn,score_btn,terminal_btn};
         for(final JButton btn : buttons){
             btn.setBackground(new Color(22,22,22));
             btn.setUI(new BasicButtonUI());
@@ -53,7 +61,10 @@ public class MainFrame extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
-
+    	setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    	
+    	
+    	
         root_panel = new javax.swing.JPanel();
         main_panel = new javax.swing.JPanel();
         side_panel = new javax.swing.JPanel();
@@ -64,7 +75,7 @@ public class MainFrame extends javax.swing.JFrame {
         preProcess_btn = new javax.swing.JButton();
         AI_btn = new javax.swing.JButton();
         score_btn = new javax.swing.JButton();
-        
+        terminal_btn = new javax.swing.JButton();
         open_pjct_btn = new javax.swing.JButton();
         new_project_btn = new javax.swing.JButton();
         
@@ -76,18 +87,16 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        root_panel.setPreferredSize(new java.awt.Dimension(1200, 900));
+        //ROOT PANEL
+        root_panel.setPreferredSize(new java.awt.Dimension(window_width, window_height));
         root_panel.setLayout(new java.awt.BorderLayout());
 
         main_panel.setBackground(new java.awt.Color(34, 40, 44));
-        main_panel.setPreferredSize(new java.awt.Dimension(1100, 700));
+        main_panel.setPreferredSize(new java.awt.Dimension(window_width-100, window_height - (2*(window_height/10))) );
         main_panel.setLayout(new java.awt.BorderLayout());
 
         bottom_panel.setBackground(new java.awt.Color(34, 40, 44));
-        bottom_panel.setPreferredSize(new java.awt.Dimension(1100, 100));
+        bottom_panel.setPreferredSize(new java.awt.Dimension(window_width-100, 100));
         
         new_project_btn.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
         new_project_btn.setBackground(new java.awt.Color(34, 40, 44));
@@ -128,7 +137,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         //TOP PANEL
         top_panel.setBackground(new java.awt.Color(34, 40, 44));
-        top_panel.setPreferredSize(new java.awt.Dimension(1000, 100));
+        top_panel.setPreferredSize(new java.awt.Dimension(window_width-100, 100));
         top_panel.setRequestFocusEnabled(false);
         
         //LOGO
@@ -160,7 +169,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         //CENTER PANEL
         center_panel.setBackground(new java.awt.Color(34, 40, 44));
-        center_panel.setPreferredSize(new java.awt.Dimension(1000, 700));
+        center_panel.setPreferredSize(new java.awt.Dimension(window_width-100, window_height-200));
         
         jLabel4.setFont(new java.awt.Font("Courier New", 0, 48)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(102, 102, 102));
@@ -177,7 +186,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         //SIDE PANEL
         side_panel.setBackground(new java.awt.Color(22, 22, 22));
-        side_panel.setPreferredSize(new java.awt.Dimension(100, 900));
+        side_panel.setPreferredSize(new java.awt.Dimension(100, window_height));
         
         home_btn_panel.setBackground(new java.awt.Color(22, 22, 22));
         home_btn_panel.setPreferredSize(new java.awt.Dimension(100, 200));
@@ -265,7 +274,18 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         side_panel.add(score_btn);
-
+        
+        terminal_btn.setBackground(new java.awt.Color(22, 22, 22));
+        terminal_btn.setForeground(new java.awt.Color(255, 255, 255));
+        terminal_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_source_code_50px.png",50,50)); // NOI18N
+        terminal_btn.setPreferredSize(new java.awt.Dimension(50, 50));
+        terminal_btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                terminal_btn_ActionPerformed(evt);
+            }
+        });
+        side_panel.add(terminal_btn);
+        
         root_panel.add(side_panel, java.awt.BorderLayout.WEST);
         getContentPane().add(root_panel, java.awt.BorderLayout.CENTER);
 
@@ -303,6 +323,26 @@ public class MainFrame extends javax.swing.JFrame {
 			center_panel.repaint();
 			center_panel.revalidate();
     }
+    private void terminal_btn_ActionPerformed(java.awt.event.ActionEvent evt) {
+        JFrame frame = new JFrame();
+        frame.add( new JLabel(" Outout" ), BorderLayout.NORTH );
+
+        JTextArea ta = new JTextArea();
+        ta.setBackground(Color.black);
+        ta.setForeground(Color.gray);
+        TextAreaOutputStream taos = new TextAreaOutputStream( ta, 60 );
+        PrintStream ps = new PrintStream( taos );
+        System.setOut( ps );
+        System.setErr( ps );
+
+
+        frame.add( new JScrollPane( ta )  );
+
+        frame.pack();
+        frame.setVisible( true );
+        frame.setSize(800,600);
+    }
+    
     private ImageIcon getIcon(String File) {
     	BufferedImage icon = null;
 		try {
@@ -363,6 +403,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton AI_btn;
     private javax.swing.JButton score_btn;
     private javax.swing.JButton home_btn;
+    private javax.swing.JButton terminal_btn;
     private javax.swing.JButton open_pjct_btn;
     private javax.swing.JButton new_project_btn;
 
@@ -378,6 +419,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel main_panel;
     // End of variables declaration
     //OTHER VIEWS
-    private javax.swing.JPanel DATA_VIEW = new Data_Panel();
-    private javax.swing.JPanel STATS_VIEW = new Stats_Panel();
+    private javax.swing.JPanel DATA_VIEW = new Data_Panel(window_width-100,window_height-200);
+    private javax.swing.JPanel STATS_VIEW = new Stats_Panel(window_width,window_height);
 }

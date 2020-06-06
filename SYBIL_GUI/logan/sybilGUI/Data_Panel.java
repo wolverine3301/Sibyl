@@ -15,9 +15,9 @@ public class Data_Panel extends javax.swing.JPanel {
    /**
     * Creates new form New_Project_Panel
     */
-   public Data_Panel() {
-	   W = 1000;
-	   H = 700;
+   public Data_Panel(int width,int height) {
+	   W = width;
+	   H = height;
        initComponents();
    }
 
@@ -38,8 +38,8 @@ public class Data_Panel extends javax.swing.JPanel {
        new_data_handler_btn = new javax.swing.JButton();
        center_panel = new javax.swing.JPanel();
        
-       data_label_panel = new Data_Label_Panel();
-       data_handler_panel = new Data_Handler_Panel();
+       data_label_panel = new Data_Label_Panel(W,H);
+       data_handler_panel = new Data_Handler_Panel(W,H);
        jLabel1 = new javax.swing.JLabel();
        jLabel2 = new javax.swing.JLabel();
        setBackground(new java.awt.Color(34, 40, 44));
