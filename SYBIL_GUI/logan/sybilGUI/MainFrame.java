@@ -31,7 +31,7 @@ public class MainFrame extends javax.swing.JFrame {
 	private java.awt.Color main_side_color = new java.awt.Color(22,22,22);
 	private java.awt.Color second_side_color = new java.awt.Color(24, 20, 44);
 	private int window_width = 1400;
-	private int window_height = 900;
+	private int window_height = 1400;
     /**
      * Creates new form MainFrame
      */
@@ -69,6 +69,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
     	DATA_VIEW = new Data_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color);
     	STATS_VIEW = new Stats_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color);
+    	second  = new dummy_secondPanel(window_width-100,window_height-200,main_bg_color,second_side_color);
     	setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     	
     	
@@ -324,7 +325,10 @@ public class MainFrame extends javax.swing.JFrame {
     }                                        
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // TODO add your handling code here:
+		center_panel.removeAll();
+		center_panel.add(second);
+		center_panel.repaint();
+		center_panel.revalidate();
     }                                        
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -434,6 +438,8 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel sybilLogo_panel;
     private javax.swing.JPanel top_panel;
     private javax.swing.JPanel main_panel;
+    
+    private javax.swing.JPanel second;
     // End of variables declaration
     //OTHER VIEWS
     private javax.swing.JPanel DATA_VIEW;

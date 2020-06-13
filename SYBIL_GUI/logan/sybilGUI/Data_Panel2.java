@@ -33,8 +33,8 @@ public class Data_Panel2 extends Secondary_View{
        load_data_handler_btn = new javax.swing.JButton();
        edit_data_handler_btn = new javax.swing.JButton();
        new_data_handler_btn = new javax.swing.JButton();
-       
-       data_label_panel = new Data_Label_Panel(W,H);
+
+       data_label_panel = new Data_Label_Panel2(W-side_panel.getPreferredSize().width,H, main_bg_color, main_bg_color, 200);
        data_handler_panel = new Data_Handler_Panel(W,H,main_bg_color,main_side_color);
        
        jLabel1 = new javax.swing.JLabel();

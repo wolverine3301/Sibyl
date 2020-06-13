@@ -1,6 +1,8 @@
 package logan.sybilGUI;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 
@@ -29,16 +31,24 @@ public class Stats_Panel2 extends Secondary_View{
         box_plot_btn = new javax.swing.JButton();
         pie_chart_btn = new javax.swing.JButton();
 
+        
+        //HYPO_VIEW = new Hypothesis_Panel(center_panel.getWidth(),center_panel.getHeight(),main_bg_color,main_side_color);
+        HYPO_VIEW = new Hypothesis_Panel2(center_panel.getPreferredSize().width,center_panel.getPreferredSize().height,main_bg_color,main_side_color,100);
+        System.out.println(HYPO_VIEW.getHeight());
+        
         int btn_size = 50;
         hypo_test_btn.setBackground(main_side_color);
         hypo_test_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/stats_icons/icons8_Millenium_Eye_50px_1.png",btn_size,btn_size)); // NOI18N
         hypo_test_btn.setToolTipText("all seeing eye");
         
-        hypo_test_btn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                testAction(evt);
-            }
-        });
+        hypo_test_btn.addActionListener(new ActionListener() {
+         	public void actionPerformed(ActionEvent e) {
+      			center_panel.removeAll();
+      			center_panel.add(HYPO_VIEW);
+      			center_panel.repaint();
+      			center_panel.revalidate();
+         	}
+      });
 
         side_panel.add(hypo_test_btn);
 
@@ -74,11 +84,10 @@ public class Stats_Panel2 extends Secondary_View{
         
         add(side_panel, java.awt.BorderLayout.WEST);
         
-        center_panel.setBackground(Color.GREEN);
-        center_panel.setPreferredSize(new java.awt.Dimension(W, H));
+        //center_panel.setBackground(Color.GREEN);
+        //center_panel.setPreferredSize(new java.awt.Dimension(W, H));
         
-        HYPO_VIEW = new Hypothesis_Panel(center_panel.getWidth(),center_panel.getHeight(),main_bg_color,main_side_color);
-        System.out.println(HYPO_VIEW.getHeight());
+        /*
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(center_panel);
 
         
@@ -92,7 +101,7 @@ public class Stats_Panel2 extends Secondary_View{
             .addGap(0, 0, Short.MAX_VALUE)
         );
         
-        
+        */
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         
         this.setLayout(layout);
