@@ -12,10 +12,14 @@ import javax.swing.JPanel;
 public class Data_Panel extends javax.swing.JPanel {
 	private int W;
 	private int H;
+	private java.awt.Color main_bg_color;
+	private java.awt.Color main_side_color;
    /**
     * Creates new form New_Project_Panel
     */
-   public Data_Panel(int width,int height) {
+   public Data_Panel(int width,int height,java.awt.Color main_bg_color, java.awt.Color main_side_color) {
+	   this.main_bg_color = main_bg_color;
+	   this.main_side_color = main_side_color;
 	   W = width;
 	   H = height;
        initComponents();
@@ -39,18 +43,19 @@ public class Data_Panel extends javax.swing.JPanel {
        center_panel = new javax.swing.JPanel();
        
        data_label_panel = new Data_Label_Panel(W,H);
-       data_handler_panel = new Data_Handler_Panel(W,H);
+       data_handler_panel = new Data_Handler_Panel(W,H,main_bg_color,main_side_color);
+       
        jLabel1 = new javax.swing.JLabel();
        jLabel2 = new javax.swing.JLabel();
-       setBackground(new java.awt.Color(34, 40, 44));
+       setBackground(main_bg_color);
        setLayout(new java.awt.BorderLayout());
        setPreferredSize(new java.awt.Dimension(W, H));
 
-       side_panel.setBackground(new java.awt.Color(24, 30, 40));
+       side_panel.setBackground(main_side_color);
        side_panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-       side_panel.setPreferredSize(new java.awt.Dimension(100, 700));
+       side_panel.setPreferredSize(new java.awt.Dimension(100, H));
 
-       side_panel_spacer.setBackground(new java.awt.Color(24, 30, 40));
+       side_panel_spacer.setBackground(main_side_color);
        side_panel_spacer.setPreferredSize(new java.awt.Dimension(100, 120));
 
        javax.swing.GroupLayout side_panel_spacerLayout = new javax.swing.GroupLayout(side_panel_spacer);
@@ -66,8 +71,8 @@ public class Data_Panel extends javax.swing.JPanel {
 
        side_panel.add(side_panel_spacer);
 
-       select_file_btn.setBackground(new java.awt.Color(24, 30, 40));
-       select_file_btn.setForeground(new java.awt.Color(24, 30, 40));
+       select_file_btn.setBackground(main_bg_color);
+       select_file_btn.setForeground(main_bg_color);
        select_file_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/data_panel_icons/icons8_import_50px_3.png", 50, 50)); 
        select_file_btn.setPreferredSize(new java.awt.Dimension(50, 50));
        
@@ -82,14 +87,14 @@ public class Data_Panel extends javax.swing.JPanel {
        });
        side_panel.add(select_file_btn);
 
-       load_data_handler_btn.setBackground(new java.awt.Color(24, 30, 40));
-       load_data_handler_btn.setForeground(new java.awt.Color(24, 30, 40));
+       load_data_handler_btn.setBackground(main_side_color);
+       load_data_handler_btn.setForeground(main_side_color);
        load_data_handler_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/data_panel_icons/icons8_data_configuration_50px_2.png", 50, 50)); // NOI18N
        load_data_handler_btn.setPreferredSize(new java.awt.Dimension(50, 50));
        side_panel.add(load_data_handler_btn);
 
-       edit_data_handler_btn.setBackground(new java.awt.Color(24, 30, 40));
-       edit_data_handler_btn.setForeground(new java.awt.Color(24, 30, 40));
+       edit_data_handler_btn.setBackground(main_side_color);
+       edit_data_handler_btn.setForeground(main_side_color);
        edit_data_handler_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/data_panel_icons/icons8_horizontal_settings_mixer_50px.png", 50, 50)); 
        edit_data_handler_btn.setPreferredSize(new java.awt.Dimension(50, 50));
        
@@ -104,18 +109,17 @@ public class Data_Panel extends javax.swing.JPanel {
        
        side_panel.add(edit_data_handler_btn);
 
-       new_data_handler_btn.setBackground(new java.awt.Color(24, 30, 40));
-       new_data_handler_btn.setForeground(new java.awt.Color(24, 30, 40));
+       new_data_handler_btn.setBackground(main_side_color);
+       new_data_handler_btn.setForeground(main_side_color);
        new_data_handler_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/data_panel_icons/icons8_data_recovery_50px.png", 50, 50)); 
        new_data_handler_btn.setPreferredSize(new java.awt.Dimension(50, 50));
        
        side_panel.add(new_data_handler_btn);
-
        add(side_panel, java.awt.BorderLayout.WEST);
        
-       center_panel.setBackground(new java.awt.Color(34, 40, 44));
+       center_panel.setBackground(main_bg_color);
        center_panel.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
-       center_panel.setPreferredSize(new java.awt.Dimension(900, 700));
+       center_panel.setPreferredSize(new java.awt.Dimension(W-100, H));
        
        jLabel1.setFont(new java.awt.Font("Courier New", 0, 24)); // NOI18N
        jLabel1.setForeground(new java.awt.Color(153, 153, 153));

@@ -7,10 +7,14 @@ package logan.sybilGUI;
 public class Data_Handler_Panel extends javax.swing.JPanel {
 	private int W;
 	private int H;
+	private java.awt.Color main_bg_color;
+	private java.awt.Color main_side_color;
    /**
     * Creates new form Data_Handler_Panel
     */
-   public Data_Handler_Panel(int W,int H) {
+   public Data_Handler_Panel(int W,int H,java.awt.Color main_bg_color, java.awt.Color main_side_color) {
+	   this.main_bg_color = main_bg_color;
+	   this.main_side_color = main_side_color;
 	   this.W=W;
 	   this.H=H;
        initComponents();
@@ -51,14 +55,12 @@ public class Data_Handler_Panel extends javax.swing.JPanel {
        jRadioButton12 = new javax.swing.JRadioButton();
        jSpinner4 = new javax.swing.JSpinner();
        jRadioButton14 = new javax.swing.JRadioButton();
-       standardize_panel = new javax.swing.JPanel();
-       standardize_btn = new javax.swing.JRadioButton();
+       standardize_btn = new javax.swing.JCheckBox();
 
-       setBackground(new java.awt.Color(34, 40, 44));
+       setBackground(main_bg_color);
        setPreferredSize(new java.awt.Dimension(W, H));
        setLayout(new java.awt.BorderLayout());
-
-       top_panel.setBackground(new java.awt.Color(20, 20, 20));
+       top_panel.setBackground(main_side_color);
        top_panel.setMinimumSize(new java.awt.Dimension(W, 60));
        top_panel.setPreferredSize(new java.awt.Dimension(W, 70));
        top_panel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 100, 5));
@@ -78,45 +80,40 @@ public class Data_Handler_Panel extends javax.swing.JPanel {
        jLabel3.setText("Scale");
        top_panel.add(jLabel3);
 
-       jLabel4.setFont(new java.awt.Font("Courier New", 0, 24)); // NOI18N
-       jLabel4.setForeground(new java.awt.Color(102, 102, 102));
-       jLabel4.setText("Standardize");
-       top_panel.add(jLabel4);
-
        add(top_panel, java.awt.BorderLayout.NORTH);
 
-       center_panel.setBackground(new java.awt.Color(34, 40, 44));
+       center_panel.setBackground(main_bg_color);
        center_panel.setPreferredSize(new java.awt.Dimension(W, H-60));
 
-       impute_panel.setBackground(new java.awt.Color(34, 40, 44));
+       impute_panel.setBackground(main_bg_color);
        impute_panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-       impute_panel.setPreferredSize(new java.awt.Dimension(210, 600));
+       impute_panel.setPreferredSize(new java.awt.Dimension(280, 600));
 
-       mean_btn.setBackground(new java.awt.Color(34, 40, 44));
+       mean_btn.setBackground(main_bg_color);
        buttonGroup1.add(mean_btn);
        mean_btn.setForeground(new java.awt.Color(153, 153, 153));
        mean_btn.setText("Mean/Most Frequent");
        impute_panel.add(mean_btn);
 
-       median_btn.setBackground(new java.awt.Color(34, 40, 44));
+       median_btn.setBackground(main_bg_color);
        buttonGroup1.add(median_btn);
        median_btn.setForeground(new java.awt.Color(153, 153, 153));
        median_btn.setText("Median");
        impute_panel.add(median_btn);
 
-       rand_btn.setBackground(new java.awt.Color(34, 40, 44));
+       rand_btn.setBackground(main_bg_color);
        buttonGroup1.add(rand_btn);
        rand_btn.setForeground(new java.awt.Color(153, 153, 153));
        rand_btn.setText("Random");
        impute_panel.add(rand_btn);
 
-       model_btn.setBackground(new java.awt.Color(34, 40, 44));
+       model_btn.setBackground(main_bg_color);
        buttonGroup1.add(model_btn);
        model_btn.setForeground(new java.awt.Color(153, 153, 153));
        model_btn.setText("Model Based");
        impute_panel.add(model_btn);
 
-       remove_btn.setBackground(new java.awt.Color(34, 40, 44));
+       remove_btn.setBackground(main_bg_color);
        buttonGroup1.add(remove_btn);
        remove_btn.setForeground(new java.awt.Color(153, 153, 153));
        remove_btn.setText("Remove Row");
@@ -124,11 +121,11 @@ public class Data_Handler_Panel extends javax.swing.JPanel {
 
        center_panel.add(impute_panel);
 
-       outlier_panel.setBackground(new java.awt.Color(34, 40, 44));
+       outlier_panel.setBackground(main_bg_color);
        outlier_panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-       outlier_panel.setPreferredSize(new java.awt.Dimension(210, 600));
+       outlier_panel.setPreferredSize(new java.awt.Dimension(280, 600));
 
-       std_btn.setBackground(new java.awt.Color(34, 40, 44));
+       std_btn.setBackground(main_bg_color);
        std_btn.setForeground(new java.awt.Color(153, 153, 153));
        std_btn.setText("Standard Deviation");
        outlier_panel.add(std_btn);
@@ -136,17 +133,17 @@ public class Data_Handler_Panel extends javax.swing.JPanel {
        std_spinner.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
        outlier_panel.add(std_spinner);
 
-       dbscan_btn.setBackground(new java.awt.Color(34, 40, 44));
+       dbscan_btn.setBackground(main_bg_color);
        dbscan_btn.setForeground(new java.awt.Color(153, 153, 153));
        dbscan_btn.setSelected(true);
        dbscan_btn.setText("  DBSCAN      ");
        dbscan_btn.setToolTipText("");
        outlier_panel.add(dbscan_btn);
 
-       jSlider1.setBackground(new java.awt.Color(34, 40, 44));
+       jSlider1.setBackground(main_bg_color);
        outlier_panel.add(jSlider1);
 
-       iqr_btn.setBackground(new java.awt.Color(34, 40, 44));
+       iqr_btn.setBackground(main_bg_color);
        iqr_btn.setForeground(new java.awt.Color(153, 153, 153));
        iqr_btn.setText("Inter Quartile Range");
        outlier_panel.add(iqr_btn);
@@ -154,39 +151,33 @@ public class Data_Handler_Panel extends javax.swing.JPanel {
 
        center_panel.add(outlier_panel);
 
-       scale_panel.setBackground(new java.awt.Color(34, 40, 44));
+       scale_panel.setBackground(main_bg_color);
        scale_panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-       scale_panel.setPreferredSize(new java.awt.Dimension(210, 600));
+       scale_panel.setPreferredSize(new java.awt.Dimension(280, 600));
 
-       width_btn.setBackground(new java.awt.Color(34, 40, 44));
+       standardize_btn.setBackground(main_bg_color);
+       standardize_btn.setForeground(new java.awt.Color(153, 153, 153));
+       standardize_btn.setText("Standardize");
+       scale_panel.add(standardize_btn);
+       
+       width_btn.setBackground(main_bg_color);
        width_btn.setForeground(new java.awt.Color(153, 153, 153));
        width_btn.setText("Equal Width Binning");
        scale_panel.add(width_btn);
        scale_panel.add(numBins_spinner);
 
-       jRadioButton12.setBackground(new java.awt.Color(34, 40, 44));
+       jRadioButton12.setBackground(main_bg_color);
        jRadioButton12.setForeground(new java.awt.Color(153, 153, 153));
        jRadioButton12.setText("Equal frequency Binning");
        scale_panel.add(jRadioButton12);
        scale_panel.add(jSpinner4);
 
-       jRadioButton14.setBackground(new java.awt.Color(34, 40, 44));
+       jRadioButton14.setBackground(main_bg_color);
        jRadioButton14.setForeground(new java.awt.Color(153, 153, 153));
        jRadioButton14.setText("Scale -1 to 1");
        scale_panel.add(jRadioButton14);
 
        center_panel.add(scale_panel);
-
-       standardize_panel.setBackground(new java.awt.Color(34, 40, 44));
-       standardize_panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-       standardize_panel.setPreferredSize(new java.awt.Dimension(210, 600));
-
-       standardize_btn.setBackground(new java.awt.Color(34, 40, 44));
-       standardize_btn.setForeground(new java.awt.Color(153, 153, 153));
-       standardize_btn.setText("Standardize");
-       standardize_panel.add(standardize_btn);
-
-       center_panel.add(standardize_panel);
 
        add(center_panel, java.awt.BorderLayout.CENTER);
    }// </editor-fold>                        
@@ -215,8 +206,7 @@ public class Data_Handler_Panel extends javax.swing.JPanel {
    private javax.swing.JRadioButton rand_btn;
    private javax.swing.JRadioButton remove_btn;
    private javax.swing.JPanel scale_panel;
-   private javax.swing.JRadioButton standardize_btn;
-   private javax.swing.JPanel standardize_panel;
+   private javax.swing.JCheckBox standardize_btn;
    private javax.swing.JRadioButton std_btn;
    private javax.swing.JSpinner std_spinner;
    private javax.swing.JPanel top_panel;

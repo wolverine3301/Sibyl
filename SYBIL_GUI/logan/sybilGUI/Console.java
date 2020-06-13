@@ -12,7 +12,7 @@ import javax.swing.JTextArea;
 public class Console {
     public static void main( String [] args ) throws InterruptedException  {
         JFrame frame = new JFrame();
-        frame.add( new JLabel(" Outout" ), BorderLayout.NORTH );
+        frame.add( new JLabel(" SYBIL " ), BorderLayout.NORTH );
 
         JTextArea ta = new JTextArea();
         ta.setBackground(Color.black);

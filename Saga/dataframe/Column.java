@@ -63,6 +63,9 @@ public class Column {
     /** A hashmap with keys being the value, and its mapping being the total occourances in the column. */
     protected HashMap<Object, Integer> uniqueValueCounts;
     
+    /** list of indexes with NAN or null values **/
+    public ArrayList<Integer> missingIndexes;
+    
     /** The most occouring value in the column. */
     public Object mode;
     
@@ -105,7 +108,7 @@ public class Column {
         uniqueValues = new HashSet<Object>();
         featureStats = new HashMap<Object, Double>();
         uniqueValueCounts = new HashMap<Object, Integer>();
-        
+        missingIndexes = new ArrayList<Integer>();
         for(int i = 0; i < arr.length; i++) {
         	Particle p = Particle.resolveType(arr[i],i);
         	column.add(p);
@@ -120,7 +123,7 @@ public class Column {
         uniqueValues = new HashSet<Object>();
         featureStats = new HashMap<Object, Double>();
         uniqueValueCounts = new HashMap<Object, Integer>();
-        
+        missingIndexes = new ArrayList<Integer>();
         for(int i = 0; i < arr.length; i++) {
         	Particle p = Particle.resolveType(arr[i],i);
         	column.add(p);
@@ -139,6 +142,7 @@ public class Column {
         uniqueValues = new HashSet<Object>();
         featureStats = new HashMap<Object, Double>();
         uniqueValueCounts = new HashMap<Object, Integer>();
+        missingIndexes = new ArrayList<Integer>();
         readyForStats = false;
         type = 'U';
     }
@@ -156,6 +160,7 @@ public class Column {
         uniqueValues = new HashSet<Object>();
         featureStats = new HashMap<Object, Double>();
         uniqueValueCounts = new HashMap<Object, Integer>();
+        missingIndexes = new ArrayList<Integer>();
         readyForStats = false;
     }
     
@@ -183,6 +188,9 @@ public class Column {
      */
     public void add(Particle p) {
     	p.setIndex(columnLength);
+    	if(p.getType() == 'n') {
+    		missingIndexes.add(columnLength);
+    	}
         column.add(p);
         this.columnLength++;
     }
@@ -712,5 +720,8 @@ public class Column {
      */
     public ArrayList<Particle> getSortedValues(){
     	return this.sorted_column;
+    }
+    public int getTotal_missing() {
+    	return missingIndexes.size();
     }
 }

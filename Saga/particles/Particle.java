@@ -208,6 +208,8 @@ public abstract class Particle implements Comparable<Particle>{
     	if(type == 'i') {
     		num = (int)value;
     		return (double) num;
+    	}else if(type == 'n'){
+    		return 0;
     	}else {
     		return (double)value;
     	}

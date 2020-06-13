@@ -12,19 +12,25 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import java.awt.*; //new gif
+
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import java.awt.Image;
+import java.awt.Toolkit;
 /**
  *
  * @author Owner
  */
 public class MainFrame extends javax.swing.JFrame {
 	
-	private int window_width = 1800;
+	private java.awt.Color main_bg_color = new java.awt.Color(34, 40, 44);
+	private java.awt.Color main_side_color = new java.awt.Color(22,22,22);
+	private java.awt.Color second_side_color = new java.awt.Color(24, 20, 44);
+	private int window_width = 1400;
 	private int window_height = 900;
     /**
      * Creates new form MainFrame
@@ -33,7 +39,7 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
         JButton[] buttons = {home_btn,data_btn,stats_btn,preProcess_btn,AI_btn,score_btn,terminal_btn};
         for(final JButton btn : buttons){
-            btn.setBackground(new Color(22,22,22));
+            btn.setBackground(main_side_color);
             btn.setUI(new BasicButtonUI());
             btn.addMouseListener(new MouseListener(){
 
@@ -47,7 +53,7 @@ public class MainFrame extends javax.swing.JFrame {
                     btn.setBackground(new Color(44,44,44));
                 }
                 public void mouseExited(MouseEvent e) {
-                    btn.setBackground(new Color(22,22,22));
+                    btn.setBackground(main_side_color);
                 }
             });
         }
@@ -61,6 +67,8 @@ public class MainFrame extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
+    	DATA_VIEW = new Data_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color);
+    	STATS_VIEW = new Stats_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color);
     	setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     	
     	
@@ -91,20 +99,20 @@ public class MainFrame extends javax.swing.JFrame {
         root_panel.setPreferredSize(new java.awt.Dimension(window_width, window_height));
         root_panel.setLayout(new java.awt.BorderLayout());
 
-        main_panel.setBackground(new java.awt.Color(34, 40, 44));
+        main_panel.setBackground(main_bg_color);
         main_panel.setPreferredSize(new java.awt.Dimension(window_width-100, window_height - (2*(window_height/10))) );
         main_panel.setLayout(new java.awt.BorderLayout());
 
-        bottom_panel.setBackground(new java.awt.Color(34, 40, 44));
+        bottom_panel.setBackground(main_bg_color);
         bottom_panel.setPreferredSize(new java.awt.Dimension(window_width-100, 100));
         
         new_project_btn.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        new_project_btn.setBackground(new java.awt.Color(34, 40, 44));
+        new_project_btn.setBackground(main_bg_color);
         new_project_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_plus_2_math_50px_2.png",50,50));
         new_project_btn.setText("New Project");
         
         open_pjct_btn.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        open_pjct_btn.setBackground(new java.awt.Color(34,40,44));
+        open_pjct_btn.setBackground(main_bg_color);
         open_pjct_btn.setForeground(new java.awt.Color(153, 153, 153));
         open_pjct_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_opened_folder_50px_1.png",50,50)); // NOI18N
         open_pjct_btn.setText("Open Project");
@@ -136,12 +144,12 @@ public class MainFrame extends javax.swing.JFrame {
         //BOTTOM PANEL
         
         //TOP PANEL
-        top_panel.setBackground(new java.awt.Color(34, 40, 44));
+        top_panel.setBackground(main_bg_color);
         top_panel.setPreferredSize(new java.awt.Dimension(window_width-100, 100));
         top_panel.setRequestFocusEnabled(false);
         
         //LOGO
-        sybilLogo_panel.setBackground(new java.awt.Color(34, 40, 44));
+        sybilLogo_panel.setBackground(main_bg_color);
         sybilLogo_panel.setPreferredSize(new java.awt.Dimension(300, 100));
 
         logo_label.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/sybilLOGO.png",300,100)); // NOI18N
@@ -168,8 +176,17 @@ public class MainFrame extends javax.swing.JFrame {
         //TOP PANEL
         
         //CENTER PANEL
-        center_panel.setBackground(new java.awt.Color(34, 40, 44));
+
+        center_panel.setBackground(main_bg_color);
         center_panel.setPreferredSize(new java.awt.Dimension(window_width-100, window_height-200));
+        
+        
+        //center_panel=new Background_Panel_1(center_panel.getWidth(),center_panel.getHeight());
+        //center_panel.add(new Background_Panel_1(center_panel.getWidth(),center_panel.getHeight()), java.awt.BorderLayout.CENTER);
+        // Set JWindow size from image size
+        //setSize(imageIcon.getIconWidth(),imageIcon.getIconHeight());
+        //center_panel.add(imageLabel, java.awt.BorderLayout.CENTER);
+        
         
         jLabel4.setFont(new java.awt.Font("Courier New", 0, 48)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(102, 102, 102));
@@ -185,13 +202,13 @@ public class MainFrame extends javax.swing.JFrame {
         root_panel.add(main_panel, java.awt.BorderLayout.LINE_END);
         
         //SIDE PANEL
-        side_panel.setBackground(new java.awt.Color(22, 22, 22));
+        side_panel.setBackground(main_side_color);
         side_panel.setPreferredSize(new java.awt.Dimension(100, window_height));
         
-        home_btn_panel.setBackground(new java.awt.Color(22, 22, 22));
+        home_btn_panel.setBackground(main_side_color);
         home_btn_panel.setPreferredSize(new java.awt.Dimension(100, 200));
 
-        home_btn.setBackground(new java.awt.Color(22, 22, 22));
+        home_btn.setBackground(main_side_color);
         home_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_home_50px_3.png",50,50)); // NOI18N
         home_btn.setPreferredSize(new java.awt.Dimension(50, 50));
 
@@ -220,7 +237,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         side_panel.add(home_btn_panel);
 
-        data_btn.setBackground(new java.awt.Color(22, 22, 22));
+        data_btn.setBackground(main_side_color);
         data_btn.setForeground(new java.awt.Color(255, 255, 255));
         data_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/oct.png",50,50)); // NOI18N
         data_btn.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -231,7 +248,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         side_panel.add(data_btn);
 
-        stats_btn.setBackground(new java.awt.Color(22, 22, 22));
+        stats_btn.setBackground(main_side_color);
         stats_btn.setForeground(new java.awt.Color(255, 255, 255));
         stats_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_combo_chart_50px_1.png",50,50)); // NOI18N
         stats_btn.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -242,7 +259,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         side_panel.add(stats_btn);
 
-        preProcess_btn.setBackground(new java.awt.Color(22, 22, 22));
+        preProcess_btn.setBackground(main_side_color);
         preProcess_btn.setForeground(new java.awt.Color(255, 255, 255));
         preProcess_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_filter_50px_2.png",50,50)); // NOI18N
         preProcess_btn.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -253,7 +270,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         side_panel.add(preProcess_btn);
 
-        AI_btn.setBackground(new java.awt.Color(22, 22, 22));
+        AI_btn.setBackground(main_side_color);
         AI_btn.setForeground(new java.awt.Color(255, 255, 255));
         AI_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_artificial_intelligence_50px.png",50,50)); // NOI18N
         AI_btn.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -264,7 +281,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         side_panel.add(AI_btn);
 
-        score_btn.setBackground(new java.awt.Color(22, 22, 22));
+        score_btn.setBackground(main_side_color);
         score_btn.setForeground(new java.awt.Color(255, 255, 255));
         score_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_define_location_50px.png",50,50)); // NOI18N
         score_btn.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -275,7 +292,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         side_panel.add(score_btn);
         
-        terminal_btn.setBackground(new java.awt.Color(22, 22, 22));
+        terminal_btn.setBackground(main_side_color);
         terminal_btn.setForeground(new java.awt.Color(255, 255, 255));
         terminal_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_source_code_50px.png",50,50)); // NOI18N
         terminal_btn.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -325,7 +342,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
     private void terminal_btn_ActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame frame = new JFrame();
-        frame.add( new JLabel(" Outout" ), BorderLayout.NORTH );
+        frame.add( new JLabel(" SYBIL" ), BorderLayout.NORTH );
 
         JTextArea ta = new JTextArea();
         ta.setBackground(Color.black);
@@ -419,6 +436,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel main_panel;
     // End of variables declaration
     //OTHER VIEWS
-    private javax.swing.JPanel DATA_VIEW = new Data_Panel(window_width-100,window_height-200);
-    private javax.swing.JPanel STATS_VIEW = new Stats_Panel(window_width,window_height);
+    private javax.swing.JPanel DATA_VIEW;
+    private javax.swing.JPanel STATS_VIEW;
 }
