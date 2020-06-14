@@ -10,6 +10,8 @@ import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
+import Controllers.Data_Label_Controller;
+
 /**
 *
 * @author Owner

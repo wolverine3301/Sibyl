@@ -2,6 +2,8 @@ package logan.sybilGUI;
 
 import javax.swing.filechooser.FileSystemView;
 
+import Controllers.Data_Label_Controller;
+
 public class File_Select_Panel extends javax.swing.JPanel {
 
 	Data_Label_Controller ctrl;
@@ -29,9 +31,7 @@ public class File_Select_Panel extends javax.swing.JPanel {
         int r = jFileChooser.showOpenDialog(null); 
 
         // if the user selects a file 
-        if (r == jFileChooser.APPROVE_OPTION) 
-
-        { 
+        if (r == jFileChooser.APPROVE_OPTION){ 
             // set the label to the path of the selected file 
             System.out.println(jFileChooser.getSelectedFile().getAbsolutePath()); 
         } 

@@ -28,6 +28,27 @@ public class Invoke {
 	//
 	private static NumericRanker NR; 
 	private static DataFrame  df;
+	public void start() {
+		String file = "testfiles/iris.txt";
+        df = DataFrame.read_csv(file);
+        df.setColumnType("species", 'T');//set target column
+        df.convertNANS_mean(); // conevert any NAN's to the mean of column 
+        df = Standardize.standardize_df(df); //Standardize the DF into z scores
+        df = df.shuffle(df);
+		NaiveBayes nb = new NaiveBayes();
+        CrossValidation cv = new CrossValidation(df, 2, nb);
+        //cv.avgScores();
+        //cv.printScores();
+        //cv.printMatrixs();
+        //System.out.println(df.columnNamesToString());
+        NR = new NumericRanker(df,0);
+        //System.out.println(NR.getSpearman());
+        CR = new CategoryRanker(df, 0);
+		
+		//CR.printRankings();
+		generateRecollection(2, 4);
+	}
+	/*
 	public static void main(String[] args) {
 		
 		
@@ -69,6 +90,7 @@ public class Invoke {
 		generateRecollection(2, 4);
 
 	}
+	*/
 	/**
 	 * evocation
 	 * creates an arraylist of dataframes with varying number of columns ranked by various measures in Ranker classes

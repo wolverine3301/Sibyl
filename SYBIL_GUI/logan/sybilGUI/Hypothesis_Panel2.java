@@ -6,6 +6,8 @@ import java.io.PrintStream;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import scout.Invoke;
+
 public class Hypothesis_Panel2 extends Tertiary_View{
 
 	public Hypothesis_Panel2(int width, int height, Color main_bg_color, Color main_side_color, int side_panel_W) {
@@ -166,7 +168,11 @@ public class Hypothesis_Panel2 extends Tertiary_View{
         execute_panel.setBackground(main_side_color);
 
         jButton1.setText("Reveal");
-
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                invokeActionPerformed(evt);
+            }
+        });
         makeReport_checkbox.setBackground(main_side_color);
         makeReport_checkbox.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
         makeReport_checkbox.setForeground(new java.awt.Color(153, 153, 153));
@@ -214,40 +220,15 @@ public class Hypothesis_Panel2 extends Tertiary_View{
         JScrollPane consol = new JScrollPane( ta );
 
         consol.setPreferredSize(new java.awt.Dimension(center_panel.getPreferredSize().width, H));
-        center_panel.add( consol ,java.awt.BorderLayout.CENTER );
-/*
-        javax.swing.GroupLayout center_panelLayout = new javax.swing.GroupLayout(center_panel);
-        center_panel.setLayout(center_panelLayout);
-        center_panelLayout.setHorizontalGroup(
-            center_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
-        );
-        center_panelLayout.setVerticalGroup(
-            center_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        center_panel.add( consol ,java.awt.BorderLayout.CENTER);
 
-
-        
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(side_panel, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(center_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(center_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(side_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        */
 	    add(side_panel, java.awt.BorderLayout.WEST);
 	    add(center_panel, java.awt.BorderLayout.CENTER);
 	}
-	
+    private void invokeActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        Invoke inv = new Invoke();
+        inv.start();
+    }        
     // Variables declaration - do not modify                     
     private javax.swing.JSpinner chi_significe_spinner;
     private javax.swing.JCheckBox chisquared_checkbox;

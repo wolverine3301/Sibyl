@@ -10,6 +10,9 @@ import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.filechooser.FileSystemView;
+
+import Controllers.Data_Label_Controller;
 
 public class Data_Label_Panel2 extends Tertiary_View{
 
@@ -22,7 +25,7 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	protected void initComponents() {
 		   buttons = new HashMap<String,JButton>();
 		   controller = new Data_Label_Controller();
-		   
+
 	       bottom_panel = new javax.swing.JPanel();
 	       numeric_panel = new javax.swing.JPanel();
 	       target_panel = new javax.swing.JPanel();
@@ -64,14 +67,14 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	       //add(side_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 0, 150, H));
 	       add(side_panel, java.awt.BorderLayout.WEST);
 	       
-	       top_panel.setBackground(new java.awt.Color(34, 40, 44));
+	       top_panel.setBackground(main_bg_color);
 	       top_panel.setPreferredSize(new java.awt.Dimension(W-side_panel.getPreferredSize().width, 200));
 
 	       file_name_label.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
 	       file_name_label.setForeground(new java.awt.Color(153, 153, 153));
 	       file_name_label.setText(controller.getFileName());
 	       
-	       file_sel_btn.setBackground(new java.awt.Color(34, 40, 44));
+	       file_sel_btn.setBackground(main_bg_color);
 	       file_sel_btn.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
 	       file_sel_btn.setForeground(new java.awt.Color(153, 153, 153));
 	       file_sel_btn.setText("FILE: ");
@@ -160,11 +163,11 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	      
 	       add(center_panel,java.awt.BorderLayout.CENTER);
 
-	       bottom_panel.setBackground(new java.awt.Color(34, 40, 44));
+	       bottom_panel.setBackground(main_bg_color);
 	       bottom_panel.setPreferredSize(new java.awt.Dimension(center_panel.getPreferredSize().width-200, 500));
 	       bottom_panel.setLayout(new java.awt.GridLayout(1, 5));
 
-	       numeric_panel.setBackground(new java.awt.Color(34, 40, 44));
+	       numeric_panel.setBackground(main_bg_color);
 	       numeric_panel.setLayout(new java.awt.GridLayout(20, 1));
 
 	       jLabel16.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
@@ -185,7 +188,7 @@ public class Data_Label_Panel2 extends Tertiary_View{
 
 	       bottom_panel.add(numeric_panel);
 
-	       categorical_panel.setBackground(new java.awt.Color(34, 40, 44));
+	       categorical_panel.setBackground(main_bg_color);
 	       categorical_panel.setLayout(new java.awt.GridLayout(20, 1));
 
 	       jLabel34.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
@@ -206,7 +209,7 @@ public class Data_Label_Panel2 extends Tertiary_View{
 
 	       bottom_panel.add(categorical_panel);
 
-	       target_panel.setBackground(new java.awt.Color(34, 40, 44));
+	       target_panel.setBackground(main_bg_color);
 	       target_panel.setLayout(new java.awt.GridLayout(20, 1));
 
 	       jLabel22.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
@@ -227,7 +230,7 @@ public class Data_Label_Panel2 extends Tertiary_View{
 
 	       bottom_panel.add(target_panel);
 
-	       meta_panel.setBackground(new java.awt.Color(34, 40, 44));
+	       meta_panel.setBackground(main_bg_color);
 	       meta_panel.setLayout(new java.awt.GridLayout(20, 1));
 
 	       jLabel28.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
@@ -248,7 +251,7 @@ public class Data_Label_Panel2 extends Tertiary_View{
 
 	       bottom_panel.add(meta_panel);
 
-	       misc_panel.setBackground(new java.awt.Color(34, 40, 44));
+	       misc_panel.setBackground(main_bg_color);
 	       misc_panel.setLayout(new java.awt.GridLayout(20, 1));
 
 	       jLabel25.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
@@ -313,11 +316,35 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	   }
 	   //open file selector
 	   private void file_select_action() {
-	  		JDialog fileSel = new JDialog();
-	  		fileSel.setSize(500, 650);
-	  		File_Select_Panel files = new File_Select_Panel(controller);
-	        fileSel.add(files);
-	        fileSel.setVisible(true);
+	        // create an object of JFileChooser class 
+	  		javax.swing.JFileChooser filechoose = new javax.swing.JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory()); 
+	        // invoke the showsOpenDialog function to show the save dialog 
+	        int r = filechoose.showOpenDialog(null); 
+	        // if the user selects a file 
+	        if (r == filechoose.APPROVE_OPTION){ 
+	            // set the label to the path of the selected file 
+	            System.out.println(filechoose.getSelectedFile().getAbsolutePath()); 
+	            controller.openFile(filechoose.getSelectedFile().getAbsolutePath());
+       			side_panel.removeAll();
+
+       			ArrayList<String> names = controller.getColumnNames();
+       			ArrayList<Character> types = controller.getColumnTypes();
+       			for(int i = 0; i< names.size(); i++) {
+       				make_button(names.get(i),types.get(i));
+       			}
+       			side_panel.repaint();
+       			side_panel.revalidate();
+                num_cat_label.setText(String.valueOf(controller.getTotalCategoricalColumns()));
+                num_target_label.setText(String.valueOf(controller.getTotalTargetColumns()));
+                num_meta_label.setText(String.valueOf(controller.getTotalMetaColumns()));
+                numNumeric_label.setText(String.valueOf(controller.getTotalNumericColumns()));
+	        } 
+	        // if the user cancelled the operation 
+	        else
+	            System.out.println("the user cancelled the operation");
+	        
+		    filechoose.setSize(500, 500);
+	        filechoose.setVisible(true);
 	        
 	   }
 	   private void setBtnIcon(JButton btn, char t) {
@@ -336,6 +363,12 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	   // Variables declaration - do not modify                     
 	   private javax.swing.JPanel bottom_panel;
 	   private javax.swing.JPanel categorical_panel;
+	   private javax.swing.JPanel meta_panel;
+	   private javax.swing.JPanel misc_panel;
+	   private javax.swing.JPanel numeric_panel;
+	   private javax.swing.JPanel target_panel;
+	   private javax.swing.JPanel top_panel;
+	   
 	   private javax.swing.JLabel fileSize_label;
 	   private javax.swing.JLabel file_name_label;
 	   private javax.swing.JLabel jLabel16;
@@ -351,8 +384,6 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	   private javax.swing.JLabel label_column;
 	   private javax.swing.JLabel label_rows;
 	   private javax.swing.JLabel label_size;
-	   private javax.swing.JPanel meta_panel;
-	   private javax.swing.JPanel misc_panel;
 	   private javax.swing.JLabel numNumeric_label;
 	   private javax.swing.JLabel numOfColumns_label;
 	   private javax.swing.JLabel numOfRows_label;
@@ -360,9 +391,7 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	   private javax.swing.JLabel num_meta_label;
 	   private javax.swing.JLabel num_misc_label;
 	   private javax.swing.JLabel num_target_label;
-	   private javax.swing.JPanel numeric_panel;
-	   private javax.swing.JPanel target_panel;
-	   private javax.swing.JPanel top_panel;
+
 	   
 	   
 	   private javax.swing.JButton file_sel_btn;
