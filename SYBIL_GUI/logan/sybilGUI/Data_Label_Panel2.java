@@ -334,6 +334,8 @@ public class Data_Label_Panel2 extends Tertiary_View{
        			}
        			side_panel.repaint();
        			side_panel.revalidate();
+       			numOfRows_label.setText(String.valueOf(controller.getTotalRows()));
+       			numOfColumns_label.setText(String.valueOf(controller.getNumColumns()));
                 num_cat_label.setText(String.valueOf(controller.getTotalCategoricalColumns()));
                 num_target_label.setText(String.valueOf(controller.getTotalTargetColumns()));
                 num_meta_label.setText(String.valueOf(controller.getTotalMetaColumns()));

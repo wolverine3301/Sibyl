@@ -15,10 +15,6 @@ public class Data_Label_Controller {
 	private ArrayList<Character> types = new ArrayList<Character>();
 	public Data_Label_Controller() {
 		df = new DataFrame();
-		//fileName = "testfiles/test_data.txt";
-		//df = DataFrame_Read.loadcsv(fileName);
-		//df.setColumnType(1, 'T');
-		//setCol();
 	}
 	/**
 	 * opens a data file and creates a dataframe
