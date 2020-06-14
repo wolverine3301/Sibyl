@@ -14,9 +14,6 @@ public class Hypothesis_Panel2 extends Tertiary_View{
 
 	@Override
 	protected void initComponents() {
-
-        center_panel = new javax.swing.JPanel();
-        side_panel = new javax.swing.JPanel();
         ttest_panel = new javax.swing.JPanel();
         t_test_checkbox = new javax.swing.JCheckBox();
         ttest_significe_spinner = new javax.swing.JSpinner();
@@ -203,17 +200,21 @@ public class Hypothesis_Panel2 extends Tertiary_View{
         );
 
         side_panel.add(execute_panel);
-
+        System.out.println(H);
+        System.out.println(center_panel.getWidth());
         JTextArea ta = new JTextArea();
-        ta.setBackground(main_bg_color);
+        ta.setBackground(Color.BLACK);
         ta.setForeground(Color.gray);
-        ta.setSize(W-200, H);
-        
+        //ta.setSize(W-100, H);
+        ta.setPreferredSize(new java.awt.Dimension(center_panel.getPreferredSize().width, H));
         TextAreaOutputStream taos = new TextAreaOutputStream( ta, 60 );
         PrintStream ps = new PrintStream( taos );
         System.setOut( ps );
         System.setErr( ps );
-        center_panel.add( new JScrollPane( ta )  );
+        JScrollPane consol = new JScrollPane( ta );
+
+        consol.setPreferredSize(new java.awt.Dimension(center_panel.getPreferredSize().width, H));
+        center_panel.add( consol ,java.awt.BorderLayout.CENTER );
 /*
         javax.swing.GroupLayout center_panelLayout = new javax.swing.GroupLayout(center_panel);
         center_panel.setLayout(center_panelLayout);
@@ -248,7 +249,6 @@ public class Hypothesis_Panel2 extends Tertiary_View{
 	}
 	
     // Variables declaration - do not modify                     
-    private javax.swing.JPanel center_panel;
     private javax.swing.JSpinner chi_significe_spinner;
     private javax.swing.JCheckBox chisquared_checkbox;
     private javax.swing.JPanel chisquared_panel;
@@ -261,7 +261,6 @@ public class Hypothesis_Panel2 extends Tertiary_View{
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox makeReport_checkbox;
     private javax.swing.JCheckBox obstable_checkbox;
-    private javax.swing.JPanel side_panel;
     private javax.swing.JCheckBox t_test_checkbox;
     private javax.swing.JPanel ttest_panel;
     private javax.swing.JSpinner ttest_significe_spinner;

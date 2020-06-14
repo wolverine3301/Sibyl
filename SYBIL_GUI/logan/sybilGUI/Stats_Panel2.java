@@ -31,10 +31,8 @@ public class Stats_Panel2 extends Secondary_View{
         box_plot_btn = new javax.swing.JButton();
         pie_chart_btn = new javax.swing.JButton();
 
-        
         //HYPO_VIEW = new Hypothesis_Panel(center_panel.getWidth(),center_panel.getHeight(),main_bg_color,main_side_color);
-        HYPO_VIEW = new Hypothesis_Panel2(center_panel.getPreferredSize().width,center_panel.getPreferredSize().height,main_bg_color,main_side_color,100);
-        System.out.println(HYPO_VIEW.getHeight());
+        HYPO_VIEW = new Hypothesis_Panel2(center_panel.getPreferredSize().width,center_panel.getPreferredSize().height,main_bg_color,main_side_color,200);
         
         int btn_size = 50;
         hypo_test_btn.setBackground(main_side_color);
@@ -84,24 +82,6 @@ public class Stats_Panel2 extends Secondary_View{
         
         add(side_panel, java.awt.BorderLayout.WEST);
         
-        //center_panel.setBackground(Color.GREEN);
-        //center_panel.setPreferredSize(new java.awt.Dimension(W, H));
-        
-        /*
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(center_panel);
-
-        
-        center_panel.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        
-        */
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         
         this.setLayout(layout);
