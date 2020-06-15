@@ -54,7 +54,7 @@ public class ScatterPlot3DDemo1 extends JFrame {
     public static JPanel createDemoPanel(DataFrame df) {
         Plot_3D_Panel content = new Plot_3D_Panel(new BorderLayout());
         content.setPreferredSize(new Dimension(760, 480));
-        DataFrame[] classs = Util.splitOnTarget(df, 4);
+        DataFrame[] classs = Util.splitOnTarget(df, df.target_columns.get(0));
         XYZDataset dataset = createDataset(classs);
         Chart3D chart = createChart(dataset);
         Chart3DPanel chartPanel = new Chart3DPanel(chart);
@@ -136,6 +136,7 @@ public class ScatterPlot3DDemo1 extends JFrame {
     public static void main(String[] args) {
     	String file = "testfiles/iris.txt";
         DataFrame df = DataFrame.read_csv(file);
+        df.setColumnType(4, 'T');
         ScatterPlot3DDemo1 app = new ScatterPlot3DDemo1(df);
         app.pack();
         app.setVisible(true);

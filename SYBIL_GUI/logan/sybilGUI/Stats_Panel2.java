@@ -6,12 +6,16 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 
+import Controllers.Data_Label_Controller;
+
 public class Stats_Panel2 extends Secondary_View{
 
 	private int btn_size = 50;
+	Data_Label_Controller ctrl;
 	
-	public Stats_Panel2(int width, int height, Color main_bg_color, Color main_side_color) {
+	public Stats_Panel2(int width, int height, Color main_bg_color, Color main_side_color,Data_Label_Controller ctrl) {
 		super(width, height, main_bg_color, main_side_color);
+		this.ctrl = ctrl;
 	}
 	/**
      * This method is called from within the constructor to initialize the form.
@@ -34,6 +38,7 @@ public class Stats_Panel2 extends Secondary_View{
         //HYPO_VIEW = new Hypothesis_Panel(center_panel.getWidth(),center_panel.getHeight(),main_bg_color,main_side_color);
         HYPO_VIEW = new Hypothesis_Panel2(center_panel.getPreferredSize().width,center_panel.getPreferredSize().height,main_bg_color,main_side_color,200);
         
+        
         int btn_size = 50;
         hypo_test_btn.setBackground(main_side_color);
         hypo_test_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/stats_icons/icons8_Millenium_Eye_50px_1.png",btn_size,btn_size)); // NOI18N
@@ -41,10 +46,7 @@ public class Stats_Panel2 extends Secondary_View{
         
         hypo_test_btn.addActionListener(new ActionListener() {
          	public void actionPerformed(ActionEvent e) {
-      			center_panel.removeAll();
-      			center_panel.add(HYPO_VIEW);
-      			center_panel.repaint();
-      			center_panel.revalidate();
+      			testAction(e);
          	}
       });
 
@@ -58,6 +60,11 @@ public class Stats_Panel2 extends Secondary_View{
         regression.setBackground(main_side_color);
         regression.setIcon(GUI_Util.getIcon("SYBIL_GUI/stats_icons/icons8_coordinate_system_50px.png",btn_size,btn_size)); // NOI18N
         regression.setToolTipText("regression");
+        regression.addActionListener(new ActionListener() {
+         	public void actionPerformed(ActionEvent e) {
+         		regressionAction(e);
+         	}
+      });
         side_panel.add(regression);
 
         distribution.setBackground(main_side_color);
@@ -107,7 +114,13 @@ public class Stats_Panel2 extends Secondary_View{
 		center_panel.repaint();
 		center_panel.revalidate();
     }
-
+    private void regressionAction(java.awt.event.ActionEvent evt) {
+    	REG_3D_VIEW = new ThreeD_Scatter_Panel(center_panel.getPreferredSize().width,center_panel.getPreferredSize().height,main_bg_color,main_side_color,200,ctrl);
+		center_panel.removeAll();
+		center_panel.add(REG_3D_VIEW);
+		center_panel.repaint();
+		center_panel.revalidate();
+    }
     // Variables declaration - do not modify                     
     private javax.swing.JButton area_compare_btn;
     private javax.swing.JButton distribution;
@@ -120,4 +133,5 @@ public class Stats_Panel2 extends Secondary_View{
     // End of variables declaration 
     //VIEWS
     private javax.swing.JPanel HYPO_VIEW;
+    private javax.swing.JPanel REG_3D_VIEW;
 }

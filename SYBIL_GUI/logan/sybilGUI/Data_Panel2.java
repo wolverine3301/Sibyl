@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
+import Controllers.Data_Label_Controller;
+
 public class Data_Panel2 extends Secondary_View{
 	
 	/**
@@ -36,7 +38,7 @@ public class Data_Panel2 extends Secondary_View{
 
        data_label_panel = new Data_Label_Panel2(W-side_panel.getPreferredSize().width,H, main_bg_color, main_bg_color, 200);
        data_handler_panel = new Data_Handler_Panel(W,H,main_bg_color,main_side_color);
-       
+
        jLabel1 = new javax.swing.JLabel();
        jLabel2 = new javax.swing.JLabel();
 
@@ -118,7 +120,9 @@ public class Data_Panel2 extends Secondary_View{
        
        
    }// </editor-fold>                        
-
+   public Data_Label_Controller getDataCtrl() {
+	   return data_label_panel.getDataCtrl();
+   }
 
    // Variables declaration - do not modify
    
@@ -131,7 +135,7 @@ public class Data_Panel2 extends Secondary_View{
    private javax.swing.JButton select_file_btn;
    private javax.swing.JPanel side_panel_spacer;
    
-   private JPanel data_label_panel;
+   private Data_Label_Panel2 data_label_panel;
    private JPanel data_handler_panel;
    // End of variables declaration                   
 }

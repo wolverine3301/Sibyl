@@ -7,6 +7,9 @@ import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.plaf.basic.BasicButtonUI;
+
+import Controllers.Data_Label_Controller;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +36,8 @@ public class MainFrame extends javax.swing.JFrame {
 	private java.awt.Color text_color = new java.awt.Color(153, 153, 153);
 	private int window_width = 1400;
 	private int window_height = 1000;
+	
+	private Data_Label_Controller ctrl;
     /**
      * Creates new form MainFrame
      */
@@ -69,7 +74,8 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
     	DATA_VIEW = new Data_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color);
-    	STATS_VIEW = new Stats_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color);
+    	this.ctrl = DATA_VIEW.getDataCtrl();
+    	STATS_VIEW = new Stats_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color,ctrl);
     	second  = new dummy_secondPanel(window_width-100,window_height-200,main_bg_color,second_side_color);
     	setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     	
@@ -433,6 +439,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel second;
     // End of variables declaration
     //OTHER VIEWS
-    private javax.swing.JPanel DATA_VIEW;
+    private Data_Panel2 DATA_VIEW;
     private javax.swing.JPanel STATS_VIEW;
 }

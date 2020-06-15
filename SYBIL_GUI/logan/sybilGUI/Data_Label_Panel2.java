@@ -18,13 +18,12 @@ public class Data_Label_Panel2 extends Tertiary_View{
 
 	public Data_Label_Panel2(int width, int height, Color main_bg_color, Color main_side_color, int side_panel_W) {
 		super(width, height, main_bg_color, main_side_color, side_panel_W);
-		
 	}
 
 	@Override
 	protected void initComponents() {
 		   buttons = new HashMap<String,JButton>();
-		   controller = new Data_Label_Controller();
+		   this.controller = new Data_Label_Controller();
 
 	       bottom_panel = new javax.swing.JPanel();
 	       numeric_panel = new javax.swing.JPanel();
@@ -324,7 +323,7 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	        if (r == filechoose.APPROVE_OPTION){ 
 	            // set the label to the path of the selected file 
 	            System.out.println(filechoose.getSelectedFile().getAbsolutePath()); 
-	            controller.openFile(filechoose.getSelectedFile().getAbsolutePath());
+	            this.controller.openFile(filechoose.getSelectedFile().getAbsolutePath());
        			side_panel.removeAll();
 
        			ArrayList<String> names = controller.getColumnNames();
@@ -359,7 +358,9 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	       if(t == 'M')
 	    	   btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/icons8_m_20px.png",20,20)); // NOI18N
 	   }
-		
+	public Data_Label_Controller getDataCtrl() {
+		return controller;
+	}
 
 	/************	SWING COMPONENTS ******************/
 	   // Variables declaration - do not modify                     

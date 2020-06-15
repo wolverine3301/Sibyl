@@ -72,6 +72,9 @@ public class Data_Label_Controller {
 	public int getTotalRows() {
 		return df.getNumRows();
 	}
+	public DataFrame getDF() {
+		return this.df;
+	}
 	
 
 }

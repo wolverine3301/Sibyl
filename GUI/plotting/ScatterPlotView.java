@@ -92,6 +92,7 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	    plotInfo = new JTabbedPane();
 	    col_x = df.numeric_columns.get(0);
 	    col_y = df.numeric_columns.get(0);
+	    
 	    start();
 	}
 	
