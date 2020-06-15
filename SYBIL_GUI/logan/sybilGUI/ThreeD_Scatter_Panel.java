@@ -2,12 +2,6 @@ package logan.sybilGUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.LayoutManager;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import com.orsoncharts.Chart3DPanel;
 import com.orsoncharts.Chart3D;
@@ -29,7 +23,6 @@ import dataframe.DataFrame;
 import dataframe.DataFrame_Read;
 import dataframe.Util;
 import plotting.Plot_3D_Panel;
-import plotting.ScatterPlot3DDemo1;
 
 	/**
 	 * A demonstration of a scatter plot in 3D.

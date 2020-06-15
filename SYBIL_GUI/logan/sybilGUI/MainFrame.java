@@ -75,7 +75,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
     	DATA_VIEW = new Data_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color);
     	this.ctrl = DATA_VIEW.getDataCtrl();
-    	STATS_VIEW = new Stats_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color,ctrl);
+    	STATS_VIEW = new Stats_Panel(window_width-100,window_height-200,main_bg_color,second_side_color,ctrl);
     	second  = new dummy_secondPanel(window_width-100,window_height-200,main_bg_color,second_side_color);
     	setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     	

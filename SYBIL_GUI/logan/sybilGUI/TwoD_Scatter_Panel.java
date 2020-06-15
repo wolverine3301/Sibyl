@@ -1,60 +1,41 @@
-package plotting;
+package logan.sybilGUI;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.HashSet;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
-import org.jfree.chart.ChartPanel;
-
+import Controllers.Data_Label_Controller;
 import dataframe.Column;
 import dataframe.DataFrame;
+import plotting.Plot;
+import plotting.RegressionPanel;
 import regressionFunctions.ConfidenceIntervals;
 import regressionFunctions.LinearRegression;
 import regressionFunctions.LogRegression;
 import regressionFunctions.PolyRegression;
 import regressionFunctions.Regression;
 
-/**
- * Creates a JPanel which contains a scatterplot. 
- * @author Cade Reynoldson & Logan Collier
- * @version 1.0
- */
-public class ScatterPlotView extends JPanel implements PropertyChangeListener {
-    
-    /** The bullshit ID. */
-    private static final long serialVersionUID = 9137857479069749287L;
-    
-    /** The data frame to base the scatter plot upon. */
+public class TwoD_Scatter_Panel extends Tertiary_View implements PropertyChangeListener{
+
+
+	private Data_Label_Controller controller;
+	/** The data frame to base the scatter plot upon. */
     private DataFrame df;
     
     /** The current x column. */
@@ -78,22 +59,21 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	private RegressionPanel regressionPanel;
 	
     /** Notifies the plot that a change has been made. */
-    private PropertyChangeSupport notifyPlot = new PropertyChangeSupport(this);
-	
-	/**
-	 * Constructs a new scatter plot view
-	 * @param df the data frame to create a scatterplot view for. 
-	 */
-	public ScatterPlotView(DataFrame df) {
-	    super();
-	    this.df = df;
+    private PropertyChangeSupport notifyPlot;
+    
+	public TwoD_Scatter_Panel(int width, int height, Color main_bg_color, Color main_side_color, int side_panel_W,Data_Label_Controller controller) {
+		super(width, height, main_bg_color, main_side_color, side_panel_W);
+		this.controller = controller;
+		this.df = controller.getDF();
+		notifyPlot = new PropertyChangeSupport(this);
 	    regressionPanel = new RegressionPanel();
 	    regressionPanel.addPropertyChangeListener(this);
 	    plotInfo = new JTabbedPane();
 	    col_x = df.numeric_columns.get(0);
-	    col_y = df.numeric_columns.get(1);
+	    col_y = df.numeric_columns.get(0);
 	    
-	    start();
+	    //start();
+	    initComponents();
 	}
 	
 	/**
@@ -101,8 +81,8 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	 */
 	public void start() {
 	    initPlotPanel();
-		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		this.add(plotPanel);
+		//this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		//this.add(plotPanel);
 		plotInfo.add(regressionPanel, "Regressions");
 		this.add(plotInfo);
 	}
@@ -123,6 +103,10 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	    optionPanel.add(horizontalSep());
 	    optionPanel.add(regressionButtons());
 	    plotPanel.add(optionPanel, BorderLayout.SOUTH);
+	    plotInfo.add(regressionPanel, "Regressions");
+	    center_panel.add(plotPanel, BorderLayout.CENTER);
+	    center_panel.add(plotInfo,BorderLayout.SOUTH);
+
 	}
 	
 	/**
@@ -233,11 +217,11 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
     /**
      * Adds a property change listener to the panel.
      * @param theListener the listener to be added.
-     */
+	*/
     public void addPropertyChangeListener(final PropertyChangeListener theListener) {
         notifyPlot.addPropertyChangeListener(theListener);
     }
-	
+
 	/**
 	 * Creates a jpanel which contains combo boxes for selection of the x and y axis. 
 	 * @return a jpanel which contains combo boxes for selection of the x and y axis.
@@ -335,24 +319,10 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
         sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
         return sep;
     }
-//  /**
-//  * Shows a loading screen for a given message. 
-//  * @param message the message to display with the loading screen. 
-//  */
-// private void showLoadingScreen(String message) {
-//     JPanel panel = new JPanel();
-//     ImageIcon loading = new ImageIcon("GUI_Icons/ajax-loader.gif");
-//     JButton cancel = new JButton("Cancel");
-//     cancel.addActionListener(new ActionListener() {
-//           @Override
-//           public void actionPerformed(ActionEvent e) {
-//               refreshPanel(false);
-//           }
-//     });
-//     panel.setLayout(new BorderLayout());
-//     panel.add(new JLabel(message), BorderLayout.NORTH);
-//     panel.add(new JLabel(loading), BorderLayout.CENTER);
-//     panel.add(cancel, BorderLayout.SOUTH);
-//     refreshPanel(panel);
-// }
+	@Override
+	protected void initComponents() {
+		initPlotPanel();
+		add(center_panel, BorderLayout.CENTER);
+		
+	}
 }

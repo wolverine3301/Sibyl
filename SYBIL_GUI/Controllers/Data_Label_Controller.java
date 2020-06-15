@@ -15,6 +15,7 @@ public class Data_Label_Controller {
 	private ArrayList<Character> types = new ArrayList<Character>();
 	public Data_Label_Controller() {
 		df = new DataFrame();
+		df = DataFrame_Read.loadcsv("testfiles/iris.txt");
 	}
 	/**
 	 * opens a data file and creates a dataframe
@@ -24,7 +25,7 @@ public class Data_Label_Controller {
 		this.fileName = filePath;
 		makeDataFrame();
 		setCol();
-		df.printDataFrame();
+		
 	}
 	private void makeDataFrame() {
 		df = DataFrame_Read.loadcsv(fileName);
