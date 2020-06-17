@@ -47,4 +47,16 @@ public class Multi_LinearRegression {
 	public int numPredictors() {
 		return x.length;
 	}
+	/**
+	 * predicts a y from multiple predictor variables
+	 * @param x - double array ,length equal to number of predictor columns
+	 * @return 
+	 */
+	public double predict(double x[]) {
+		double pred = 0;
+		for(int i = 0; i < slopes.length;i++) {
+			pred = pred + (x[i]*slopes[i]);
+		}
+		return pred;
+	}
 }

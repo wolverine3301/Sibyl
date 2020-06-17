@@ -50,10 +50,13 @@ public class MainFrame extends javax.swing.JFrame {
             btn.addMouseListener(new MouseListener(){
 
                 public void mouseClicked(MouseEvent e) {
+                	
                 }
                 public void mousePressed(MouseEvent e) {
+                	
                 }
                 public void mouseReleased(MouseEvent e) {
+                	
                 }
                 public void mouseEntered(MouseEvent e) {
                     btn.setBackground(new Color(44,44,44));

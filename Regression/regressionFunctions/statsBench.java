@@ -6,7 +6,7 @@ import dataframe.DataFrame;
 public class statsBench {
 
 	public static void main(String[] args) {
-		DataFrame iris = DataFrame.read_csv("testfiles/regress");
+		DataFrame iris = DataFrame.read_csv("testfiles/iris.txt");
 		Column col1 = iris.getColumn(0);
 		Column col2 = iris.getColumn(1);
 		Column col3 = iris.getColumn(2);
@@ -55,10 +55,12 @@ public class statsBench {
 		System.out.println(test3.regressions[0].slope);
 		System.out.println(test3.regressions[1].slope);
 		System.out.println(test3.slopes.toString());
+		//System.out.println(test3.);
 		
 		System.out.println("POLYNOMIAL");
 		PolyRegression p = new PolyRegression(col1, col3, 3);
 		System.out.println(p.getEquation());
+		System.out.println(p.coefficents[0]);
 	}
 
 }

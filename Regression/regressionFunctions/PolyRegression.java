@@ -374,6 +374,9 @@ public class PolyRegression extends Regression{
 		}
 	}
 
+	/**
+	 * standard error for each coefficent
+	 */
 	public void get_SE_coeffiecents() {
 		double[][] m = inverse(this.matrix_x);
 		double[] SE = new double[m.length];
@@ -381,6 +384,15 @@ public class PolyRegression extends Regression{
 			SE[i] = Math.sqrt( (m[i][i] / (super.x.getLength() * SST) ) );
 		}
 	}
+	public double predict(double x_val) {
+		double y = 0;
+		for(int i = super.coefficents.length-1; i >= 0; i--) {
+			y = y + (super.coefficents[i] * Math.pow(x_val,i));
+		}
+		return y;
+	}
+
+	@Override
 	public double predictY(Particle x_val) {
 		double y = 0;
 		for(int i = super.coefficents.length-1; i >= 0; i--) {

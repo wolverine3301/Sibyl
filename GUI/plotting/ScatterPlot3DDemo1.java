@@ -23,6 +23,8 @@ import com.orsoncharts.renderer.xyz.ScatterXYZRenderer;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.Util;
+import regressionFunctions.Multi_LinearRegression;
+import regressionFunctions.Multi_PolynomialRegression;
 
 /**
  * A demonstration of a scatter plot in 3D.
@@ -55,7 +57,7 @@ public class ScatterPlot3DDemo1 extends JFrame {
         Plot_3D_Panel content = new Plot_3D_Panel(new BorderLayout());
         content.setPreferredSize(new Dimension(760, 480));
         DataFrame[] classs = Util.splitOnTarget(df, df.target_columns.get(0));
-        XYZDataset dataset = createDataset(classs);
+        XYZDataset dataset = createDataset(classs,df);
         Chart3D chart = createChart(dataset);
         Chart3DPanel chartPanel = new Chart3DPanel(chart);
         content.setChartPanel(chartPanel);
@@ -93,15 +95,17 @@ public class ScatterPlot3DDemo1 extends JFrame {
      * 
      * @return A sample dataset.
      */
-    private static XYZDataset<String> createDataset(DataFrame[] c) {
-		
-        
+    private static XYZDataset<String> createDataset(DataFrame[] c, DataFrame df) {
+		        
         XYZSeriesCollection<String> dataset = new XYZSeriesCollection<String>();
 		for(DataFrame i : c) {
 			Column[] cols = {i.getColumn(0),i.getColumn(1),i.getColumn(2)};
 			XYZSeries<String> s = createSeries(i.getName(), i.getNumRows(),cols);
 			dataset.add(s);
 		}
+		//add a regression
+		dataset.add(addRegression(df));
+		
         //XYZSeries<String> s2 = createRandomSeries("S2", 50);
         //XYZSeries<String> s3 = createRandomSeries("S3", 150);	
         ///XYZSeries<String> s1 = createRandomSeries("S1", 10);
@@ -112,6 +116,28 @@ public class ScatterPlot3DDemo1 extends JFrame {
         //dataset.add(s2);
         //dataset.add(s3);
         return dataset;
+    }
+    private static XYZSeries<String> addRegression(DataFrame df) {
+		Column[] x_cols = {df.getColumn(0),df.getColumn(1)};
+		Column col3 = df.getColumn(2);
+		//Multi_LinearRegression test3 = new Multi_LinearRegression(x_cols,col3);
+		
+		Multi_PolynomialRegression test3 = new Multi_PolynomialRegression(x_cols,col3,9);
+		
+		double c = x_cols[0].min;
+		double interval_x =  x_cols[0].range/col3.getLength();
+		double d = x_cols[1].min;
+		double interval_y =  x_cols[1].range/col3.getLength();
+    	XYZSeries<String> s = new XYZSeries<String>("MULTI-LINEAR REGRESSION");
+        for (int i = 0; i < col3.getLength(); i++) {
+        	//double[] x = {x_cols[0].getDoubleValue(i) , x_cols[1].getDoubleValue(i)};
+        	double[] x = {c , d};
+            s.add(c, d, test3.predict(x));
+            System.out.println(test3.predict(x));
+            c = c +interval_x;
+            d = d +interval_y;
+        }
+        return s;
     }
     private static XYZSeries<String> createSeries(String name, int count,Column[] cols) {
     	XYZSeries<String> s = new XYZSeries<String>(name);
