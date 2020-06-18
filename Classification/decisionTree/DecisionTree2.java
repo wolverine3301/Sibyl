@@ -38,7 +38,7 @@ public class DecisionTree2 extends Model{
 		}
 	}
 	private void rankColumns() {
-		ranker.gain(0).ge;
+		ranker.gain(0);
 	}
 	@Override
 	public HashMap<String, HashMap<Object, Double>> probability(Row row) {
