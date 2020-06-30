@@ -26,7 +26,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 /**
  *
- * @author Owner
+ * @author logan collier
  */
 public class MainFrame extends javax.swing.JFrame {
 	
@@ -76,10 +76,15 @@ public class MainFrame extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
+    	second  = new dummy_secondPanel(window_width-100,window_height-200,main_bg_color,second_side_color);
     	DATA_VIEW = new Data_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color);
     	this.ctrl = DATA_VIEW.getDataCtrl();
-    	STATS_VIEW = new Stats_Panel(window_width-100,window_height-200,main_bg_color,second_side_color,ctrl);
-    	second  = new dummy_secondPanel(window_width-100,window_height-200,main_bg_color,second_side_color);
+    	//STATS_VIEW = new Stats_Panel(window_width-100,window_height-200,main_bg_color,second_side_color,ctrl);
+    	STATS_VIEW = second;
+    	EVALUATE_VIEW = new Evaluate_Panel(window_width-100,window_height-200,main_bg_color,second_side_color);
+    	
+    	
+    	//EVALUATE_VIEW = second;
     	setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     	
         root_panel = new javax.swing.JPanel();
@@ -269,7 +274,7 @@ public class MainFrame extends javax.swing.JFrame {
         preProcess_btn.setPreferredSize(new java.awt.Dimension(50, 50));
         preProcess_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+            	preProcess_ActionPerformed(evt);
             }
         });
         side_panel.add(preProcess_btn);
@@ -279,7 +284,7 @@ public class MainFrame extends javax.swing.JFrame {
         AI_btn.setPreferredSize(new java.awt.Dimension(50, 50));
         AI_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                model_ActionPerformed(evt);
             }
         });
         side_panel.add(AI_btn);
@@ -289,7 +294,7 @@ public class MainFrame extends javax.swing.JFrame {
         score_btn.setPreferredSize(new java.awt.Dimension(50, 50));
         score_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+            	score_ActionPerformed(evt);
             }
         });
         side_panel.add(score_btn);
@@ -300,6 +305,7 @@ public class MainFrame extends javax.swing.JFrame {
         terminal_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 terminal_btn_ActionPerformed(evt);
+                //preProcess_ActionPerformed(evt);
             }
         });
         side_panel.add(terminal_btn);
@@ -324,19 +330,25 @@ public class MainFrame extends javax.swing.JFrame {
 		center_panel.revalidate();
     }                                        
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    private void preProcess_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
 		center_panel.removeAll();
 		center_panel.add(second);
 		center_panel.repaint();
 		center_panel.revalidate();
     }                                        
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // TODO add your handling code here:
+    private void model_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    	center_panel.removeAll();
+		center_panel.add(second);
+		center_panel.repaint();
+		center_panel.revalidate();
     }                                        
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // TODO add your handling code here:
+    private void score_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        center_panel.removeAll();
+		center_panel.add(EVALUATE_VIEW);
+		center_panel.repaint();
+		center_panel.revalidate();
     }         
     private void home_btn_ActionPerformed(java.awt.event.ActionEvent evt)  {
 			center_panel.removeAll();
@@ -345,6 +357,7 @@ public class MainFrame extends javax.swing.JFrame {
 			center_panel.revalidate();
     }
     private void terminal_btn_ActionPerformed(java.awt.event.ActionEvent evt) {
+    	System.out.println("TERMINAL");
         JFrame frame = new JFrame();
         frame.add( new JLabel(" SYBIL" ), BorderLayout.NORTH );
 
@@ -444,4 +457,5 @@ public class MainFrame extends javax.swing.JFrame {
     //OTHER VIEWS
     private Data_Panel2 DATA_VIEW;
     private javax.swing.JPanel STATS_VIEW;
+    private javax.swing.JPanel EVALUATE_VIEW;
 }

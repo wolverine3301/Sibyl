@@ -1,6 +1,7 @@
 package logan.sybilGUI;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -10,10 +11,16 @@ import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileSystemView;
 
 import Controllers.Data_Label_Controller;
-
+/**
+ * 
+ * @author logan collier
+ *
+ */
 public class Data_Label_Panel2 extends Tertiary_View{
 
 	public Data_Label_Panel2(int width, int height, Color main_bg_color, Color main_side_color, int side_panel_W) {
@@ -60,10 +67,16 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	       //ADD side panel stuff
 	       ArrayList<String> names = controller.getColumnNames();
 	       ArrayList<Character> types = controller.getColumnTypes();
+	       
+	       
+	       side_pane = new JPanel();
+	       side_pane.setPreferredSize(new Dimension(side_panel.getPreferredSize().width-10, side_panel.getPreferredSize().height-20));
+	       side_pane.setBackground(main_side_color);
 	       for(int i = 0; i< names.size(); i++) {
 	    	   make_button(names.get(i),types.get(i));
 	       }
 	       //add(side_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 0, 150, H));
+	       scrollSide();
 	       add(side_panel, java.awt.BorderLayout.WEST);
 	       
 	       top_panel.setBackground(main_bg_color);
@@ -311,7 +324,7 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	       	}
 	       });
 	       buttons.put(name,btn);
-	       side_panel.add(btn);
+	       side_pane.add(btn);
 	   }
 	   //open file selector
 	   private void file_select_action() {
@@ -324,13 +337,24 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	            // set the label to the path of the selected file 
 	            System.out.println(filechoose.getSelectedFile().getAbsolutePath()); 
 	            this.controller.openFile(filechoose.getSelectedFile().getAbsolutePath());
-       			side_panel.removeAll();
+	            side_panel.removeAll();
+       			side_pane.removeAll();
 
        			ArrayList<String> names = controller.getColumnNames();
        			ArrayList<Character> types = controller.getColumnTypes();
        			for(int i = 0; i< names.size(); i++) {
        				make_button(names.get(i),types.get(i));
        			}
+
+       			side_pane.repaint();
+       			side_pane.revalidate();
+       			scrollPane = new JScrollPane(side_pane);
+       	        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+       	        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+       	        scrollPane.setBounds(0, 0, side_panel.getPreferredSize().width, side_panel.getPreferredSize().height);
+       	        side_panel.add(scrollPane);
+       	        //scrollPane.repaint();
+       	        //scrollPane.revalidate();
        			side_panel.repaint();
        			side_panel.revalidate();
        			numOfRows_label.setText(String.valueOf(controller.getTotalRows()));
@@ -361,7 +385,16 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	public Data_Label_Controller getDataCtrl() {
 		return controller;
 	}
-
+	protected void scrollSide() {
+		
+        scrollPane = new JScrollPane(side_pane);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBounds(0, 0, side_panel.getPreferredSize().width-100, side_panel.getPreferredSize().height-100);
+        
+        //contentPane.setPreferredSize(new Dimension(side_panel.getWidth(), side_panel.getHeight()));
+        side_panel.add(scrollPane);
+	}
 	/************	SWING COMPONENTS ******************/
 	   // Variables declaration - do not modify                     
 	   private javax.swing.JPanel bottom_panel;
@@ -371,6 +404,9 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	   private javax.swing.JPanel numeric_panel;
 	   private javax.swing.JPanel target_panel;
 	   private javax.swing.JPanel top_panel;
+	   
+	   private JPanel side_pane;
+	   private JScrollPane scrollPane;
 	   
 	   private javax.swing.JLabel fileSize_label;
 	   private javax.swing.JLabel file_name_label;

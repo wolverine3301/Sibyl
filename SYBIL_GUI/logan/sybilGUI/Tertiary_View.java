@@ -1,5 +1,10 @@
 package logan.sybilGUI;
 
+/**
+ * 
+ * @author logan collier
+ *
+ */
 public abstract class Tertiary_View extends javax.swing.JPanel{
 	protected int W;
 	protected int H;
@@ -32,6 +37,7 @@ public abstract class Tertiary_View extends javax.swing.JPanel{
 	   }  
 	protected abstract void initComponents();
 	
+
 	// SIDE PANEL
 	protected javax.swing.JPanel side_panel;
 	// CENTER PANEL

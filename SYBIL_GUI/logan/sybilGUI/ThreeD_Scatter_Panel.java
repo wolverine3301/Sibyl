@@ -27,10 +27,11 @@ import dataframe.Util;
 import plotting.Plot_3D_Panel;
 import regressionFunctions.Multi_PolynomialRegression;
 
-	/**
-	 * A demonstration of a scatter plot in 3D.
-	 */
-	@SuppressWarnings("serial")
+/**
+ * @author logan collier
+* A demonstration of a scatter plot in 3D.
+*/
+@SuppressWarnings("serial")
 public class ThreeD_Scatter_Panel extends Tertiary_View {
 		private DataFrame df;
 		private DataFrame[] classes;
@@ -103,11 +104,22 @@ public class ThreeD_Scatter_Panel extends Tertiary_View {
 	    private XYZDataset<String> createDataset_indReg() {
 
 	        XYZSeriesCollection<String> dataset = new XYZSeriesCollection<String>();
+	        String[] ar = {"species","==","setosa","species","==","versicolor"};
+	        DataFrame ddf = df.acquire(ar);
+	        ddf.setName("SVM1");
+	        //Coloumn[]
+	        dataset.add(add_independentRegression(ddf));
+	        
+	        String[] ar2 = {"species","==","virginica","species","==","versicolor"};
+	        DataFrame ddf1 = df.acquire(ar2);
+	        ddf1.setName("SVM2");
+	        dataset.add(add_independentRegression(ddf1));
+	        
 			for(DataFrame i : classs) {
 				Column[] cols = {i.getColumn(0),i.getColumn(1),i.getColumn(2)};
 				XYZSeries<String> s = createSeries(i.getName(), i.getNumRows(),cols);
 				dataset.add(s);
-				dataset.add(add_independentRegression(i));
+				//dataset.add(add_independentRegression(i));
 			}
 	        return dataset;
 	    }

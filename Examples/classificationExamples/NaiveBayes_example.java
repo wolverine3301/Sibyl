@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bayes.NaiveBayes;
+import bayes.NaiveBayes2;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.Util;
@@ -41,7 +42,7 @@ public class NaiveBayes_example {
         System.out.println("Size of column arraylist: "+ df.columns.size() + " - Recorded Num of columns: " + df.getNumColumns());
         df.replaceColumn(3, d.binColumn());
         System.out.println("Size of column arraylist: "+ df.columns.size() + " - Recorded Num of columns: " + df.getNumColumns());
-        df.setColumnType(3, 'T');
+        df.setColumnType(4, 'T');
         ArrayList<DataFrame[]> classes = setClasses(df);
         for(int i = 0; i< classes.size();i++) {
         	System.out.println("TARGET ITERATION: "+i);
@@ -57,18 +58,20 @@ public class NaiveBayes_example {
         //df.convertNANS_mean(); // conevert any NAN's to the mean of column 
         //df = Standardize.standardize_df(df); //Standardize the DF into z scores
         //df = df.shuffle(df);
-        NaiveBayes nb = new NaiveBayes();
+        NaiveBayes2 nb = new NaiveBayes2(df);
         //nb.setTrain(df);
         //nb.initiallize();
         //nb.printProbTable();
 
         //
-        CrossValidation cv = new CrossValidation(df, 10, nb);
+        CrossValidation cv = new CrossValidation(df, 6, nb);
         //cv.printScores();
         cv.avgScores();
         cv.printOverAllScore();
+        cv.sumConfusionMatrix();
+        cv.printOverAllMatrix();
         nb.setTrain(df);
-        nb.printProbTable();
+        //nb.printProbTable();
         //cv.printMatrixs();
         //cv.printMatrixs();
         //cv.printScores();
