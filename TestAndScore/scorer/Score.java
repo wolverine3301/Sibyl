@@ -24,9 +24,9 @@ public class Score {
 	public HashMap<String, HashMap<Object, Double>> mcc;
 	public HashMap<String, HashMap<Object, Double>> accuracy;
 	
-	private DataFrame df;
-	private HashMap<String, ArrayList<Object>> predictions;
-	private ConfusionMatrix matrix;
+	private DataFrame df; //the test data frame
+	private HashMap<String, ArrayList<Object>> predictions; //list of predictions
+	private ConfusionMatrix matrix; //confusion matrix
 	/**
 	 * Score constructor
 	 * @param df
@@ -133,6 +133,13 @@ public class Score {
 	}
 	public void printMatrix() {
 		matrix.print_matrix();
+	}
+	public void printComparison() {
+		for(String i : this.predictions.keySet()) {
+			for(int j = 0; j < predictions.get(i).size(); j++) {
+				System.out.println("Actual: "+ df.getColumn_byName(i).getParticle(j).getValue() +" Predicted: "+ predictions.get(i).get(j));
+			}
+		}
 	}
 	
 }

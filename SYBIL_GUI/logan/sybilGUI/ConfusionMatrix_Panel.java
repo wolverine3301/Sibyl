@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import java.text.DecimalFormat;
 
 import bayes.NaiveBayes2;
 import dataframe.Column;
@@ -25,10 +26,10 @@ import scorer.CrossValidation;
 public class ConfusionMatrix_Panel extends Tertiary_View{
 
 	private ConfusionMatrix CM;
-	
+	private DecimalFormat format;
 	public ConfusionMatrix_Panel(int width, int height, Color main_bg_color, Color main_side_color, int side_panel_W) {
 		super(width, height, main_bg_color, main_side_color, side_panel_W);
-		
+		format = new DecimalFormat("##.##");
 
         
 	}
@@ -74,14 +75,15 @@ public class ConfusionMatrix_Panel extends Tertiary_View{
         df.setColumnType(4, 'T');
         ArrayList<DataFrame[]> classes = setClasses(df);
         NaiveBayes2 nb = new NaiveBayes2(df);
-        CrossValidation cv = new CrossValidation(df, 6, nb);
+        CrossValidation cv = new CrossValidation(df, 10, nb);
         //cv.printScores();
         cv.avgScores();
         cv.printOverAllScore();
         cv.sumConfusionMatrix();
         cv.confusion_matrix.print_matrix();
         CM = cv.confusion_matrix;
-        int[][] mmm = cv.getOverallMatrix("species");
+        
+        int[][] array_matrix = cv.getOverallMatrix("species");
         
         top_panel = new javax.swing.JPanel();
         matrix_panel = new javax.swing.JPanel();
@@ -115,12 +117,12 @@ public class ConfusionMatrix_Panel extends Tertiary_View{
 
         accuracy_label.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         accuracy_label.setForeground(new java.awt.Color(153, 153, 153));
-        accuracy_label.setText("Accuracy:");
+        accuracy_label.setText("Recall:");
         top_panel.add(accuracy_label);
 
         accuracy_display.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         accuracy_display.setForeground(new java.awt.Color(153, 153, 153));
-        accuracy_display.setText("acc");
+        accuracy_display.setText(String.valueOf(round(cv.getTotal_recall().get("species").get("OverAll").doubleValue())));
         top_panel.add(accuracy_display);
 
         tp_label.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
@@ -130,7 +132,7 @@ public class ConfusionMatrix_Panel extends Tertiary_View{
 
         tp_display.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         tp_display.setForeground(new java.awt.Color(153, 153, 153));
-        tp_display.setText("tp");
+        tp_display.setText(String.valueOf(cv.getTotal_truePositive().get("species").get("OverAll")));
         top_panel.add(tp_display);
 
         precision_label.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
@@ -140,7 +142,7 @@ public class ConfusionMatrix_Panel extends Tertiary_View{
 
         precision_display.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         precision_display.setForeground(new java.awt.Color(153, 153, 153));
-        precision_display.setText("prec");
+        precision_display.setText(String.valueOf(round(cv.getTotal_precision().get("species").get("OverAll").doubleValue())));
         top_panel.add(precision_display);
 
         tn_label.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
@@ -160,7 +162,7 @@ public class ConfusionMatrix_Panel extends Tertiary_View{
 
         f1_display.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         f1_display.setForeground(new java.awt.Color(153, 153, 153));
-        f1_display.setText("f1");
+        f1_display.setText(String.valueOf(round(cv.getTotal_f1().get("species").get("OverAll").doubleValue())));
         top_panel.add(f1_display);
 
         fp_label.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
@@ -180,7 +182,7 @@ public class ConfusionMatrix_Panel extends Tertiary_View{
 
         mcc_display.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         mcc_display.setForeground(new java.awt.Color(153, 153, 153));
-        mcc_display.setText("mcc");
+        mcc_display.setText(String.valueOf(round(cv.getTotal_mcc().get("species").get("OverAll").doubleValue())));
         top_panel.add(mcc_display);
 
         fn_label.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
@@ -216,7 +218,7 @@ public class ConfusionMatrix_Panel extends Tertiary_View{
         matrix_panel.setLayout(new java.awt.GridLayout(CM.truePositive.get("species").size()+2, CM.truePositive.get("species").size()+2));
         System.out.println("CM: "+CM.trueNegative.toString());
         
-        java.awt.Color cc;
+
         int cy = 200;
         Set<Object> ccc = CM.trueNegative.get("species").keySet();
         ArrayList<Object>  clas = new ArrayList<Object>();
@@ -226,108 +228,115 @@ public class ConfusionMatrix_Panel extends Tertiary_View{
         int[][] rates = new int[CM.trueNegative.get("species").size()][CM.trueNegative.get("species").size()];
         
         for(int i = 0; i < CM.trueNegative.get("species").size();i++) {
-        	System.out.println();
+        	//System.out.println();
         	for(int j = 0; j < CM.trueNegative.get("species").size();j++) {
         		if(j == i) {
         			rates[i][j] = CM.truePositive.get("species").get(clas.get(j));
         		}else {
         			rates[i][j] = CM.falseNegative.get("species").get(clas.get(i)) - CM.falsePositive.get("species").get(clas.get(j));
         		}
-        		System.out.print(rates[i][j]+" ");
+        		//System.out.print(rates[i][j]+" ");
         	}
         }
         System.out.println("INT MATRIX");
-        for(int o = 0; o < mmm.length; o++) {
-        	System.out.println();
-        	for(int oo = 0; oo < mmm.length; oo++) {
-        		System.out.print(mmm[o][oo]+" ");
-        	}
-        }
-        int[] actual_totals = new int[mmm.length];
-        int[] predict_totals = new int[mmm.length];
+        //initiallize totals
+        int[] actual_totals = new int[array_matrix.length];
+        int[] predict_totals = new int[array_matrix.length];
         int actu_tot = 0;
         int pred_tot = 0;
+        int c1 = 0, c2 = 0;
+        for(int o = 0; o < array_matrix.length; o++) {
+            actu_tot = 0;
+            pred_tot = 0;
+            c2=0;
+        	System.out.println();
+        	for(int oo = 0; oo < array_matrix.length; oo++) {
+    			actu_tot = actu_tot + array_matrix[c2][c1];
+    			pred_tot = pred_tot + array_matrix[c1][c2];
+        		System.out.print(array_matrix[o][oo]+" ");
+        		c2++;
+        	}
+			actual_totals[c1] = actu_tot;
+			predict_totals[c1] = pred_tot;
+			System.out.println("ACTUAL: "+actual_totals[c1]);
+			System.out.println("Predicted: "+predict_totals[c1]);
+			c1++;
+        }
+        
         int cnt = 0;
         int cnt2 =0;
-        int c1 = 0, c2 = 0;
+        c1 = 0;
+        c2 = 0;
+        int g1=0,g2=0;
+        JButton lab = null;
         for(int i = 0; i < CM.trueNegative.get("species").size()+2;i++) {
         	//c2=0;
         	for(int j = 0; j < CM.trueNegative.get("species").size()+2;j++) {
         		if(cnt > 2) cnt = 0;
         		if(cnt2 > 2) cnt2=0;
-        		//0,0 target leabl
+        		
+        		//0,0 target label
         		if(i == 0 && j == 0) {
-        			JButton lab = new JButton("species");
-        			lab.setBackground(new java.awt.Color(200, 200, 200));
-        			matrix_panel.add(lab);
+        			lab = new JButton("species");
+        			lab.setBackground(new java.awt.Color(200, 200, 200));		
         		}
         		// top row , class labels
         		else if(i == 0 && j < CM.trueNegative.get("species").size()+1) {
-        			JButton lab = new JButton(clas.get(cnt).toString());
+        			lab = new JButton(clas.get(cnt).toString());
         			lab.setBackground(new java.awt.Color(200, 200, 200));
-        			matrix_panel.add(lab);
         			cnt++;
         		}
         		// last top row, total
         		else if(i == 0 && j == CM.trueNegative.get("species").size()+1) {
-        			JButton lab = new JButton("Total");
+        			lab = new JButton("Total");
         			lab.setBackground(new java.awt.Color(200, 200, 200));
-        			matrix_panel.add(lab);
         			cnt=0;
         		}
-        		else if(i == CM.trueNegative.get("species").size()+1 && j > 0) {
-        			JButton lab = new JButton(String.valueOf(predict_totals[cnt]));
+        		//last column, actual totals
+        		else if(i > 0  && i !=  CM.trueNegative.get("species").size()+1 && j == CM.trueNegative.get("species").size()+1) {
+        			lab = new JButton(String.valueOf(actual_totals[g2]));
         			lab.setBackground(new java.awt.Color(200, 200, 200));
-        			matrix_panel.add(lab);
+        			g2++;
         		}
+        		//last row, predicted totals
+        		else if(i == CM.trueNegative.get("species").size()+1 && j > 0 && j != CM.trueNegative.get("species").size()+1) {
+        			lab = new JButton(String.valueOf(predict_totals[g1]));
+        			lab.setBackground(new java.awt.Color(200, 200, 200));
+        			g1++;
+        		}
+        		//first column last row, total label
         		else if(i == CM.trueNegative.get("species").size()+1) {
-        			JButton lab = new JButton("Total");
+        			lab = new JButton("Total");
         			lab.setBackground(new java.awt.Color(200, 200, 200));
-        			matrix_panel.add(lab);
         		}
-
         		//first column, class labels
         		else if(j == 0 && i > 0) {
-        			JButton lab = new JButton(clas.get(cnt).toString());
+        			lab = new JButton(clas.get(cnt).toString());
         			lab.setBackground(new java.awt.Color(200, 200, 200));
-        			matrix_panel.add(lab);
         			cnt++;
         		}
         		else if(j < CM.trueNegative.get("species").size()+1 && j > 0){
-	        		if(c2 == mmm.length) {
+	        		if(c2 == array_matrix.length) {
 	        			c2 =0;
-	        			actual_totals[c1] = actu_tot;
-	        			predict_totals[c1] = pred_tot;
-	        			actu_tot = 0;
-	        			pred_tot = 0;
 	        			c1++;
 	        		}
-        			actu_tot = actu_tot + mmm[c1][c2];
-        			pred_tot = pred_tot + mmm[c2][c1];
-        			JButton lab = new JButton(String.valueOf(mmm[c1][c2]));
-        			c2++;
-	        		//JButton lab = new JButton(CM.truePositive.get("species").get(clas.get(cnt2)).toString());
-	        		//System.out.println(clas.get(cnt2) +"x: "+j+" Y: "+i);
-	        		int g = CM.truePositive.get("species").get(clas.get(cnt2)) + CM.falseNegative.get("species").get(clas.get(cnt2));
-	        		int dd = (int)(((double)CM.truePositive.get("species").get(clas.get(cnt2)) /g)*100);
-	        		System.out.println("G: "+g+" D "+dd);
-	        		lab.setBackground(new java.awt.Color(150, 150, 150));
-	        		matrix_panel.add(lab);
-	        		cy = cy - 5;
+        			lab = new JButton(String.valueOf(array_matrix[c2][c1]));
+        			//System.out.println("M: "+mmm[c2][c1]);
+        			//System.out.println(actual_totals[c2]);
+        			int dd;
+        			if(array_matrix[c2][c1] == 0) {
+        				dd = 170;
+        			}else {
+        				dd = (int) (((double)array_matrix[c2][c1]/actual_totals[c2])*100)+120;
+        			}
+	        		//System.out.println(" D "+dd);
+	        		lab.setBackground(new java.awt.Color(170, 170, dd));
 	        		cnt2++;
+	        		c2++;
         		}
-        		else if(i > 0  && j == CM.trueNegative.get("species").size()+1) {
-        			JButton lab = new JButton(String.valueOf(actual_totals[cnt]));
-        			lab.setBackground(new java.awt.Color(200, 200, 200));
-        			matrix_panel.add(lab);
-        		}
-        		else if(j == CM.trueNegative.get("species").size()+1) {
-        			JButton lab = new JButton("Total");
-        			lab.setBackground(new java.awt.Color(200, 200, 200));
-        			matrix_panel.add(lab);
-        			//cnt++;
-        		}
+
         		
+        		matrix_panel.add(lab);
         		//cnt++;
         	}
         }
@@ -367,7 +376,9 @@ public class ConfusionMatrix_Panel extends Tertiary_View{
 	    add(side_panel, java.awt.BorderLayout.WEST);
 	    add(center_panel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>                        
-
+    private double round(double a) {
+    	return (double)Math.round( (a * 1000) *100) /1000;
+    }
 
     // Variables declaration - do not modify     
     private javax.swing.JPanel top_panel;

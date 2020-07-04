@@ -24,6 +24,7 @@ public class CrossValidation {
 	public DataFrame testDF_variables;
 	ArrayList<TestTrainFit> trials;
 	
+	protected HashMap<String, HashMap<Object, Double>> total_accuracy;
 	protected HashMap<String, HashMap<Object, Double>> total_recall;
 	protected HashMap<String, HashMap<Object, Double>> total_precision;
 	protected HashMap<String, HashMap<Object, Double>> total_f1;
@@ -154,6 +155,7 @@ public class CrossValidation {
 			}
 		}
 		for(Score score : scores) {
+			score.printComparison();
 			matrix_c.add(score.getConfusionMatrix().matrix);
 		}
 		//sum matricies
@@ -187,6 +189,7 @@ public class CrossValidation {
 	 * Avg scores from all trials
 	 */
 	public void avgScores() {
+		HashMap<String, HashMap<Object, Double>> accuracy = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> recall = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> precision = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> F1 = new HashMap<String, HashMap<Object, Double>>();
@@ -254,6 +257,60 @@ public class CrossValidation {
 			i.printScore();
 			cnt++;
 		}
+	}
+	public ArrayList<TestTrainFit> getTrials() {
+		return trials;
+	}
+	public void setTrials(ArrayList<TestTrainFit> trials) {
+		this.trials = trials;
+	}
+	public HashMap<String, HashMap<Object, Double>> getTotal_recall() {
+		return total_recall;
+	}
+	public void setTotal_recall(HashMap<String, HashMap<Object, Double>> total_recall) {
+		this.total_recall = total_recall;
+	}
+	public HashMap<String, HashMap<Object, Double>> getTotal_precision() {
+		return total_precision;
+	}
+	public void setTotal_precision(HashMap<String, HashMap<Object, Double>> total_precision) {
+		this.total_precision = total_precision;
+	}
+	public HashMap<String, HashMap<Object, Double>> getTotal_f1() {
+		return total_f1;
+	}
+	public void setTotal_f1(HashMap<String, HashMap<Object, Double>> total_f1) {
+		this.total_f1 = total_f1;
+	}
+	public HashMap<String, HashMap<Object, Double>> getTotal_mcc() {
+		return total_mcc;
+	}
+	public void setTotal_mcc(HashMap<String, HashMap<Object, Double>> total_mcc) {
+		this.total_mcc = total_mcc;
+	}
+	public HashMap<String, HashMap<Object, Integer>> getTotal_truePositive() {
+		return total_truePositive;
+	}
+	public void setTotal_truePositive(HashMap<String, HashMap<Object, Integer>> total_truePositive) {
+		this.total_truePositive = total_truePositive;
+	}
+	public HashMap<String, HashMap<Object, Integer>> getTotal_falsePositive() {
+		return total_falsePositive;
+	}
+	public void setTotal_falsePositive(HashMap<String, HashMap<Object, Integer>> total_falsePositive) {
+		this.total_falsePositive = total_falsePositive;
+	}
+	public HashMap<String, HashMap<Object, Integer>> getTotal_trueNegative() {
+		return total_trueNegative;
+	}
+	public void setTotal_trueNegative(HashMap<String, HashMap<Object, Integer>> total_trueNegative) {
+		this.total_trueNegative = total_trueNegative;
+	}
+	public HashMap<String, HashMap<Object, Integer>> getTotal_falseNegative() {
+		return total_falseNegative;
+	}
+	public void setTotal_falseNegative(HashMap<String, HashMap<Object, Integer>> total_falseNegative) {
+		this.total_falseNegative = total_falseNegative;
 	}
 	public int[][] getOverallMatrix(String target){
 		int[][] m = new int[matrix.get(target).keySet().size()][matrix.get(target).keySet().size()];
