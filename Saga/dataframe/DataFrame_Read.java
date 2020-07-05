@@ -2,7 +2,10 @@ package dataframe;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import log.Loggers;
 import particles.Particle;
 
 public class DataFrame_Read {
@@ -40,6 +43,7 @@ public class DataFrame_Read {
 	        br.close();
 	    } catch (Exception e) {
 	        // TODO Auto-generated catch block
+	        Loggers.df_Logger.log(Level.SEVERE, "File: " + filePath + " Not Found.");
 	        e.printStackTrace();
 	    }
 	    return df;
