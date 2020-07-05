@@ -20,7 +20,7 @@ import particles.Particle;
  */
 public class DataFrame {
 	
-	private final static Logger LOGGER = Logger.getLogger(OneWay_ANOVA.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(DataFrame.class.getName());
 	
     /** The name of the data frame. */
     protected String dataFrameName;
