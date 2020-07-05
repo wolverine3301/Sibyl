@@ -6,7 +6,11 @@ import java.util.HashMap;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Read;
-
+/**
+ * 
+ * @author logan collier
+ *
+ */
 public class Data_Label_Controller {
 	private DataFrame df;
 	private HashMap<String,Character> cols = new HashMap<String,Character>();
@@ -15,7 +19,7 @@ public class Data_Label_Controller {
 	private ArrayList<Character> types = new ArrayList<Character>();
 	public Data_Label_Controller() {
 		df = new DataFrame();
-		df = DataFrame_Read.loadcsv("testfiles/iris.txt");
+		//df = DataFrame_Read.loadcsv("testfiles/preprocessed_data.csv");
 	}
 	/**
 	 * opens a data file and creates a dataframe

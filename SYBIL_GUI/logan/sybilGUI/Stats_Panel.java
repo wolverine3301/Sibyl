@@ -8,6 +8,11 @@ import javax.swing.JLabel;
 
 import Controllers.Data_Label_Controller;
 
+/**
+ * 
+ * @author logan collier
+ *
+ */
 public class Stats_Panel extends Secondary_View{
 
 	private int btn_size = 50;

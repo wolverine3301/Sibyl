@@ -48,10 +48,10 @@ public class Invoke {
 		//CR.printRankings();
 		generateRecollection(2, 4);
 	}
-	/*
+	
 	public static void main(String[] args) {
 		
-		
+		/*
         JFrame frame = new JFrame();
         frame.add( new JLabel(" out " ), BorderLayout.NORTH );
 
@@ -69,7 +69,7 @@ public class Invoke {
         frame.pack();
         frame.setVisible( true );
         frame.setSize(800,600);
-
+*/
 		String file = "testfiles/iris.txt";
         df = DataFrame.read_csv(file);
         df.setColumnType("species", 'T');//set target column
@@ -77,7 +77,7 @@ public class Invoke {
         df = Standardize.standardize_df(df); //Standardize the DF into z scores
         df = df.shuffle(df);
 		NaiveBayes nb = new NaiveBayes();
-        CrossValidation cv = new CrossValidation(df, 2, nb);
+        CrossValidation cv = new CrossValidation(df, 10, nb);
         //cv.avgScores();
         //cv.printScores();
         //cv.printMatrixs();
@@ -90,7 +90,7 @@ public class Invoke {
 		generateRecollection(2, 4);
 
 	}
-	*/
+	
 	/**
 	 * evocation
 	 * creates an arraylist of dataframes with varying number of columns ranked by various measures in Ranker classes

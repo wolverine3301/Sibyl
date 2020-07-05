@@ -16,7 +16,16 @@ public class ConfusionMatrix {
 	
 	private DataFrame df; //dataframe of correct answers
 	private HashMap<String, ArrayList<Object>> predictions;
-	
+	public HashMap<String,HashMap<Object,HashMap<Object,Integer>>> matrix;
+	public ConfusionMatrix() {
+		
+	}
+	/**
+	 * construct a confusion matrix from a dataframe and predictions
+	 * the matrix will compare the predictions to the actual values in the dataframe and tally right/wrong 
+	 * @param df
+	 * @param predictions
+	 */
 	public ConfusionMatrix(DataFrame df, HashMap<String, ArrayList<Object>> predictions) {
 		this.df = df;
 		this.predictions = predictions;
@@ -26,6 +35,32 @@ public class ConfusionMatrix {
 		falseNegative = new HashMap<String, HashMap<Object, Integer>>();
 		setTable();
 		test_score();
+		System.out.println("CONFUSION");
+		setMatrix();
+	}
+	public void setMatrix() {
+		matrix = new HashMap<String,HashMap<Object,HashMap<Object,Integer>>>();
+		//initiallize
+		for(Column k : df.target_columns) {
+			matrix.put(k.getName(), new HashMap<Object,HashMap<Object,Integer>>());
+			for(Object i : df.target_columns.get(0).getUniqueValues()) {
+				matrix.get(k.getName()).put(i, new HashMap<Object,Integer>());
+				for(Object j : df.target_columns.get(0).getUniqueValues()) {
+					matrix.get(k.getName()).get(i).put(j, 0);
+				}
+			}
+		}
+		int cnt2 = 0;
+
+		for(Column i : df.target_columns) {
+			cnt2 = 0;
+			for(Object j : predictions.get(i.getName())) {
+				//true positives the diagonal of the matrix
+				matrix.get(i.getName()).get(j).put(i.getParticle(cnt2).getValue(), matrix.get(i.getName()).get(j).get(i.getParticle(cnt2).getValue())+1);
+				cnt2++;
+			}
+		System.out.println(matrix);
+		}
 	}
 	/**
 	 * set up confusion matrix arrays
@@ -80,6 +115,10 @@ public class ConfusionMatrix {
 				//if its prediction isnt right
 				else if(!j.equals(df.getColumn(cnt1).getParticle(cnt2).getValue())) {
 					//update false positive count
+					
+					if(falsePositive.get(df.getColumn(cnt1).getName()).get(j)== null){
+						falsePositive.get(df.getColumn(cnt1).getName()).put(j, 1);
+					}
 					falsePositive.get(df.getColumn(cnt1).getName()).replace(j, falsePositive.get(df.getColumn(cnt1).getName()).get(j)+1);
 					
 					for(Object x : falseNegative.get(df.getColumn(cnt1).getName()).keySet()) {
@@ -110,9 +149,33 @@ public class ConfusionMatrix {
 		System.out.println("True Positives: "+ truePositive.toString());
 		System.out.println("False Positives: " + falsePositive.toString());
 		System.out.println("True Negatives: " + trueNegative.toString());
-		System.out.println("False Negatives: " + falseNegative.toString());
-		
+		System.out.println("False Negatives: " + falseNegative.toString());	
 	}
+	public HashMap<String, HashMap<Object, Integer>> getTruePositive() {
+		return truePositive;
+	}
+	public void setTruePositive(HashMap<String, HashMap<Object, Integer>> truePositive) {
+		this.truePositive = truePositive;
+	}
+	public HashMap<String, HashMap<Object, Integer>> getFalsePositive() {
+		return falsePositive;
+	}
+	public void setFalsePositive(HashMap<String, HashMap<Object, Integer>> falsePositive) {
+		this.falsePositive = falsePositive;
+	}
+	public HashMap<String, HashMap<Object, Integer>> getTrueNegative() {
+		return trueNegative;
+	}
+	public void setTrueNegative(HashMap<String, HashMap<Object, Integer>> trueNegative) {
+		this.trueNegative = trueNegative;
+	}
+	public HashMap<String, HashMap<Object, Integer>> getFalseNegative() {
+		return falseNegative;
+	}
+	public void setFalseNegative(HashMap<String, HashMap<Object, Integer>> falseNegative) {
+		this.falseNegative = falseNegative;
+	}
+	
 
 	
 	
