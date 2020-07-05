@@ -2,7 +2,9 @@ package dataframe;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
+import anova.OneWay_ANOVA;
 import particles.DoubleParticle;
 import particles.IntegerParticle;
 import particles.NANParticle;
@@ -17,6 +19,8 @@ import particles.Particle;
  * @author Cade Reynoldson
  */
 public class DataFrame {
+	
+	private final static Logger LOGGER = Logger.getLogger(OneWay_ANOVA.class.getName());
 	
     /** The name of the data frame. */
     protected String dataFrameName;
