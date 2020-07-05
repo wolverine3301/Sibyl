@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="OrdinalScale">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="src" path="Statistics"/>
 	<classpathentry kind="src" path="Regression"/>
 	<classpathentry kind="src" path="Clustering"/>
 	<classpathentry kind="src" path="Classification"/>
 	<classpathentry kind="src" path="Saga"/>
-	<classpathentry kind="src" path="GUI"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
 		<attributes>
 			<attribute name="test" value="true"/>
@@ -22,22 +15,15 @@
 	<classpathentry kind="src" path="TestAndScore"/>
 	<classpathentry kind="src" path="JUnit Tests"/>
 	<classpathentry kind="src" path="Examples"/>
-	<classpathentry kind="src" path="Scout"/>
-	<classpathentry excluding="**" kind="src" output="target/classes" path="Evaluation">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="src" path="Graph"/>
 	<classpathentry kind="src" path="Matrix"/>
 	<classpathentry kind="src" path="math"/>
 	<classpathentry kind="src" path="sort"/>
 	<classpathentry kind="src" path="util"/>
-	<classpathentry kind="src" path="apriori"/>
 	<classpathentry kind="src" path="NeuralNet"/>
 	<classpathentry kind="src" path="SYBIL_GUI"/>
 	<classpathentry kind="src" path="Data_Handler"/>
-	<classpathentry kind="src" path="SYBIL_SPEECH"/>
+	<classpathentry kind="src" path="Recollection"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
 		<attributes>
 			<attribute name="module" value="true"/>
