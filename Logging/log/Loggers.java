@@ -3,10 +3,13 @@ package log;
 import java.util.logging.Logger;
 
 import dataframe.DataFrame;
+import scorer.CrossValidation;
 
 public class Loggers {
     
     public static Logger df_Logger = Logger.getLogger(DataFrame.class.getName());
+    
+    public static Logger cv_Logger = Logger.getLogger(CrossValidation.class.getName());
     //public static Logger model_Logger ... maybe KNN Logger, misc loggers. 
     
     public static void changeLoggerSettings(LoggerSettings settings) {
