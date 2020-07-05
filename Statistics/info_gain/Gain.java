@@ -10,25 +10,18 @@ import dataframe.DataFrame_Copy;
 
 public abstract class Gain {
     
-    /** The columns to rank in regards to the target columns. */
-    DataFrame categoricalColumns;
+    protected DataFrame dataFrame; 
     
-    /** The target columns for the algorithms to run off of. */
-    DataFrame targetColumns;
+    public static final double LOG_2 = Math.log(2);
     
     public ArrayList<Double> info;
+    
     /**
      * Sets up the fields for use in gain methods.
      * @param theDataFrame the data frame to format for gain based calculations.
      */
     public Gain(DataFrame theDataFrame) {
-    	if(theDataFrame.numCategorical < 1) {
-    		
-    	}else {
-    		categoricalColumns = DataFrame_Copy.shallowCopy_columnTypes(theDataFrame, setVariables());
-    		targetColumns = DataFrame_Copy.shallowCopy_columnTypes(theDataFrame, setTargets());
-    		info = new ArrayList<Double>();
-    	}
+        dataFrame = theDataFrame; 
     }
     
     /**
@@ -40,28 +33,7 @@ public abstract class Gain {
      * @param index the index of the target in the target columns data frame.
      * @return an array list of columns, with the best gain at the lowest index, and worst gain at the highest index.
      */
-    public abstract ArrayList<Column> gain(int index);
-    
-    /**
-     * Sets the targets list.
-     * @return a tree set of targets to predict.
-     */
-    private TreeSet<Character> setTargets() {
-        TreeSet<Character> target = new TreeSet<Character>();
-        target.add('T');
-        return target;
-    }
-    
-    /**
-     * Sets the variables list.
-     * @return a tree set of the variables used to train data.
-     */
-    private TreeSet<Character> setVariables() {
-        TreeSet<Character> vars = new TreeSet<Character>();
-        vars.add('C');
-        return vars;
-    }
-    
+    public abstract ArrayList<GainInformation> gain(int index);
     
     /**
      * Calculates the entropy of a column created hashmap.
@@ -70,7 +42,6 @@ public abstract class Gain {
      */
     public double entropy(HashMap<Object, Integer> instanceCounts) {
         double entropy = 0;
-        double log_2 = Math.log(2);
         double totalInstances = 0;
         for (Object i : instanceCounts.keySet()) {
             totalInstances += instanceCounts.get(i);
@@ -78,60 +49,51 @@ public abstract class Gain {
       System.out.println("Instance counts: " + instanceCounts + " Total Instances: " + totalInstances);
         for (Object i : instanceCounts.keySet()) {
             double ratio = ((double) instanceCounts.get(i)) / totalInstances;
-            entropy -=  (ratio) * (Math.log(ratio) / log_2);
+            entropy -=  (ratio) * (Math.log(ratio) / LOG_2);
         }
       System.out.println("Entropy: " + entropy);
         return entropy;
     }
+    
+    /**
+     * Calculates the conditional entropy of a categorical column, and categorical target. 
+     * @param catg column. 
+     * @param target
+     * @return
+     */
+    public double conditionalEntropy(Column catgColumn, Column target) {
+        //IG(T, A) = H(T) - H(T | a)
+        //H(X | Y) = SUM ( P(Y, X) * log (P(Y, X) / P(Y)) )
+        HashMap<Object, Integer> catgCounts = catgColumn.getUniqueValueCounts();
+        HashMap<Object, Integer> targetCounts = target.getUniqueValueCounts();
+        double condEntropy = 0;
+        for (int i = 0; i < catgColumn.getLength(); i++) {
+            double py = catgCounts.get(catgColumn.getParticle(i).getValue());
+            //Use chi2, test for independence. 
+            double pyx = catgCounts.get(catgColumn.getParticle(i).getValue()) * targetCounts.get(target.getParticle(i).getValue()); //JOINT PROBABILITY - INDEPENDENT ASSUMPTION, MAY NEED UPDATE. 
+            condEntropy -= py * (Math.log(pyx / py) / LOG_2);
+        }
+        return condEntropy;
+    }
+    
     protected void addInfo(double e) {
     	info.add(e);
     }
+    
     /**
-     * Used for optimizing entropy calculations & fetching columns.
-     * @author Cade Reynoldson
-     * @version 1.0
+     * Returns a new instance of a gain algorithm to be ran on a seperate data frame.
+     * Use when an instance of a gain algorithm is to be used again, but on a different dataframe. 
+     * @param df the new df to create a gain algo class of. 
+     * @return a new instance of a gain algorithm to be ran on the parameterized data frame. 
      */
-    public class GainInformation {
-        
-        /** The index of the column in which the entropy was calculated to. */
-        private int columnIndex;
-        
-        /** The information gained */
-        private double infoGain;
-        
-        /**
-         * Creates a new instance of this (no fucking shit)
-         * @param theColumnIndex COLUMN INDEX
-         * @param theInfoGain THE INFO GAIN??!?!?!?!?
-         */
-        public GainInformation(int theColumnIndex, double theInfoGain) {
-            columnIndex = theColumnIndex;
-            infoGain = theInfoGain;
-        }
-        
-        /**
-         * Returns the index of the column.
-         * @return the index of the column.
-         */
-        public int getIndex() {
-            return columnIndex;
-        }
-        
-        /**
-         * Returns the info gain.
-         * @return the info gain.
-         */
-        public double getInfoGain() {
-            return infoGain;
-        }
-        
-        /**
-         * Creates a string representation of the entropy data.
-         * @return a string representation of the entropy data.
-         */
-        @Override
-        public String toString() {
-            return "Column Index: " + columnIndex + " - Info Gain: " + infoGain;
-        }
+    public Gain getGainAlgorithm(DataFrame df) {
+        if (this instanceof GainRatio)
+            return new GainRatio(df);
+        else if (this instanceof InformationGain)
+            return new InformationGain(df);
+        else if (this instanceof GiniIndex)
+            return new GiniIndex(df);
+        else
+            return null;
     }
 }

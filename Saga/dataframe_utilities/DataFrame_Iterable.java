@@ -6,7 +6,7 @@ package dataframe_utilities;
  * @author Cade Reynoldson
  * @version 1.0
  */
-public class DataFrame_Iterable {
+public class DataFrame_Iterable implements Comparable<DataFrame_Iterable>{
     
     /** The value contained. Usually a row or column. */
     private Object value;
@@ -48,5 +48,15 @@ public class DataFrame_Iterable {
      */
     public int getValueIndex() {
         return valueIndex;
+    }
+
+    /**
+     * Compares the indexes of two dataframe iterable objects. 
+     * @param o the indexes to compare. 
+     * @return the comparison of two dataframe iterable objects. 
+     */
+    @Override
+    public int compareTo(DataFrame_Iterable o) {
+        return Integer.compare(valueIndex, o.valueIndex);
     }    
 }

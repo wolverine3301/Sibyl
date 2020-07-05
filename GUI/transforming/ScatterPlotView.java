@@ -79,7 +79,7 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	private RegressionPanel regressionPanel;
 	
     /** Notifies the plot that a change has been made. */
-    private PropertyChangeSupport notifyPlot = new PropertyChangeSupport(this);
+    private PropertyChangeSupport notifyPlot;
 	
 	/**
 	 * Constructs a new scatter plot view
@@ -88,12 +88,12 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	public ScatterPlotView(DataFrame df) {
 	    super();
 	    this.df = df;
-	    
+	    notifyPlot = new PropertyChangeSupport(this);
 	    regressionPanel = new RegressionPanel();
 	    regressionPanel.addPropertyChangeListener(this);
 	    plotInfo = new JTabbedPane();
-	    col_x = df.getColumn(df.numericIndexes.get(0));
-	    col_y = df.getColumn(df.numericIndexes.get(1));
+	    col_x = df.numeric_columns.get(0);
+	    col_y = df.numeric_columns.get(1);
 	    start();
 	}
 	
@@ -272,9 +272,9 @@ public class ScatterPlotView extends JPanel implements PropertyChangeListener {
 	    panel.add(new JLabel("X-Axis"));
         JComboBox<String> xNames = new JComboBox<String>();
         JComboBox<String> yNames = new JComboBox<String>();
-        for (Integer i : df.numericIndexes) {
-            xNames.addItem(df.getColumnNames().get(i));
-            yNames.addItem(df.getColumnNames().get(i));
+        for (Column c : df.numeric_columns) {
+            xNames.addItem(c.getName());
+            yNames.addItem(c.getName());
         }
         xNames.addActionListener(new ActionListener() {
             @Override
