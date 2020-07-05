@@ -63,3 +63,7 @@ These are the accepted type codes for data types in saga
  		* 'G' : a custom object column
  		* 'O' : a ordinal column (Ordered categorys such as A,B, and C grades)
  		* 'N' : a numerical column
+		
+## Threading Implementation
+  - Threading Logic: When running a threaded implementation, threads are designed to work on one column or row at a time.
+
