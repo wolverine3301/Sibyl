@@ -1,9 +1,10 @@
 package anova;
 
-import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.HashMap;
 import java.util.Set;
-
+import java.util.ArrayList;
 import dataframe.Column;
 import dataframe.DataFrame;
 import forensics.Stats;
@@ -24,6 +25,8 @@ import forensics.Stats;
  *
  */
 public class OneWay_ANOVA {
+
+	private final static Logger LOGGER = Logger.getLogger(OneWay_ANOVA.class.getName());
 	
 	private DataFrame anova;
 	private DataFrame df;
@@ -31,15 +34,21 @@ public class OneWay_ANOVA {
 	private HashMap<String, HashMap<String, Double>> MSB; //mean sques between treatments(groups
 	private HashMap<String, HashMap<String, Double>> meanSquaresError;
 	private HashMap<String, HashMap<String, Double>> F_RATIO;
+	
 	public OneWay_ANOVA(DataFrame df) {
+		LOGGER.log(Level.FINE, "Construction of one-way ANOVA");
+		//LOGGER.logp
 		this.df = df;
 		anova = new DataFrame();
+		
 		this.meanSquaresError = new HashMap<String, HashMap<String, Double>>();
 		this.MSB = new HashMap<String, HashMap<String, Double>>();
 		this.F_RATIO = new HashMap<String, HashMap<String, Double>>();
 		classes = new ArrayList<DataFrame[]>();
+		
 	}
 	public void invokeANOVA(){
+		LOGGER.log(Level.FINER, "INVOKE ANOVA");
 		initializeAll_anova();
 		HashMap<String, Double> MS;
 		HashMap<String, Double> MSE;
@@ -52,6 +61,7 @@ public class OneWay_ANOVA {
 				for(DataFrame[] k : classes) {
 					MS.put(i.getName(), sumOfSquaresOfTreatment(k, j));
 					MSE.put(i.getName(), SumOfSquaresOfError(k,j));
+					System.out.println(i.getName());
 					F.put(i.getName(), MS.get(df.numeric_columns.get(j).getName() ) / MSE.get(df.numeric_columns.get(j).getName() ) );
 				}
 			}
@@ -118,6 +128,9 @@ public class OneWay_ANOVA {
 				System.out.println(j +": "+ this.F_RATIO.get(i).get(j));
 			}
 		}
+	}
+	public Logger getLogger() {
+		return LOGGER;
 	}
 
 
