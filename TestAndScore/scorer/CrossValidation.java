@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import log.Loggers;
 import machinations.Model;
 /**
  * Cross validation for training and testing models 
@@ -45,7 +47,7 @@ public class CrossValidation {
 	 */
 	public CrossValidation(DataFrame df, int N, Model model) {
 		System.out.println("CV: "+df.numTargets);
-		System.out.println(df.target_columns.get(0).getName());
+		Loggers.cv_Logger.log(Level.INFO, "CV: " + df.numTargets + " n = " + N);
 		this.N = N;
 		this.df = df.shuffle(df);
 		scores = new ArrayList<Score>();
