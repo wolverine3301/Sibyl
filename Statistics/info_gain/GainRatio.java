@@ -24,30 +24,30 @@ public class GainRatio extends Gain{
      * @return 
      */
     @Override
-    public ArrayList<Column> gain(int index) {
+    public ArrayList<GainInformation> gain(int index) {
     	//if there are no categorical columns
-		if(super.categoricalColumns == null) {
+		if(dataFrame.categorical_columns.size() == 0) {
 			return null;
 		}
-        double targetEntropy = targetColumns.getColumn(index).entropy;
+		double targetEntropy = dataFrame.target_columns.get(index).entropy;
         //Holds the calculated info gain in a max heap style.
-        PriorityQueue<GainInformation> gainRatios = new PriorityQueue<GainInformation>(categoricalColumns.getNumColumns(), new Comparator<GainInformation>() {
+        PriorityQueue<GainInformation> gainRatios = new PriorityQueue<GainInformation>(dataFrame.numCategorical, new Comparator<GainInformation>() {
             @Override
             public int compare(GainInformation o1, GainInformation o2) {
                 return Double.compare(o2.getInfoGain(), o1.getInfoGain());
             }
         });
-        for (int i = 0; i < categoricalColumns.getNumColumns(); i++) { //Calculate info gain of every column compared to the target column
-            double tempEntropy = categoricalColumns.getColumn(i).entropy;
+        for (int i = 0; i < dataFrame.numCategorical; i++) { //Calculate info gain of every column compared to the target column
+            double tempEntropy = dataFrame.categorical_columns.get(0).entropy;
             if (tempEntropy != 0) {//avoid deviding by 0.
                 gainRatios.add(new GainInformation(i, (targetEntropy - tempEntropy) / tempEntropy)); //Only difference: add information gain devided by the temp entropy.
-                addInfo((targetEntropy - tempEntropy) / tempEntropy);
-            }else
+                //addInfo((targetEntropy - tempEntropy) / tempEntropy);
+            } else
                 gainRatios.add(new GainInformation(i, 0)); //Bad choice, no diversity in the column --- Only on rare occasions.
         }
-        ArrayList<Column> sortedGains = new ArrayList<Column>();
+        ArrayList<GainInformation> sortedGains = new ArrayList<GainInformation>();
         while(!gainRatios.isEmpty())
-            sortedGains.add(categoricalColumns.getColumn(gainRatios.remove().getIndex()));
+            sortedGains.add(gainRatios.remove());
         return sortedGains;
     }
     

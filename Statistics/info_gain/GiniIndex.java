@@ -29,19 +29,20 @@ public class GiniIndex extends Gain{
      * NOTE: PASS 0 TO THE PARAMETER OF THIS FUNCTION. 
      */
     @Override
-    public ArrayList<Column> gain(int index) {
+    public ArrayList<GainInformation> gain(int index) {
     	//if there are no categorical columns
-		if(super.categoricalColumns == null) {
-			return null;
-		}
-        PriorityQueue<GainInformation> infoGain = new PriorityQueue<GainInformation>(categoricalColumns.getNumColumns(), new Comparator<GainInformation>() {
+        if(super.dataFrame.categorical_columns.size() == 0) {
+            return null;
+        }
+        
+        PriorityQueue<GainInformation> infoGain = new PriorityQueue<GainInformation>(dataFrame.numCategorical, new Comparator<GainInformation>() {
             @Override
             public int compare(GainInformation o1, GainInformation o2) {
                 return Double.compare(o2.getInfoGain(), o1.getInfoGain());
             }
         });
-        for (int i = 0; i < categoricalColumns.getNumColumns(); i++) {
-            HashMap<Object, Double> probabilities = categoricalColumns.getColumn(i).getFeatureStats();
+        for (int i = 0; i < dataFrame.numCategorical; i++) {
+            HashMap<Object, Double> probabilities = dataFrame.categorical_columns.get(i).getFeatureStats();
             double gain = 0;
             for (Object o : probabilities.keySet()) {
                 double prob = probabilities.get(o);
@@ -49,11 +50,11 @@ public class GiniIndex extends Gain{
             }
             addInfo(gain);
             infoGain.add(new GainInformation(i, gain));
-            System.out.println("GINI IMPURITY OF COLUMN " + categoricalColumns.getColumn(i).getName() + ": " + gain);
+            //System.out.println("GINI IMPURITY OF COLUMN " + categoricalColumns.getColumn(i).getName() + ": " + gain);
         }
-        ArrayList<Column> sortedColumnGains = new ArrayList<Column>();
+        ArrayList<GainInformation> sortedColumnGains = new ArrayList<GainInformation>();
         while (!infoGain.isEmpty()) {
-            sortedColumnGains.add(categoricalColumns.getColumn(infoGain.remove().getIndex()));
+            sortedColumnGains.add(infoGain.remove());
         }
         return sortedColumnGains;
     }
