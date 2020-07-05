@@ -62,7 +62,11 @@ public final class DataFrame_Copy {
                 }
             }
         }
-        return DataFrame_Copy.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
+        System.out.println("Rows to copy (" + rowIndexes.size() + "): " + rowIndexes.toString());
+        if (rowIndexes.size() == 0) 
+            return null;
+        else 
+            return DataFrame_Copy.shallowCopy_rowIndexes(theDataFrame, rowIndexes);
     }
     
     /**
