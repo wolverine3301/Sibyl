@@ -46,8 +46,7 @@ public class CrossValidation {
 	 * @param model - a model object to be tested
 	 */
 	public CrossValidation(DataFrame df, int N, Model model) {
-		System.out.println("CV: "+df.numTargets);
-		Loggers.cv_Logger.log(Level.INFO, "CV: " + df.numTargets + " n = " + N);
+		Loggers.cv_Logger.log(Level.INFO, "CV: " + df.numTargets + " Splits = " + N);
 		this.N = N;
 		this.df = df.shuffle(df);
 		scores = new ArrayList<Score>();
@@ -57,12 +56,7 @@ public class CrossValidation {
 		for(int i = 0;i < this.trials.size(); i++) {
 			model.train(trials.get(i).raw_train);
 			model.initiallize();
-			//System.out.println("CV: "+trials.get(i).trial_test_variables.columnNamesToString());
 			HashMap<String, ArrayList<Object>> predicts = model.predictDF(trials.get(i).trial_test_variables);
-			
-			//System.out.println(i+" "+" "+predicts);
-			
-			//trials.get(i).trial_test_targets.printDataFrame();
 			score = new Score(trials.get(i).trial_test_targets,predicts);
 			scores.add(score);
 		}
@@ -72,6 +66,8 @@ public class CrossValidation {
 	 * setup an array of dataframes to test and train with
 	 */
 	public void setTrials() {
+		Loggers.cv_Logger.log(Level.INFO, "Setting trials");
+		
 		int interval = Math.floorDiv(this.df.getNumRows(), N);
 	    //shuffle(df);
 		ArrayList<TestTrainFit> trials = new ArrayList<TestTrainFit>();
@@ -94,15 +90,18 @@ public class CrossValidation {
 	        	}
 	        	
 	        }
-	        System.out.println("TRAIN SET: "+set2.size());
-	        System.out.println("Test set: "+set1.size());
+	        Loggers.cv_Logger.log(Level.FINER,"TRAIN SET: "+ set2.size() + " TEST SET: "+set1.size());
+
 	        trial = new TestTrainFit(this.df.shallowCopy_rowIndexes(set2), this.df.shallowCopy_rowIndexes(set1));
 	        trials.add(trial);
 	    }
 	    this.trials = trials;
+	    
 	}
 	//sum up all trial confusion matrixes
 	public void sumConfusionMatrix() {
+		Loggers.cv_Logger.log(Level.INFO,"Summing ConfusionMatrix");
+		
 		HashMap<String, HashMap<Object, Integer>> tp = new HashMap<String, HashMap<Object, Integer>>();
 		HashMap<String, HashMap<Object, Integer>> fp = new HashMap<String, HashMap<Object, Integer>>();
 		HashMap<String, HashMap<Object, Integer>> tn = new HashMap<String, HashMap<Object, Integer>>();
@@ -141,7 +140,7 @@ public class CrossValidation {
 					fn.get(j).replace(z, tp.get(j).get(z) + cm.falseNegative.get(j).get(z));
 					
 				}
-				System.out.println(tp);
+				//System.out.println(tp);
 			}
 		}
 		ArrayList<HashMap<String,HashMap<Object,HashMap<Object,Integer>>>> matrix_c = new ArrayList<HashMap<String,HashMap<Object,HashMap<Object,Integer>>>>();
@@ -174,8 +173,9 @@ public class CrossValidation {
 				}
 			}
 		}
-		System.out.println("CROSS VAL");
-		System.out.println(matrix);
+		//System.out.println("CROSS VAL");
+		//System.out.println(matrix);
+		
 		//set
 		confusion_matrix.setTruePositive(tp);
 		confusion_matrix.setFalsePositive(fp);
@@ -191,6 +191,8 @@ public class CrossValidation {
 	 * Avg scores from all trials
 	 */
 	public void avgScores() {
+		Loggers.cv_Logger.log(Level.INFO,"Averaging scores");
+		
 		HashMap<String, HashMap<Object, Double>> accuracy = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> recall = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> precision = new HashMap<String, HashMap<Object, Double>>();
