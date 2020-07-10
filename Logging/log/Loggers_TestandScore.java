@@ -3,14 +3,11 @@ package log;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
-import dataframe.DataFrame;
 import scorer.ConfusionMatrix;
 import scorer.CrossValidation;
 
-public class Loggers {
-    
-    public static Logger df_Logger = Logger.getLogger(DataFrame.class.getName());
-    
+public class Loggers_TestandScore {
+	
     public static Logger cv_Logger = Logger.getLogger(CrossValidation.class.getName());
     
     public static Logger cm_Logger = Logger.getLogger(ConfusionMatrix.class.getName());
@@ -24,5 +21,4 @@ public class Loggers {
         
     }
     public static ConsoleHandler ch = new ConsoleHandler();
-    
 }

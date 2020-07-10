@@ -5,16 +5,22 @@ import java.awt.Color;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import anova.OneWay_ANOVA;
 import bayes.NaiveBayes;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
+import log.Loggers;
+import log.Loggers_TestandScore;
 import logan.sybilGUI.TextAreaOutputStream;
 import scorer.CrossValidation;
 import transform.Standardize;
@@ -29,6 +35,7 @@ public class Invoke {
 	private static NumericRanker NR; 
 	private static DataFrame  df;
 	public void start() {
+		
 		String file = "testfiles/iris.txt";
         df = DataFrame.read_csv(file);
         df.setColumnType("species", 'T');//set target column
@@ -50,44 +57,31 @@ public class Invoke {
 	}
 	
 	public static void main(String[] args) {
+		Loggers_TestandScore.cv_Logger.addHandler(Loggers.ch);
 		
-		/*
-        JFrame frame = new JFrame();
-        frame.add( new JLabel(" out " ), BorderLayout.NORTH );
-
-        JTextArea ta = new JTextArea();
-        ta.setBackground(Color.black);
-        ta.setForeground(Color.gray);
-        TextAreaOutputStream taos = new TextAreaOutputStream( ta, 60 );
-        PrintStream ps = new PrintStream( taos );
-        System.setOut( ps );
-        System.setErr( ps );
-
-
-        frame.add( new JScrollPane( ta )  );
-
-        frame.pack();
-        frame.setVisible( true );
-        frame.setSize(800,600);
-*/
+		//Loggers_TestandScore.cm_Logger.addHandler(Loggers.ch);
 		String file = "testfiles/iris.txt";
         df = DataFrame.read_csv(file);
         df.setColumnType("species", 'T');//set target column
+        System.out.println("MAIN - Target Columns: "+ df.numTargets);
         df.convertNANS_mean(); // conevert any NAN's to the mean of column 
         df = Standardize.standardize_df(df); //Standardize the DF into z scores
+        System.out.println("MAIN - Target Columns after standardizing: "+ df.numTargets);
+        //System.out.println(df.numTargets);
         df = df.shuffle(df);
+        
 		NaiveBayes nb = new NaiveBayes();
         CrossValidation cv = new CrossValidation(df, 10, nb);
         //cv.avgScores();
         //cv.printScores();
         //cv.printMatrixs();
         //System.out.println(df.columnNamesToString());
-        NR = new NumericRanker(df,0);
+        //NR = new NumericRanker(df,0);
         //System.out.println(NR.getSpearman());
-        CR = new CategoryRanker(df, 0);
+        //CR = new CategoryRanker(df, 0);
 		
 		//CR.printRankings();
-		generateRecollection(2, 4);
+		//generateRecollection(2, 4);
 
 	}
 	
@@ -136,7 +130,7 @@ public class Invoke {
 				if(i == NR.getPearson().size()) break;
 			}
 		}
-		System.out.println(recollection.size());
+		//System.out.println(recollection.size());
 		return recollection;
 	}
 	
