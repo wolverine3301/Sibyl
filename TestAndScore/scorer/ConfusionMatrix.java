@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import dataframe.Column;
 import dataframe.DataFrame;
+import log.Loggers;
 public class ConfusionMatrix {
 	public HashMap<String, HashMap<Object, Integer>> truePositive;
 	public HashMap<String, HashMap<Object, Integer>> falsePositive;
@@ -27,6 +29,9 @@ public class ConfusionMatrix {
 	 * @param predictions
 	 */
 	public ConfusionMatrix(DataFrame df, HashMap<String, ArrayList<Object>> predictions) {
+		//System.out.println("CM: "+df.target_columns);
+		Loggers.cm_Logger.log(Level.INFO, "Targets: " + df.numTargets + " Predictions: " + predictions.get(df.target_columns.get(0).getName()).size());
+		
 		this.df = df;
 		this.predictions = predictions;
 		truePositive = new HashMap<String, HashMap<Object, Integer>>();
@@ -35,10 +40,11 @@ public class ConfusionMatrix {
 		falseNegative = new HashMap<String, HashMap<Object, Integer>>();
 		setTable();
 		test_score();
-		System.out.println("CONFUSION");
 		setMatrix();
 	}
 	public void setMatrix() {
+		Loggers.cm_Logger.entering("ConfusionMatrix", "setMatrix");
+		
 		matrix = new HashMap<String,HashMap<Object,HashMap<Object,Integer>>>();
 		//initiallize
 		for(Column k : df.target_columns) {
@@ -59,7 +65,8 @@ public class ConfusionMatrix {
 				matrix.get(i.getName()).get(j).put(i.getParticle(cnt2).getValue(), matrix.get(i.getName()).get(j).get(i.getParticle(cnt2).getValue())+1);
 				cnt2++;
 			}
-		System.out.println(matrix);
+			//System.out.println("GDDDDDDD");
+			Loggers.cm_Logger.log(Level.FINER, matrix.toString());
 		}
 	}
 	/**
@@ -70,6 +77,7 @@ public class ConfusionMatrix {
 	 * truePositive[N] = Nth target column
 	 */
 	private void setTable() {
+		Loggers.cm_Logger.entering("ConfusionMatrix", "setTable");
 		int cnt = 0;
 		for(int i = 0; i < df.getNumColumns();i++) {
 			HashMap<Object,Integer> arr0 = new HashMap<Object,Integer>();
@@ -93,6 +101,7 @@ public class ConfusionMatrix {
 	 * finds true positives and negatives
 	 */
 	private void test_score() {
+		Loggers.cm_Logger.entering("ConfusionMatrix", "test_score");
 		int cnt1 = 0;
 		int cnt2;
 		//for each target column
