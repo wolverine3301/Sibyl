@@ -14,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.junit.runner.manipulation.Filter;
+
 import anova.OneWay_ANOVA;
 import bayes.NaiveBayes;
 import dataframe.Column;
@@ -37,7 +39,7 @@ public class Invoke {
 	//
 	private static NumericRanker NR; 
 	private static DataFrame  df;
-	public void start() {
+	public static void start() {
 		
 		String file = "testfiles/iris.txt";
         df = DataFrame.read_csv(file);
@@ -48,7 +50,7 @@ public class Invoke {
 		NaiveBayes nb = new NaiveBayes();
         CrossValidation cv = new CrossValidation(df,5, nb);
         //cv.avgScores();
-        //cv.printScores();
+        cv.printScores();
         //cv.printMatrixs();
         //System.out.println(df.columnNamesToString());
         NR = new NumericRanker(df,0);
@@ -60,6 +62,8 @@ public class Invoke {
 	}
 	
 	public static void main(String[] args) {
+
+		Loggers_TestandScore.cv_Logger.setLevel(Level.ALL);
 		Loggers_TestandScore.cv_Logger.addHandler(Loggers.ch);
 		
 		//Loggers_TestandScore.cm_Logger.addHandler(Loggers.ch);
@@ -73,7 +77,7 @@ public class Invoke {
         df = df.shuffle(df);
         Model model = new KNN();
 		NaiveBayes nb = new NaiveBayes();
-        CrossValidation cv = new CrossValidation(df, 10, model);
+		start();
         //cv.avgScores();
         //cv.printScores();
         //cv.printMatrixs();

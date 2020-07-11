@@ -45,7 +45,9 @@ public class ConfusionMatrix {
 		setMatrix();
 	}
 	
-	
+	/**
+	 * initiallize matrix
+	 */
 	public void setMatrix() {
 		Loggers.cm_Logger.entering("ConfusionMatrix", "setMatrix");
 		
@@ -60,12 +62,14 @@ public class ConfusionMatrix {
 				}
 			}
 		}
+		Loggers.cm_Logger.log(Level.FINER, "MATRIX KEYSET: "+matrix.keySet().toString());
 		int cnt2 = 0;
 
 		for(Column i : df.target_columns) {
 			cnt2 = 0;
 			for(Object j : predictions.get(i.getName())) {
 				//true positives the diagonal of the matrix
+				System.out.println("CM "+i.getParticle(cnt2).getValue());
 				matrix.get(i.getName()).get(j).put(i.getParticle(cnt2).getValue(), matrix.get(i.getName()).get(j).get(i.getParticle(cnt2).getValue())+1);
 				cnt2++;
 			}
