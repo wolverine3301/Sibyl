@@ -13,11 +13,13 @@ import dataframe.DataFrame;
 public class Score {
 	/**
 	 * recall - also known as true positive rate or sensitivity. how many of a class were correctly identified.
-	 * if u say everyone has cancer recall is one because youve successful identified all people who actually have cancer
-	 * if you guess 100 people have cancer and 75 actually do then recall is 0.75
+	 * if u say everyone has cancer ,recall = one because youve successful identified all people who actually have cancer.
+	 * if you guess 75 people have cancer and 100 actually do then recall is 0.75
 	 * 
-	 * precision - % of predictions 
+	 * precision - % of predictions for a class that was correct
+	 * 
 	 */
+	/** targetname -> klass -> score **/
 	public HashMap<String, HashMap<Object, Double>> recall; 
 	public HashMap<String, HashMap<Object, Double>> precision;
 	public HashMap<String, HashMap<Object, Double>> F1;
