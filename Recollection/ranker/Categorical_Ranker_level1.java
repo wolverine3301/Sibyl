@@ -106,7 +106,9 @@ public class Categorical_Ranker_level1 {
 		
 	}
 	private void makeGain() {
-		GAIN = gain.gain(targetIndex);
+		System.out.println("GIAN: "+gain.gain(targetIndex).get(0));
+		System.out.println(gain);
+		//GAIN = gain.gain(targetIndex);
 	}
 	private void makeGainRatio() {
 		GAIN_RATIO = gain_ratio.gain(targetIndex);

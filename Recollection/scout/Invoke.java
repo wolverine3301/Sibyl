@@ -39,11 +39,11 @@ public class Invoke {
 		String file = "testfiles/iris.txt";
         df = DataFrame.read_csv(file);
         df.setColumnType("species", 'T');//set target column
-        df.convertNANS_mean(); // conevert any NAN's to the mean of column 
-        df = Standardize.standardize_df(df); //Standardize the DF into z scores
-        df = df.shuffle(df);
+        //df.convertNANS_mean(); // conevert any NAN's to the mean of column 
+        //df = Standardize.standardize_df(df); //Standardize the DF into z scores
+        //df = df.shuffle(df);
 		NaiveBayes nb = new NaiveBayes();
-        CrossValidation cv = new CrossValidation(df, 2, nb);
+        CrossValidation cv = new CrossValidation(df,5, nb);
         //cv.avgScores();
         //cv.printScores();
         //cv.printMatrixs();
