@@ -35,10 +35,7 @@ public class DecisionTreeModel extends Model {
     
     public void generateTree(int targetIndex) {
         DecisionTree tree = new DecisionTree(originalDf, gainMethod, targetIndex);
-        for (int i = 0; i < maxIterations; i++) {
-            System.out.println("Iteration: " + i);
-            tree.split();
-        }
+        tree.split();
         trees.put(targetIndex, tree);
     }
     

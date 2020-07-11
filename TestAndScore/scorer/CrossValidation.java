@@ -46,10 +46,7 @@ public class CrossValidation {
 	 * @param model - a model object to be tested
 	 */
 	public CrossValidation(DataFrame df, int N, Model model) {
-		Loggers.cv_Logger.log(Level.INFO, "CV: " + df.numTargets + " Splits = " + N);
-		for(Column i : df.target_columns) {
-			System.out.println(i.getName());
-		}
+		Loggers.cv_Logger.log(Level.INFO, "Cross Validation - Targets: " + df.numTargets + " Splits = " + N);
 		this.N = N;
 		this.df = df.shuffle(df);
 		scores = new ArrayList<Score>();

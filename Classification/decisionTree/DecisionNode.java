@@ -3,6 +3,7 @@ package decisionTree;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import dataframe.Column;
 import dataframe.DataFrame;
@@ -10,6 +11,7 @@ import dataframe.DataFrame_Copy;
 import dataframe.Row;
 import info_gain.Gain;
 import info_gain.GainInformation;
+import log.Loggers;
 import machinations.Model;
 import particles.Particle;
 
@@ -33,7 +35,6 @@ public class DecisionNode {
      * @param gainAlg
      * @param targetIndex
      * @param value
-     * @param depth
      * @param columnName the name of the column - TODO: OPTIMIZE!!
      */
     public DecisionNode(DataFrame df, Gain gainAlg, int targetIndex, Object value, String columnName) {
@@ -56,6 +57,7 @@ public class DecisionNode {
                 return;
             GainInformation maxGain = gains.get(0);
             Column c = dataFrame.categorical_columns.get((maxGain.getIndex()));
+            Loggers.decTree_Logger.log(Level.INFO, "Decision Tree: Splitting on column - " + c.getName());
             String[] args = new String[3];
             args[0] = c.getName();
             args[1] = "=";
@@ -76,7 +78,7 @@ public class DecisionNode {
     }
     
     public DecisionNode nextNode(Row r) {
-        int index = r.getParticle(index);
+        int index = 0;
         if (children.containsKey(r.getParticle(index).getValue()))
             return children.get(r.getParticle(index).getValue());
         return this;
