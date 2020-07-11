@@ -62,7 +62,7 @@ public final class DataFrame_Copy {
                 }
             }
         }
-        System.out.println("Rows to copy (" + rowIndexes.size() + "): " + rowIndexes.toString());
+        //System.out.println("Rows to copy (" + rowIndexes.size() + "): " + rowIndexes.toString());
         if (rowIndexes.size() == 0) 
             return null;
         else 
@@ -325,7 +325,11 @@ public final class DataFrame_Copy {
         for (Integer rowIndex : rowIndexes) {
             newDataFrame.addRow(theDataFrame.getRow_byIndex(rowIndex));
         }
+        System.out.println("SETTING STATISTICS! - COLUMN TYPES - ");
+        newDataFrame.printColumnNameTypes();
         newDataFrame.setStatistics();
+        System.out.println("STATS SET - COLUMN TYPES: ");
+        newDataFrame.printColumnNameTypes();
         return newDataFrame;
     } 
     

@@ -147,6 +147,7 @@ public class DataFrame {
 	
 	/**
 	 * Initializes all of the Columns contained in the DataFrame statistics. 
+	 * NOTE: Only use this method when working with a FRESH dataframe, i.e. a brand new dataframe from a file!
 	 */
     public void setStatistics() {
         for (int i = 0; i < columns.size(); i++) {
@@ -241,22 +242,8 @@ public class DataFrame {
      * not automatically calculated. 
      */
     private void addColumnStatistics(Column c, boolean isEmpty) {
-        char columnType = c.getType();
         if (!isEmpty && !c.readyForStats)
             c.setStatistics();
-        if (columnType == 'T') {
-            target_columns.add(c);
-            numTargets++;
-        } else if (columnType == 'N') {
-            numeric_columns.add(c);
-            numNumeric++;
-        } else if (columnType == 'C') {
-            categorical_columns.add(c);
-            numCategorical++;
-        } else if (columnType == 'M') {
-            meta_columns.add(c);
-            numMeta++;
-        }
     }
     
 	/**
@@ -931,6 +918,11 @@ public class DataFrame {
                 System.out.println(c.toStringStatistics());
             }
         }
+    }
+    
+    public void printColumnNameTypes() {
+        for (Column c : columns)
+            System.out.println(c.getName() + " - " + c.getType());
     }
     
     /**

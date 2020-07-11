@@ -17,7 +17,7 @@ public class DecisionTree {
     int targetIndex;
     
     public DecisionTree(DataFrame df, Gain gainAlg, int targetIndex) {
-        headNode = new DecisionNode(df, gainAlg, targetIndex, "Original", 0);
+        headNode = new DecisionNode(df, gainAlg, targetIndex, "Original", "Head");
 	}
     
     /**
