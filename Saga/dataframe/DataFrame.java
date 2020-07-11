@@ -124,8 +124,8 @@ public class DataFrame {
 	 */
 	public void setColumnType(String columnName, char newType) {
 		int index = 0;
-		for(int i = 0; i < columnNames.size(); i++) {
-			if(columnNames.get(i).contentEquals(columnName)){
+		for(int i = 0; i < columns.size(); i++) {
+			if(columns.get(i).name.equals(columnName)){
 				index = i;
 				break;
 			}
@@ -147,9 +147,18 @@ public class DataFrame {
 	
 	/**
 	 * Initializes all of the Columns contained in the DataFrame statistics. 
-	 * NOTE: Only use this method when working with a FRESH dataframe, i.e. a brand new dataframe from a file!
+	 * NOTE: Can be very slow with a large dataframe! 
 	 */
     public void setStatistics() {
+        this.numeric_columns = new ArrayList<Column>();
+        this.categorical_columns = new ArrayList<Column>();
+        this.target_columns = new ArrayList<Column>();
+        this.meta_columns = new ArrayList<Column>();
+        numNumeric = 0;
+        numCategorical = 0;
+        numTargets = 0;
+        numMeta = 0;
+        statsInitialized = false;
         for (int i = 0; i < columns.size(); i++) {
             setStatistics(i);
         }
@@ -448,8 +457,6 @@ public class DataFrame {
     public void addColumnName(String name) {
         if (columnNames.size() == columns.size() - 1)
             columnNames.add(name);
-        else
-            throw new IllegalArgumentException("Addition of new column name would cause uneven column names length vs column length.");
     }
     
     /**
@@ -478,8 +485,9 @@ public class DataFrame {
     public void addRow(Row r) {
         rows.add(r);
         numRows++;
-        for (int i = 0; i < r.getLength(); i++) 
+        for (int i = 0; i < r.getLength(); i++) {
             columns.get(i).add(r.getParticle(i));
+        }
     }
 	
     /**
@@ -971,5 +979,4 @@ public class DataFrame {
             }
         }
     }
-
 }

@@ -25,19 +25,16 @@ public class DataFrame_Read {
 	            df.addBlankColumn(columnNames[i]);
 	        }
 	        String currentLine = "";
-	        int count = 0;
 	        while ((currentLine = br.readLine()) != null) { //For each other line inside the file, add them to the dataframe.
 	            Row currentRow = new Row();
 	            String[] values = currentLine.split(",");
 	            for (int i = 0; i < values.length; i++) { //Create a row object out of the current read in line.
 	                Particle currentParticle = Particle.resolveType(values[i]);
-	                currentParticle.setIndex(count); //Set the index of this particle in the column. 
 	                currentRow.add(currentParticle);
 	            }
 	            df.addRow(currentRow); //Add the current row to the dataframe. This method handles initializing position in columns too.
-	            count++;
 	        }
-            df.numRows = df.rows.size();
+            //df.numRows = df.rows.size();
             df.numColumns = df.columns.size();
             df.setStatistics();
 	        br.close();
