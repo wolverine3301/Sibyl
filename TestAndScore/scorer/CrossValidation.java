@@ -57,6 +57,8 @@ public class CrossValidation {
 			model.train(trials.get(i).raw_train);
 			model.initiallize();
 			HashMap<String, ArrayList<Object>> predicts = model.predictDF(trials.get(i).trial_test_variables);
+			for (String s : predicts.keySet())
+			    System.out.println(predicts.get(s).toString());
 			score = new Score(trials.get(i).trial_test_targets,predicts);
 			scores.add(score);
 		}

@@ -19,9 +19,11 @@ public class ConfusionMatrix {
 	private DataFrame df; //dataframe of correct answers
 	private HashMap<String, ArrayList<Object>> predictions;
 	public HashMap<String,HashMap<Object,HashMap<Object,Integer>>> matrix;
+	
 	public ConfusionMatrix() {
 		
 	}
+	
 	/**
 	 * construct a confusion matrix from a dataframe and predictions
 	 * the matrix will compare the predictions to the actual values in the dataframe and tally right/wrong 
@@ -42,6 +44,8 @@ public class ConfusionMatrix {
 		test_score();
 		setMatrix();
 	}
+	
+	
 	public void setMatrix() {
 		Loggers.cm_Logger.entering("ConfusionMatrix", "setMatrix");
 		

@@ -8,6 +8,7 @@ import java.util.PriorityQueue;
 import dataframe.DataFrame;
 import dataframe.Row;
 import distances.Distance;
+import distances.Euclidean;
 import machinations.Model;
 import particles.DistanceParticle;
 
@@ -19,10 +20,20 @@ import particles.DistanceParticle;
 public class KNN extends Model {
     
     /** The amount of predictions to be returned. */
-    public int k;
+    public int k = 30;
     
     /** The distance function knn will use. */
     Distance distanceFunction;
+    
+    public KNN() {
+        
+    }
+    
+    public void initiallize() {
+        distanceFunction = new Euclidean();
+        k = 5;
+        
+    }
     
     /**
      * Creates a new KNN object, which can be used for calculating using the k nearest neighbors algorithm.
@@ -96,20 +107,20 @@ public class KNN extends Model {
     @Override
     public HashMap<String , ArrayList<Object>> predictDF(DataFrame testDf) {
         HashMap<String, ArrayList<Object>> predictions = new HashMap<String, ArrayList<Object>>();
-        for (int i = 0; i < trainDF_targets.getNumColumns(); i++ ) {
-            PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(trainDF_variables.getNumRows(), new Comparator<DistanceParticle>() {
+        for (int i = 0; i < trainDF_targets.columns.size(); i++ ) {
+            String targetName = trainDF_targets.getColumn(i).getName();
+            PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(trainDF_variables.getNumRows(), new Comparator<DistanceParticle>() { //Neighbors priority queue. Quick access to closest neighbors.  
                 @Override
                 public int compare(DistanceParticle p1, DistanceParticle p2) {
                     return Double.compare(p1.getValue(), p2.getValue());
                 }
             });
-            for (int j = 0; j < testDf.getNumRows(); j++)
+            for (int j = 0; j < testDf.getNumRows(); j++) //For each row in the training df, calculate distance. 
                 neighbors.add(new DistanceParticle(distanceFunction.distance(testDf.getRow_byIndex(j), trainDF_variables.getRow_byIndex(i)), j, distanceFunction.distanceType));
             ArrayList<Object> currPredictions = new ArrayList<Object>(k);
-            for (int j = 0; i < k; i++) {
+            for (int j = 0; i < k; i++) //Pop the values of the k closest neighbors and add to the predictions array list. 
                 currPredictions.add(trainDF_variables.getColumn(j).getParticle(neighbors.remove().distanceToIndex).getValue());
-            }
-            predictions.put(trainDF_targets.getColumnNames().get(i), currPredictions);
+            predictions.put(targetName, currPredictions);
         }
         return predictions;
     }
@@ -123,12 +134,6 @@ public class KNN extends Model {
     public Object predict(Row row) {
         HashMap<String, HashMap<Object, Double>> probabilityMap = probability(row);
         return null; 
-    }
-
-    @Override
-    public void initiallize() {
-        // TODO Auto-generated method stub
-        
     }
 
 	@Override

@@ -19,9 +19,12 @@ import bayes.NaiveBayes;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
+import distances.Euclidean;
+import knn.KNN;
 import log.Loggers;
 import log.Loggers_TestandScore;
 import logan.sybilGUI.TextAreaOutputStream;
+import machinations.Model;
 import scorer.CrossValidation;
 import transform.Standardize;
 /**
@@ -63,15 +66,14 @@ public class Invoke {
 		String file = "testfiles/iris.txt";
         df = DataFrame.read_csv(file);
         df.setColumnType("species", 'T');//set target column
-        System.out.println("MAIN - Target Columns: "+ df.numTargets);
+//        df.printColumnNameTypes();
         df.convertNANS_mean(); // conevert any NAN's to the mean of column 
         df = Standardize.standardize_df(df); //Standardize the DF into z scores
-        System.out.println("MAIN - Target Columns after standardizing: "+ df.numTargets);
         //System.out.println(df.numTargets);
         df = df.shuffle(df);
-        
+        Model model = new KNN();
 		NaiveBayes nb = new NaiveBayes();
-        CrossValidation cv = new CrossValidation(df, 10, nb);
+        CrossValidation cv = new CrossValidation(df, 10, model);
         //cv.avgScores();
         //cv.printScores();
         //cv.printMatrixs();

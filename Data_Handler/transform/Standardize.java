@@ -23,7 +23,6 @@ public class Standardize {
 	 */
 	public static DataFrame standardize_df(DataFrame data) {
 		DataFrame std_df = new DataFrame();
-		System.out.println("STANDARDIZE - Num Targets: " + data.numTargets);
 		for(Column i : data.columns) {
 			if(i.getType() == 'N') {
 				Column a =  standardize_col(i);
@@ -32,8 +31,7 @@ public class Standardize {
 				std_df.addColumn(i);
 			}
 		}
-		//std_df.setStatistics();
-		System.out.println("STANDARDIZE - Num Targets: " + std_df.numTargets);
+		std_df.setStatistics();
 		return std_df;
 	}
 	/**

@@ -1,5 +1,6 @@
 package machinations;
 
+
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -14,6 +15,11 @@ import dataframe.Row;
 import particles.Particle;
 
 public abstract class Model implements java.io.Serializable{
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     public List<Object[]> predictions;
 	
@@ -58,7 +64,11 @@ public abstract class Model implements java.io.Serializable{
 	public void train(DataFrame df) {
 		this.rawTrain = df;
 	    this.trainDF_targets = DataFrame_Copy.shallowCopy_columnTypes(df, set_targets());
+	    System.out.println("TARGETS DF: ");
+	    this.trainDF_targets.printDataFrame();
 	    this.trainDF_variables = DataFrame_Copy.shallowCopy_columnTypes(df, set_variables());
+        System.out.println("VARS DF: ");
+        this.trainDF_variables.printDataFrame();
 	}
 	
 	/**
