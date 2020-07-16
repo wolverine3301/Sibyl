@@ -1,97 +1,45 @@
 package scout;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
-import org.junit.runner.manipulation.Filter;
-
-import anova.OneWay_ANOVA;
 import bayes.NaiveBayes;
-import dataframe.Column;
+import bayes.NaiveBayes2;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
-import distances.Euclidean;
 import knn.KNN;
-import log.Loggers;
-import log.Loggers_TestandScore;
-import logan.sybilGUI.TextAreaOutputStream;
 import machinations.Model;
 import scorer.CrossValidation;
-import transform.Standardize;
-/**
- * @author logan.collier
- *
- */
-public class Invoke {
+
+public class UFC {
 	//behold, my will creates your body and your sword my destiny
 	private static CategoryRanker CR;
 	//
 	private static NumericRanker NR; 
 	private static DataFrame  df;
-	public static void start() {
-		
-		String file = "testfiles/iris.txt";
+	
+	public static void main(String[] args) {
+		String file = "testfiles/preprocessed_data.csv";
         df = DataFrame.read_csv(file);
-        df.setColumnType("species", 'T');//set target column
+        df.setColumnType("Winner", 'T');//set target column
         //df.convertNANS_mean(); // conevert any NAN's to the mean of column 
         //df = Standardize.standardize_df(df); //Standardize the DF into z scores
         //df = df.shuffle(df);
-		NaiveBayes nb = new NaiveBayes();
+		NaiveBayes2 nb = new NaiveBayes2();
 		Model model = new KNN();
-        CrossValidation cv = new CrossValidation(df,5, nb);
-        //cv.avgScores();
-        cv.printScores();
-        //cv.printMatrixs();
-        //System.out.println(df.columnNamesToString());
-        NR = new NumericRanker(df,0);
-        //System.out.println(NR.getSpearman());
-        CR = new CategoryRanker(df, 0);
-		
-		//CR.printRankings();
-		generateRecollection(2, 4);
-	}
-	
-	public static void main(String[] args) {
-
-		Loggers_TestandScore.cv_Logger.setLevel(Level.ALL);
-		Loggers_TestandScore.cv_Logger.addHandler(Loggers.ch);
-		
-		//Loggers_TestandScore.cm_Logger.addHandler(Loggers.ch);
-		String file = "testfiles/iris.txt";
-        df = DataFrame.read_csv(file);
-        df.setColumnType("species", 'T');//set target column
-//        df.printColumnNameTypes();
-        df.convertNANS_mean(); // conevert any NAN's to the mean of column 
-        df = Standardize.standardize_df(df); //Standardize the DF into z scores
-        //System.out.println(df.numTargets);
-        df = df.shuffle(df);
-        Model model = new KNN();
-		NaiveBayes nb = new NaiveBayes();
-		start();
-        //cv.avgScores();
-        //cv.printScores();
-        //cv.printMatrixs();
-        //System.out.println(df.columnNamesToString());
         //NR = new NumericRanker(df,0);
         //System.out.println(NR.getSpearman());
         //CR = new CategoryRanker(df, 0);
-		
-		//CR.printRankings();
-		//generateRecollection(2, 4);
+		//ArrayList<DataFrame> ev = generateRecollection(10,15);
+		//for(DataFrame i : ev) {
+			 CrossValidation cv = new CrossValidation(df,5, nb);
+			 cv.printScores();
+		//}
+       
+        //cv.avgScores();
+        
 
 	}
-	
 	/**
 	 * evocation
 	 * creates an arraylist of dataframes with varying number of columns ranked by various measures in Ranker classes
@@ -140,6 +88,5 @@ public class Invoke {
 		//System.out.println(recollection.size());
 		return recollection;
 	}
-	
 
 }

@@ -38,6 +38,10 @@ public class NaiveBayes2 extends Model{
 		setProbabilityTable();
 		
 	}
+	public NaiveBayes2() {
+
+	}
+
 	private void setTrain() {
 		this.df = super.rawTrain;
 	}
@@ -148,7 +152,11 @@ public class NaiveBayes2 extends Model{
 	 * @return double - the probability a number indicates a specific class in a target 
 	 */
 	public double getContinuousProbability(String targetName, Object targetValue, String variable, Particle x) {
-		//System.out.println(targetName+" "+targetValue+" "+variable+" "+x.toString()+" "+gaussian_probability(x.getDoubleValue(), cont_Naive_Bayes.get(targetName).get(targetValue).get(variable)));
+		//System.out.println(targetName+" "+targetValue+" "+variable+" "+x.toString()+" "+Double.isNaN(gaussian_probability(x.getDoubleValue(), cont_Naive_Bayes.get(targetName).get(targetValue).get(variable))) );
+		if(Double.isNaN(gaussian_probability(x.getDoubleValue(), cont_Naive_Bayes.get(targetName).get(targetValue).get(variable)))) {
+			//System.out.println(targetName+" "+targetValue+" "+variable+" "+x.toString()+" "+gaussian_probability(x.getDoubleValue(), cont_Naive_Bayes.get(targetName).get(targetValue).get(variable)));
+			return 0.00001;
+		}
 		return  gaussian_probability(x.getDoubleValue(), cont_Naive_Bayes.get(targetName).get(targetValue).get(variable)); 
 	}
 	/**
@@ -167,6 +175,7 @@ public class NaiveBayes2 extends Model{
 			for(int i = 0; i < row.rowLength; i++) {
 				if(super.trainDF_variables.getColumn(i).getType() == 'N') {
 					prob = prob * getContinuousProbability(this.df.target_columns.get(target).getName(),z,super.trainDF_variables.getColumn(i).getName(),row.getParticle(i));
+					//System.out.println("NB@: "+z+" "+prob);
 				}else {
 					//System.out.println(super.trainDF_variables.getColumn(i).getName()+" "+row.getParticle(i).getValue());
 					//System.out.println(cat_Naive_Bayes.containsKey(this.df.target_columns.get(target).getName()));
@@ -187,12 +196,15 @@ public class NaiveBayes2 extends Model{
 							}
 						}
 						*/
+						
 						prob = prob * 0.0000001;
 					}else {
 						prob = prob * cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(row.getParticle(i).getValue());
+						
 					}
 				}
 			}
+			
 			//System.out.println(z+" "+prob);
 			classProb.put(z, prob);
 		}
@@ -242,14 +254,14 @@ public class NaiveBayes2 extends Model{
 		Object pred = null;
 		double max = 0;
 
-		//System.out.println(probs);
+		//System.out.println("NB2: "+probs);
 		for(String i : probs.keySet()) {
 			for(Object j : probs.get(i).keySet()) {
 				
 				if(probs.get(i).get(j) > max) {
 					max = probs.get(i).get(j);
 					pred = j;
-					//System.out.println(i+" "+pred);
+					System.out.println(i+" "+pred);
 				}
 				//System.out.println();
 				//System.out.println(pred+" "+probs.get(i).get(j));
@@ -282,6 +294,7 @@ public class NaiveBayes2 extends Model{
 	public void initiallize() {
 		//super.train(df);
 		//this.df = df;
+		this.classes = new HashMap<String,DataFrame[]>();
 		setTrain();
 		setClasses();
 		initialize_probability_tables();

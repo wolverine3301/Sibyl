@@ -69,7 +69,7 @@ public class ConfusionMatrix {
 			cnt2 = 0;
 			for(Object j : predictions.get(i.getName())) {
 				//true positives the diagonal of the matrix
-				System.out.println("CM "+i.getParticle(cnt2).getValue());
+				System.out.println("CM "+matrix.get(i.getName())+" "+j);
 				matrix.get(i.getName()).get(j).put(i.getParticle(cnt2).getValue(), matrix.get(i.getName()).get(j).get(i.getParticle(cnt2).getValue())+1);
 				cnt2++;
 			}
@@ -118,7 +118,8 @@ public class ConfusionMatrix {
 			//for each prediction for a column
 			for (Object j : predictions.get(i)) {
 				//if the predicted value matches the actual
-				//System.out.println(j+"  "+df.getColumn(cnt1).getParticle(cnt2).getValue());
+				System.out.println("CM: "+j+"  "+df.getColumn(cnt1).getParticle(cnt2).getValue());
+						
 				if(j.equals(df.getColumn(cnt1).getParticle(cnt2).getValue())) {
 					truePositive.get(df.getColumn(cnt1).getName()).replace(j, truePositive.get(df.getColumn(cnt1).getName()).get(j)+1);
 					for(Object x : trueNegative.get(df.getColumn(cnt1).getName()).keySet()) {
