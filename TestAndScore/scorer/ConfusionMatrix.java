@@ -14,8 +14,6 @@ public class ConfusionMatrix {
 	public HashMap<String, HashMap<Object, Integer>> falsePositive;
 	public HashMap<String, HashMap<Object, Integer>> trueNegative;
 	public HashMap<String, HashMap<Object, Integer>> falseNegative;
-	
-	
 	private DataFrame df; //dataframe of correct answers
 	private HashMap<String, ArrayList<Object>> predictions;
 	public HashMap<String,HashMap<Object,HashMap<Object,Integer>>> matrix;
@@ -69,13 +67,13 @@ public class ConfusionMatrix {
 			cnt2 = 0;
 			for(Object j : predictions.get(i.getName())) {
 				//true positives the diagonal of the matrix
-				System.out.println("CM "+matrix.get(i.getName())+" "+j);
+				Loggers.cm_Logger.log(Level.FINEST, matrix.get(i.getName())+" "+j);
 				matrix.get(i.getName()).get(j).put(i.getParticle(cnt2).getValue(), matrix.get(i.getName()).get(j).get(i.getParticle(cnt2).getValue())+1);
 				cnt2++;
 			}
-			//System.out.println("GDDDDDDD");
 			Loggers.cm_Logger.log(Level.FINER, matrix.toString());
 		}
+		Loggers.cm_Logger.exiting("ConfusionMatrix", "setMatrix");
 	}
 	/**
 	 * set up confusion matrix arrays
@@ -97,6 +95,7 @@ public class ConfusionMatrix {
 				arr1.put(j, 0);
 				arr2.put(j, 0);
 				arr3.put(j, 0);
+				
 			}
 			truePositive.put(df.getColumn(i).getName(),arr0);
 			falsePositive.put(df.getColumn(i).getName(),arr1);
@@ -104,6 +103,7 @@ public class ConfusionMatrix {
 			falseNegative.put(df.getColumn(i).getName(),arr3);
 			
 		}
+		Loggers.cm_Logger.exiting("ConfusionMatrix", "setTable");
 	}
 	/**
 	 * finds true positives and negatives
@@ -118,8 +118,7 @@ public class ConfusionMatrix {
 			//for each prediction for a column
 			for (Object j : predictions.get(i)) {
 				//if the predicted value matches the actual
-				System.out.println("CM: "+j+"  "+df.getColumn(cnt1).getParticle(cnt2).getValue());
-						
+				Loggers.cm_Logger.log(Level.FINEST, j+"  "+df.getColumn(cnt1).getParticle(cnt2).getValue());		
 				if(j.equals(df.getColumn(cnt1).getParticle(cnt2).getValue())) {
 					truePositive.get(df.getColumn(cnt1).getName()).replace(j, truePositive.get(df.getColumn(cnt1).getName()).get(j)+1);
 					for(Object x : trueNegative.get(df.getColumn(cnt1).getName()).keySet()) {
@@ -159,7 +158,7 @@ public class ConfusionMatrix {
 			}
 			cnt1++;
 		}
-		
+		Loggers.cm_Logger.exiting("ConfusionMatrix", "test_score");
 		
 	}
 	public void print_matrix() {
@@ -194,8 +193,4 @@ public class ConfusionMatrix {
 		this.falseNegative = falseNegative;
 	}
 	
-
-	
-	
-
 }

@@ -1,13 +1,16 @@
 package scout;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import bayes.NaiveBayes;
 import bayes.NaiveBayes2;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
 import knn.KNN;
+import log.Loggers;
 import machinations.Model;
 import scorer.CrossValidation;
 
@@ -19,6 +22,8 @@ public class UFC {
 	private static DataFrame  df;
 	
 	public static void main(String[] args) {
+		Loggers.logHTML(Loggers.df_Logger, Level.ALL);
+		Loggers.logHTML(Loggers.cm_Logger, Level.ALL);
 		String file = "testfiles/preprocessed_data.csv";
         df = DataFrame.read_csv(file);
         df.setColumnType("Winner", 'T');//set target column
