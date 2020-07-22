@@ -39,6 +39,8 @@ public class CrossValidation {
 	
 	protected HashMap<String,HashMap<Object,HashMap<Object,Integer>>> matrix;
 	public ConfusionMatrix confusion_matrix;
+	
+	private HashMap<String,Set<Object>> keyValues;
 	/**
 	 * Cross Validation
 	 * @param df - the dataframe 
@@ -46,29 +48,36 @@ public class CrossValidation {
 	 * @param model - a model object to be tested
 	 */
 	public CrossValidation(DataFrame df, int N, Model model) {
-		Loggers.cv_Logger.log(Level.INFO, "Cross Validation - Targets: " + df.numTargets + " Splits = " + N);
+		Loggers.cv_Logger.log(Level.CONFIG, "Targets: " + df.numTargets + " Splits = " + N);
 		this.N = N;
 		this.df = df.shuffle(df);
 		scores = new ArrayList<Score>();
 		Score score;
 		setTrials();
+		HashMap<String,Set<Object>> keyVals = new HashMap<String,Set<Object>>();
+		for(Column i : this.df.target_columns) {
+			keyVals.put(i.getName(), i.getUniqueValues());
+		}
+		this.keyValues = keyVals;
 		//for each trial
 		for(int i = 0;i < this.trials.size(); i++) {
 			model.train(trials.get(i).raw_train);
 			model.initiallize();
+			
 			HashMap<String, ArrayList<Object>> predicts = model.predictDF(trials.get(i).trial_test_variables);
-			for (String s : predicts.keySet())
-			    System.out.println(predicts.get(s).toString());
-			score = new Score(trials.get(i).trial_test_targets,predicts);
+			//for (String s : predicts.keySet())
+			    //System.out.println(predicts.get(s).toString());
+			score = new Score(keyVals,trials.get(i).trial_test_targets,predicts);
 			scores.add(score);
 		}
 		confusion_matrix = new ConfusionMatrix();
+		overallScores();
 	}
 	/**
 	 * setup an array of dataframes to test and train with
 	 */
 	public void setTrials() {
-		Loggers.cv_Logger.log(Level.INFO, "Setting trials");
+		Loggers.cv_Logger.entering("CrossValidation", "Set Trials");
 		
 		int interval = Math.floorDiv(this.df.getNumRows(), N);
 	    //shuffle(df);
@@ -76,13 +85,16 @@ public class CrossValidation {
 		TestTrainFit trial;
 	    Set<Integer> set1 = new HashSet<Integer>();
 	    Set<Integer> set2 = new HashSet<Integer>();
-	    for (int i = 0; i < this.df.getNumRows() -1; i += interval) {
+	    //Loggers.cv_Logger.log(Level.FINER,"ROWS: "+df.getNumRows()+" INTERVAL: "+interval*N);
+	    for (int i = 0; i < this.df.getNumRows() -2; i += interval) {
 	        set1.clear();
+	        //make test set
 	        for(int j = i; j < i + interval; j++) {
 	        	if(j >= this.df.getNumRows()) break;
 	            set1.add(j); 
 	        }
 	        set2.clear();
+	        //make train set
 	        for(int c = 0; c < this.df.getNumRows(); c++) {
 	        	if(c >= this.df.getNumRows()) break;
 	        	if(set1.contains(c)) {
@@ -92,7 +104,7 @@ public class CrossValidation {
 	        	}
 	        	
 	        }
-	        Loggers.cv_Logger.log(Level.FINER,"TRAIN SET: "+ set2.size() + " TEST SET: "+set1.size());
+	        Loggers.cv_Logger.log(Level.FINE,"TRAIN SET: "+ set2.size() + " TEST SET: "+set1.size());
 
 	        trial = new TestTrainFit(this.df.shallowCopy_rowIndexes(set2), this.df.shallowCopy_rowIndexes(set1));
 	        trials.add(trial);
@@ -101,8 +113,8 @@ public class CrossValidation {
 	    
 	}
 	//sum up all trial confusion matrixes
-	public void sumConfusionMatrix() {
-		Loggers.cv_Logger.log(Level.INFO,"Summing ConfusionMatrix");
+	private void sumConfusionMatrix() {
+		Loggers.cv_Logger.log(Level.FINE,"Summing ConfusionMatrix");
 		
 		HashMap<String, HashMap<Object, Integer>> tp = new HashMap<String, HashMap<Object, Integer>>();
 		HashMap<String, HashMap<Object, Integer>> fp = new HashMap<String, HashMap<Object, Integer>>();
@@ -131,22 +143,26 @@ public class CrossValidation {
 			tn.put(i, tmp2);
 			fn.put(i, tmp3);
 		}
+		Loggers.cv_Logger.log(Level.FINE,"INITIALIZATION OF OVER MATIX COMPLETE");
+		Loggers.cv_Logger.log(Level.FINER,"KEYSET: "+matrix.keySet());
+		Loggers.cv_Logger.log(Level.FINE,"SUMMING SCORES");
 		//sum
 		for(Score i : scores) {
 			ConfusionMatrix cm = i.getConfusionMatrix();
 			for(String j : cm.falseNegative.keySet()) {
 				for(Object z : cm.falseNegative.get(j).keySet()) {
 					tp.get(j).replace(z, tp.get(j).get(z) + cm.truePositive.get(j).get(z));
-					fp.get(j).replace(z, tp.get(j).get(z) + cm.falsePositive.get(j).get(z));
-					tn.get(j).replace(z, tp.get(j).get(z) + cm.trueNegative.get(j).get(z));
-					fn.get(j).replace(z, tp.get(j).get(z) + cm.falseNegative.get(j).get(z));
+					fp.get(j).replace(z, fp.get(j).get(z) + cm.falsePositive.get(j).get(z));
+					tn.get(j).replace(z, tn.get(j).get(z) + cm.trueNegative.get(j).get(z));
+					fn.get(j).replace(z, fn.get(j).get(z) + cm.falseNegative.get(j).get(z));
 					
 				}
-				//System.out.println(tp);
 			}
 		}
+		Loggers.cv_Logger.log(Level.FINER, "CONFUSION MATRIX SYNC COMPLETE");
 		ArrayList<HashMap<String,HashMap<Object,HashMap<Object,Integer>>>> matrix_c = new ArrayList<HashMap<String,HashMap<Object,HashMap<Object,Integer>>>>();
 		//HashMap<String, HashMap<Object, HashMap<Object, Integer>>> matrix = new HashMap<String, HashMap<Object, HashMap<Object, Integer>>>();
+		
 		//initiallize
 		for(Column i : df.target_columns) {
 			matrix.put(i.getName(), new HashMap<Object, HashMap<Object, Integer>>());
@@ -158,17 +174,13 @@ public class CrossValidation {
 			}
 		}
 		for(Score score : scores) {
-			score.printComparison();
 			matrix_c.add(score.getConfusionMatrix().matrix);
 		}
 		//sum matricies
-		System.out.println("SUM MATRIX");
+		//System.out.println("SUM MATRIX");
 		for(HashMap<String, HashMap<Object, HashMap<Object, Integer>>> i : matrix_c) {
-			System.out.println(i);
 			for(String j : i.keySet()) {
-				
 				for(Object k : i.get(j).keySet()) {
-					
 					for(Object kk : i.get(j).get(k).keySet()) {
 						matrix.get(j).get(k).put(kk, matrix.get(j).get(k).get(kk)+i.get(j).get(k).get(kk));
 					}
@@ -189,12 +201,55 @@ public class CrossValidation {
 		this.total_trueNegative = tn;
 		this.total_falseNegative = fn;
 	}
+	private void overallScores() {
+		sumConfusionMatrix();
+		//overall score storage
+		HashMap<String, HashMap<Object, Double>> accuracy = new HashMap<String, HashMap<Object, Double>>();
+		HashMap<String, HashMap<Object, Double>> recall = new HashMap<String, HashMap<Object, Double>>();
+		HashMap<String, HashMap<Object, Double>> precision = new HashMap<String, HashMap<Object, Double>>();
+		HashMap<String, HashMap<Object, Double>> F1 = new HashMap<String, HashMap<Object, Double>>();
+		HashMap<String, HashMap<Object, Double>> mcc = new HashMap<String, HashMap<Object, Double>>();
+	
+		//initiallize
+		HashMap<Object, Double> re;
+		HashMap<Object, Double> pr;
+		HashMap<Object, Double> f1;
+		HashMap<Object, Double> mc;
+		
+		Loggers.cv_Logger.log(Level.FINE,"SCORES SET: "+ scores.get(0).recall.entrySet());
+		for(String j : keyValues.keySet()) {
+		//for(String j : df.target_columns) {
+			re = new HashMap<Object,Double>();
+			pr = new HashMap<Object,Double>();
+			f1 = new HashMap<Object,Double>();
+			mc = new HashMap<Object,Double>();
+			
+			for(Object z : keyValues.get(j)) {
+				re.put(z, Scores.recall(total_truePositive.get(j).get(z), total_falseNegative.get(j).get(z)));
+				pr.put(z, Scores.precision(total_truePositive.get(j).get(z), total_falsePositive.get(j).get(z)));
+				f1.put(z, Scores.F1(total_truePositive.get(j).get(z), total_falsePositive.get(j).get(z), total_falseNegative.get(j).get(z)));
+				mc.put(z, Scores.mcc(total_truePositive.get(j).get(z), total_trueNegative.get(j).get(z), total_falsePositive.get(j).get(z),total_falseNegative.get(j).get(z)));
+
+				//System.out.println(scores.get(0).getConfusionMatrix().matrix);
+			}
+			recall.put(j, re);	
+			precision.put(j, pr);
+			F1.put(j, f1);
+			mcc.put(j, mc);
+			
+		}
+		this.total_recall = recall;
+		this.total_precision = precision;
+		this.total_f1 = F1;
+		this.total_mcc = mcc;
+	}
 	/**
 	 * Avg scores from all trials
 	 */
 	public void avgScores() {
 		Loggers.cv_Logger.log(Level.INFO,"Averaging scores");
 		
+		//overall score storage
 		HashMap<String, HashMap<Object, Double>> accuracy = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> recall = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> precision = new HashMap<String, HashMap<Object, Double>>();
@@ -207,8 +262,9 @@ public class CrossValidation {
 		HashMap<Object, Double> trial3;
 		HashMap<Object, Double> trial4;
 		
-
+		Loggers.cv_Logger.log(Level.FINE,"SCORES SET: "+ scores.get(0).recall.entrySet());
 		for(String j : scores.get(0).recall.keySet()) {
+		//for(String j : df.target_columns) {
 			trial = new HashMap<Object,Double>();
 			trial2 = new HashMap<Object,Double>();
 			trial3 = new HashMap<Object,Double>();
@@ -232,11 +288,14 @@ public class CrossValidation {
 		for(Score i : scores) {
 			for(String j : i.recall.keySet()) {
 				for(Object z : i.recall.get(j).keySet()) {
-					recall.get(j).replace(z, recall.get(j).get(z) + i.recall.get(j).get(z));
-					precision.get(j).replace(z, precision.get(j).get(z) + i.precision.get(j).get(z));
-					F1.get(j).replace(z, F1.get(j).get(z) + i.F1.get(j).get(z));
-					mcc.get(j).replace(z, mcc.get(j).get(z) + i.mcc.get(j).get(z));
-					
+					//TODO
+
+					//else {
+						recall.get(j).replace(z, recall.get(j).get(z) + i.recall.get(j).get(z));
+						precision.get(j).replace(z, precision.get(j).get(z) + i.precision.get(j).get(z));
+						F1.get(j).replace(z, F1.get(j).get(z) + i.F1.get(j).get(z));
+						mcc.get(j).replace(z, mcc.get(j).get(z) + i.mcc.get(j).get(z));
+					//}
 				}
 			}
 		}

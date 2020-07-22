@@ -64,11 +64,7 @@ public abstract class Model implements java.io.Serializable{
 	public void train(DataFrame df) {
 		this.rawTrain = df;
 	    this.trainDF_targets = DataFrame_Copy.shallowCopy_columnTypes(df, set_targets());
-	    System.out.println("TARGETS DF: ");
-	    this.trainDF_targets.printDataFrame();
 	    this.trainDF_variables = DataFrame_Copy.shallowCopy_columnTypes(df, set_variables());
-        System.out.println("VARS DF: ");
-        this.trainDF_variables.printDataFrame();
 	}
 	
 	/**
@@ -104,9 +100,9 @@ public abstract class Model implements java.io.Serializable{
 	/**
 	 * Make a prediction on a row of data
 	 * @param row
-	 * @return
+	 * @return HashMap<String,Object> key = target name -> object = prediction for target
 	 */
-	public abstract Object predict(Row row);
+	public abstract Object predict(String target, Row row);
 	
 	
 	public abstract HashMap<String, ArrayList<Object>> predictDF(DataFrame testDF);

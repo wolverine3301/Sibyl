@@ -11,6 +11,7 @@ import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
 import knn.KNN;
 import log.Loggers;
+import machinations.Constant;
 import machinations.Model;
 import scorer.CrossValidation;
 
@@ -23,27 +24,38 @@ public class UFC {
 	
 	public static void main(String[] args) {
 		Loggers.logHTML(Loggers.df_Logger, Level.ALL);
-		Loggers.logHTML(Loggers.cm_Logger, Level.ALL);
+		Loggers.logHTML(Loggers.cm_Logger, Level.FINER);
+		Loggers.logHTML(Loggers.cv_Logger,Level.ALL);
+		Loggers.logHTML(Loggers.nb_Logger,Level.ALL);
+		Loggers.logHTML(Loggers.score_Logger,Level.ALL);
 		String file = "testfiles/preprocessed_data.csv";
         df = DataFrame.read_csv(file);
         df.setColumnType("Winner", 'T');//set target column
+        
+        //df.setColumnType("no_of_rounds", 'C');
+        //df.setStatistics(2);
+        df.setColumnType("no_of_rounds", 'T');
         //df.convertNANS_mean(); // conevert any NAN's to the mean of column 
         //df = Standardize.standardize_df(df); //Standardize the DF into z scores
         //df = df.shuffle(df);
 		NaiveBayes2 nb = new NaiveBayes2();
 		Model model = new KNN();
+		Model con = new Constant();
         //NR = new NumericRanker(df,0);
         //System.out.println(NR.getSpearman());
         //CR = new CategoryRanker(df, 0);
 		//ArrayList<DataFrame> ev = generateRecollection(10,15);
 		//for(DataFrame i : ev) {
 			 CrossValidation cv = new CrossValidation(df,5, nb);
-			 cv.printScores();
+
 		//}
        
-        //cv.avgScores();
-        
 
+        cv.printOverAllScore();
+        //cv.printOverAllMatrix();
+        System.out.println();
+
+        System.out.println(df.getColumn_byName("no_of_rounds").getUniqueValueCounts());
 	}
 	/**
 	 * evocation

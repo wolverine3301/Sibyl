@@ -17,6 +17,7 @@ public class ConfusionMatrix {
 	private DataFrame df; //dataframe of correct answers
 	private HashMap<String, ArrayList<Object>> predictions;
 	public HashMap<String,HashMap<Object,HashMap<Object,Integer>>> matrix;
+	HashMap<String,Set<Object>> keyValues;
 	
 	public ConfusionMatrix() {
 		
@@ -28,10 +29,10 @@ public class ConfusionMatrix {
 	 * @param df
 	 * @param predictions
 	 */
-	public ConfusionMatrix(DataFrame df, HashMap<String, ArrayList<Object>> predictions) {
+	public ConfusionMatrix(HashMap<String,Set<Object>> keyValues, DataFrame df, HashMap<String, ArrayList<Object>> predictions) {
 		//System.out.println("CM: "+df.target_columns);
 		Loggers.cm_Logger.log(Level.INFO, "Targets: " + df.numTargets + " Predictions: " + predictions.get(df.target_columns.get(0).getName()).size());
-		
+		this.keyValues = keyValues;
 		this.df = df;
 		this.predictions = predictions;
 		truePositive = new HashMap<String, HashMap<Object, Integer>>();
@@ -51,27 +52,26 @@ public class ConfusionMatrix {
 		
 		matrix = new HashMap<String,HashMap<Object,HashMap<Object,Integer>>>();
 		//initiallize
-		for(Column k : df.target_columns) {
-			matrix.put(k.getName(), new HashMap<Object,HashMap<Object,Integer>>());
-			for(Object i : df.target_columns.get(0).getUniqueValues()) {
-				matrix.get(k.getName()).put(i, new HashMap<Object,Integer>());
-				for(Object j : df.target_columns.get(0).getUniqueValues()) {
-					matrix.get(k.getName()).get(i).put(j, 0);
+		for(String k : this.keyValues.keySet()) {
+			matrix.put(k, new HashMap<Object,HashMap<Object,Integer>>());
+			for(Object i : keyValues.get(k)) {
+				matrix.get(k).put(i, new HashMap<Object,Integer>());
+				for(Object j : keyValues.get(k)) {
+					matrix.get(k).get(i).put(j, 0);
 				}
 			}
 		}
-		Loggers.cm_Logger.log(Level.FINER, "MATRIX KEYSET: "+matrix.keySet().toString());
+		Loggers.cm_Logger.log(Level.FINER, "MATRIX KEYSET: "+matrix.entrySet());
 		int cnt2 = 0;
 
 		for(Column i : df.target_columns) {
 			cnt2 = 0;
 			for(Object j : predictions.get(i.getName())) {
 				//true positives the diagonal of the matrix
-				Loggers.cm_Logger.log(Level.FINEST, matrix.get(i.getName())+" "+j);
 				matrix.get(i.getName()).get(j).put(i.getParticle(cnt2).getValue(), matrix.get(i.getName()).get(j).get(i.getParticle(cnt2).getValue())+1);
 				cnt2++;
 			}
-			Loggers.cm_Logger.log(Level.FINER, matrix.toString());
+			Loggers.cm_Logger.log(Level.FINEST, matrix.toString());
 		}
 		Loggers.cm_Logger.exiting("ConfusionMatrix", "setMatrix");
 	}
@@ -85,24 +85,25 @@ public class ConfusionMatrix {
 	private void setTable() {
 		Loggers.cm_Logger.entering("ConfusionMatrix", "setTable");
 		int cnt = 0;
-		for(int i = 0; i < df.getNumColumns();i++) {
+		for(String i : keyValues.keySet()) {
 			HashMap<Object,Integer> arr0 = new HashMap<Object,Integer>();
 			HashMap<Object,Integer> arr1 = new HashMap<Object,Integer>();
 			HashMap<Object,Integer> arr2 = new HashMap<Object,Integer>();
 			HashMap<Object,Integer> arr3 = new HashMap<Object,Integer>();
-			for(Object j : df.getColumn(i).getUniqueValues()) {
+			for(Object j : keyValues.get(i)) {
+				Loggers.cm_Logger.log(Level.FINEST, "ADDING TO TABLE: "+j);
 				arr0.put(j, 0);
 				arr1.put(j, 0);
 				arr2.put(j, 0);
 				arr3.put(j, 0);
 				
 			}
-			truePositive.put(df.getColumn(i).getName(),arr0);
-			falsePositive.put(df.getColumn(i).getName(),arr1);
-			trueNegative.put(df.getColumn(i).getName(),arr2);
-			falseNegative.put(df.getColumn(i).getName(),arr3);
-			
+			truePositive.put(i,arr0);
+			falsePositive.put(i,arr1);
+			trueNegative.put(i,arr2);
+			falseNegative.put(i,arr3);
 		}
+		Loggers.cm_Logger.log(Level.FINE, "ENTRIES: "+truePositive.entrySet());
 		Loggers.cm_Logger.exiting("ConfusionMatrix", "setTable");
 	}
 	/**
@@ -115,42 +116,40 @@ public class ConfusionMatrix {
 		//for each target column
 		for(String i : predictions.keySet()) {
 			cnt2 = 0;
-			//for each prediction for a column
+			//for each prediction for a target
 			for (Object j : predictions.get(i)) {
 				//if the predicted value matches the actual
-				Loggers.cm_Logger.log(Level.FINEST, j+"  "+df.getColumn(cnt1).getParticle(cnt2).getValue());		
-				if(j.equals(df.getColumn(cnt1).getParticle(cnt2).getValue())) {
-					truePositive.get(df.getColumn(cnt1).getName()).replace(j, truePositive.get(df.getColumn(cnt1).getName()).get(j)+1);
-					for(Object x : trueNegative.get(df.getColumn(cnt1).getName()).keySet()) {
+				Loggers.cm_Logger.log(Level.FINEST,"Predicted: "+ j+" Actual: "+df.getColumn_byName(i).getParticle(cnt2).getValue());		
+				if(j.equals(df.getColumn_byName(i).getParticle(cnt2).getValue())) {
+					truePositive.get(i).replace(j, truePositive.get(i).get(j)+1);
+					//update true negatives
+					for(Object x : trueNegative.get(i).keySet()) {
 						if(x.equals(j)) {
 							continue;
 						}else {					
-							trueNegative.get(df.getColumn(cnt1).getName()).replace(x, trueNegative.get(df.getColumn(cnt1).getName()).get(x)+1);
+							trueNegative.get(i).replace(x, trueNegative.get(i).get(x)+1);
 						}
 					}
 				}
 				//if its prediction isnt right
-				else if(!j.equals(df.getColumn(cnt1).getParticle(cnt2).getValue())) {
-					//update false positive count
-					
-					if(falsePositive.get(df.getColumn(cnt1).getName()).get(j)== null){
-						falsePositive.get(df.getColumn(cnt1).getName()).put(j, 1);
+				else if(!j.equals(df.getColumn_byName(i).getParticle(cnt2).getValue())) {
+					//update false positive count for the object predicted
+					if(falsePositive.get(i).get(j)== null){
+						falsePositive.get(i).put(j, 1);
+					}else {
+						falsePositive.get(i).replace(j, falsePositive.get(i).get(j)+1);
 					}
-					falsePositive.get(df.getColumn(cnt1).getName()).replace(j, falsePositive.get(df.getColumn(cnt1).getName()).get(j)+1);
-					
-					for(Object x : falseNegative.get(df.getColumn(cnt1).getName()).keySet()) {
-						
-						if(x.equals(df.getColumn(cnt1).getParticle(cnt2).getValue())) {
-							falseNegative.get(df.getColumn(cnt1).getName()).replace(x, falseNegative.get(df.getColumn(cnt1).getName()).get(x)+1);
-							
+					//update the actual values false negative count
+					for(Object x : falseNegative.get(i).keySet()) {
+						if(x.equals(j)){
 							continue;
 						}
-						else if(x.equals(j)){
-							
+						//finding the matching actual value in the map
+						else if(x.equals(df.getColumn_byName(i).getParticle(cnt2).getValue())) {
+							falseNegative.get(i).replace(x, falseNegative.get(i).get(x)+1);
 							continue;
 						}else {
-							
-							trueNegative.get(df.getColumn(cnt1).getName()).replace(x, trueNegative.get(df.getColumn(cnt1).getName()).get(x)+1);
+							trueNegative.get(i).replace(x, trueNegative.get(i).get(x)+1);
 						}
 					}
 				}
@@ -158,11 +157,14 @@ public class ConfusionMatrix {
 			}
 			cnt1++;
 		}
+		Loggers.cm_Logger.log(Level.FINER, "TRUE POSITIVES: " + truePositive.entrySet());
+		Loggers.cm_Logger.log(Level.FINER, "TRUE NEGATIVES: " + trueNegative.entrySet());
+		Loggers.cm_Logger.log(Level.FINER, "FALSE POSITIVES: " + falsePositive.entrySet());
+		Loggers.cm_Logger.log(Level.FINER, "FALSE NEGATIVES: " + falseNegative.entrySet());
 		Loggers.cm_Logger.exiting("ConfusionMatrix", "test_score");
 		
 	}
 	public void print_matrix() {
-		
 		System.out.println("True Positives: "+ truePositive.toString());
 		System.out.println("False Positives: " + falsePositive.toString());
 		System.out.println("True Negatives: " + trueNegative.toString());

@@ -10,11 +10,19 @@ public class Util {
 		
 		int cnt = 0;
 		for(Object i : classes) {
-			String[] arg = {target.getName() , "==", (String) i};
-			targets[cnt] = DataFrame_Copy.acquire(df,arg);
-			//targets[cnt].printDataCounts(true);
-			targets[cnt].setName(i.toString());
-			cnt++;
+			if(i instanceof Integer) {
+				String[] arg = {target.getName() , "==", String.valueOf(i)};
+				targets[cnt] = DataFrame_Copy.acquire(df,arg);
+				//targets[cnt].printDataCounts(true);
+				targets[cnt].setName(i.toString());
+				cnt++;
+			}else {
+				String[] arg = {target.getName() , "==", (String)i};
+				targets[cnt] = DataFrame_Copy.acquire(df,arg);
+				//targets[cnt].printDataCounts(true);
+				targets[cnt].setName(i.toString());
+				cnt++;
+			}
 		}
 //		System.out.println("UTIL 1: "+targets[0].target_columns.size());
 //		System.out.println(targets[0].target_columns.get(0).getName()+"  "+targets[0].target_columns.get(1).getName());
