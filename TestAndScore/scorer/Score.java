@@ -2,8 +2,11 @@ package scorer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.logging.Level;
 
 import dataframe.DataFrame;
+import log.Loggers;
 
 /**
  * Various model scores
@@ -27,6 +30,7 @@ public class Score {
 	public HashMap<String, HashMap<Object, Double>> accuracy;
 	
 	private DataFrame df; //the test data frame
+	private HashMap<String,Set<Object>> keyValues; //all values in the original df in case a trial df doesnt contain a particular value
 	private HashMap<String, ArrayList<Object>> predictions; //list of predictions
 	private ConfusionMatrix matrix; //confusion matrix
 	/**
@@ -34,15 +38,16 @@ public class Score {
 	 * @param df
 	 * @param predictions
 	 */
-	public Score(DataFrame df, HashMap<String, ArrayList<Object>> predictions) {
+	public Score(HashMap<String,Set<Object>> keyValues, DataFrame df, HashMap<String, ArrayList<Object>> predictions) {
 		this.df = df;
 		this.predictions = predictions;
-		
+		this.keyValues = keyValues;
+		Loggers.score_Logger.log(Level.CONFIG, "TARGET CLASSES: "+ keyValues.entrySet()+ " # Predictions: "+ predictions.size());
 		recall = new HashMap<String, HashMap<Object, Double>>();
 		precision = new HashMap<String, HashMap<Object, Double>>();
 		F1 = new HashMap<String, HashMap<Object, Double>>();
 		mcc = new HashMap<String, HashMap<Object, Double>>();
-		matrix = new ConfusionMatrix(df, predictions);
+		matrix = new ConfusionMatrix(keyValues,df, predictions);
 		
 		intitallize();
 		score();
@@ -52,12 +57,14 @@ public class Score {
 	 * Calculate scores
 	 */
 	private void score() {
+		Loggers.score_Logger.log(Level.INFO,"BEGIN SCORING"); 
 		double recallS;
 		double precisionS;
 		double F1S;
 		double mccS;
 		
 		int cnt;
+		Loggers.score_Logger.log(Level.FINE,"MATRIX KEYSET: "+matrix.truePositive.keySet()); 
 		for(String i : matrix.truePositive.keySet()) {
 			
 			recallS = 0;
@@ -66,8 +73,9 @@ public class Score {
 			mccS = 0;
 			cnt = 0;
 			for(Object j : matrix.truePositive.get(i).keySet()) {
-
-				recall.get(i).replace(j,Scores.recall(matrix.truePositive.get(i).get(j).doubleValue(), matrix.falseNegative.get(i).get(j)));
+				Loggers.score_Logger.log(Level.FINER,"MATRIX SUB-KEYSET: "+matrix.truePositive.get(i).keySet()); 
+				Loggers.score_Logger.log(Level.FINEST,"MATRIX VALUE: "+matrix.truePositive.get(i).get(j)); 
+				recall.get(i).replace(j,Scores.recall(matrix.truePositive.get(i).get(j), matrix.falseNegative.get(i).get(j)));
 				precision.get(i).replace(j, Scores.precision(matrix.truePositive.get(i).get(j), matrix.falsePositive.get(i).get(j)));
 				F1.get(i).replace(j, Scores.F1(matrix.truePositive.get(i).get(j), 
 						matrix.falsePositive.get(i).get(j),
@@ -81,6 +89,10 @@ public class Score {
 				F1S = F1S + F1.get(i).get(j);
 				mccS = mccS + mcc.get(i).get(j);
 				precisionS = precisionS + precision.get(i).get(j);
+				Loggers.score_Logger.log(Level.FINER, "RECALL: "+recallS+"\n"
+						+"F1: "+F1S+"\n"
+						+"MCC: "+mccS+"\n"
+						+"PRECISION: "+precisionS);
 				cnt++;
 			}
 			recallS = recallS/cnt;
@@ -100,25 +112,24 @@ public class Score {
 	 * initializing scores
 	 */
 	private void intitallize() {
-		for(int i = 0; i < df.getNumColumns();i++) {
-			//get target columns
-			if(df.getColumn(i).getType() == 'T') {
-				HashMap<Object,Double> arr0 = new HashMap<Object,Double>();
-				HashMap<Object,Double> arr1 = new HashMap<Object,Double>();
-				HashMap<Object,Double> arr2 = new HashMap<Object,Double>();
-				HashMap<Object,Double> arr3 = new HashMap<Object,Double>();
-				for(Object j : df.getColumn(i).getUniqueValues()) {
-					arr0.put(j, 0.0);
-					arr1.put(j, 0.0);
-					arr2.put(j, 0.0);
-					arr3.put(j, 0.0);
-				}
-				recall.put(df.getColumn(i).getName(),arr0);
-				precision.put(df.getColumn(i).getName(),arr1);
-				F1.put(df.getColumn(i).getName(),arr2);
-				mcc.put(df.getColumn(i).getName(),arr3);
+		for(String i : keyValues.keySet()) {
+			HashMap<Object,Double> arr0 = new HashMap<Object,Double>();
+			HashMap<Object,Double> arr1 = new HashMap<Object,Double>();
+			HashMap<Object,Double> arr2 = new HashMap<Object,Double>();
+			HashMap<Object,Double> arr3 = new HashMap<Object,Double>();
+			for(Object j : keyValues.get(i)) {
+				Loggers.score_Logger.log(Level.FINER,"INIT: "+i+ " -> "+j); 
+				arr0.put(j, 0.0);
+				arr1.put(j, 0.0);
+				arr2.put(j, 0.0);
+				arr3.put(j, 0.0);
 			}
-		}
+			recall.put(i,arr0);
+			precision.put(i,arr1);
+			F1.put(i,arr2);
+			mcc.put(i,arr3);
+			}
+		
 	}
 	public ConfusionMatrix getConfusionMatrix() {
 		return this.matrix;
@@ -132,6 +143,12 @@ public class Score {
 		System.out.println("Precision: " + precision.toString());
 		System.out.println("F1: " + F1.toString());
 		System.out.println("MCC: " + mcc.toString());
+	}
+	public String toString() {
+		return "Recall: " + recall.toString()+"\n"
+				+"Precision: " + precision.toString() +"\n"
+				+"F1: " + F1.toString()+"\n"
+				+"MCC: " + mcc.toString()+"\n";
 	}
 	public void printMatrix() {
 		matrix.print_matrix();

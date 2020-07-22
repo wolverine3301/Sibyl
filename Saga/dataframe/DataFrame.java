@@ -2,9 +2,11 @@ package dataframe;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import anova.OneWay_ANOVA;
+import log.Loggers;
 import particles.DoubleParticle;
 import particles.IntegerParticle;
 import particles.NANParticle;
@@ -20,7 +22,7 @@ import particles.Particle;
  */
 public class DataFrame {
 	
-	private final static Logger LOGGER = Logger.getLogger(DataFrame.class.getName());
+	
 	
     /** The name of the data frame. */
     protected String dataFrameName;
@@ -71,6 +73,7 @@ public class DataFrame {
 	 * Create a new, empty data frame.
 	 */
 	public DataFrame() {
+		
 		this.columns = new ArrayList<Column>();
 	    this.rows = new ArrayList<Row>();
 		this.numeric_columns = new ArrayList<Column>();
@@ -163,6 +166,8 @@ public class DataFrame {
             setStatistics(i);
         }
         statsInitialized = true;
+        Loggers.df_Logger.log(Level.FINE, "STATS SET");
+        
     }
     
     /** 
@@ -191,6 +196,7 @@ public class DataFrame {
                 numMeta++;
             }
         }
+        Loggers.df_Logger.log(Level.FINER, "STATS SET ON COLUMN:"+columns.get(index).getName()+" INDEX: "+index);
     }
     
     /**
@@ -200,6 +206,7 @@ public class DataFrame {
         for (int i = 0; i < numColumns; i++) {
             updateStatistics(i);
         }
+        Loggers.df_Logger.log(Level.FINE, "UPDATING STATISTICS");
     }
     
     /**
@@ -239,6 +246,7 @@ public class DataFrame {
                 numMeta++;
             }
         }
+        Loggers.df_Logger.log(Level.FINER, "UPDATING STATS ON COLUMN:"+columns.get(index).getName()+" INDEX: "+index);
     }
     
     /**

@@ -5,22 +5,33 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.logging.Level;
 
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.Row;
 import dataframe.Util;
+import log.Loggers;
 import machinations.Model;
 import particles.Particle;
 
 public class NaiveBayes2 extends Model{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
+	 * probability tables for storing and calculating values for both
+	 * Continuous and discrete variables
+	 */
 	public HashMap<String , HashMap<Object, HashMap<String, Double[]>>> cont_Naive_Bayes;
 	public HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>> cat_Naive_Bayes;
 	public HashMap<String,DataFrame[]> classes; //key -> target column name, value df array of classes in target column
 	private DataFrame df;
 	
 	public NaiveBayes2(HashMap<String , HashMap<Object, HashMap<String, Double[]>>> cont_Naive_Bayes,  HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>> cat_Naive_Bayes) {
+		Loggers.nb_Logger.log(Level.CONFIG, "Manifest");
 		this.cont_Naive_Bayes = cont_Naive_Bayes;
 		this.cat_Naive_Bayes = cat_Naive_Bayes;
 	}
@@ -30,6 +41,7 @@ public class NaiveBayes2 extends Model{
 	 * @param df
 	 */
 	public NaiveBayes2(DataFrame df) {
+		Loggers.nb_Logger.log(Level.CONFIG, "Initialize");
 		super.train(df);
 		this.df = df;
 		this.classes = new HashMap<String,DataFrame[]>();
@@ -38,6 +50,10 @@ public class NaiveBayes2 extends Model{
 		setProbabilityTable();
 		
 	}
+	public NaiveBayes2() {
+
+	}
+
 	private void setTrain() {
 		this.df = super.rawTrain;
 	}
@@ -45,14 +61,18 @@ public class NaiveBayes2 extends Model{
 	 * breaks up dataframe into an array based on targets
 	 */
 	private void setClasses() {
+		Loggers.nb_Logger.log(Level.INFO, "Generating target classes->");
 		for(Column i : df.target_columns) {
 			this.classes.put(i.getName(),Util.splitOnTarget(df, i));
 		}
+		Loggers.nb_Logger.log(Level.INFO,"=> "+ classes.keySet());
 	}
 	/**
 	 * set the hashmap keys which will act as probability tables
 	 */
 	private void initialize_probability_tables() {
+		Loggers.nb_Logger.entering("NAIVE BAYES", "initializing probability tables");
+		
 		this.cont_Naive_Bayes = new HashMap<String , HashMap<Object, HashMap<String, Double[]>>>();
 		this.cat_Naive_Bayes = new HashMap<String , HashMap<Object, HashMap<String, HashMap<Object, Double>>>>();
 		//for each target column
@@ -84,12 +104,14 @@ public class NaiveBayes2 extends Model{
 			cont_Naive_Bayes.put(a.getName(),cont_i);
 			cat_Naive_Bayes.put(a.getName(), cat_i);
 		}
+		Loggers.nb_Logger.exiting("NAIVE BAYES", "initializing probability tables");
 		
 	}
 	/**
 	 * fill the probability tables
 	 */
 	private void setProbabilityTable() {
+		Loggers.nb_Logger.entering("NAIVE BAYES", "setting probability tables");
 		//for each target dataframe array
 		for(String a : classes.keySet()) {
 			//for each target class
@@ -108,6 +130,7 @@ public class NaiveBayes2 extends Model{
 				}
 			}
 		}
+		Loggers.nb_Logger.exiting("NAIVE BAYES", "setting probability tables");
 	}
 	/**
 	 * returns a hashmap of values in a column and the proportion the make up of Class k
@@ -124,8 +147,12 @@ public class NaiveBayes2 extends Model{
 	 * @return double - Gaussian probability
 	 */
 	private double gaussian_probability(double x, Double[] meanVar) {
-		return (1/(Math.sqrt(2 * Math.PI * meanVar[1]))) * 
+		double g = (1/(Math.sqrt(2 * Math.PI * meanVar[1]))) * 
 				(Math.pow(Math.E, ( -1 * ( (Math.pow((x - meanVar[0]),2)) / (2 * meanVar[1]) ) )));
+		if(g == Double.NaN)
+			return 0;
+		else
+			return g;
 	}
 	/**
 	 * Returns the probability for a particular value in a categorical column for a specific target
@@ -148,7 +175,11 @@ public class NaiveBayes2 extends Model{
 	 * @return double - the probability a number indicates a specific class in a target 
 	 */
 	public double getContinuousProbability(String targetName, Object targetValue, String variable, Particle x) {
-		//System.out.println(targetName+" "+targetValue+" "+variable+" "+x.toString()+" "+gaussian_probability(x.getDoubleValue(), cont_Naive_Bayes.get(targetName).get(targetValue).get(variable)));
+		//System.out.println(targetName+" "+targetValue+" "+variable+" "+x.toString()+" "+Double.isNaN(gaussian_probability(x.getDoubleValue(), cont_Naive_Bayes.get(targetName).get(targetValue).get(variable))) );
+		if(Double.isNaN(gaussian_probability(x.getDoubleValue(), cont_Naive_Bayes.get(targetName).get(targetValue).get(variable)))) {
+			//System.out.println(targetName+" "+targetValue+" "+variable+" "+x.toString()+" "+gaussian_probability(x.getDoubleValue(), cont_Naive_Bayes.get(targetName).get(targetValue).get(variable)));
+			return 0.01;
+		}
 		return  gaussian_probability(x.getDoubleValue(), cont_Naive_Bayes.get(targetName).get(targetValue).get(variable)); 
 	}
 	/**
@@ -167,6 +198,7 @@ public class NaiveBayes2 extends Model{
 			for(int i = 0; i < row.rowLength; i++) {
 				if(super.trainDF_variables.getColumn(i).getType() == 'N') {
 					prob = prob * getContinuousProbability(this.df.target_columns.get(target).getName(),z,super.trainDF_variables.getColumn(i).getName(),row.getParticle(i));
+					//System.out.println("NB@: "+z+" "+prob);
 				}else {
 					//System.out.println(super.trainDF_variables.getColumn(i).getName()+" "+row.getParticle(i).getValue());
 					//System.out.println(cat_Naive_Bayes.containsKey(this.df.target_columns.get(target).getName()));
@@ -187,12 +219,15 @@ public class NaiveBayes2 extends Model{
 							}
 						}
 						*/
+						
 						prob = prob * 0.0000001;
 					}else {
 						prob = prob * cat_Naive_Bayes.get(this.df.target_columns.get(target).getName()).get(z).get(super.trainDF_variables.getColumn(i).getName()).get(row.getParticle(i).getValue());
+						
 					}
 				}
 			}
+			
 			//System.out.println(z+" "+prob);
 			classProb.put(z, prob);
 		}
@@ -237,22 +272,29 @@ public class NaiveBayes2 extends Model{
 	 * Target name -> target class k -> probability
 	 */
 	@Override
-	public Object predict(Row row) {
+	public Object predict(String target, Row row) {
 		HashMap<String , HashMap<Object , Double>> probs = probability(row);
 		Object pred = null;
 		double max = 0;
 
-		//System.out.println(probs);
-		for(String i : probs.keySet()) {
-			for(Object j : probs.get(i).keySet()) {
-				
-				if(probs.get(i).get(j) > max) {
-					max = probs.get(i).get(j);
-					pred = j;
-					//System.out.println(i+" "+pred);
+		for(Object j : probs.get(target).keySet()) {
+			
+			if(probs.get(target).get(j) > max) {
+				max = probs.get(target).get(j);
+				pred = j;
+				//System.out.println(i+" "+pred);
+			}
+			//System.out.println();
+			System.out.println(pred+" "+probs.get(target).get(j));
+		}
+		if(pred == null) {
+			Loggers.nb_Logger.log(Level.WARNING, "NULL prediction, coinflip solution used");
+			max = 0;
+			for(Object i : df.getColumn_byName(target).getFeatureStats().keySet()) {
+				if(df.getColumn_byName(target).getFeatureStats().get(i) > max) {
+					pred = i;
+					max = df.getColumn_byName(target).getFeatureStats().get(i);
 				}
-				//System.out.println();
-				//System.out.println(pred+" "+probs.get(i).get(j));
 			}
 		}
 		
@@ -265,15 +307,14 @@ public class NaiveBayes2 extends Model{
 		ArrayList<Object> p = new ArrayList<Object>();
 		
 		//System.out.println("NB TOT PREDS: "+df.getNumRows());
-		for(int j = 0; j < super.trainDF_targets.getNumColumns();j ++) {
+		for(Column j : df.target_columns) {
 			p.clear();
-			
 			for(int i = 0; i < testDF.getNumRows(); i++) {
-				p.add(predict(testDF.getRow_byIndex(i)));
+				p.add(predict(j.getName(),testDF.getRow_byIndex(i)));
 				//if(predict(testDF.getRow_byIndex(i)) == null)
 					//System.out.println("PRED: " +predict(testDF.getRow_byIndex(i)));
 			}
-			preds.put(super.trainDF_targets.getColumn(j).getName(), p);
+			preds.put(j.getName(), p);
 		}
 		return preds;
 	}
@@ -282,12 +323,11 @@ public class NaiveBayes2 extends Model{
 	public void initiallize() {
 		//super.train(df);
 		//this.df = df;
+		this.classes = new HashMap<String,DataFrame[]>();
 		setTrain();
 		setClasses();
 		initialize_probability_tables();
 		setProbabilityTable();
-		
-		
 	}
 	
 	@Override

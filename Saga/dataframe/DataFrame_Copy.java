@@ -36,6 +36,7 @@ public final class DataFrame_Copy {
             Column column = theDataFrame.getColumn_byName(args[i]);
             String operator = args[i + 1];
             Particle particle = Particle.resolveType(args[i + 2]);
+            System.out.println(particle.type);
             for (int j = 0; j < column.getLength(); j++) {
                 int compare = column.getParticle(j).compareTo(particle);
                 switch (operator) {

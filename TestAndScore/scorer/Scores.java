@@ -43,7 +43,7 @@ public class Scores {
 	 * @param fn - false negatives
 	 * @return recall
 	 */
-	public static double recall(double tp, int fn) {
+	public static double recall(int tp, int fn) {
 		if(tp == 0 && fn ==0) {
 			return -1;
 		}

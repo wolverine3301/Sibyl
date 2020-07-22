@@ -74,6 +74,7 @@ public class CategoryRanker {
 		
 	}
 	private void makeGain() {
+		System.out.println(gain.gain(targetIndex));
 		GAIN = gain.gain(targetIndex);
 	}
 	private void makeGainRatio() {
