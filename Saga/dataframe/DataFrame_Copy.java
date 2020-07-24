@@ -8,7 +8,9 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
 
+import log.Loggers;
 import particles.Particle;
 
 /**
@@ -35,10 +37,18 @@ public final class DataFrame_Copy {
         for (int i = 0; i < args.length; i += 3) {
             Column column = theDataFrame.getColumn_byName(args[i]);
             String operator = args[i + 1];
+            
             Particle particle = Particle.resolveType(args[i + 2]);
-            System.out.println(particle.type);
             for (int j = 0; j < column.getLength(); j++) {
-                int compare = column.getParticle(j).compareTo(particle);
+            	
+            	int compare;
+            	//TODO new forced override
+            	try {
+                	compare = column.getParticle(j).compareTo(particle);
+            	}catch(java.lang.ClassCastException e) {
+            		particle = Particle.resolveType(args[i + 2], 's');
+            		compare = column.getParticle(j).compareTo(particle);
+            	}
                 switch (operator) {
                     case "<":
                         if (compare < 0)
@@ -60,10 +70,14 @@ public final class DataFrame_Copy {
                         if (compare == 0)
                             rowIndexes.add(j);
                         break;
+                    case "!=":
+                        if (compare != 0)
+                            rowIndexes.add(j);
+                        break;
                 }
             }
         }
-        //System.out.println("Rows to copy (" + rowIndexes.size() + "): " + rowIndexes.toString());
+        Loggers.df_Logger.log(Level.INFO, "ADDING: "+rowIndexes.size()+" ROWS TO NEW DATAFRAME");
         if (rowIndexes.size() == 0) 
             return null;
         else 

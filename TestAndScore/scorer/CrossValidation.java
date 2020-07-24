@@ -48,7 +48,7 @@ public class CrossValidation {
 	 * @param model - a model object to be tested
 	 */
 	public CrossValidation(DataFrame df, int N, Model model) {
-		Loggers.cv_Logger.log(Level.CONFIG, "Targets: " + df.numTargets + " Splits = " + N);
+		
 		this.N = N;
 		this.df = df.shuffle(df);
 		scores = new ArrayList<Score>();
@@ -59,6 +59,7 @@ public class CrossValidation {
 			keyVals.put(i.getName(), i.getUniqueValues());
 		}
 		this.keyValues = keyVals;
+		Loggers.cv_Logger.log(Level.CONFIG, "Targets: " + df.numTargets + " Splits = " + N+"\n"+keyVals);
 		//for each trial
 		for(int i = 0;i < this.trials.size(); i++) {
 			model.train(trials.get(i).raw_train);
@@ -70,7 +71,7 @@ public class CrossValidation {
 			score = new Score(keyVals,trials.get(i).trial_test_targets,predicts);
 			scores.add(score);
 		}
-		confusion_matrix = new ConfusionMatrix();
+		this.confusion_matrix = new ConfusionMatrix();
 		overallScores();
 	}
 	/**
@@ -144,7 +145,7 @@ public class CrossValidation {
 			fn.put(i, tmp3);
 		}
 		Loggers.cv_Logger.log(Level.FINE,"INITIALIZATION OF OVER MATIX COMPLETE");
-		Loggers.cv_Logger.log(Level.FINER,"KEYSET: "+matrix.keySet());
+
 		Loggers.cv_Logger.log(Level.FINE,"SUMMING SCORES");
 		//sum
 		for(Score i : scores) {
@@ -159,7 +160,12 @@ public class CrossValidation {
 				}
 			}
 		}
-		Loggers.cv_Logger.log(Level.FINER, "CONFUSION MATRIX SYNC COMPLETE");
+		Loggers.cv_Logger.log(Level.FINE, "CONFUSION MATRIX SYNC COMPLETE");
+		Loggers.cv_Logger.log(Level.CONFIG,"TRUE POSITIVES:"+"\n"+tp
+				+"\n FALSE POSITIVES:"+"\n"+fp
+				+"\n TRUE NEGATIVES:"+"\n"+tn
+				+"\n FALSE NEGATIVES:"+"\n"+fn);
+
 		ArrayList<HashMap<String,HashMap<Object,HashMap<Object,Integer>>>> matrix_c = new ArrayList<HashMap<String,HashMap<Object,HashMap<Object,Integer>>>>();
 		//HashMap<String, HashMap<Object, HashMap<Object, Integer>>> matrix = new HashMap<String, HashMap<Object, HashMap<Object, Integer>>>();
 		
@@ -237,7 +243,12 @@ public class CrossValidation {
 			F1.put(j, f1);
 			mcc.put(j, mc);
 			
+			
 		}
+		Loggers.cv_Logger.log(Level.CONFIG,"RECALL: \n"+ recall
+				+ "\n PRECISION: \n"+precision
+				+ "\n F1: \n"+F1
+				+ "\n MCC: \n"+mcc);
 		this.total_recall = recall;
 		this.total_precision = precision;
 		this.total_f1 = F1;

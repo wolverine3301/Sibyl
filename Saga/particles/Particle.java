@@ -83,7 +83,46 @@ public abstract class Particle implements Comparable<Particle>{
         else
             return false;
     }
-    
+    /**
+     * Used to override automatic resolution of data type, force a particle to become whatever object
+     * type specified as the parameter. can cause errors
+     * 
+     * @param value
+     * @param type - desired type of particle
+     * @return particle
+     */
+    public static Particle resolveType(String value,char type) {
+    	Particle newParticle;
+    	if(type == 'N') {
+            if(isInteger(value)) {
+                newParticle = new IntegerParticle(Integer.parseInt(value));
+            }else
+                newParticle = new DoubleParticle(Double.parseDouble(value));
+    	}else {
+    		newParticle = new StringParticle(value);
+    	}
+    	return newParticle;
+    }
+    /**
+     * Used to override automatic resolution of data type, force a particle to become whatever object
+     * type specified as the parameter. can cause errors
+     * 
+     * @param value
+     * @param type - desired type of particle
+     * @return particle
+     */
+    public static Particle resolveType(Object value,char type) {
+    	Particle newParticle = null;
+    	if(type == 'N') {
+            if (value instanceof Integer)
+                newParticle = new IntegerParticle((Integer) value);
+            else if (value instanceof Double)
+                newParticle = new DoubleParticle((Double) value);
+    	}else {
+    		newParticle = new ObjectParticle(value);
+    	}
+    	return newParticle;
+    }
     /**
      * TO DO: UPDATE FOR SUPPORT WITH ORDINAL & OBJECT PARTICLES.
      * Resolves the type of a value from a string.
