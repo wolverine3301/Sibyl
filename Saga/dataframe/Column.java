@@ -670,9 +670,9 @@ public class Column {
         }
         Collections.sort(sorted);
         if (sorted.size() % 2 == 0)
-            median = (double) sorted.get(sorted.size() / 2);
+            median = (double) sorted.get((sorted.size() / 2)-1);
         else
-            median = (double) sorted.get((sorted.size() + 1) / 2);
+            median = (double) sorted.get( ((sorted.size() + 1) / 2)-1);
     }
     
     /**

@@ -104,6 +104,8 @@ public class NaiveBayes2 extends Model{
 			cont_Naive_Bayes.put(a.getName(),cont_i);
 			cat_Naive_Bayes.put(a.getName(), cat_i);
 		}
+		Loggers.nb_Logger.log(Level.CONFIG, "INIT=> DISCRETE PROBABILITY TABLE:\n"+cat_Naive_Bayes.entrySet());
+		Loggers.nb_Logger.log(Level.CONFIG, "INIT=> CONTINUS PROBABILITY TABLE:\n"+cont_Naive_Bayes.entrySet());
 		Loggers.nb_Logger.exiting("NAIVE BAYES", "initializing probability tables");
 		
 	}
@@ -111,13 +113,16 @@ public class NaiveBayes2 extends Model{
 	 * fill the probability tables
 	 */
 	private void setProbabilityTable() {
-		Loggers.nb_Logger.entering("NAIVE BAYES", "setting probability tables");
+		Loggers.nb_Logger.log(Level.INFO, "SETTING PROBABILITY TABLES");
 		//for each target dataframe array
 		for(String a : classes.keySet()) {
+			Loggers.nb_Logger.log(Level.FINE,"SET TARGET: "+a);
 			//for each target class
 			for(DataFrame b : classes.get(a)) {
+				Loggers.nb_Logger.log(Level.FINER,"SETTING TARGET-CLASS: "+b.getName());
 				//for each categorical column in a traget class
 				for(Column c : b.categorical_columns) {
+					Loggers.nb_Logger.log(Level.FINEST,"CATEGORICAL VARIABLE: "+c.getName() );
 					this.cat_Naive_Bayes.get(a).get(b.getName()).replace(c.getName(), set_categoryColumnProbability(c));
 					//for each value in a categorical column
 					//for(Object d : c.getUniqueValues()) {
@@ -125,6 +130,7 @@ public class NaiveBayes2 extends Model{
 					//}
 				}
 				for(Column e : b.numeric_columns) {
+					Loggers.nb_Logger.log(Level.FINEST,"NUMERIC VARIABLE: "+e.getName() );
 					this.cont_Naive_Bayes.get(a).get(b.getName()).get(e.getName())[0] = e.mean;
 					this.cont_Naive_Bayes.get(a).get(b.getName()).get(e.getName())[1] = e.variance;
 				}
@@ -284,8 +290,6 @@ public class NaiveBayes2 extends Model{
 				pred = j;
 				//System.out.println(i+" "+pred);
 			}
-			//System.out.println();
-			System.out.println(pred+" "+probs.get(target).get(j));
 		}
 		if(pred == null) {
 			Loggers.nb_Logger.log(Level.WARNING, "NULL prediction, coinflip solution used");
@@ -297,25 +301,26 @@ public class NaiveBayes2 extends Model{
 				}
 			}
 		}
-		
+		//System.out.println("NB: TARGET: "+target+" "+pred);
 		return pred;
 	}
 
 	@Override
 	public HashMap<String, ArrayList<Object>> predictDF(DataFrame testDF) {
 		HashMap<String , ArrayList<Object>> preds = new HashMap<String , ArrayList<Object>> ();
-		ArrayList<Object> p = new ArrayList<Object>();
+		ArrayList<Object> p;
 		
 		//System.out.println("NB TOT PREDS: "+df.getNumRows());
 		for(Column j : df.target_columns) {
-			p.clear();
+			p = new ArrayList<Object>();
 			for(int i = 0; i < testDF.getNumRows(); i++) {
 				p.add(predict(j.getName(),testDF.getRow_byIndex(i)));
 				//if(predict(testDF.getRow_byIndex(i)) == null)
-					//System.out.println("PRED: " +predict(testDF.getRow_byIndex(i)));
+					//System.out.println("NB: "+j.getName()+"PRED: " +predict(j.getName(),testDF.getRow_byIndex(i)));
 			}
 			preds.put(j.getName(), p);
 		}
+		//System.out.println("NB: "+preds.get("Winner"));
 		return preds;
 	}
 

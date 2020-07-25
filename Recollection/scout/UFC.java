@@ -23,21 +23,25 @@ public class UFC {
 	private static DataFrame  df;
 	
 	public static void main(String[] args) {
-		Loggers.logHTML(Loggers.df_Logger, Level.ALL);
-		Loggers.logHTML(Loggers.cm_Logger, Level.FINER);
+		Loggers.logHTML(Loggers.df_Logger, Level.FINE);
+		Loggers.logHTML(Loggers.cm_Logger, Level.FINEST);
 		Loggers.logHTML(Loggers.cv_Logger,Level.ALL);
 		Loggers.logHTML(Loggers.nb_Logger,Level.ALL);
 		Loggers.logHTML(Loggers.score_Logger,Level.ALL);
 		String file = "testfiles/preprocessed_data.csv";
         df = DataFrame.read_csv(file);
+        String[] arg = {"no_of_rounds", "!=","4"};
+        System.out.println(df.getNumColumns());
+        df = DataFrame_Copy.acquire(df, arg);
         df.setColumnType("Winner", 'T');//set target column
-        
+        df.setColumnType("no_of_rounds", 'C');
         //df.setColumnType("no_of_rounds", 'C');
         //df.setStatistics(2);
         df.setColumnType("no_of_rounds", 'T');
         //df.convertNANS_mean(); // conevert any NAN's to the mean of column 
         //df = Standardize.standardize_df(df); //Standardize the DF into z scores
         //df = df.shuffle(df);
+        System.out.println(df.getNumColumns());
 		NaiveBayes2 nb = new NaiveBayes2();
 		Model model = new KNN();
 		Model con = new Constant();
@@ -52,10 +56,9 @@ public class UFC {
        
 
         cv.printOverAllScore();
-        //cv.printOverAllMatrix();
+        cv.printOverAllMatrix();
         System.out.println();
 
-        System.out.println(df.getColumn_byName("no_of_rounds").getUniqueValueCounts());
 	}
 	/**
 	 * evocation

@@ -31,7 +31,8 @@ public class ConfusionMatrix {
 	 */
 	public ConfusionMatrix(HashMap<String,Set<Object>> keyValues, DataFrame df, HashMap<String, ArrayList<Object>> predictions) {
 		//System.out.println("CM: "+df.target_columns);
-		Loggers.cm_Logger.log(Level.INFO, "Targets: " + df.numTargets + " Predictions: " + predictions.get(df.target_columns.get(0).getName()).size());
+		Loggers.cm_Logger.log(Level.CONFIG, "Targets: " + df.numTargets + " Predictions: " + predictions.get(df.target_columns.get(0).getName()).size());
+		Loggers.cm_Logger.log(Level.CONFIG,"SET "+keyValues.entrySet());
 		this.keyValues = keyValues;
 		this.df = df;
 		this.predictions = predictions;
@@ -61,12 +62,13 @@ public class ConfusionMatrix {
 				}
 			}
 		}
-		Loggers.cm_Logger.log(Level.FINER, "MATRIX KEYSET: "+matrix.entrySet());
+		Loggers.cm_Logger.log(Level.FINE, "INITIALIZE MATRIX KEYSET: "+matrix.keySet());
 		int cnt2 = 0;
 
 		for(Column i : df.target_columns) {
 			cnt2 = 0;
 			for(Object j : predictions.get(i.getName())) {
+				//System.out.println("CM: "+i.getName()+" "+predictions.keySet()+" "+predictions.get("Winner"));
 				//true positives the diagonal of the matrix
 				matrix.get(i.getName()).get(j).put(i.getParticle(cnt2).getValue(), matrix.get(i.getName()).get(j).get(i.getParticle(cnt2).getValue())+1);
 				cnt2++;

@@ -10,7 +10,11 @@ public class Scores {
 	 * @return MCC
 	 */
 	public static double mcc(int tp, int tn, int fp, int fn) {
-		return ( ( (tp * tn) - (fp * fn) ) / (Math.sqrt( (tp + fp)*(tp+fn)*(tn+fp)*(tn+fn) ) ) );	
+		double dtp = tp;
+		double dtn = tn;
+		double dfp = fp;
+		double dfn = fn;
+		return ( ( (dtp * dtn) - (dfp * dfn) ) / (Math.sqrt( ( (dtp + dfp)*(dtp+dfn)*(dtn+dfp)*(dtn+dfn) ) )) );	
 	}
 	/**
 	 * Returns F1 score 
@@ -33,7 +37,7 @@ public class Scores {
 			return 0;
 		}
 		else if(fp == 0 && tp != 0) {
-			return 1;
+			return (double)1;
 		}
 		return ((double)tp/(tp+fp));
 	}
@@ -47,8 +51,7 @@ public class Scores {
 		if(tp == 0 && fn ==0) {
 			return -1;
 		}
-
-		return (tp/(tp+fn));	
+		return ((double)tp/(tp+fn));	
 	}
 	/**
 	 * accuracy

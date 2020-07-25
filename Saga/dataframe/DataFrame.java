@@ -11,6 +11,7 @@ import particles.DoubleParticle;
 import particles.IntegerParticle;
 import particles.NANParticle;
 import particles.Particle;
+import particles.StringParticle;
 
 /**
  * DataFrame
@@ -126,6 +127,7 @@ public class DataFrame {
 	 * @param newType the new data type of the column.
 	 */
 	public void setColumnType(String columnName, char newType) {
+		
 		int index = 0;
 		for(int i = 0; i < columns.size(); i++) {
 			if(columns.get(i).name.equals(columnName)){
@@ -133,8 +135,24 @@ public class DataFrame {
 				break;
 			}
 		}
-		changeColumnReferences(getColumn(index), newType);
-		getColumn(index).setType(newType);
+		Loggers.df_Logger.log(Level.INFO, "SETTING COLUMN: "+columnName +" TYPE: "+getColumn(index).type+" TO TYPE: "+newType);
+		if(getColumn(index).getType() == 'N' && newType == 'C') {
+			Loggers.df_Logger.log(Level.FINE,"CHANGED NUMERIC TO CATEGORY. RECONSTRUCTING");
+			Column newCol = new Column(getColumn(index).getName(),'C');
+			int cnt = 0;
+			for(Particle i : getColumn(index).column) {
+				Particle newP = new StringParticle(String.valueOf(i.getValue()));
+				newCol.add(newP);
+				cnt++;
+			}
+			newCol.setStatistics();
+			changeColumnReferences(getColumn(index), newType);
+			replaceColumn(index,newCol);
+			getColumn(index).setType(newType);
+		}else {
+			changeColumnReferences(getColumn(index), newType);
+			getColumn(index).setType(newType);
+		}
 	}
 	
 	/**
@@ -734,6 +752,8 @@ public class DataFrame {
 	 */
 	public static DataFrame read_csv(String file) {
 		DataFrame df = DataFrame_Read.loadcsv(file);
+	    Loggers.df_Logger.log(Level.CONFIG, "COLUMNS: "+df.numColumns+" NUMERIC: "+df.numNumeric+" CAT: "+df.numCategorical+"\n"
+	    + " ROWS: " + df.numRows);
 		return df;
 	}
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
