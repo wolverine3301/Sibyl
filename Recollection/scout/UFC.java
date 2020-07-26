@@ -50,7 +50,7 @@ public class UFC {
         //CR = new CategoryRanker(df, 0);
 		//ArrayList<DataFrame> ev = generateRecollection(10,15);
 		//for(DataFrame i : ev) {
-			 CrossValidation cv = new CrossValidation(df,5, nb);
+			 CrossValidation cv = new CrossValidation(df,5, model);
 
 		//}
        
