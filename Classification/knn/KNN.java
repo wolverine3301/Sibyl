@@ -5,10 +5,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
+import dataframe.Column;
 import dataframe.DataFrame;
+import dataframe.DataFrame_Copy;
 import dataframe.Row;
 import distances.Distance;
 import distances.Euclidean;
+import distances.Manhattan;
 import machinations.Model;
 import particles.DistanceParticle;
 
@@ -19,20 +22,30 @@ import particles.DistanceParticle;
  */
 public class KNN extends Model {
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 9134287604056743290L;
+
     /** The amount of predictions to be returned. */
     public int k = 30;
     
     /** The distance function knn will use. */
     Distance distanceFunction;
     
+    private DataFrame dataFrame;
+    
     public KNN() {
         
     }
     
+    /**
+     * Initializes the dataframe. 
+     */
     public void initiallize() {
-        distanceFunction = new Euclidean();
+        distanceFunction = new Manhattan();
         k = 5;
-        
+        //Update this to use KNN on categorical vars. Specifically indicator vectors.
     }
     
     /**
@@ -107,38 +120,37 @@ public class KNN extends Model {
     @Override
     public HashMap<String , ArrayList<Object>> predictDF(DataFrame testDf) {
         HashMap<String, ArrayList<Object>> predictions = new HashMap<String, ArrayList<Object>>();
-        for (int i = 0; i < trainDF_targets.columns.size(); i++ ) {
-            String targetName = trainDF_targets.getColumn(i).getName();
-            PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(trainDF_variables.getNumRows(), new Comparator<DistanceParticle>() { //Neighbors priority queue. Quick access to closest neighbors.  
-                @Override
-                public int compare(DistanceParticle p1, DistanceParticle p2) {
-                    return Double.compare(p1.getValue(), p2.getValue());
-                }
-            });
-            for (int j = 0; j < testDf.getNumRows(); j++) //For each row in the training df, calculate distance. 
-                neighbors.add(new DistanceParticle(distanceFunction.distance(testDf.getRow_byIndex(j), trainDF_variables.getRow_byIndex(i)), j, distanceFunction.distanceType));
-            ArrayList<Object> currPredictions = new ArrayList<Object>(k);
-            for (int j = 0; i < k; i++) //Pop the values of the k closest neighbors and add to the predictions array list. 
-                currPredictions.add(trainDF_variables.getColumn(j).getParticle(neighbors.remove().distanceToIndex).getValue());
-            predictions.put(targetName, currPredictions);
+        for (Column c : trainDF_targets.columns) { //master outside loop
+            String targetName = c.getName();
+            ArrayList<Object> values = new ArrayList<Object>();
+            for (int i = 0; i < testDf.getNumRows(); i++) {
+                values.add(predict(targetName, testDf.getRow_byIndex(i)));
+            }
+            predictions.put(targetName, values);
         }
         return predictions;
-    }
-
-    /**
-     * Predicts the "value" of a row's missing value. Returns the value of the highest probability
-     * of a targets value. 
-     * @return the value with the highest probability from the dataset.
-     */
-    @Override
-    public Object predict(Row row) {
-        HashMap<String, HashMap<Object, Double>> probabilityMap = probability(row);
-        return null; 
     }
 
 	@Override
 	public void saveModel(String fileName) {
 		// TODO Auto-generated method stub
 		
-	} 
+	}
+
+	/**
+	 * Predicts the target value of a row. 
+	 */
+    @Override
+    public Object predict(String target, Row row) {
+        PriorityQueue<DistanceParticle> neighbors = new PriorityQueue<DistanceParticle>(trainDF_variables.getNumRows(), new Comparator<DistanceParticle>() { //Neighbors priority queue. Quick access to closest neighbors.  
+            @Override
+            public int compare(DistanceParticle p1, DistanceParticle p2) {
+                return Double.compare(p1.getValue(), p2.getValue());
+            }
+        });
+        for (int i = 0; i < trainDF_variables.getNumRows(); i++) {
+            neighbors.add(new DistanceParticle(distanceFunction.distance(row, trainDF_variables.getRow_byIndex(i)), i, distanceFunction.distanceType));
+        }
+        return trainDF_targets.getColumn_byName(target).getParticle(neighbors.remove().distanceToIndex).getValue();
+    } 
 }
