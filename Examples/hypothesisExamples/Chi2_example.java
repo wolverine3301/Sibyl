@@ -12,7 +12,7 @@ public class Chi2_example {
 		String file = "testfiles/catTest.txt";
 		DataFrame  df = DataFrame_Read.loadcsv(file);
         df.setColumnType("Color", 'T');//set target column
-        
+        df.setColumnType("emotion", 'T');
         
 		Chi2Independents chi2 = new Chi2Independents(df);
 		//chi2.ranked(0);
@@ -20,7 +20,8 @@ public class Chi2_example {
 		chi2.printEXPContengencyTables();
 		
 		chi2.printResults();
-		System.out.println();
+		System.out.println(chi2.chi2IndependentsAll());
+		System.out.println(chi2.ranked());
 
 
 	}

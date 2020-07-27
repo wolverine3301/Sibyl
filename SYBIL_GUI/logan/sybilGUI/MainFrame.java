@@ -34,8 +34,8 @@ public class MainFrame extends javax.swing.JFrame {
 	private java.awt.Color main_side_color = new java.awt.Color(22,22,22);
 	private java.awt.Color second_side_color = new java.awt.Color(24, 20, 44);
 	private java.awt.Color text_color = new java.awt.Color(153, 153, 153);
-	private int window_width = 1400;
-	private int window_height = 1000;
+	private int window_width = 1200;
+	private int window_height = 800;
 	
 	private Data_Label_Controller ctrl;
     /**
