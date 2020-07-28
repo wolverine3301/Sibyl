@@ -2,11 +2,9 @@ package info_gain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.TreeSet;
 
 import dataframe.Column;
 import dataframe.DataFrame;
-import dataframe.DataFrame_Copy;
 
 public abstract class Gain {
     
