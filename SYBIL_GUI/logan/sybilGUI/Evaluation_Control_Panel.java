@@ -1,9 +1,20 @@
 package logan.sybilGUI;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import bayes.NaiveBayes2;
+import dataframe.DataFrame;
+import dataframe.DataFrame_Copy;
+import guiComponents.BarMeter_Panel;
+import ranker.Chi2Ranker;
+import scorer.CrossValidation;
+import scorer.Evaluate;
+import scorer.Metric;
 
 public class Evaluation_Control_Panel extends Tertiary_View{
 
@@ -13,26 +24,51 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 	
     private javax.swing.JComboBox<String> Priority_class_menu;
     private javax.swing.JComboBox<String> Priority_targets_menu;
+    private javax.swing.JComboBox<String> priority_metric_menu;
+    
     private javax.swing.JCheckBox chi2Ranker_checkbox;
     private javax.swing.JCheckBox gainRatioRanker_checkbox;
     private javax.swing.JCheckBox giniRanker_checkbox;
     private javax.swing.JCheckBox infoGainRanker_checkbox;
+    
     private javax.swing.JLabel priority_class_label;
     private javax.swing.JLabel priority_metric_label;
-    private javax.swing.JComboBox<String> priority_metric_menu;
     private javax.swing.JLabel priority_targets_label;
-    private javax.swing.JButton releaseRecollection_button;
+
     private javax.swing.JLabel stepSizeLabel;
     private javax.swing.JSpinner stepSize_spinner;
+    private javax.swing.JButton releaseRecollection_button;
+    
+    private BarMeter_Panel meterPanel;
+    private HashMap<String,Integer> metrics_meter;
+    private HashMap<String, Integer> metric_maxs;
     
 	public Evaluation_Control_Panel(int width, int height, Color main_bg_color, Color main_side_color, int side_panel_W) {
 		super(width, height, main_bg_color, main_side_color, side_panel_W);
 		
 	}
-
+	protected void initMeters() {
+		metrics_meter = new HashMap<String,Integer>();
+		metric_maxs = new HashMap<String,Integer>();
+		
+		metrics_meter.put("Precision", 0);
+		metrics_meter.put("Recall", 0);
+		metrics_meter.put("F1", 0);
+		metrics_meter.put("MCC", 0);
+		
+		metric_maxs.put("Precision", 100);
+		metric_maxs.put("Recall", 100);
+		metric_maxs.put("F1", 100);
+		metric_maxs.put("MCC", 100);
+		
+	}
 	@Override
 	protected void initComponents() {
+		initMeters();
 		this.txtColor = new java.awt.Color(153, 0, 153);
+		meterPanel = new BarMeter_Panel(metrics_meter, metric_maxs, 300, 400, txtColor, main_bg_color);
+
+		
         //side_panel = new javax.swing.JPanel();
         chi2Ranker_checkbox = new javax.swing.JCheckBox();
         infoGainRanker_checkbox = new javax.swing.JCheckBox();
@@ -102,6 +138,7 @@ public class Evaluation_Control_Panel extends Tertiary_View{
         releaseRecollection_button.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
         releaseRecollection_button.setForeground(txtColor);
         releaseRecollection_button.setText("Release Recolection");
+        
         releaseRecollection_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 releaseRecollection_buttonActionPerformed(evt);
@@ -167,7 +204,7 @@ public class Evaluation_Control_Panel extends Tertiary_View{
                 .addComponent(releaseRecollection_button, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36))
         );
-
+        /*
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -180,17 +217,58 @@ public class Evaluation_Control_Panel extends Tertiary_View{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(side_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        
+        */
 	    add(side_panel, java.awt.BorderLayout.WEST);
+	    add(meterPanel,java.awt.BorderLayout.EAST);
 	    add(center_panel, java.awt.BorderLayout.CENTER);
+	    
     }// </editor-fold>                        
-
+	private void updateMeters() {
+		meterPanel.setBars(metrics_meter);
+	}
     private void infoGainRanker_checkboxActionPerformed(java.awt.event.ActionEvent evt) {                                                        
         // TODO add your handling code here:
     }                                                       
 
-    private void releaseRecollection_buttonActionPerformed(java.awt.event.ActionEvent evt) {                                                           
-        // TODO add your handling code here:
-    }                
+    private void releaseRecollection_buttonActionPerformed(java.awt.event.ActionEvent evt) {    
+    	
+    	
+		String file = "testfiles/preprocessed_data.csv";
+		
+        DataFrame df = DataFrame.read_csv(file);
+        String[] arg = {"no_of_rounds", "!=","4"};
+        df = DataFrame_Copy.acquire(df, arg);
+        df.setColumnType("Winner", 'T');//set target column
+        df.setColumnType("no_of_rounds", 'C');
+        //df.setColumnType("no_of_rounds", 'C');
+        //df.setStatistics(2);
+        df.setColumnType("no_of_rounds", 'T');
 
+		NaiveBayes2 nb = new NaiveBayes2();
+		Evaluate ev = new Evaluate(df.target_columns);
+		ev.setMetric(Metric.MCC);
+		ArrayList<DataFrame> re = reco(df,10,20,5);
+		System.out.println("TRIAL: "+re.size());
+		for(DataFrame i : re) {
+			CrossValidation cv = new CrossValidation(i,5, nb);
+			//System.out.println(i.getNumColumns());
+			ev.evaluation(cv);
+			//ev.getBest();
+			metrics_meter.replace("Precision",(int) Math.round(ev.getCurrent_precision()*100));
+			metrics_meter.replace("Recall",(int)Math.round(ev.getCurrent_recall()*100));
+			metrics_meter.replace("F1", (int) Math.round(ev.getCurrent_f1()*100));
+			metrics_meter.replace("MCC", (int) Math.round(ev.getCurrent_mcc()*100));
+			updateMeters();
+			//Thread.onSpinWait();
+	        //cv.printOverAllMatrix();
+	        //System.out.println();
+		}
+    }                
+	private static ArrayList<DataFrame> reco(DataFrame df,int initialNumColumns, int terminate,int stepSize){
+		ArrayList<DataFrame> recollection = new ArrayList<DataFrame>();
+		for(int i = initialNumColumns; i < terminate; i+=stepSize) {
+			recollection.add(Chi2Ranker.chi2Rank(df, i));
+		}
+		return recollection;
+	}
 }

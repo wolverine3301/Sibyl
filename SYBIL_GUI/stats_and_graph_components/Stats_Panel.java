@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 
-import Controllers.Data_Label_Controller;
+import Controllers.Data_Controller;
 import logan.sybilGUI.GUI_Util;
 import logan.sybilGUI.Secondary_View;
 
@@ -18,9 +18,9 @@ import logan.sybilGUI.Secondary_View;
 public class Stats_Panel extends Secondary_View{
 
 	private int btn_size = 50;
-	Data_Label_Controller ctrl;
+	Data_Controller ctrl;
 	
-	public Stats_Panel(int width, int height, Color main_bg_color, Color main_side_color,Data_Label_Controller ctrl) {
+	public Stats_Panel(int width, int height, Color main_bg_color, Color main_side_color,Data_Controller ctrl) {
 		super(width, height, main_bg_color, main_side_color);
 		this.ctrl = ctrl;
 	}

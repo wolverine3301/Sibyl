@@ -2,15 +2,15 @@ package data_panel_components;
 
 import javax.swing.filechooser.FileSystemView;
 
-import Controllers.Data_Label_Controller;
+import Controllers.Data_Controller;
 
 public class File_Select_Panel extends javax.swing.JPanel {
 
-	Data_Label_Controller ctrl;
+	Data_Controller ctrl;
     /**
      * Creates new form File_Select_panel
      */
-    public File_Select_Panel(Data_Label_Controller ctrl) {
+    public File_Select_Panel(Data_Controller ctrl) {
     	this.ctrl = ctrl;
         initComponents();
     }

@@ -433,6 +433,30 @@ public class CrossValidation {
 	public void setTotal_falseNegative(HashMap<String, HashMap<Object, Integer>> total_falseNegative) {
 		this.total_falseNegative = total_falseNegative;
 	}
+	public HashMap<String, Double> getOverall_recall() {
+		return overall_recall;
+	}
+	public void setOverall_recall(HashMap<String, Double> overall_recall) {
+		this.overall_recall = overall_recall;
+	}
+	public HashMap<String, Double> getOverall_precision() {
+		return overall_precision;
+	}
+	public void setOverall_precision(HashMap<String, Double> overall_precision) {
+		this.overall_precision = overall_precision;
+	}
+	public HashMap<String, Double> getOverall_f1() {
+		return overall_f1;
+	}
+	public void setOverall_f1(HashMap<String, Double> overall_f1) {
+		this.overall_f1 = overall_f1;
+	}
+	public HashMap<String, Double> getOverall_mcc() {
+		return overall_mcc;
+	}
+	public void setOverall_mcc(HashMap<String, Double> overall_mcc) {
+		this.overall_mcc = overall_mcc;
+	}
 	public int[][] getOverallMatrix(String target){
 		int[][] m = new int[matrix.get(target).keySet().size()][matrix.get(target).keySet().size()];
 		int cnt1 = 0;

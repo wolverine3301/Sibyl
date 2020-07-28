@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.plaf.basic.BasicButtonUI;
 
-import Controllers.Data_Label_Controller;
+import Controllers.Data_Controller;
 import data_panel_components.Data_Panel2;
 import stats_and_graph_components.Stats_Panel;
 
@@ -39,7 +39,7 @@ public class MainFrame extends javax.swing.JFrame {
 	private int window_width = 1200;
 	private int window_height = 800;
 	
-	private Data_Label_Controller ctrl;
+	private Data_Controller data_control;
     /**
      * Creates new form MainFrame
      */
@@ -80,8 +80,8 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
     	second  = new dummy_secondPanel(window_width-100,window_height-200,main_bg_color,second_side_color);
     	DATA_VIEW = new Data_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color);
-    	this.ctrl = DATA_VIEW.getDataCtrl();
-    	STATS_VIEW = new Stats_Panel(window_width-100,window_height-200,main_bg_color,second_side_color,ctrl);
+    	this.data_control = DATA_VIEW.getDataCtrl();
+    	STATS_VIEW = new Stats_Panel(window_width-100,window_height-200,main_bg_color,second_side_color,data_control);
     	//STATS_VIEW = second;
     	EVALUATE_VIEW = new Evaluate_Panel(window_width-100,window_height-200,main_bg_color,second_side_color);
     	
@@ -328,6 +328,7 @@ public class MainFrame extends javax.swing.JFrame {
 		center_panel.add(DATA_VIEW);
 		center_panel.repaint();
 		center_panel.revalidate();
+		this.data_control = DATA_VIEW.getDataCtrl();
     }                                        
 
     private void stats_btn_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -335,6 +336,7 @@ public class MainFrame extends javax.swing.JFrame {
 		center_panel.add(STATS_VIEW);
 		center_panel.repaint();
 		center_panel.revalidate();
+		this.data_control = DATA_VIEW.getDataCtrl();
     }                                        
 
     private void preProcess_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -342,6 +344,7 @@ public class MainFrame extends javax.swing.JFrame {
 		center_panel.add(second);
 		center_panel.repaint();
 		center_panel.revalidate();
+		this.data_control = DATA_VIEW.getDataCtrl();
     }                                        
 
     private void model_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -349,6 +352,7 @@ public class MainFrame extends javax.swing.JFrame {
 		center_panel.add(second);
 		center_panel.repaint();
 		center_panel.revalidate();
+		this.data_control = DATA_VIEW.getDataCtrl();
     }                                        
 
     private void score_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -356,6 +360,7 @@ public class MainFrame extends javax.swing.JFrame {
 		center_panel.add(EVALUATE_VIEW);
 		center_panel.repaint();
 		center_panel.revalidate();
+		this.data_control = DATA_VIEW.getDataCtrl();
     }         
     private void home_btn_ActionPerformed(java.awt.event.ActionEvent evt)  {
 			center_panel.removeAll();

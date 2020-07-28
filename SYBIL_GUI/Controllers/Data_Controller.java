@@ -11,13 +11,13 @@ import dataframe.DataFrame_Read;
  * @author logan collier
  *
  */
-public class Data_Label_Controller {
+public class Data_Controller {
 	private DataFrame df;
 	private HashMap<String,Character> cols = new HashMap<String,Character>();
 	private String fileName;
 	
 	private ArrayList<Character> types = new ArrayList<Character>();
-	public Data_Label_Controller() {
+	public Data_Controller() {
 		df = new DataFrame();
 		//df = DataFrame_Read.loadcsv("testfiles/preprocessed_data.csv");
 	}
