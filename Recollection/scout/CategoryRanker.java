@@ -36,7 +36,7 @@ public class CategoryRanker {
 	public CategoryRanker(DataFrame df, int targetIndex) {
 		if(df.numCategorical < 1) {
 			ranked = false;
-		}else {
+		} else {
 			this.targetIndex = targetIndex;
 			this.df = df;
 			this.gain_ratio = new GainRatio(df);

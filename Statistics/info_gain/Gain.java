@@ -2,11 +2,9 @@ package info_gain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.TreeSet;
 
 import dataframe.Column;
 import dataframe.DataFrame;
-import dataframe.DataFrame_Copy;
 
 public abstract class Gain {
     
@@ -33,7 +31,19 @@ public abstract class Gain {
      * @param index the index of the target in the target columns data frame.
      * @return an array list of columns, with the best gain at the lowest index, and worst gain at the highest index.
      */
-    public abstract ArrayList<GainInformation> gain(int index);
+    public abstract ArrayList<Column> gain(int index);
+    
+    /**
+     * Calculates the gain of using the child class' implementation.
+     * Possible Calls:
+     * - Information Gain
+     * - Gain Ratio
+     * - Gini Index
+     * @param index the index of the target in the target columns data frame.
+     * @return an array list of columns, with the best gain at the lowest index, and worst gain at the highest index.
+     */
+    public abstract ArrayList<GainInformation> gain_nodes(int index);
+    
     
     /**
      * Calculates the entropy of a column created hashmap.
@@ -46,12 +56,10 @@ public abstract class Gain {
         for (Object i : instanceCounts.keySet()) {
             totalInstances += instanceCounts.get(i);
         }
-      System.out.println("Instance counts: " + instanceCounts + " Total Instances: " + totalInstances);
         for (Object i : instanceCounts.keySet()) {
             double ratio = ((double) instanceCounts.get(i)) / totalInstances;
             entropy -=  (ratio) * (Math.log(ratio) / LOG_2);
         }
-      System.out.println("Entropy: " + entropy);
         return entropy;
     }
     
