@@ -11,6 +11,7 @@ import dataframe.DataFrame_Copy;
 import dataframe.Row;
 import distances.Distance;
 import distances.Euclidean;
+import distances.Hamming;
 import distances.Manhattan;
 import machinations.Model;
 import particles.DistanceParticle;
