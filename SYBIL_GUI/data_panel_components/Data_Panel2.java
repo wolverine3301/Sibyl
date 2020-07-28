@@ -1,4 +1,4 @@
-package logan.sybilGUI;
+package data_panel_components;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 
 import Controllers.Data_Label_Controller;
+import logan.sybilGUI.GUI_Util;
+import logan.sybilGUI.Secondary_View;
 
 public class Data_Panel2 extends Secondary_View{
 	

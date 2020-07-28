@@ -1,4 +1,4 @@
-package logan.sybilGUI;
+package stats_and_graph_components;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,6 +24,7 @@ import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Read;
 import dataframe.Util;
+import logan.sybilGUI.Tertiary_View;
 import plotting.Plot_3D_Panel;
 import regressionFunctions.Multi_PolynomialRegression;
 

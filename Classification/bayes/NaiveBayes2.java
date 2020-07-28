@@ -154,7 +154,7 @@ public class NaiveBayes2 extends Model{
 	 */
 	private double gaussian_probability(double x, Double[] meanVar) {
 		double g = (1/(Math.sqrt(2 * Math.PI * meanVar[1]))) * 
-				(Math.pow(Math.E, ( -1 * ( (Math.pow((x - meanVar[0]),2)) / (2 * meanVar[1]) ) )));
+				(Math.pow(Math.E, (-1 * ( (Math.pow((x - meanVar[0]),2)) / (2 * meanVar[1]) ) )));
 		if(g == Double.NaN)
 			return 0;
 		else

@@ -16,7 +16,7 @@ import scorer.Score;
 
 public class Loggers {
 	public static FileHandler logFile;
-    public static ConsoleHandler ch = new ConsoleHandler();
+    //public static ConsoleHandler ch = new ConsoleHandler();
 	public static HTMLFormatter formatterHTML = new HTMLFormatter();
 	
     public static Logger df_Logger = Logger.getLogger(DataFrame.class.getName());

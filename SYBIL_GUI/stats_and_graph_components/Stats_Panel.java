@@ -1,4 +1,4 @@
-package logan.sybilGUI;
+package stats_and_graph_components;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 
 import Controllers.Data_Label_Controller;
+import logan.sybilGUI.GUI_Util;
+import logan.sybilGUI.Secondary_View;
 
 /**
  * 

@@ -1,4 +1,4 @@
-package logan.sybilGUI;
+package data_panel_components;
 
 import javax.swing.filechooser.FileSystemView;
 

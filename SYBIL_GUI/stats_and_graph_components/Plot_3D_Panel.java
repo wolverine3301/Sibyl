@@ -1,4 +1,4 @@
-package logan.sybilGUI;
+package stats_and_graph_components;
 
 import java.awt.LayoutManager;
 import java.util.ArrayList;

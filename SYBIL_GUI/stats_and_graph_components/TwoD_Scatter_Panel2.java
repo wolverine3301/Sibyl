@@ -1,4 +1,4 @@
-package logan.sybilGUI;
+package stats_and_graph_components;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -6,6 +6,7 @@ import java.awt.Color;
 import Controllers.Data_Label_Controller;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Read;
+import logan.sybilGUI.Tertiary_View;
 import plotting.ScatterPlotView;
 
 public class TwoD_Scatter_Panel2 extends Tertiary_View{

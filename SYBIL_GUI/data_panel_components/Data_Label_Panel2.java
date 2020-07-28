@@ -1,4 +1,4 @@
-package logan.sybilGUI;
+package data_panel_components;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,6 +16,8 @@ import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileSystemView;
 
 import Controllers.Data_Label_Controller;
+import logan.sybilGUI.GUI_Util;
+import logan.sybilGUI.Tertiary_View;
 /**
  * 
  * @author logan collier

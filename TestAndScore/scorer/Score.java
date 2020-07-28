@@ -62,7 +62,7 @@ public class Score {
 		double precisionS;
 		double F1S;
 		double mccS;
-		
+
 		int cnt;
 		Loggers.score_Logger.log(Level.FINE,"MATRIX KEYSET: "+matrix.truePositive.keySet()); 
 		for(String i : matrix.truePositive.keySet()) {

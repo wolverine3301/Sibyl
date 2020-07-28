@@ -20,7 +20,7 @@ public class TestFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         //jPanel1 = new Data_Panel();
-    	jPanel1 = new Hypothesis_Panel(900, 700, main_bg_color, main_side_color);
+    	//jPanel1 = new Hypothesis_Panel(900, 700, main_bg_color, main_side_color);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1000, 700));
         add(jPanel1);
