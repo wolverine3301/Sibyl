@@ -37,16 +37,24 @@ public class KNN extends Model {
     private DataFrame dataFrame;
     
     public KNN() {
-        
+        distanceFunction = null;
     }
     
     /**
      * Initializes the dataframe. 
      */
     public void initiallize() {
-        distanceFunction = new Manhattan();
+        if (distanceFunction == null)
+            distanceFunction = new Manhattan(); //Default distance function is manhattan distance. 
         k = 5;
-        //Update this to use KNN on categorical vars. Specifically indicator vectors.
+    }
+    
+    /**
+     * Changes the distance function that this instance of KNN uses. 
+     * @param distanceFunction the new distance function to use.
+     */
+    public void setDistanceFunction(Distance distanceFunction) {
+        this.distanceFunction = distanceFunction;
     }
     
     /**
