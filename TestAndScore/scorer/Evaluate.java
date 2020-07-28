@@ -81,9 +81,10 @@ public class Evaluate {
 		this.singular_metric = m;
 	}
 	public void evaluation(CrossValidation cv) {
-		//if all targets are equally important
-		if(priority_targets.isEmpty()) {
-			double modelMetric = 0;
+		double modelMetric = 0;
+		//if all targets and classes are equally important
+		if(priority_targets.isEmpty() && priority_classes.isEmpty()) {
+			
 			if(singular_metric == Metric.RECALL) {
 				for(String i : cv.overall_recall.keySet()) {
 					modelMetric = modelMetric + cv.overall_recall.get(i);
@@ -109,10 +110,21 @@ public class Evaluate {
 					modelMetric = modelMetric + cv.overall_recall.get(i)+ cv.overall_precision.get(i)+cv.overall_f1.get(i);
 				}
 			}
-			updateBestModel(cv,modelMetric);
 			
+		}else if(!priority_classes.isEmpty()) {
+			for(String i : priority_classes.keySet()) {
+				if(singular_metric == Metric.RECALL) {
+					modelMetric = modelMetric + cv.total_recall.get(i).get(priority_classes.get(i));
+				}else if(singular_metric == Metric.PRECISION) {
+					modelMetric = modelMetric + cv.total_precision.get(i).get(priority_classes.get(i));
+				}else if(singular_metric == Metric.F1) {
+					modelMetric = modelMetric + cv.total_f1.get(i).get(priority_classes.get(i));
+				}else if(singular_metric == Metric.MCC) {
+					modelMetric = modelMetric + cv.total_mcc.get(i).get(priority_classes.get(i));
+				}
+			}
 		}
-
+		updateBestModel(cv,modelMetric);
 	}
 	private void updateBestModel(CrossValidation cv, double metric) {
 		if(this.best_metric < metric) {

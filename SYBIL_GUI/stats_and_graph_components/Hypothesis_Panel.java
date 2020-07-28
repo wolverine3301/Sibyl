@@ -1,4 +1,4 @@
-package logan.sybilGUI;
+package stats_and_graph_components;
 
 import java.awt.Color;
 import java.io.PrintStream;
@@ -6,6 +6,8 @@ import java.io.PrintStream;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import logan.sybilGUI.Tertiary_View;
+import logan.sybilGUI.TextAreaOutputStream;
 import scout.Invoke;
 
 public class Hypothesis_Panel extends Tertiary_View{

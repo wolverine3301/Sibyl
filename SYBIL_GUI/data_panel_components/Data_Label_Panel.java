@@ -1,4 +1,4 @@
-package logan.sybilGUI;
+package data_panel_components;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

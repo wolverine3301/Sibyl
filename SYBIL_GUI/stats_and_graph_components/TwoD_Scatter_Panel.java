@@ -1,4 +1,4 @@
-package logan.sybilGUI;
+package stats_and_graph_components;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 import Controllers.Data_Label_Controller;
 import dataframe.Column;
 import dataframe.DataFrame;
+import logan.sybilGUI.Tertiary_View;
 import plotting.Plot;
 import plotting.RegressionPanel;
 import regressionFunctions.ConfidenceIntervals;
