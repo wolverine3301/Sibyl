@@ -26,7 +26,8 @@ public class LoadingSign extends JFrame {
             headerLabel.setText("   Your job crashed during the save process!");
             contentPane.add(headerLabel, java.awt.BorderLayout.NORTH);
             // add the image label
-            ImageIcon ii = new ImageIcon(this.getClass().getResource("unnamed.gif"));
+            //ImageIcon ii = new ImageIcon(this.getClass().getResource("unnamed.gif"));
+            ImageIcon ii = new ImageIcon(this.getClass().getResource("ai.gif"));
             imageLabel.setIcon(ii);
             contentPane.add(imageLabel, java.awt.BorderLayout.CENTER);
             // show it

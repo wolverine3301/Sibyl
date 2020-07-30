@@ -1,13 +1,21 @@
 package logan.sybilGUI;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import bayes.NaiveBayes2;
+import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
 import guiComponents.BarMeter_Panel;
@@ -43,10 +51,41 @@ public class Evaluation_Control_Panel extends Tertiary_View{
     private HashMap<String,Integer> metrics_meter;
     private HashMap<String, Integer> metric_maxs;
     
+    private JPanel middle_panel;
+    
+    private DataFrame df;
 	public Evaluation_Control_Panel(int width, int height, Color main_bg_color, Color main_side_color, int side_panel_W) {
 		super(width, height, main_bg_color, main_side_color, side_panel_W);
-		
+
 	}
+    private void initConsol() {
+    	middle_panel = new JPanel();
+    	middle_panel.setBackground(main_bg_color);
+    	middle_panel.setMaximumSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
+        JTextArea ta = new JTextArea();
+        ta.setPreferredSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
+        ta.setBackground(Color.black);
+        ta.setForeground(Color.gray);
+        TextAreaOutputStream taos = new TextAreaOutputStream( ta, 60 );
+        PrintStream ps = new PrintStream( taos );
+        //System.setOut( ps );
+        //System.setErr( ps );
+        middle_panel.add( new JScrollPane( ta ));
+       // middlePanel2();
+    }
+    private void middlePanel2() {
+    	middle_panel.removeAll();
+        JLabel imageLabel = new JLabel();
+        imageLabel.setSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
+        imageLabel.setMaximumSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
+        ImageIcon ii = new ImageIcon(this.getClass().getResource("ai2.gif"));
+        
+        imageLabel.setIcon(ii);
+        
+        middle_panel.add(imageLabel, java.awt.BorderLayout.CENTER);
+    	middle_panel.repaint();
+    	middle_panel.revalidate();
+    }
 	protected void initMeters() {
 		metrics_meter = new HashMap<String,Integer>();
 		metric_maxs = new HashMap<String,Integer>();
@@ -64,6 +103,18 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 	}
 	@Override
 	protected void initComponents() {
+		
+		String file = "testfiles/preprocessed_data.csv";
+		
+        this.df = DataFrame.read_csv(file);
+        String[] arg = {"no_of_rounds", "!=","4"};
+        this.df = DataFrame_Copy.acquire(df, arg);
+        this.df.setColumnType("Winner", 'T');//set target column
+        this.df.setColumnType("no_of_rounds", 'C');
+        this.df.setColumnType("no_of_rounds", 'T');
+		
+		
+		initConsol();
 		initMeters();
 		this.txtColor = new java.awt.Color(153, 0, 153);
 		meterPanel = new BarMeter_Panel(metrics_meter, metric_maxs, 300, 400, txtColor, main_bg_color);
@@ -108,6 +159,8 @@ public class Evaluation_Control_Panel extends Tertiary_View{
         giniRanker_checkbox.setForeground(txtColor);
         giniRanker_checkbox.setText("Gini index");
         
+        stepSize_spinner.setPreferredSize(new Dimension(50,30));
+        stepSize_spinner.setValue(5);
         
         stepSizeLabel.setBackground(main_side_color);
         stepSizeLabel.setForeground(new java.awt.Color(153, 0, 153));
@@ -118,21 +171,37 @@ public class Evaluation_Control_Panel extends Tertiary_View{
         priority_metric_label.setText("Priority Metric");
 
         Priority_targets_menu.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        Priority_targets_menu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        
+        String[] target_names = new String[df.numTargets];
+        int tmp = 0;
+        for(int i = 0; i < df.numTargets; i++) {
+        	target_names[i] = df.target_columns.get(i).getName();
+        	tmp = tmp + df.target_columns.get(i).getUniqueValues().size();
+        }
+        String[] target_classes  = new String[tmp];
+        int cnt = 0;
+        for(int i = 0; i < df.numTargets; i++) {
+        	for(Object j : df.target_columns.get(i).getUniqueValues()) {
+        		target_classes[cnt] = (String) j;
+        		cnt++;
+        	}
+        }
+
+        Priority_targets_menu.setModel(new javax.swing.DefaultComboBoxModel<>(target_names));
 
         priority_targets_label.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
         priority_targets_label.setForeground(txtColor);
         priority_targets_label.setText("Priority Targets");
 
         Priority_class_menu.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        Priority_class_menu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        Priority_class_menu.setModel(new javax.swing.DefaultComboBoxModel<>( target_classes ));
 
         priority_class_label.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
         priority_class_label.setForeground(txtColor);
         priority_class_label.setText("Priority Item");
 
         priority_metric_menu.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        priority_metric_menu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        priority_metric_menu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Overall","Recall", "Precision", "F1", "MCC" }));
 
         releaseRecollection_button.setBackground(main_side_color);
         releaseRecollection_button.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
@@ -218,9 +287,12 @@ public class Evaluation_Control_Panel extends Tertiary_View{
             .addComponent(side_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         */
+        center_panel.add(middle_panel,java.awt.BorderLayout.WEST);
+        center_panel.add(meterPanel,java.awt.BorderLayout.EAST);
+        add(center_panel, java.awt.BorderLayout.CENTER);
 	    add(side_panel, java.awt.BorderLayout.WEST);
-	    add(meterPanel,java.awt.BorderLayout.EAST);
-	    add(center_panel, java.awt.BorderLayout.CENTER);
+	   
+	    
 	    
     }// </editor-fold>                        
 	private void updateMeters() {
@@ -233,21 +305,12 @@ public class Evaluation_Control_Panel extends Tertiary_View{
     private void releaseRecollection_buttonActionPerformed(java.awt.event.ActionEvent evt) {    
     	
     	
-		String file = "testfiles/preprocessed_data.csv";
-		
-        DataFrame df = DataFrame.read_csv(file);
-        String[] arg = {"no_of_rounds", "!=","4"};
-        df = DataFrame_Copy.acquire(df, arg);
-        df.setColumnType("Winner", 'T');//set target column
-        df.setColumnType("no_of_rounds", 'C');
-        //df.setColumnType("no_of_rounds", 'C');
-        //df.setStatistics(2);
-        df.setColumnType("no_of_rounds", 'T');
+
 
 		NaiveBayes2 nb = new NaiveBayes2();
 		Evaluate ev = new Evaluate(df.target_columns);
 		ev.setMetric(Metric.MCC);
-		ArrayList<DataFrame> re = reco(df,10,20,5);
+		ArrayList<DataFrame> re = reco(df,10,20,(int)stepSize_spinner.getValue());
 		System.out.println("TRIAL: "+re.size());
 		for(DataFrame i : re) {
 			CrossValidation cv = new CrossValidation(i,5, nb);

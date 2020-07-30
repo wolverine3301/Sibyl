@@ -1,5 +1,19 @@
 package logan.sybilGUI;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.io.File;
+import java.io.PrintStream;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
 public class TestFrame extends javax.swing.JFrame {
 	private java.awt.Color main_side_color = new java.awt.Color(22,22,22);
 	private java.awt.Color main_bg_color = new java.awt.Color(24, 20, 44);
@@ -23,10 +37,49 @@ public class TestFrame extends javax.swing.JFrame {
     	//jPanel1 = new Hypothesis_Panel(900, 700, main_bg_color, main_side_color);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1000, 700));
+        initConsol();
         add(jPanel1);
         pack();
     }// </editor-fold>                    
+    private void initConsol() {
+    	jPanel1 = new JPanel();
+    	jPanel1.setBackground(main_bg_color);
+        JTextArea ta = new JTextArea();
+       // ta.setPreferredSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
+        ta.setBackground(Color.black);
+        ta.setForeground(Color.gray);
+        TextAreaOutputStream taos = new TextAreaOutputStream( ta, 60 );
+        PrintStream ps = new PrintStream( taos );
+        System.setOut( ps );
+        //System.setErr( ps );
+        jPanel1.add( new JScrollPane( ta ));
+        middlePanel2();
+    }
+    private void middlePanel2() {
+        try {
+            
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            //jPanel1 = (JPanel) getContentPane();
+            jPanel1.setLayout(new BorderLayout());
+            setSize(new Dimension(400, 300));
+            setTitle("Your Job Crashed!");
+            // add the header label
 
+            // add the image label
+            //ImageIcon ii = new ImageIcon(this.getClass().getResource("unnamed.gif"));
+            JLabel imageLabel = new JLabel();
+            ImageIcon ii = new ImageIcon(this.getClass().getResource("ai.gif"));
+            imageLabel.setIcon(ii);
+            jPanel1.add(imageLabel, java.awt.BorderLayout.CENTER);
+            // show it
+            this.setLocationRelativeTo(null);
+            this.setVisible(true);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    	jPanel1.repaint();
+    	jPanel1.revalidate();
+    }
     /**
      * @param args the command line arguments
      */

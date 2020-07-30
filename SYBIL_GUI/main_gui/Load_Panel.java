@@ -17,7 +17,7 @@ public class Load_Panel extends JPanel{
         try {
             setSize(new Dimension(400, 300));
             // add the image label
-            ImageIcon ii = new ImageIcon(this.getClass().getResource("unnamed.gif"));
+            ImageIcon ii = new ImageIcon(this.getClass().getResource("SYBIL_GUI/ai.gif"));
             imageLabel.setIcon(ii);
             add(imageLabel, java.awt.BorderLayout.CENTER);
             this.setVisible(true);
