@@ -10,6 +10,7 @@ import bayes.NaiveBayes2;
 import java.io.IOException;
 import dataframe.DataFrame;
 import logging.HTMLFormatter;
+import ranker.Recollection;
 import scorer.ConfusionMatrix;
 import scorer.CrossValidation;
 import scorer.Score;
@@ -24,6 +25,7 @@ public class Loggers {
     public static Logger cv_Logger = Logger.getLogger(CrossValidation.class.getName());
     public static Logger cm_Logger = Logger.getLogger(ConfusionMatrix.class.getName());
     public static Logger nb_Logger = Logger.getLogger(NaiveBayes2.class.getName());
+    public static Logger recollection_Logger = Logger.getLogger(Recollection.class.getName());
     //public static Logger model_Logger ... maybe KNN Logger, misc loggers. 
     
     public static void changeLoggerSettings(LoggerSettings settings) {

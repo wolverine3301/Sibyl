@@ -20,6 +20,7 @@ import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
 import guiComponents.BarMeter_Panel;
 import ranker.Chi2Ranker;
+import ranker.Recollection;
 import scorer.CrossValidation;
 import scorer.Evaluate;
 import scorer.Metric;
@@ -172,23 +173,28 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 
         Priority_targets_menu.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         
-        String[] target_names = new String[df.numTargets];
+        String[] target_names = new String[df.numTargets+1];
+        
         int tmp = 0;
         for(int i = 0; i < df.numTargets; i++) {
         	target_names[i] = df.target_columns.get(i).getName();
         	tmp = tmp + df.target_columns.get(i).getUniqueValues().size();
         }
-        String[] target_classes  = new String[tmp];
+        target_names[target_names.length-1] = "None";
+        String[] target_classes  = new String[tmp+1];
+        
         int cnt = 0;
         for(int i = 0; i < df.numTargets; i++) {
         	for(Object j : df.target_columns.get(i).getUniqueValues()) {
         		target_classes[cnt] = (String) j;
         		cnt++;
         	}
+        	
         }
-
+        target_classes[target_classes.length-1] = "None";
+        
         Priority_targets_menu.setModel(new javax.swing.DefaultComboBoxModel<>(target_names));
-
+        
         priority_targets_label.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
         priority_targets_label.setForeground(txtColor);
         priority_targets_label.setText("Priority Targets");
@@ -303,15 +309,27 @@ public class Evaluation_Control_Panel extends Tertiary_View{
     }                                                       
 
     private void releaseRecollection_buttonActionPerformed(java.awt.event.ActionEvent evt) {    
-    	
-    	
-
 
 		NaiveBayes2 nb = new NaiveBayes2();
 		Evaluate ev = new Evaluate(df.target_columns);
-		ev.setMetric(Metric.MCC);
-		ArrayList<DataFrame> re = reco(df,10,20,(int)stepSize_spinner.getValue());
-		System.out.println("TRIAL: "+re.size());
+		
+		Metric selectedMetric = null;
+		if(priority_metric_menu.getSelectedItem().equals("Recall"))
+			selectedMetric = Metric.RECALL;
+		else if(priority_metric_menu.getSelectedItem().equals("Precision"))
+			selectedMetric = Metric.PRECISION;
+		else if(priority_metric_menu.getSelectedItem().equals("F1"))
+			selectedMetric = Metric.F1;
+		else if(priority_metric_menu.getSelectedItem().equals("MCC"))
+			selectedMetric = Metric.MCC;
+		
+		ev.setMetric(selectedMetric);
+		System.out.println(selectedMetric);
+		//ArrayList<DataFrame> re = reco(df,10,20,(int)stepSize_spinner.getValue());
+		Recollection ree = new Recollection(df);
+		ree.initiallize(chi2Ranker_checkbox.isSelected(),infoGainRanker_checkbox.isSelected(), gainRatioRanker_checkbox.isSelected(), giniRanker_checkbox.isSelected());
+		ArrayList<DataFrame> re = ree.Chi2Recollection(df, 10, 70, (int)stepSize_spinner.getValue());
+		//System.out.println("TRIAL: "+re.size());
 		for(DataFrame i : re) {
 			CrossValidation cv = new CrossValidation(i,5, nb);
 			//System.out.println(i.getNumColumns());
@@ -326,7 +344,8 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 	        //cv.printOverAllMatrix();
 	        //System.out.println();
 		}
-    }                
+    }             
+    /*
 	private static ArrayList<DataFrame> reco(DataFrame df,int initialNumColumns, int terminate,int stepSize){
 		ArrayList<DataFrame> recollection = new ArrayList<DataFrame>();
 		for(int i = initialNumColumns; i < terminate; i+=stepSize) {
@@ -334,4 +353,5 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 		}
 		return recollection;
 	}
+	*/
 }
