@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 
 import org.apache.ibatis.cache.decorators.LoggingCache;
 
@@ -28,6 +29,7 @@ import log.Loggers;
 import ranker.Chi2Ranker;
 import ranker.Recollection;
 import ranker.Recollection2;
+import recollectionControl.RecollectionControl;
 import recollectionControl.ReleaseRecollection;
 import scorer.CrossValidation;
 import scorer.Evaluate;
@@ -389,13 +391,62 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 	        //System.out.println();
 		}
 */
-		List<ArrayList<DataFrame>> memories = recollection.releaseRecollection(df, 10, 20, (int)stepSize_spinner.getValue());
-		ReleaseRecollection reco = new ReleaseRecollection(memories, nb, ev);
-		metrics_meter.replace("Precision",(int) Math.round(ev.getCurrent_precision()*100));
-		metrics_meter.replace("Recall",(int)Math.round(ev.getCurrent_recall()*100));
-		metrics_meter.replace("F1", (int) Math.round(ev.getCurrent_f1()*100));
-		metrics_meter.replace("MCC", (int) Math.round(ev.getCurrent_mcc()*100));
-		updateMeters();
+		List<ArrayList<DataFrame>> memories = recollection.generateRecollection(df, 10, 50, (int)stepSize_spinner.getValue());
+		//ReleaseRecollection reco = new ReleaseRecollection(memories, nb, ev); 
+		final ReleaseRecollection reco = new ReleaseRecollection(memories,nb,ev);
+		System.out.println("MEM: "+memories.size());
+		Thread t1 = new Thread(new Runnable() { 
+            @Override
+            public void run(){ 
+                try { 
+                    reco.produce(); 
+                } 
+                catch (InterruptedException e) { 
+                    e.printStackTrace(); 
+                } 
+            } 
+        }); 
+  
+        // Create consumer thread 
+        Thread t2 = new Thread(new Runnable() { 
+            @Override
+            public void run() { 
+                try { 
+                    reco.consume();
+                    System.out.println("EVALUATING..");
+                    SwingUtilities.invokeLater(new Runnable() {
+    		            public void run() {
+    		        		metrics_meter.replace("Precision",(int) Math.round(ev.getCurrent_precision()*100));
+    		        		metrics_meter.replace("Recall",(int)Math.round(ev.getCurrent_recall()*100));
+    		        		metrics_meter.replace("F1", (int) Math.round(ev.getCurrent_f1()*100));
+    		        		metrics_meter.replace("MCC", (int) Math.round(ev.getCurrent_mcc()*100));
+    		        		updateMeters();
+    		            }
+    		          });
+                } 
+                catch (InterruptedException e) { 
+                    e.printStackTrace(); 
+                } 
+            } 
+        }); 
+  
+        // Start both threads 
+        t1.start(); 
+        t2.start(); 
+        // t1 finishes before t2 
+        try {
+			t1.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+        try {
+			t2.join();
+		} catch (InterruptedException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} 
+		
 		/*
 		ArrayList<DataFrame> re = recollection.Chi2Recollection(df, 10, 70, (int)stepSize_spinner.getValue());
 		for(DataFrame i : re) {

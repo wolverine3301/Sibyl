@@ -27,27 +27,29 @@ public class ReleaseRecollection {
 	public void produce() throws InterruptedException { 
 			
 			int cnt = 0;
-			DataFrame k;
+			//DataFrame k;
 			for(ArrayList<DataFrame> i : memories) {
 				
 	        //while (true) { 
-	            synchronized (this){ 
-	                // producer thread waits while list 
-	                // is full 
-	                while (EVALUATION_QUEUE.size() == capacity) 
-	                    wait(); 
-	                
-	                
-	            	k = i.get(cnt);
-	            	// to insert the jobs in the list 
-	            	EVALUATION_QUEUE.add(new CrossValidation(k,5, model));
-	            	cnt++;
-	                // notifies the consumer thread that 
-	                // now it can start consuming 
-	                notify(); 
-	                // makes the working of program easier 
-	                // to  understand 
-	                //Thread.sleep(10); 
+				for(DataFrame k : i) {
+		            synchronized (this){ 
+		                // producer thread waits if list is full
+		                while (EVALUATION_QUEUE.size() == capacity) 
+		                    wait(); 
+		                
+		                
+		            	CrossValidation cv = new CrossValidation(k,5, model);
+		            	//cv.printOverAllScore();
+		            	System.out.println("SIZE: "+EVALUATION_QUEUE.size());
+		            	// to insert the crossvals in the list 
+		            	EVALUATION_QUEUE.add(cv);
+		            	cnt++;
+		                // notifies the consumer thread that 
+		                // now it can start consuming 
+		                notify(); 
+	
+		                //Thread.sleep(10); 
+	            	}
 	            } 
 	        }
 			finish=true;

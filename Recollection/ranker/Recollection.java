@@ -28,7 +28,13 @@ public class Recollection{
 		this.df = df;
 		Loggers.logHTML(Loggers.recollection_Logger,Level.FINE);
 	}
-	
+	/**
+	 * Determine what ranking metrics to include in the recollection
+	 * @param chi2On
+	 * @param gainOn
+	 * @param gainRatioOn
+	 * @param giniOn
+	 */
 	public void initiallize(boolean chi2On ,boolean gainOn, boolean gainRatioOn, boolean giniOn) {
 		Loggers.recollection_Logger.config("CHI: "+chi2On+" GAIN: "+gainOn+" GAIN RATIO: "+gainRatioOn+ " GINI: "+giniOn);
 		if(chi2On) {
@@ -49,7 +55,16 @@ public class Recollection{
 		}
 		Loggers.recollection_Logger.info("RECOLLECTION TOTAL: "+ total_recollections);
 	}
-	public List<ArrayList<DataFrame>> releaseRecollection(DataFrame df,int initialNumColumns, int terminate,int stepSize){
+	/**
+	 * A list of arrayList<Dataframe>. the max length of this list is 4, and varies by what was initialized
+	 * 
+	 * @param df
+	 * @param initialNumColumns -initial collumns
+	 * @param terminate - max num of columns
+	 * @param stepSize - how much to vary columns 
+	 * @return List<ArrayList<DataFrame>>
+	 */
+	public List<ArrayList<DataFrame>> generateRecollection(DataFrame df,int initialNumColumns, int terminate,int stepSize){
 		
 		List<ArrayList<DataFrame>> reco = new ArrayList<ArrayList<DataFrame>>(total_recollections);
 		int cnt =0;
