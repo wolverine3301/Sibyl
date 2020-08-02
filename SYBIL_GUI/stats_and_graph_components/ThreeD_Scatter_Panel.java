@@ -19,7 +19,7 @@ import com.orsoncharts.label.StandardXYZLabelGenerator;
 import com.orsoncharts.plot.XYZPlot;
 import com.orsoncharts.renderer.xyz.ScatterXYZRenderer;
 
-import Controllers.Data_Label_Controller;
+import Controllers.Data_Controller;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Read;
@@ -37,7 +37,7 @@ public class ThreeD_Scatter_Panel extends Tertiary_View {
 		private DataFrame df;
 		private DataFrame[] classes;
 		
-		public ThreeD_Scatter_Panel(int width, int height, Color main_bg_color, Color main_side_color,int side_panel_W,Data_Label_Controller controller) {
+		public ThreeD_Scatter_Panel(int width, int height, Color main_bg_color, Color main_side_color,int side_panel_W,Data_Controller controller) {
 			super(width, height, main_bg_color, main_side_color, side_panel_W);
 			//df = controller.getDF();
 

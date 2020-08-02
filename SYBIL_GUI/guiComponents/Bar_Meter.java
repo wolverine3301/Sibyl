@@ -4,11 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JPanel;
@@ -16,37 +12,37 @@ import javax.swing.JPanel;
 public class Bar_Meter extends JPanel{
 	private int progress = 0;
 	private Color barcolor;
-	private Color face;
+	private Color faceColor;
 	private int width;
 	private int height;
-	private String label;
-	private String label2 = null;
+	private String percent_label;
+	private String fraction_label = null;
 	public Bar_Meter(Color barColor, Color faceColor,int width,int height) {
 		this.barcolor = barColor;
-		this.face = faceColor;
+		this.faceColor = faceColor;
 		this.width = width;
 		this.height = height;
-		label = progress+"%";
+		percent_label = progress+"%";
 	}
 	public void updateProgress(int progress_val) {
 		this.progress = progress_val;
-		label = progress+"%";
+		percent_label = progress+"%";
 	}
 	public void updateProgress2(int a, int b) {
-		label2 = a +" / "+ b;
+		fraction_label = a +" / "+ b;
 	}
 	public void updateProgress3(int a,int progress_val) {
 		this.progress = progress_val;
-		label = "LEVEL "+ a;
+		percent_label = "LEVEL "+ a;
 	}
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D)g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		RoundRectangle2D.Float barface = new RoundRectangle2D.Float(0,0,width+4,height+8, 30, 30);
-		RoundRectangle2D.Float bar = new RoundRectangle2D.Float(2,4,progress*(width/100),height, 30, 30);
-		RoundRectangle2D.Float bar_s = new RoundRectangle2D.Float(2,4,progress*(width/100)+4,height+3, 30, 30);
-		g2.setColor(this.face);
+		RoundRectangle2D.Float barface = new RoundRectangle2D.Float(0,0,width+2,height+8, 30, 30);
+		RoundRectangle2D.Float bar = new RoundRectangle2D.Float(2,4,progress*((float)width/100),height-((float)height/3), 30, 30);
+		RoundRectangle2D.Float bar_s = new RoundRectangle2D.Float(2,4,progress*((float)width/100)+4,height-((float)height/3), 30, 30);
+		g2.setColor(this.faceColor);
 		g2.draw(barface);
 		g2.fill(barface);
 		g2.setColor(this.barcolor.darker());
@@ -60,19 +56,19 @@ public class Bar_Meter extends JPanel{
 		g2.setColor(this.barcolor.darker().darker().darker());
 		//g2.rotate(Math.toRadians(90));
 		g.setFont(new Font("Courier New", 0, height/3));
-		if(label2 == null)
-			g2.drawString(label, (int)(((double)width/2)-(double)width/10), height-(int)((double)height/3));
+		if(fraction_label == null)
+			g2.drawString(percent_label, (int)(((double)width/2)-(double)width/10), height-(int)((double)height/2));
 		else {
-			g2.drawString(label, (int)(((double)width/2)-(double)width/10), height-(int)((double)height/6));
-			g2.drawString(label2, (int)(((double)width/2)-(double)width/6), height-(int)((double)height/2));
+			g2.drawString(percent_label, (int)(((double)width/2)-(double)width/10), height-(int)((double)height/6));
+			g2.drawString(fraction_label, (int)(((double)width/2)-(double)width/6), height-(int)((double)height/2));
 		}
 
 	}
 	public void setLabel1(int a) {
-		label = "LEVEL "+a;
+		percent_label = "LEVEL "+a;
 	}
 	public void setLabel2(int a, int b) {
-		label2 = a +" / "+ b;
+		fraction_label = a +" / "+ b;
 	}
 	
 

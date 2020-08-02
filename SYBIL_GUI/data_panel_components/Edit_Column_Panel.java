@@ -7,7 +7,7 @@ import java.awt.event.ItemListener;
 
 import javax.swing.JComboBox;
 
-import Controllers.Data_Label_Controller;
+import Controllers.Data_Controller;
 
 /**
 *
@@ -17,11 +17,11 @@ public class Edit_Column_Panel extends javax.swing.JPanel{
 	private String name;
 	private char type;
 	private char newType;
-	Data_Label_Controller ctrl;
+	Data_Controller ctrl;
    /**
     * Creates new form Edit_Column_Panel
     */
-   public Edit_Column_Panel(String name, char type, Data_Label_Controller ctrl) {
+   public Edit_Column_Panel(String name, char type, Data_Controller ctrl) {
 	   this.name = name;
 	   this.type = type;
 	   this.ctrl = ctrl;

@@ -40,15 +40,19 @@ public class Evaluate {
 	private double best_metric = 0; //the current best achieved metric
 	private Model model;
 	private CrossValidation CV;
-	
+
+	private double current_precision=0;
+	private double current_recall=0;
+	private double current_f1=0;
+	private double current_mcc=0;
 	public Evaluate(ArrayList<Column> targets) {
 		this.singular_metric = Metric.OVERALL;
 		this.priority_targets = new ArrayList<Column>();
 		this.priority_classes = new HashMap<String,Object>();
 		//defualt with every class in every target having equal priority
-		for(Column i : targets) {
-			priority_classes.put(i.getName(),"Overall");
-		}
+		//for(Column i : targets) {
+		//	priority_classes.put(i.getName(),i.mode);
+		//}
 	}
 	/**
 	 * Used to set a specific target priority level. If a one target is more important to meet
@@ -82,29 +86,31 @@ public class Evaluate {
 	}
 	public void evaluation(CrossValidation cv) {
 		double modelMetric = 0;
+
 		//if all targets and classes are equally important
 		if(priority_targets.isEmpty() && priority_classes.isEmpty()) {
+			for(String i : cv.overall_recall.keySet()) {
+				this.current_recall = current_recall + cv.overall_recall.get(i);
+				this.current_precision = current_precision + cv.overall_precision.get(i);
+				this.current_f1 = current_f1 + cv.overall_f1.get(i);
+				this.current_mcc = current_mcc + cv.overall_mcc.get(i);
+			}
+			this.current_recall = current_recall / cv.overall_recall.keySet().size();
+			this.current_precision = current_precision / cv.overall_precision.keySet().size();
+			this.current_f1 = current_f1 / cv.overall_f1.keySet().size();
+			this.current_mcc = current_mcc / cv.overall_mcc.keySet().size();
 			
 			if(singular_metric == Metric.RECALL) {
-				for(String i : cv.overall_recall.keySet()) {
-					modelMetric = modelMetric + cv.overall_recall.get(i);
-				}
-				modelMetric = modelMetric / cv.overall_recall.keySet().size();
+				modelMetric = current_recall;
 			}else if(singular_metric == Metric.PRECISION) {
-				for(String i : cv.overall_precision.keySet()) {
-					modelMetric = modelMetric + cv.overall_precision.get(i);
-				}
-				modelMetric = modelMetric / cv.overall_precision.keySet().size();
+				modelMetric = current_precision;
+				
 			}else if(singular_metric == Metric.F1) {
-				for(String i : cv.overall_f1.keySet()) {
-					modelMetric = modelMetric + cv.overall_f1.get(i);
-				}
-				modelMetric = modelMetric / cv.overall_f1.keySet().size();
+				modelMetric = current_f1;
+				
 			}else if(singular_metric == Metric.MCC) {
-				for(String i : cv.overall_mcc.keySet()) {
-					modelMetric = modelMetric + cv.overall_mcc.get(i);
-				}
-				modelMetric = modelMetric / cv.overall_mcc.keySet().size();
+				modelMetric = current_mcc;
+				
 			}else {
 				for(String i : cv.overall_recall.keySet()) {
 					modelMetric = modelMetric + cv.overall_recall.get(i)+ cv.overall_precision.get(i)+cv.overall_f1.get(i);
@@ -113,6 +119,7 @@ public class Evaluate {
 			
 		}else if(!priority_classes.isEmpty()) {
 			for(String i : priority_classes.keySet()) {
+
 				if(singular_metric == Metric.RECALL) {
 					modelMetric = modelMetric + cv.total_recall.get(i).get(priority_classes.get(i));
 				}else if(singular_metric == Metric.PRECISION) {
@@ -135,5 +142,28 @@ public class Evaluate {
 	public void getBest() {
 		System.out.println(best_metric);
 	}
-	
+	public double getCurrent_precision() {
+		return current_precision;
+	}
+	public void setCurrent_precision(double current_precision) {
+		this.current_precision = current_precision;
+	}
+	public double getCurrent_recall() {
+		return current_recall;
+	}
+	public void setCurrent_recall(double current_recall) {
+		this.current_recall = current_recall;
+	}
+	public double getCurrent_f1() {
+		return current_f1;
+	}
+	public void setCurrent_f1(double current_f1) {
+		this.current_f1 = current_f1;
+	}
+	public double getCurrent_mcc() {
+		return current_mcc;
+	}
+	public void setCurrent_mcc(double current_mcc) {
+		this.current_mcc = current_mcc;
+	}
 }

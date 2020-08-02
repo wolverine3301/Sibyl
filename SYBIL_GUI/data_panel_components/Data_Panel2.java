@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
-import Controllers.Data_Label_Controller;
+import Controllers.Data_Controller;
 import logan.sybilGUI.GUI_Util;
 import logan.sybilGUI.Secondary_View;
 
@@ -122,7 +122,7 @@ public class Data_Panel2 extends Secondary_View{
        
        
    }// </editor-fold>                        
-   public Data_Label_Controller getDataCtrl() {
+   public Data_Controller getDataCtrl() {
 	   return data_label_panel.getDataCtrl();
    }
 

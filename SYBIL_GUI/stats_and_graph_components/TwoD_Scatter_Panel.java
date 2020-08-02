@@ -20,7 +20,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
-import Controllers.Data_Label_Controller;
+import Controllers.Data_Controller;
 import dataframe.Column;
 import dataframe.DataFrame;
 import logan.sybilGUI.Tertiary_View;
@@ -35,7 +35,7 @@ import regressionFunctions.Regression;
 public class TwoD_Scatter_Panel extends Tertiary_View implements PropertyChangeListener{
 
 
-	private Data_Label_Controller controller;
+	private Data_Controller controller;
 	/** The data frame to base the scatter plot upon. */
     private DataFrame df;
     
@@ -62,7 +62,7 @@ public class TwoD_Scatter_Panel extends Tertiary_View implements PropertyChangeL
     /** Notifies the plot that a change has been made. */
     private PropertyChangeSupport notifyPlot;
     
-	public TwoD_Scatter_Panel(int width, int height, Color main_bg_color, Color main_side_color, int side_panel_W,Data_Label_Controller controller) {
+	public TwoD_Scatter_Panel(int width, int height, Color main_bg_color, Color main_side_color, int side_panel_W,Data_Controller controller) {
 		super(width, height, main_bg_color, main_side_color, side_panel_W);
 		this.controller = controller;
 		this.df = controller.getDF();

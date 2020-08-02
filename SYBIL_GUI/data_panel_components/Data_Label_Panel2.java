@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileSystemView;
 
-import Controllers.Data_Label_Controller;
+import Controllers.Data_Controller;
 import logan.sybilGUI.GUI_Util;
 import logan.sybilGUI.Tertiary_View;
 /**
@@ -32,7 +32,7 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	@Override
 	protected void initComponents() {
 		   buttons = new HashMap<String,JButton>();
-		   this.controller = new Data_Label_Controller();
+		   this.controller = new Data_Controller();
 
 	       bottom_panel = new javax.swing.JPanel();
 	       numeric_panel = new javax.swing.JPanel();
@@ -384,7 +384,7 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	       if(t == 'M')
 	    	   btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/icons8_m_20px.png",20,20)); // NOI18N
 	   }
-	public Data_Label_Controller getDataCtrl() {
+	public Data_Controller getDataCtrl() {
 		return controller;
 	}
 	protected void scrollSide() {
@@ -438,6 +438,6 @@ public class Data_Label_Panel2 extends Tertiary_View{
 	   private javax.swing.JButton file_sel_btn;
 	   // End of variables declaration    
 	   private HashMap<String,JButton> buttons;
-	   private Data_Label_Controller controller;
+	   private Data_Controller controller;
 
 }
