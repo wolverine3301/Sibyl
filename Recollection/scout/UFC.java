@@ -13,7 +13,10 @@ import knn.KNN;
 import log.Loggers;
 import machinations.Constant;
 import machinations.Model;
+import ranker.Chi2Ranker;
 import scorer.CrossValidation;
+import scorer.Evaluate;
+import scorer.Metric;
 
 public class UFC {
 	//behold, my will creates your body and your sword my destiny
@@ -24,14 +27,13 @@ public class UFC {
 	
 	public static void main(String[] args) {
 		Loggers.logHTML(Loggers.df_Logger, Level.FINE);
-		Loggers.logHTML(Loggers.cm_Logger, Level.FINEST);
-		Loggers.logHTML(Loggers.cv_Logger,Level.ALL);
-		Loggers.logHTML(Loggers.nb_Logger,Level.ALL);
-		Loggers.logHTML(Loggers.score_Logger,Level.ALL);
+		Loggers.logHTML(Loggers.cm_Logger, Level.FINE);
+		Loggers.logHTML(Loggers.cv_Logger,Level.FINE);
+		Loggers.logHTML(Loggers.nb_Logger,Level.FINE);
+		Loggers.logHTML(Loggers.score_Logger,Level.FINE);
 		String file = "testfiles/preprocessed_data.csv";
         df = DataFrame.read_csv(file);
         String[] arg = {"no_of_rounds", "!=","4"};
-        System.out.println(df.getNumColumns());
         df = DataFrame_Copy.acquire(df, arg);
         df.setColumnType("Winner", 'T');//set target column
         df.setColumnType("no_of_rounds", 'C');
@@ -41,7 +43,6 @@ public class UFC {
         //df.convertNANS_mean(); // conevert any NAN's to the mean of column 
         //df = Standardize.standardize_df(df); //Standardize the DF into z scores
         //df = df.shuffle(df);
-        System.out.println(df.getNumColumns());
 		NaiveBayes2 nb = new NaiveBayes2();
 		Model model = new KNN();
 		Model con = new Constant();
@@ -50,15 +51,31 @@ public class UFC {
         //CR = new CategoryRanker(df, 0);
 		//ArrayList<DataFrame> ev = generateRecollection(10,15);
 		//for(DataFrame i : ev) {
-			 CrossValidation cv = new CrossValidation(df,5, model);
-
+		//CrossValidation cv = new CrossValidation(df,5, model);
+		Evaluate ev = new Evaluate(df.target_columns);
+		ev.setMetric(Metric.MCC);
+		ArrayList<DataFrame> re = reco(df,10,14,1);
+		for(DataFrame i : re) {
+			CrossValidation cv = new CrossValidation(df,10, nb);
+			System.out.println(i.getNumColumns());
+			ev.evaluation(cv);
+			ev.getBest();
+	        cv.printOverAllScore();
+	        //cv.printOverAllMatrix();
+	        //System.out.println();
+		}
 		//}
        
 
-        cv.printOverAllScore();
-        cv.printOverAllMatrix();
-        System.out.println();
 
+
+	}
+	private static ArrayList<DataFrame> reco(DataFrame df,int initialNumColumns, int terminate,int stepSize){
+		ArrayList<DataFrame> recollection = new ArrayList<DataFrame>();
+		for(int i = initialNumColumns; i < terminate; i+=stepSize) {
+			recollection.add(Chi2Ranker.chi2Rank(df, i));
+		}
+		return recollection;
 	}
 	/**
 	 * evocation

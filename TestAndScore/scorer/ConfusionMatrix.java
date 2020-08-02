@@ -14,6 +14,7 @@ public class ConfusionMatrix {
 	public HashMap<String, HashMap<Object, Integer>> falsePositive;
 	public HashMap<String, HashMap<Object, Integer>> trueNegative;
 	public HashMap<String, HashMap<Object, Integer>> falseNegative;
+	
 	private DataFrame df; //dataframe of correct answers
 	private HashMap<String, ArrayList<Object>> predictions;
 	public HashMap<String,HashMap<Object,HashMap<Object,Integer>>> matrix;

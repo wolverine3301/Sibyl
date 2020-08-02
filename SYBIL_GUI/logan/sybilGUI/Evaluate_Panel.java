@@ -27,6 +27,7 @@ public class Evaluate_Panel extends Secondary_View{
         calibration_plt_btn = new javax.swing.JButton();
         
         SCORE_VIEW = new ConfusionMatrix_Panel(W-side_panel.getPreferredSize().width,H,main_bg_color,main_side_color,100);
+        Evaluation_control = new Evaluation_Control_Panel(W-side_panel.getPreferredSize().width,H,main_bg_color,main_side_color,200);
         
         int btn_size = 50;
         testScore_btn.setBackground(main_side_color);
@@ -78,7 +79,10 @@ public class Evaluate_Panel extends Secondary_View{
         add(center_panel,java.awt.BorderLayout.CENTER);
 	}
 	private void testAction(ActionEvent e) {
-		// TODO Auto-generated method stub
+		center_panel.removeAll();
+		center_panel.add(Evaluation_control);
+		center_panel.repaint();
+		center_panel.revalidate();
 		
 	}
 	private void predict_btnAction(ActionEvent e) {
@@ -101,5 +105,5 @@ public class Evaluate_Panel extends Secondary_View{
     private javax.swing.JButton testScore_btn;
     // End of variables declaration 
     private javax.swing.JPanel SCORE_VIEW;
-
+    private javax.swing.JPanel Evaluation_control;
 }

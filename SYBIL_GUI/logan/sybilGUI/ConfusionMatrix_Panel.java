@@ -79,7 +79,6 @@ public class ConfusionMatrix_Panel extends Tertiary_View{
         //cv.printScores();
         cv.avgScores();
         cv.printOverAllScore();
-        cv.sumConfusionMatrix();
         cv.confusion_matrix.print_matrix();
         CM = cv.confusion_matrix;
         

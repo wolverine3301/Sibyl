@@ -26,6 +26,17 @@ public class CrossValidation {
 	public DataFrame testDF_variables;
 	ArrayList<TestTrainFit> trials;
 	
+	/**
+	 * overall metrics for each target variable
+	 */
+	protected HashMap<String,Double> overall_accuaccy;
+	protected HashMap<String,Double> overall_recall;
+	protected HashMap<String,Double> overall_precision;
+	protected HashMap<String,Double> overall_f1;
+	protected HashMap<String,Double> overall_mcc;
+	/**
+	 * detailed metrics for individual target variables classes
+	 */
 	protected HashMap<String, HashMap<Object, Double>> total_accuracy;
 	protected HashMap<String, HashMap<Object, Double>> total_recall;
 	protected HashMap<String, HashMap<Object, Double>> total_precision;
@@ -51,8 +62,9 @@ public class CrossValidation {
 		
 		this.N = N;
 		this.df = df.shuffle(df);
-		scores = new ArrayList<Score>();
+		this.scores = new ArrayList<Score>();
 		Score score;
+		
 		setTrials();
 		HashMap<String,Set<Object>> keyVals = new HashMap<String,Set<Object>>();
 		for(Column i : this.df.target_columns) {
@@ -117,6 +129,12 @@ public class CrossValidation {
 	private void sumConfusionMatrix() {
 		Loggers.cv_Logger.log(Level.FINE,"Summing ConfusionMatrix");
 		
+		this.overall_accuaccy = new HashMap<String,Double>();
+		this.overall_recall = new HashMap<String,Double>();
+		this.overall_precision = new HashMap<String,Double>();
+		this.overall_f1 = new HashMap<String,Double>();
+		this.overall_mcc = new HashMap<String,Double>();
+		
 		HashMap<String, HashMap<Object, Integer>> tp = new HashMap<String, HashMap<Object, Integer>>();
 		HashMap<String, HashMap<Object, Integer>> fp = new HashMap<String, HashMap<Object, Integer>>();
 		HashMap<String, HashMap<Object, Integer>> tn = new HashMap<String, HashMap<Object, Integer>>();
@@ -139,6 +157,10 @@ public class CrossValidation {
 				matrix.get(i).put(j, new HashMap<Object,Integer>());
 				
 			}
+			overall_recall.put(i, 0.0);
+			overall_precision.put(i, 0.0);
+			overall_f1.put(i, 0.0);
+			overall_mcc.put(i, 0.0);
 			tp.put(i, tmp0);
 			fp.put(i, tmp1);
 			tn.put(i, tmp2);
@@ -147,6 +169,7 @@ public class CrossValidation {
 		Loggers.cv_Logger.log(Level.FINE,"INITIALIZATION OF OVER MATIX COMPLETE");
 
 		Loggers.cv_Logger.log(Level.FINE,"SUMMING SCORES");
+		
 		//sum
 		for(Score i : scores) {
 			ConfusionMatrix cm = i.getConfusionMatrix();
@@ -156,10 +179,11 @@ public class CrossValidation {
 					fp.get(j).replace(z, fp.get(j).get(z) + cm.falsePositive.get(j).get(z));
 					tn.get(j).replace(z, tn.get(j).get(z) + cm.trueNegative.get(j).get(z));
 					fn.get(j).replace(z, fn.get(j).get(z) + cm.falseNegative.get(j).get(z));
-					
 				}
 			}
 		}
+
+		
 		Loggers.cv_Logger.log(Level.FINE, "CONFUSION MATRIX SYNC COMPLETE");
 		Loggers.cv_Logger.log(Level.CONFIG,"TRUE POSITIVES:"+"\n"+tp
 				+"\n FALSE POSITIVES:"+"\n"+fp
@@ -215,7 +239,7 @@ public class CrossValidation {
 		HashMap<String, HashMap<Object, Double>> precision = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> F1 = new HashMap<String, HashMap<Object, Double>>();
 		HashMap<String, HashMap<Object, Double>> mcc = new HashMap<String, HashMap<Object, Double>>();
-	
+		
 		//initiallize
 		HashMap<Object, Double> re;
 		HashMap<Object, Double> pr;
@@ -253,6 +277,27 @@ public class CrossValidation {
 		this.total_precision = precision;
 		this.total_f1 = F1;
 		this.total_mcc = mcc;
+		
+		double ree = 0;
+		double pe = 0;
+		double f = 0;
+		double m = 0;
+		for(String j : this.total_recall.keySet()) {
+			ree = 0;
+			pe = 0;
+			f = 0;
+			m = 0;
+			for(Object i : this.total_recall.get(j).keySet()) {
+				ree = ree + this.total_recall.get(j).get(i);
+				pe = pe + this.total_precision.get(j).get(i);
+				f = f + this.total_f1.get(j).get(i);
+				m = m + this.total_mcc.get(j).get(i);
+			}
+			overall_recall.replace(j, ree/keyValues.get(j).size());
+			overall_precision.replace(j, pe/keyValues.get(j).size());
+			overall_f1.replace(j,f/keyValues.get(j).size());
+			overall_mcc.replace(j, m/keyValues.get(j).size());
+		}
 	}
 	/**
 	 * Avg scores from all trials
@@ -388,6 +433,30 @@ public class CrossValidation {
 	public void setTotal_falseNegative(HashMap<String, HashMap<Object, Integer>> total_falseNegative) {
 		this.total_falseNegative = total_falseNegative;
 	}
+	public HashMap<String, Double> getOverall_recall() {
+		return overall_recall;
+	}
+	public void setOverall_recall(HashMap<String, Double> overall_recall) {
+		this.overall_recall = overall_recall;
+	}
+	public HashMap<String, Double> getOverall_precision() {
+		return overall_precision;
+	}
+	public void setOverall_precision(HashMap<String, Double> overall_precision) {
+		this.overall_precision = overall_precision;
+	}
+	public HashMap<String, Double> getOverall_f1() {
+		return overall_f1;
+	}
+	public void setOverall_f1(HashMap<String, Double> overall_f1) {
+		this.overall_f1 = overall_f1;
+	}
+	public HashMap<String, Double> getOverall_mcc() {
+		return overall_mcc;
+	}
+	public void setOverall_mcc(HashMap<String, Double> overall_mcc) {
+		this.overall_mcc = overall_mcc;
+	}
 	public int[][] getOverallMatrix(String target){
 		int[][] m = new int[matrix.get(target).keySet().size()][matrix.get(target).keySet().size()];
 		int cnt1 = 0;
@@ -418,10 +487,20 @@ public class CrossValidation {
 	}
 	public void printOverAllScore() {
 		System.out.println("RECALL:");
+		System.out.println(this.overall_recall);
+		System.out.println("PRECISION:");
+		System.out.println(this.overall_precision);
+		System.out.println("F1: ");
+		System.out.println(this.overall_f1);
+		System.out.println("MCC:");
+		System.out.println(this.overall_mcc);
+	}
+	public void printDetailedScore() {
+		System.out.println("RECALL:");
 		System.out.println(this.total_recall);
 		System.out.println("PRECISION:");
 		System.out.println(this.total_precision);
-		System.out.println("F!: ");
+		System.out.println("F1: ");
 		System.out.println(this.total_f1);
 		System.out.println("MCC:");
 		System.out.println(this.total_mcc);

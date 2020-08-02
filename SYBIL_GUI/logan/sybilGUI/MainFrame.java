@@ -8,7 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.plaf.basic.BasicButtonUI;
 
-import Controllers.Data_Label_Controller;
+import Controllers.Data_Controller;
+import data_panel_components.Data_Panel2;
+import stats_and_graph_components.Stats_Panel;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -34,10 +36,10 @@ public class MainFrame extends javax.swing.JFrame {
 	private java.awt.Color main_side_color = new java.awt.Color(22,22,22);
 	private java.awt.Color second_side_color = new java.awt.Color(24, 20, 44);
 	private java.awt.Color text_color = new java.awt.Color(153, 153, 153);
-	private int window_width = 1400;
-	private int window_height = 1000;
+	private int window_width = 1200;
+	private int window_height = 800;
 	
-	private Data_Label_Controller ctrl;
+	private Data_Controller data_control;
     /**
      * Creates new form MainFrame
      */
@@ -78,8 +80,8 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
     	second  = new dummy_secondPanel(window_width-100,window_height-200,main_bg_color,second_side_color);
     	DATA_VIEW = new Data_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color);
-    	this.ctrl = DATA_VIEW.getDataCtrl();
-    	STATS_VIEW = new Stats_Panel(window_width-100,window_height-200,main_bg_color,second_side_color,ctrl);
+    	this.data_control = DATA_VIEW.getDataCtrl();
+    	STATS_VIEW = new Stats_Panel(window_width-100,window_height-200,main_bg_color,second_side_color,data_control);
     	//STATS_VIEW = second;
     	EVALUATE_VIEW = new Evaluate_Panel(window_width-100,window_height-200,main_bg_color,second_side_color);
     	
@@ -252,6 +254,7 @@ public class MainFrame extends javax.swing.JFrame {
         data_btn.setBackground(main_side_color);
         data_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/oct.png",50,50)); // NOI18N
         data_btn.setPreferredSize(new java.awt.Dimension(50, 50));
+        data_btn.setToolTipText("load in and format data");
         data_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 data_btn_ActionPerformed(evt);
@@ -262,6 +265,7 @@ public class MainFrame extends javax.swing.JFrame {
         stats_btn.setBackground(main_side_color);
         stats_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_combo_chart_50px_1.png",50,50)); // NOI18N
         stats_btn.setPreferredSize(new java.awt.Dimension(50, 50));
+        stats_btn.setToolTipText("stats and graphs and stuff");
         stats_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 stats_btn_ActionPerformed(evt);
@@ -272,6 +276,7 @@ public class MainFrame extends javax.swing.JFrame {
         preProcess_btn.setBackground(main_side_color);
         preProcess_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_filter_50px_2.png",50,50)); // NOI18N
         preProcess_btn.setPreferredSize(new java.awt.Dimension(50, 50));
+        preProcess_btn.setToolTipText("Generate Recollection");
         preProcess_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	preProcess_ActionPerformed(evt);
@@ -282,6 +287,7 @@ public class MainFrame extends javax.swing.JFrame {
         AI_btn.setBackground(main_side_color);
         AI_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_artificial_intelligence_50px.png",50,50)); // NOI18N
         AI_btn.setPreferredSize(new java.awt.Dimension(50, 50));
+        AI_btn.setToolTipText("Enhance Armorment");
         AI_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 model_ActionPerformed(evt);
@@ -292,6 +298,7 @@ public class MainFrame extends javax.swing.JFrame {
         score_btn.setBackground(main_side_color);
         score_btn.setIcon(GUI_Util.getIcon("SYBIL_GUI/home_icons/icons8_define_location_50px.png",50,50)); // NOI18N
         score_btn.setPreferredSize(new java.awt.Dimension(50, 50));
+        score_btn.setToolTipText("Perfect weapon control");
         score_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	score_ActionPerformed(evt);
@@ -321,6 +328,7 @@ public class MainFrame extends javax.swing.JFrame {
 		center_panel.add(DATA_VIEW);
 		center_panel.repaint();
 		center_panel.revalidate();
+		this.data_control = DATA_VIEW.getDataCtrl();
     }                                        
 
     private void stats_btn_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -328,6 +336,7 @@ public class MainFrame extends javax.swing.JFrame {
 		center_panel.add(STATS_VIEW);
 		center_panel.repaint();
 		center_panel.revalidate();
+		this.data_control = DATA_VIEW.getDataCtrl();
     }                                        
 
     private void preProcess_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -335,6 +344,7 @@ public class MainFrame extends javax.swing.JFrame {
 		center_panel.add(second);
 		center_panel.repaint();
 		center_panel.revalidate();
+		this.data_control = DATA_VIEW.getDataCtrl();
     }                                        
 
     private void model_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -342,6 +352,7 @@ public class MainFrame extends javax.swing.JFrame {
 		center_panel.add(second);
 		center_panel.repaint();
 		center_panel.revalidate();
+		this.data_control = DATA_VIEW.getDataCtrl();
     }                                        
 
     private void score_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -349,6 +360,7 @@ public class MainFrame extends javax.swing.JFrame {
 		center_panel.add(EVALUATE_VIEW);
 		center_panel.repaint();
 		center_panel.revalidate();
+		this.data_control = DATA_VIEW.getDataCtrl();
     }         
     private void home_btn_ActionPerformed(java.awt.event.ActionEvent evt)  {
 			center_panel.removeAll();

@@ -46,7 +46,19 @@ public class Chi2Independents {
 		setTargets();
 		chi2IndependentsAll();
 	}
-	public ArrayList<Column> ranked(int targetIndex){
+	public HashMap<String, ArrayList<Column>> ranked(){
+		HashMap<String, HashMap<String, Double>> chi = chi2IndependentsAll();
+		HashMap<String,ArrayList<Column>> rank = new HashMap<String,ArrayList<Column>>();
+		for(String i : chi.keySet()) {
+			ArrayList<Column> list = new ArrayList<Column>();
+			for(String j : chi.get(i).keySet()) {
+				list.add(df.getColumn_byName(j));
+			}
+			rank.put(i, list);
+		}
+		return rank;
+	}
+	public ArrayList<Column> ranked(Column targetColumn){
 		HashMap<String, HashMap<String, Double>> chi = chi2IndependentsAll();
 		ArrayList<Column> rank = new ArrayList<Column>();
 		for(String i : chi.keySet()) {
