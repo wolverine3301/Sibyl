@@ -4,12 +4,22 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.StreamHandler;
+
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
 import bayes.NaiveBayes2;
 
 import java.io.IOException;
+import java.io.PrintStream;
+
 import dataframe.DataFrame;
+import logan.sybilGUI.TextAreaOutputStream;
 import logging.HTMLFormatter;
+import logging.StreamFormatter;
+import logging.TextAreaHandler;
 import ranker.Recollection;
 import scorer.ConfusionMatrix;
 import scorer.CrossValidation;
@@ -17,8 +27,12 @@ import scorer.Score;
 
 public class Loggers {
 	public static FileHandler logFile;
-    //public static ConsoleHandler ch = new ConsoleHandler();
+	public static TextAreaHandler textarea;
+	public static StreamHandler stream;
+    public static ConsoleHandler ch = new ConsoleHandler();
+    
 	public static HTMLFormatter formatterHTML = new HTMLFormatter();
+	public static SimpleFormatter simple = new SimpleFormatter();
 	
     public static Logger df_Logger = Logger.getLogger(DataFrame.class.getName());
     public static Logger score_Logger = Logger.getLogger(Score.class.getName());
@@ -47,5 +61,30 @@ public class Loggers {
     	logger.setLevel(lvl);
     	logger.addHandler(logFile);
     }
-
+    public static void logToTextArea(Logger logger,Level lvl,JTextArea area) {
+    	logger.setLevel(lvl);
+    	textarea = new TextAreaHandler();
+    	textarea.setTextArea(area);
+    	textarea.setLevel(lvl);
+    	logger.addHandler(textarea);
+    	
+    }
+    public static void logToTextPane(Logger logger,Level lvl,JTextPane area) {
+    	
+    	logger.setLevel(lvl);
+    	area.setText(t);
+    	textarea = new TextAreaHandler();
+    	textarea.setTextArea(area);
+    	textarea.setLevel(lvl);
+    	logger.addHandler(textarea);
+    	
+    }
+    public static void logToStream(Logger logger,Level lvl,PrintStream ps ) {
+    	logger.setLevel(lvl);
+    	StreamFormatter form = new StreamFormatter();
+    	stream= new StreamHandler(ps,form);
+    	stream.setLevel(lvl);
+    	logger.addHandler(stream);
+    	
+    }
 }

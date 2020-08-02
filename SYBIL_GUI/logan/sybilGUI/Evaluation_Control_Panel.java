@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -13,14 +15,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+
+import org.apache.ibatis.cache.decorators.LoggingCache;
 
 import bayes.NaiveBayes2;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
 import guiComponents.BarMeter_Panel;
+import log.Loggers;
 import ranker.Chi2Ranker;
 import ranker.Recollection;
+import ranker.Recollection2;
+import recollectionControl.ReleaseRecollection;
 import scorer.CrossValidation;
 import scorer.Evaluate;
 import scorer.Metric;
@@ -60,6 +68,7 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 
 	}
     private void initConsol() {
+    	
     	middle_panel = new JPanel();
     	middle_panel.setBackground(main_bg_color);
     	middle_panel.setMaximumSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
@@ -67,8 +76,27 @@ public class Evaluation_Control_Panel extends Tertiary_View{
         ta.setPreferredSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
         ta.setBackground(Color.black);
         ta.setForeground(Color.gray);
-        TextAreaOutputStream taos = new TextAreaOutputStream( ta, 60 );
+        TextAreaOutputStream taos = new TextAreaOutputStream( ta, 30 );
         PrintStream ps = new PrintStream( taos );
+        Loggers.logToStream(Loggers.nb_Logger, Level.FINE, ps);
+        //System.setOut( ps );
+        //System.setErr( ps );
+        middle_panel.add( new JScrollPane( ta ));
+       // middlePanel2();
+    }
+    private void initConsol2() {
+    	
+    	middle_panel = new JPanel();
+    	middle_panel.setBackground(main_bg_color);
+    	middle_panel.setMaximumSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
+        //JTextPane ta = new JTextPane();
+    	JTextArea ta = new JTextArea();
+        ta.setPreferredSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
+        ta.setBackground(Color.black);
+        ta.setForeground(Color.gray);
+        TextAreaOutputStream taos = new TextAreaOutputStream( ta, 30 );
+        PrintStream ps = new PrintStream( taos );
+        Loggers.logToStream(Loggers.nb_Logger, Level.FINE, ps);
         //System.setOut( ps );
         //System.setErr( ps );
         middle_panel.add( new JScrollPane( ta ));
@@ -212,7 +240,7 @@ public class Evaluation_Control_Panel extends Tertiary_View{
         releaseRecollection_button.setBackground(main_side_color);
         releaseRecollection_button.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
         releaseRecollection_button.setForeground(txtColor);
-        releaseRecollection_button.setText("Release Recolection");
+        releaseRecollection_button.setText("Release Recollection");
         
         releaseRecollection_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -324,12 +352,28 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 			selectedMetric = Metric.MCC;
 		
 		ev.setMetric(selectedMetric);
-		System.out.println(selectedMetric);
-		//ArrayList<DataFrame> re = reco(df,10,20,(int)stepSize_spinner.getValue());
-		Recollection ree = new Recollection(df);
+		
+		Recollection recollection = new Recollection(df);
+		recollection.initiallize(chi2Ranker_checkbox.isSelected(),infoGainRanker_checkbox.isSelected(), gainRatioRanker_checkbox.isSelected(), giniRanker_checkbox.isSelected());
+		/*
+		List<ArrayList<DataFrame>> recollection = ree.releaseRecollection(df, 10, 70, (int)stepSize_spinner.getValue());
+		for(ArrayList<DataFrame> i : recollection) {
+			for(DataFrame j : i) {
+				CrossValidation cv = new CrossValidation(j,5, nb);
+				//System.out.println(i.getNumColumns());
+				ev.evaluation(cv);
+				//ev.getBest();
+				metrics_meter.replace("Precision",(int) Math.round(ev.getCurrent_precision()*100));
+				metrics_meter.replace("Recall",(int)Math.round(ev.getCurrent_recall()*100));
+				metrics_meter.replace("F1", (int) Math.round(ev.getCurrent_f1()*100));
+				metrics_meter.replace("MCC", (int) Math.round(ev.getCurrent_mcc()*100));
+			}
+		}
+		
+		
+		Recollection2 ree = new Recollection2(df);
 		ree.initiallize(chi2Ranker_checkbox.isSelected(),infoGainRanker_checkbox.isSelected(), gainRatioRanker_checkbox.isSelected(), giniRanker_checkbox.isSelected());
-		ArrayList<DataFrame> re = ree.Chi2Recollection(df, 10, 70, (int)stepSize_spinner.getValue());
-		//System.out.println("TRIAL: "+re.size());
+		DataFrame[] re = ree.Chi2Recollection(df, 10, 70, (int)stepSize_spinner.getValue());
 		for(DataFrame i : re) {
 			CrossValidation cv = new CrossValidation(i,5, nb);
 			//System.out.println(i.getNumColumns());
@@ -344,6 +388,32 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 	        //cv.printOverAllMatrix();
 	        //System.out.println();
 		}
+*/
+		List<ArrayList<DataFrame>> memories = recollection.releaseRecollection(df, 10, 20, (int)stepSize_spinner.getValue());
+		ReleaseRecollection reco = new ReleaseRecollection(memories, nb, ev);
+		metrics_meter.replace("Precision",(int) Math.round(ev.getCurrent_precision()*100));
+		metrics_meter.replace("Recall",(int)Math.round(ev.getCurrent_recall()*100));
+		metrics_meter.replace("F1", (int) Math.round(ev.getCurrent_f1()*100));
+		metrics_meter.replace("MCC", (int) Math.round(ev.getCurrent_mcc()*100));
+		updateMeters();
+		/*
+		ArrayList<DataFrame> re = recollection.Chi2Recollection(df, 10, 70, (int)stepSize_spinner.getValue());
+		for(DataFrame i : re) {
+			CrossValidation cv = new CrossValidation(i,5, nb);
+			//System.out.println(i.getNumColumns());
+			ev.evaluation(cv);
+			//ev.getBest();
+			metrics_meter.replace("Precision",(int) Math.round(ev.getCurrent_precision()*100));
+			metrics_meter.replace("Recall",(int)Math.round(ev.getCurrent_recall()*100));
+			metrics_meter.replace("F1", (int) Math.round(ev.getCurrent_f1()*100));
+			metrics_meter.replace("MCC", (int) Math.round(ev.getCurrent_mcc()*100));
+			updateMeters();
+			//Thread.onSpinWait();
+	        //cv.printOverAllMatrix();
+	        //System.out.println();
+		}
+		*/
+		
     }             
     /*
 	private static ArrayList<DataFrame> reco(DataFrame df,int initialNumColumns, int terminate,int stepSize){
