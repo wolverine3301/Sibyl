@@ -154,4 +154,7 @@ public class KNN extends Model {
         }
         return trainDF_targets.getColumn_byName(target).getParticle(neighbors.remove().distanceToIndex).getValue();
     } 
+    public void setK(int newK) {
+    	this.k = newK;
+    }
 }
