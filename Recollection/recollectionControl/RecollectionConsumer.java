@@ -17,14 +17,14 @@ public class RecollectionConsumer implements Runnable{
             synchronized (parent.EVALUATION_QUEUE) {
                 while (parent.EVALUATION_QUEUE.size() == 0) {
                     try {
-                        wait();
+                        parent.EVALUATION_QUEUE.wait();
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
                 cv = parent.getNext_Queue();
-                notify();
+                parent.EVALUATION_QUEUE.notify();
             }
             parent.evaluate(cv);
         }
