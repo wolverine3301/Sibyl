@@ -59,7 +59,7 @@ public class UFC {
 		Recollection re = new Recollection(df);
 		re.initiallize(true, true, true, true);
 		
-		ReleaseRecollection reco = new ReleaseRecollection(re.generateRecollection(df, 5, 20, 1),nb,ev,1 );
+		ReleaseRecollection reco = new ReleaseRecollection(re.generateRecollection(df, 5, 20, 1),nb,ev, 3);
 		reco.run();
 		//}
        

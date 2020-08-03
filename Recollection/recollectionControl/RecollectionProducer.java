@@ -20,21 +20,22 @@ public class RecollectionProducer implements Runnable {
             synchronized (parent.EVALUATION_QUEUE) { //Synchronize on parent evaluation queue. 
                 while (parent.EVALUATION_QUEUE.size() >= parent.getCapacity()) { // If queue is at capacity, wait. 
                     try {
-                        wait();
+                        parent.EVALUATION_QUEUE.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
                 eval = parent.getNext_Memory(); // Fetch next memory. 
-                notify(); //Notifies anything waiting on evaluation queue that they can wake up. 
+                parent.EVALUATION_QUEUE.notify(); //Notifies anything waiting on evaluation queue that they can wake up. 
             }
             if (eval == null) //If next eval is null, notify parent that this thread is done running, all other threads will fall through. 
                 parent.doneProducing();
-                
-            //Run Cross validiation (Computationally expensive, don't want to synchronize!)
-            for (DataFrame df : eval) {
-                CrossValidation cv = new CrossValidation(df, 5, parent.getModel().copy());
-                parent.addToQueue(cv);
+            else {
+                //Run Cross validiation (Computationally expensive, don't want to synchronize!)
+                for (DataFrame df : eval) {
+                    CrossValidation cv = new CrossValidation(df, 5, parent.getModel().copy());
+                    parent.addToQueue(cv);
+                }
             }
         }
 //        for(ArrayList<DataFrame> i : memories) {
