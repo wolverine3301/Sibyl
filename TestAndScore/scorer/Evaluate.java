@@ -137,6 +137,7 @@ public class Evaluate {
 		if(this.best_metric < metric) {
 			this.best_metric = metric;
 			this.CV = cv;
+			System.out.println("NEW BEST");
 		}
 	}
 	public void getBest() {
