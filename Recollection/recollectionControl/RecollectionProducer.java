@@ -33,7 +33,8 @@ public class RecollectionProducer implements Runnable {
                 
             //Run Cross validiation (Computationally expensive, don't want to synchronize!)
             for (DataFrame df : eval) {
-                CrossValidation cv = new CrossValidation(df, 5, );
+                CrossValidation cv = new CrossValidation(df, 5, parent.getModel().copy());
+                parent.addToQueue(cv);
             }
         }
 //        for(ArrayList<DataFrame> i : memories) {

@@ -29,7 +29,7 @@ public class KNN extends Model {
     private static final long serialVersionUID = 9134287604056743290L;
 
     /** The amount of predictions to be returned. */
-    public int k = 30;
+    public int k;
     
     /** The distance function knn will use. */
     Distance distanceFunction;
@@ -38,6 +38,7 @@ public class KNN extends Model {
     
     public KNN() {
         distanceFunction = null;
+        k = 5;
     }
     
     /**
@@ -46,7 +47,6 @@ public class KNN extends Model {
     public void initiallize() {
         if (distanceFunction == null)
             distanceFunction = new Manhattan(); //Default distance function is manhattan distance. 
-        k = 5;
     }
     
     /**
@@ -161,7 +161,12 @@ public class KNN extends Model {
             neighbors.add(new DistanceParticle(distanceFunction.distance(row, trainDF_variables.getRow_byIndex(i)), i, distanceFunction.distanceType));
         }
         HashMap<Object, Integer> closestNeighbors = new HashMap<Object, Integer>();
-        for (int i = 0; i < k; i++) { //Put k closest neighbors into hashmap, keep count. 
+        int loopBound;
+        if (neighbors.size() < k)
+            loopBound = neighbors.size();
+        else
+            loopBound = k;
+        for (int i = 0; i < loopBound; i++) { //Put k closest neighbors into hashmap, keep count. 
             Object value = trainDF_targets.getColumn_byName(target).getParticle(neighbors.remove().distanceToIndex).getValue();
             if (closestNeighbors.containsKey(value))
                 closestNeighbors.put(value, closestNeighbors.get(value) + 1);
@@ -179,10 +184,17 @@ public class KNN extends Model {
         return value;
     }
 
+    /**
+     * Copies a blank KNN. Use initialize and set the training data prior to calling this. 
+     */
     @Override
     public Model copy() {
         KNN copy = new KNN();
+        copy.distanceFunction = this.distanceFunction;
+        copy.k = this.k;
+        return copy;
     } 
+    
     public void setK(int newK) {
     	this.k = newK;
     }
