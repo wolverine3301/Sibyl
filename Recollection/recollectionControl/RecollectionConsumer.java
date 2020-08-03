@@ -2,14 +2,28 @@ package recollectionControl;
 
 import scorer.CrossValidation;
 
+/**
+ * Acts as an individually threaded consumer for ReleaseRecollection.
+ * - NOTE: This class has not been tested with multiple consumer instances!
+ * @author Cade Reynoldson
+ * @version 1.0
+ */
 public class RecollectionConsumer implements Runnable{
     
+    /** A reference to the parent release recollection. */
     private ReleaseRecollection parent;
     
+    /**
+     * Instantiates a recollection consumer.
+     * @param parent the parent ReleaseRecollection.
+     */
     public RecollectionConsumer(ReleaseRecollection parent) {
         this.parent = parent;
     }
 
+    /**
+     * Runs the consumer. 
+     */
     @Override
     public void run() {
         while (parent.isProducing() || !parent.queueIsEmpty()) {
@@ -28,22 +42,6 @@ public class RecollectionConsumer implements Runnable{
             }
             parent.evaluate(cv);
         }
-//        while (!finish) { 
-//            synchronized (this){ 
-//                // consumer thread waits while list 
-//                // is empty 
-//                while (EVALUATION_QUEUE.size() == 0) 
-//                    wait(); 
-//
-//                // to retrive the ifrst job in the list 
-//                evaluate.evaluation(EVALUATION_QUEUE.removeFirst());
-//                // Wake up producer thread 
-//                notify(); 
-//
-//                // and sleep 
-//                Thread.sleep(10); 
-//            } 
-//        } 
     }
     
    
