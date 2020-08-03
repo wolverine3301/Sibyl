@@ -334,6 +334,15 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 	private void updateMeters() {
 		meterPanel.setBars(metrics_meter);
 	}
+	public void updateModel(double f1,double mcc,double p,double r) {
+		
+		metrics_meter.replace("Precision",(int) Math.round(p*100));
+		metrics_meter.replace("Recall",(int)Math.round(r*100));
+		metrics_meter.replace("F1", (int) Math.round(f1*100));
+		metrics_meter.replace("MCC", (int) Math.round(mcc*100));
+		updateMeters();
+
+	}
     private void infoGainRanker_checkboxActionPerformed(java.awt.event.ActionEvent evt) {                                                        
         // TODO add your handling code here:
     }                                                       
@@ -341,7 +350,7 @@ public class Evaluation_Control_Panel extends Tertiary_View{
     private void releaseRecollection_buttonActionPerformed(java.awt.event.ActionEvent evt) {    
 
 		NaiveBayes2 nb = new NaiveBayes2();
-		Evaluate ev = new Evaluate(df.target_columns);
+		Evaluate ev = new Evaluate(df.target_columns,this);
 		
 		Metric selectedMetric = null;
 		if(priority_metric_menu.getSelectedItem().equals("Recall"))
@@ -354,9 +363,17 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 			selectedMetric = Metric.MCC;
 		
 		ev.setMetric(selectedMetric);
-		
 		Recollection recollection = new Recollection(df);
 		recollection.initiallize(chi2Ranker_checkbox.isSelected(),infoGainRanker_checkbox.isSelected(), gainRatioRanker_checkbox.isSelected(), giniRanker_checkbox.isSelected());
+		
+		Thread t = new Thread(new Runnable() {
+            public void run() {
+        		ReleaseRecollection reco = new ReleaseRecollection(recollection.generateRecollection(df, 5, 20, 1),nb,ev, 1);
+        		reco.run();
+
+            }
+        });
+		t.start();
 		/*
 		List<ArrayList<DataFrame>> recollection = ree.releaseRecollection(df, 10, 70, (int)stepSize_spinner.getValue());
 		for(ArrayList<DataFrame> i : recollection) {
@@ -391,29 +408,15 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 	        //System.out.println();
 		}
 */
-		List<ArrayList<DataFrame>> memories = recollection.generateRecollection(df, 10, 50, (int)stepSize_spinner.getValue());
-		//ReleaseRecollection reco = new ReleaseRecollection(memories, nb, ev); 
-		final ReleaseRecollection reco = new ReleaseRecollection(memories,nb,ev);
-		System.out.println("MEM: "+memories.size());
-		Thread t1 = new Thread(new Runnable() { 
-            @Override
-            public void run(){ 
-                try { 
-                    reco.produce(); 
-                } 
-                catch (InterruptedException e) { 
-                    e.printStackTrace(); 
-                } 
-            } 
-        }); 
-  
-        // Create consumer thread 
-        Thread t2 = new Thread(new Runnable() { 
-            @Override
-            public void run() { 
-                try { 
-                    reco.consume();
-                    System.out.println("EVALUATING..");
+		//List<ArrayList<DataFrame>> memories = recollection.generateRecollection(df, 10, 50, (int)stepSize_spinner.getValue());
+
+
+		metrics_meter.replace("Precision",(int) Math.round(ev.getCurrent_precision()*100));
+		metrics_meter.replace("Recall",(int)Math.round(ev.getCurrent_recall()*100));
+		metrics_meter.replace("F1", (int) Math.round(ev.getCurrent_f1()*100));
+		metrics_meter.replace("MCC", (int) Math.round(ev.getCurrent_mcc()*100));
+		updateMeters();
+		/*
                     SwingUtilities.invokeLater(new Runnable() {
     		            public void run() {
     		        		metrics_meter.replace("Precision",(int) Math.round(ev.getCurrent_precision()*100));
@@ -423,30 +426,8 @@ public class Evaluation_Control_Panel extends Tertiary_View{
     		        		updateMeters();
     		            }
 		            });
-                } 
-                catch (InterruptedException e) { 
-                    e.printStackTrace(); 
-                } 
-            } 
-        }); 
-  
-        // Start both threads 
-        t1.start(); 
-        t2.start(); 
-        // t1 finishes before t2 
-        try {
-			t1.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-        try {
-			t2.join();
-		} catch (InterruptedException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} 
-		
+       
+		*/
 		/*
 		ArrayList<DataFrame> re = recollection.Chi2Recollection(df, 10, 70, (int)stepSize_spinner.getValue());
 		for(DataFrame i : re) {
