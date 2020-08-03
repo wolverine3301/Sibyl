@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import dataframe.Column;
+import logan.sybilGUI.Evaluation_Control_Panel;
 import machinations.Model;
+import recollectionControl.ReleaseRecollection;
 
 /**
  * Evaluation of models
@@ -45,7 +47,9 @@ public class Evaluate {
 	private double current_recall=0;
 	private double current_f1=0;
 	private double current_mcc=0;
-	public Evaluate(ArrayList<Column> targets) {
+	private Evaluation_Control_Panel pan;
+	public Evaluate(ArrayList<Column> targets,Evaluation_Control_Panel pan) {
+		this.pan = pan;
 		this.singular_metric = Metric.OVERALL;
 		this.priority_targets = new ArrayList<Column>();
 		this.priority_classes = new HashMap<String,Object>();
@@ -137,7 +141,17 @@ public class Evaluate {
 		if(this.best_metric < metric) {
 			this.best_metric = metric;
 			this.CV = cv;
-			System.out.println("NEW BEST");
+			double f1 = this.current_f1;
+			double mcc = this.current_mcc;
+			double prec = this.current_precision;
+			double recall = this.current_recall;
+			Thread t = new Thread(new Runnable() {
+	            public void run() {
+	            	pan.updateModel(f1,mcc,prec,recall);
+	            }
+	        });
+			t.start();
+			
 		}
 	}
 	public void getBest() {
