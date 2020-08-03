@@ -14,6 +14,8 @@ import log.Loggers;
 import machinations.Constant;
 import machinations.Model;
 import ranker.Chi2Ranker;
+import ranker.Recollection;
+import recollectionControl.ReleaseRecollection;
 import scorer.CrossValidation;
 import scorer.Evaluate;
 import scorer.Metric;
@@ -54,16 +56,11 @@ public class UFC {
 		//CrossValidation cv = new CrossValidation(df,5, model);
 		Evaluate ev = new Evaluate(df.target_columns);
 		ev.setMetric(Metric.MCC);
-		ArrayList<DataFrame> re = reco(df,10,14,1);
-		for(DataFrame i : re) {
-			CrossValidation cv = new CrossValidation(df,10, nb);
-			System.out.println(i.getNumColumns());
-			ev.evaluation(cv);
-			ev.getBest();
-	        cv.printOverAllScore();
-	        //cv.printOverAllMatrix();
-	        //System.out.println();
-		}
+		Recollection re = new Recollection(df);
+		re.initiallize(true, true, true, true);
+		
+		ReleaseRecollection reco = new ReleaseRecollection(re.generateRecollection(df, 5, 20, 1),nb,ev,1 );
+		reco.run();
 		//}
        
 
