@@ -5,14 +5,29 @@ import java.util.ArrayList;
 import dataframe.DataFrame;
 import scorer.CrossValidation;
 
+/**
+ * Produces computationally expensive CrossValidation instances on previously instantiated DataFrames from the parent's memory field. 
+ * - NOTE: Multiple threads of this class can be running at the same time! 
+ * - NOTE 2: Currently not implemented for concurrent memory production and consumption!
+ * @author Cade Reynoldson
+ * @version 1.0
+ */
 public class RecollectionProducer implements Runnable {
 
+    /** The parent to act as a producer for. */
     ReleaseRecollection parent;
     
+    /**
+     * Instantiates a new instance of a producer for the parent ReleaseRecollection. 
+     * @param parent the parent to act as a producer for. 
+     */
     public RecollectionProducer(ReleaseRecollection parent) {
         this.parent = parent;
     }
     
+    /**
+     * Runs the producing algorithm for pro
+     */
     @Override
     public void run() {
         ArrayList<DataFrame> eval;
@@ -26,7 +41,7 @@ public class RecollectionProducer implements Runnable {
                     }
                 }
                 eval = parent.getNext_Memory(); // Fetch next memory. 
-                parent.EVALUATION_QUEUE.notify(); //Notifies anything waiting on evaluation queue that they can wake up. 
+                parent.EVALUATION_QUEUE.notify(); //Notifies anything waiting on evaluation queue that they can wake up. - not sure if needed. 
             }
             if (eval == null) //If next eval is null, notify parent that this thread is done running, all other threads will fall through. 
                 parent.doneProducing();
@@ -38,30 +53,5 @@ public class RecollectionProducer implements Runnable {
                 }
             }
         }
-//        for(ArrayList<DataFrame> i : memories) {
-//            
-//        //while (true) { 
-//            for(DataFrame k : i) {
-//                synchronized (this){ 
-//                    // producer thread waits if list is full
-//                    while (EVALUATION_QUEUE.size() == capacity) 
-//                        wait(); 
-//                    
-//                    
-//                    CrossValidation cv = new CrossValidation(k,5, model);
-//                    //cv.printOverAllScore();
-//                    System.out.println("SIZE: "+EVALUATION_QUEUE.size());
-//                    // to insert the crossvals in the list 
-//                    EVALUATION_QUEUE.add(cv);
-//                    cnt++;
-//                    // notifies the consumer thread that 
-//                    // now it can start consuming 
-//                    notify(); 
-//
-//                    //Thread.sleep(10); 
-//                }
-//            } 
-//        }
-//        producing = false;
     }
 }
