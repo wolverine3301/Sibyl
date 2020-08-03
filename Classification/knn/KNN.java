@@ -160,6 +160,27 @@ public class KNN extends Model {
         for (int i = 0; i < trainDF_variables.getNumRows(); i++) {
             neighbors.add(new DistanceParticle(distanceFunction.distance(row, trainDF_variables.getRow_byIndex(i)), i, distanceFunction.distanceType));
         }
-        return trainDF_targets.getColumn_byName(target).getParticle(neighbors.remove().distanceToIndex).getValue();
+        HashMap<Object, Integer> closestNeighbors = new HashMap<Object, Integer>();
+        for (int i = 0; i < k; i++) { //Put k closest neighbors into hashmap, keep count. 
+            Object value = trainDF_targets.getColumn_byName(target).getParticle(neighbors.remove().distanceToIndex).getValue();
+            if (closestNeighbors.containsKey(value))
+                closestNeighbors.put(value, closestNeighbors.get(value) + 1);
+            else
+                closestNeighbors.put(value, 1);
+        }
+        int mostOccuring = Integer.MIN_VALUE;
+        Object value = null;
+        for (Object o : closestNeighbors.keySet()) {
+            if (closestNeighbors.get(o) > mostOccuring) {
+                value = o;
+                mostOccuring = closestNeighbors.get(o);
+            }
+        }
+        return value;
+    }
+
+    @Override
+    public Model copy() {
+        KNN copy = new KNN();
     } 
 }

@@ -70,13 +70,7 @@ public class UFC {
 
 
 	}
-	private static ArrayList<DataFrame> reco(DataFrame df,int initialNumColumns, int terminate,int stepSize){
-		ArrayList<DataFrame> recollection = new ArrayList<DataFrame>();
-		for(int i = initialNumColumns; i < terminate; i+=stepSize) {
-			recollection.add(Chi2Ranker.chi2Rank(df, i));
-		}
-		return recollection;
-	}
+
 	/**
 	 * evocation
 	 * creates an arraylist of dataframes with varying number of columns ranked by various measures in Ranker classes

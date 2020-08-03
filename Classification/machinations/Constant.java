@@ -66,5 +66,10 @@ public class Constant extends Model{
 		// TODO Auto-generated method stub
 		
 	}
+    @Override
+    public Model copy() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }
