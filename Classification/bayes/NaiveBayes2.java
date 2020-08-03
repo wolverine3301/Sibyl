@@ -323,7 +323,6 @@ public class NaiveBayes2 extends Model{
 		//System.out.println("NB: "+preds.get("Winner"));
 		return preds;
 	}
-
 	@Override
 	public void initiallize() {
 		//super.train(df);
@@ -348,6 +347,11 @@ public class NaiveBayes2 extends Model{
 		nb.setCont_Naive_Bayes(this.cont_Naive_Bayes);
 		nb.save_cat();
 		nb.save_cont();
+	}
+	@Override
+	public Model copy() {
+		NaiveBayes2 nb = new NaiveBayes2();
+		return nb;
 	}
 	
 
