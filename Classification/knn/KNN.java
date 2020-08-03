@@ -183,4 +183,7 @@ public class KNN extends Model {
     public Model copy() {
         KNN copy = new KNN();
     } 
+    public void setK(int newK) {
+    	this.k = newK;
+    }
 }
