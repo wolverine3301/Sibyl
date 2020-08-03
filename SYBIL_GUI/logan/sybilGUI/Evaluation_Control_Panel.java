@@ -422,7 +422,7 @@ public class Evaluation_Control_Panel extends Tertiary_View{
     		        		metrics_meter.replace("MCC", (int) Math.round(ev.getCurrent_mcc()*100));
     		        		updateMeters();
     		            }
-    		          });
+		            });
                 } 
                 catch (InterruptedException e) { 
                     e.printStackTrace(); 

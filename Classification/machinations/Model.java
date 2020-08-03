@@ -114,6 +114,8 @@ public abstract class Model implements java.io.Serializable{
 	
 	public abstract void initiallize();
 	
+	public abstract Model copy();
+	
 	public abstract void saveModel(String fileName);
 
 }
