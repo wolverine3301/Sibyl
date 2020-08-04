@@ -151,7 +151,6 @@ public class Evaluate {
 	            }
 	        });
 			t.start();
-			
 		}
 	}
 	public void getBest() {

@@ -90,18 +90,21 @@ public class Evaluation_Control_Panel extends Tertiary_View{
     	
     	middle_panel = new JPanel();
     	middle_panel.setBackground(main_bg_color);
-    	middle_panel.setMaximumSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
-        //JTextPane ta = new JTextPane();
-    	JTextArea ta = new JTextArea();
-        ta.setPreferredSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
+    	//middle_panel.setMaximumSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
+    	middle_panel.setPreferredSize(new Dimension(300,500));
+    	middle_panel.setMaximumSize(new Dimension(300,500));
+
+    	JTextPane ta = new JTextPane();
+        //ta.setPreferredSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
+    	ta.setPreferredSize(new Dimension(300,500));
+
         ta.setBackground(Color.black);
-        ta.setForeground(Color.gray);
-        TextAreaOutputStream taos = new TextAreaOutputStream( ta, 30 );
-        PrintStream ps = new PrintStream( taos );
-        Loggers.logToStream(Loggers.nb_Logger, Level.FINE, ps);
+        ta.setAutoscrolls(true);
+        //ta.setForeground(Color.gray);
+        Loggers.logToTextPane(Loggers.cv_Logger, Level.FINE,ta);
         //System.setOut( ps );
         //System.setErr( ps );
-        middle_panel.add( new JScrollPane( ta ));
+        middle_panel.add( ta );
        // middlePanel2();
     }
     private void middlePanel2() {
@@ -145,7 +148,7 @@ public class Evaluation_Control_Panel extends Tertiary_View{
         this.df.setColumnType("no_of_rounds", 'T');
 		
 		
-		initConsol();
+		initConsol2();
 		initMeters();
 		this.txtColor = new java.awt.Color(153, 0, 153);
 		meterPanel = new BarMeter_Panel(metrics_meter, metric_maxs, 300, 400, txtColor, main_bg_color);
@@ -345,7 +348,7 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 	}
     private void infoGainRanker_checkboxActionPerformed(java.awt.event.ActionEvent evt) {                                                        
         // TODO add your handling code here:
-    }                                                       
+    }                  
 
     private void releaseRecollection_buttonActionPerformed(java.awt.event.ActionEvent evt) {    
 

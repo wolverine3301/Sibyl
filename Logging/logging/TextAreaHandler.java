@@ -39,9 +39,7 @@ public class TextAreaHandler extends java.util.logging.Handler {
                 	textArea.setForeground(Color.cyan);
                 }
                 colors.add(textArea.getForeground());
-                for(int i = 0; i < lines.size();i++) {
-                	textArea.add
-                }
+
                 out.printf("[%s] [Thread-%d]: %s.%s -> %s", record.getLevel(),
                         record.getThreadID(), record.getSourceClassName(),
                         record.getSourceMethodName(), record.getMessage());

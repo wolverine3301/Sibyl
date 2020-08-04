@@ -18,8 +18,10 @@ import java.io.PrintStream;
 import dataframe.DataFrame;
 import logan.sybilGUI.TextAreaOutputStream;
 import logging.HTMLFormatter;
+import logging.HTMLFormatter2;
 import logging.StreamFormatter;
 import logging.TextAreaHandler;
+import logging.TextPaneHandler;
 import ranker.Recollection;
 import scorer.ConfusionMatrix;
 import scorer.CrossValidation;
@@ -32,6 +34,7 @@ public class Loggers {
     public static ConsoleHandler ch = new ConsoleHandler();
     
 	public static HTMLFormatter formatterHTML = new HTMLFormatter();
+	public static HTMLFormatter2 formatterHTML2 = new HTMLFormatter2();
 	public static SimpleFormatter simple = new SimpleFormatter();
 	
     public static Logger df_Logger = Logger.getLogger(DataFrame.class.getName());
@@ -70,13 +73,12 @@ public class Loggers {
     	
     }
     public static void logToTextPane(Logger logger,Level lvl,JTextPane area) {
-    	
+    	TextPaneHandler panHandler = new TextPaneHandler();
+    	panHandler.setTextPane(area);
+    	panHandler.setFormatter(formatterHTML2);
+    	panHandler.setLevel(lvl);
     	logger.setLevel(lvl);
-    	area.setText(t);
-    	textarea = new TextAreaHandler();
-    	textarea.setTextArea(area);
-    	textarea.setLevel(lvl);
-    	logger.addHandler(textarea);
+    	logger.addHandler(panHandler);
     	
     }
     public static void logToStream(Logger logger,Level lvl,PrintStream ps ) {
