@@ -10,6 +10,13 @@ public class Scores {
 	 * @return MCC
 	 */
 	public static double mcc(int tp, int tn, int fp, int fn) {
+		if(tp == 0  && fp == 0 && fn == 0) {
+			return 0;
+		}else if(fp == 0 && fn ==0) {
+			return 1;
+		}else if((fn != 0 || fp != 0)&& (tp == 0 || tn == 0)) {
+			return -1;
+		}
 		double dtp = tp;
 		double dtn = tn;
 		double dfp = fp;
@@ -18,28 +25,39 @@ public class Scores {
 	}
 	/**
 	 * Returns F1 score 
+	 * if all are 0 returns 0, if no true+ and only false+ OR false- returns -1(meaning it got all of them wrong)
 	 * @param tp - count of true positives
 	 * @param fp - count of false positives
 	 * @param fn - count of false negatives
 	 * @return F1
 	 */
 	public static double F1(int tp, int fp, int fn) {
+		if(tp == 0  && fp == 0 && fn == 0) {
+			return 0;
+		}else if(tp==0 && (fp != 0 || fn !=0)) {
+			return -1;
+		}
 		return(2* (precision(tp,fp) * recall(tp,fn)) / (precision(tp,fp) + recall(tp,fn)));	
 	}
 	/**
-	 * Returns precision of a given class
+	 * Returns precision of a given class, if there are no true positives or negatives returns 0
+	 * if only true+ and no false+ returns 1, if only false+ return -1
 	 * @param tp - true positives
 	 * @param fp - false positives
 	 * @return precision
 	 */
 	public static double precision(int tp, int fp) {
-		if(fp == 0 && tp == 0) {	
+		double dtp = tp;
+		double dfp = fp;
+		if(dfp == 0 && dtp == 0) {	
 			return 0;
 		}
-		else if(fp == 0 && tp != 0) {
-			return (double)1;
+		else if(dfp == 0 && dtp != 0) {
+			return 1;
+		}else if( dtp == 0 && dfp != 0) {
+			return -1;
 		}
-		return ((double)tp/(tp+fp));
+		return (dtp/(dtp+dfp));
 	}
 	/**
 	 * Returns recall
@@ -48,10 +66,12 @@ public class Scores {
 	 * @return recall
 	 */
 	public static double recall(int tp, int fn) {
-		if(tp == 0 && fn ==0) {
-			return -1;
+		double dtp = tp;
+		double dfn = fn;
+		if(dtp == 0 && dfn ==0) {
+			return 0;
 		}
-		return ((double)tp/(tp+fn));	
+		return (dtp/(dtp+dfn));	
 	}
 	/**
 	 * accuracy

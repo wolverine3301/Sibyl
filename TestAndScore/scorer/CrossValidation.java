@@ -84,7 +84,9 @@ public class CrossValidation {
 			scores.add(score);
 		}
 		this.confusion_matrix = new ConfusionMatrix();
+		
 		overallScores();
+
 	}
 	/**
 	 * setup an array of dataframes to test and train with
@@ -117,7 +119,7 @@ public class CrossValidation {
 	        	}
 	        	
 	        }
-	        Loggers.cv_Logger.log(Level.FINE,"TRAIN SET: "+ set2.size() + " TEST SET: "+set1.size());
+	        Loggers.cv_Logger.log(Level.FINER,"TRAIN SET: "+ set2.size() + " TEST SET: "+set1.size());
 
 	        trial = new TestTrainFit(this.df.shallowCopy_rowIndexes(set2), this.df.shallowCopy_rowIndexes(set1));
 	        trials.add(trial);
@@ -246,7 +248,7 @@ public class CrossValidation {
 		HashMap<Object, Double> f1;
 		HashMap<Object, Double> mc;
 		
-		Loggers.cv_Logger.log(Level.FINE,"SCORES SET: "+ scores.get(0).recall.entrySet());
+		Loggers.cv_Logger.log(Level.FINER,"SCORES SET: "+ scores.get(0).recall.entrySet());
 		for(String j : keyValues.keySet()) {
 		//for(String j : df.target_columns) {
 			re = new HashMap<Object,Double>();
@@ -259,9 +261,10 @@ public class CrossValidation {
 				pr.put(z, Scores.precision(total_truePositive.get(j).get(z), total_falsePositive.get(j).get(z)));
 				f1.put(z, Scores.F1(total_truePositive.get(j).get(z), total_falsePositive.get(j).get(z), total_falseNegative.get(j).get(z)));
 				mc.put(z, Scores.mcc(total_truePositive.get(j).get(z), total_trueNegative.get(j).get(z), total_falsePositive.get(j).get(z),total_falseNegative.get(j).get(z)));
-
+				
 				//System.out.println(scores.get(0).getConfusionMatrix().matrix);
 			}
+			Loggers.cv_Logger.log(Level.CONFIG,"CROSS"+f1);
 			recall.put(j, re);	
 			precision.put(j, pr);
 			F1.put(j, f1);
@@ -297,13 +300,14 @@ public class CrossValidation {
 			overall_precision.replace(j, pe/keyValues.get(j).size());
 			overall_f1.replace(j,f/keyValues.get(j).size());
 			overall_mcc.replace(j, m/keyValues.get(j).size());
+
 		}
 	}
 	/**
 	 * Avg scores from all trials
 	 */
 	public void avgScores() {
-		Loggers.cv_Logger.log(Level.INFO,"Averaging scores");
+		Loggers.cv_Logger.log(Level.FINE,"Averaging scores");
 		
 		//overall score storage
 		HashMap<String, HashMap<Object, Double>> accuracy = new HashMap<String, HashMap<Object, Double>>();
@@ -318,7 +322,7 @@ public class CrossValidation {
 		HashMap<Object, Double> trial3;
 		HashMap<Object, Double> trial4;
 		
-		Loggers.cv_Logger.log(Level.FINE,"SCORES SET: "+ scores.get(0).recall.entrySet());
+		Loggers.cv_Logger.log(Level.FINER,"SCORES SET: "+ scores.get(0).recall.entrySet());
 		for(String j : scores.get(0).recall.keySet()) {
 		//for(String j : df.target_columns) {
 			trial = new HashMap<Object,Double>();

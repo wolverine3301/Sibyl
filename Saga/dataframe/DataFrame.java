@@ -135,7 +135,7 @@ public class DataFrame {
 				break;
 			}
 		}
-		Loggers.df_Logger.log(Level.INFO, "SETTING COLUMN: "+columnName +" TYPE: "+getColumn(index).type+" TO TYPE: "+newType);
+		Loggers.df_Logger.log(Level.FINE, "SETTING COLUMN: "+columnName +" TYPE: "+getColumn(index).type+" TO TYPE: "+newType);
 		if(getColumn(index).getType() == 'N' && newType == 'C') {
 			Loggers.df_Logger.log(Level.FINE,"CHANGED NUMERIC TO CATEGORY. RECONSTRUCTING");
 			Column newCol = new Column(getColumn(index).getName(),'C');
@@ -184,7 +184,7 @@ public class DataFrame {
             setStatistics(i);
         }
         statsInitialized = true;
-        Loggers.df_Logger.log(Level.FINE, "STATS SET");
+        Loggers.df_Logger.log(Level.FINER, "STATS SET");
         
     }
     
@@ -214,7 +214,7 @@ public class DataFrame {
                 numMeta++;
             }
         }
-        Loggers.df_Logger.log(Level.FINER, "STATS SET ON COLUMN:"+columns.get(index).getName()+" INDEX: "+index);
+        Loggers.df_Logger.log(Level.FINEST, "STATS SET ON COLUMN:"+columns.get(index).getName()+" INDEX: "+index);
     }
     
     /**
@@ -224,7 +224,6 @@ public class DataFrame {
         for (int i = 0; i < numColumns; i++) {
             updateStatistics(i);
         }
-        Loggers.df_Logger.log(Level.FINE, "UPDATING STATISTICS");
     }
     
     /**
@@ -264,7 +263,7 @@ public class DataFrame {
                 numMeta++;
             }
         }
-        Loggers.df_Logger.log(Level.FINER, "UPDATING STATS ON COLUMN:"+columns.get(index).getName()+" INDEX: "+index);
+        Loggers.df_Logger.log(Level.FINEST, "UPDATING STATS ON COLUMN:"+columns.get(index).getName()+" INDEX: "+index);
     }
     
     /**

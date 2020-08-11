@@ -148,7 +148,6 @@ public class ThreeD_Scatter_Panel extends Tertiary_View {
 	        content = new Plot_3D_Panel(new BorderLayout());
 	        
 	        content.setPreferredSize(new Dimension(center_panel.getPreferredSize().width, center_panel.getPreferredSize().height));
-	        System.out.println(df.columnNamesToString());
 	        df.setColumnType(4, 'T');
 	        classs = Util.splitOnTarget(df, df.getColumn(4));
 	        dataset = createDataset(classs);

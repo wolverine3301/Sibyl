@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.plaf.basic.BasicButtonUI;
 
 import Controllers.Data_Controller;
+import armorment.Armorment;
+import armorment_components.ArmormentPanel;
 import data_panel_components.Data_Panel2;
 import stats_and_graph_components.Stats_Panel;
 
@@ -39,6 +41,7 @@ public class MainFrame extends javax.swing.JFrame {
 	private int window_width = 1200;
 	private int window_height = 800;
 	
+	private Armorment armorment;
 	private Data_Controller data_control;
     /**
      * Creates new form MainFrame
@@ -81,10 +84,11 @@ public class MainFrame extends javax.swing.JFrame {
     	second  = new dummy_secondPanel(window_width-100,window_height-200,main_bg_color,second_side_color);
     	DATA_VIEW = new Data_Panel2(window_width-100,window_height-200,main_bg_color,second_side_color);
     	this.data_control = DATA_VIEW.getDataCtrl();
+    	armorment = new Armorment();
     	STATS_VIEW = new Stats_Panel(window_width-100,window_height-200,main_bg_color,second_side_color,data_control);
     	//STATS_VIEW = second;
     	EVALUATE_VIEW = new Evaluate_Panel(window_width-100,window_height-200,main_bg_color,second_side_color);
-    	
+    	ARMORMENT_VIEW = new ArmormentPanel(window_width-100,window_height-200,main_bg_color,second_side_color,armorment);
     	
     	//EVALUATE_VIEW = second;
     	setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -349,7 +353,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void model_ActionPerformed(java.awt.event.ActionEvent evt) {                                         
     	center_panel.removeAll();
-		center_panel.add(second);
+		center_panel.add(ARMORMENT_VIEW);
 		center_panel.repaint();
 		center_panel.revalidate();
 		this.data_control = DATA_VIEW.getDataCtrl();
@@ -470,4 +474,5 @@ public class MainFrame extends javax.swing.JFrame {
     private Data_Panel2 DATA_VIEW;
     private javax.swing.JPanel STATS_VIEW;
     private javax.swing.JPanel EVALUATE_VIEW;
+    private ArmormentPanel ARMORMENT_VIEW;
 }

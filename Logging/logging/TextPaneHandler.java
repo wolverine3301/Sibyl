@@ -1,8 +1,13 @@
 package logging;
 
+import java.awt.Color;
 import java.util.logging.LogRecord;
 
 import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 public class TextPaneHandler extends java.util.logging.Handler{
 	private JTextPane pane;
@@ -17,11 +22,22 @@ public class TextPaneHandler extends java.util.logging.Handler{
 		//super.getFormatter().format(record);
 		String formated_record = super.getFormatter().format(record);
 		builder.append(formated_record);
-		//builder.append("<html>" 
-		//		+ formated_record + "</html>");
-		
-		//pane.setText(builder.toString());
-		pane.setText(formated_record);
+		builder.append("<html>" 
+				+ formated_record + "</html>");
+		/*
+    	StyledDocument doc = pane.getStyledDocument();
+
+    	Style style = pane.addStyle("", null);
+    	StyleConstants.setBackground(style, Color.black);
+		try {
+			doc.insertString(doc.getLength(), builder.toString(), style);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+		pane.setText(builder.toString());
+		//pane.setText(formated_record);
 	}
 
 	@Override

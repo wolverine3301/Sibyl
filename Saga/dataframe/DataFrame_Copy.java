@@ -77,7 +77,7 @@ public final class DataFrame_Copy {
                 }
             }
         }
-        Loggers.df_Logger.log(Level.INFO, "ADDING: "+rowIndexes.size()+" ROWS TO NEW DATAFRAME");
+        Loggers.df_Logger.log(Level.FINE, "ADDING: "+rowIndexes.size()+" ROWS TO NEW DATAFRAME");
         if (rowIndexes.size() == 0) 
             return null;
         else 

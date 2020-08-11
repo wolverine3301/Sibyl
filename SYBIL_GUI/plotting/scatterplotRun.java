@@ -19,7 +19,7 @@ public class scatterplotRun {
 //        ScatterPlotView plot = new ScatterPlotView(x, y, p);
 		DataFrame df = DataFrame_Read.loadcsv(file);
 		df.printDataFrame();
-		System.out.println(df.getNumColumns());
+		//System.out.println(df.getNumColumns());
 
 		ScatterPlotView plot = new ScatterPlotView(df);
         JFrame frame = new JFrame("Test");

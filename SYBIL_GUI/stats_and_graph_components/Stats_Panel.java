@@ -135,7 +135,6 @@ public class Stats_Panel extends Secondary_View{
     }
     private void scatter_2D_Action(java.awt.event.ActionEvent evt) {
     	SCATTER_2D_VIEW = new TwoD_Scatter_Panel2(center_panel.getPreferredSize().width,center_panel.getPreferredSize().height,main_bg_color,main_side_color,200,ctrl);
-    	System.out.println("@DDDDDDDD");
 		center_panel.removeAll();
 		center_panel.add(SCATTER_2D_VIEW);
 		center_panel.repaint();

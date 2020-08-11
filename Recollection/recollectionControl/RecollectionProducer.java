@@ -49,7 +49,14 @@ public class RecollectionProducer implements Runnable {
                 //Run Cross validiation (Computationally expensive, don't want to synchronize!)
                 for (DataFrame df : eval) {
                     CrossValidation cv = new CrossValidation(df, 5, parent.getModel().copy());
+
                     parent.addToQueue(cv);
+            		System.out.println("RECO PRODUCE:");
+            		//System.out.println(parent.EVALUATION_QUEUE.getLast().getOverall_mcc());
+            		//System.out.println(cv.getOverall_f1());
+            		//System.out.println(cv.getOverall_mcc());
+            		//System.out.println(cv.getOverall_precision());
+            		//System.out.println(cv.getOverall_recall());
                 }
             }
         }

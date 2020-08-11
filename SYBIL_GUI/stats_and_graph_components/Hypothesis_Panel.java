@@ -208,17 +208,17 @@ public class Hypothesis_Panel extends Tertiary_View{
         );
 
         side_panel.add(execute_panel);
-        System.out.println(H);
-        System.out.println(center_panel.getWidth());
+        System.out.println("CLASS HYPOTHESIS_PANEL:"+H);
+        System.out.println("CLASS HYPOTHESIS_PANEL:"+center_panel.getWidth());
         JTextArea ta = new JTextArea();
         ta.setBackground(Color.BLACK);
         ta.setForeground(Color.gray);
         //ta.setSize(W-100, H);
         ta.setPreferredSize(new java.awt.Dimension(center_panel.getPreferredSize().width, H));
-        TextAreaOutputStream taos = new TextAreaOutputStream( ta, 60 );
-        PrintStream ps = new PrintStream( taos );
-        System.setOut( ps );
-        System.setErr( ps );
+       // TextAreaOutputStream taos = new TextAreaOutputStream( ta, 60 );
+       // PrintStream ps = new PrintStream( taos );
+       // System.setOut( ps );
+        //System.setErr( ps );
         JScrollPane consol = new JScrollPane( ta );
 
         consol.setPreferredSize(new java.awt.Dimension(center_panel.getPreferredSize().width, H));

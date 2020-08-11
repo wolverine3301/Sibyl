@@ -10,6 +10,9 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.logging.Level;
+
+import log.Loggers;
 /**
  * Contains various tools for manipulating dataframes.
  * @author Cade Reynoldson
@@ -106,9 +109,9 @@ public class DataFrame_Utilities {
 		       i.printStackTrace();
 		       return null;
 		    } catch (ClassNotFoundException c) {
-		       System.out.println("DataFrame not found");
-		       c.printStackTrace();
-		       return null;
+		    	Loggers.df_Logger.log(Level.SEVERE,"FAILED TO LOAD DATAFRAME FROM FILE: "+c);
+		    	c.printStackTrace();
+		    	return null;
 		    }
 		    return df;
 		}
@@ -123,8 +126,7 @@ public class DataFrame_Utilities {
             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
             objectOut.writeObject(df);
             objectOut.close();
-            System.out.println("The Object  was succesfully written to a file");
- 
+            Loggers.df_Logger.log(Level.CONFIG,"Object  was succesfully written to a file: "+name+".ser");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

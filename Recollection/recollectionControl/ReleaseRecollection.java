@@ -3,8 +3,10 @@ package recollectionControl;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 
 import dataframe.DataFrame;
+import log.Loggers;
 import machinations.Model;
 import scorer.CrossValidation;
 import scorer.Evaluate;
@@ -146,6 +148,7 @@ public class ReleaseRecollection implements Runnable {
 	public void addToQueue(CrossValidation cv) {
 	    synchronized (EVALUATION_QUEUE) {
 	        EVALUATION_QUEUE.add(cv);
+
 	    }
 	}
 	

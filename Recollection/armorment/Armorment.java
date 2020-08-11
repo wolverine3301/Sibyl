@@ -8,7 +8,7 @@ import machinations.Model;
 
 public class Armorment {
 	
-	private ArrayList<Model> models;
+	private static ArrayList<Model> models;
 	
 	public Armorment() {
 		models = new ArrayList<Model>();
@@ -29,6 +29,12 @@ public class Armorment {
 	}
 	public void addDecisionTree() {
 		
+	}
+	public ArrayList<Model> getModels() {
+		return models;
+	}
+	public boolean isEmpty() {
+		return this.models.isEmpty();
 	}
 
 }

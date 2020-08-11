@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 
 public class BarMeter_Panel extends JPanel{
 	private HashMap<String, Integer> vals;
+	private HashMap<String, Integer> previous_vals;
 	private HashMap<String, Integer> vals_max;
 	private Color BackGround;
 	private Color barColor;
@@ -21,6 +22,8 @@ public class BarMeter_Panel extends JPanel{
 	private ArrayList<String> meter_names;
 	private ArrayList<JLabel> meter_labels;
 	private ArrayList<Bar_Meter> meters;
+	
+	
 	/**
 	 * 
 	 * @param vals
@@ -31,6 +34,10 @@ public class BarMeter_Panel extends JPanel{
 	 */
 	public BarMeter_Panel(HashMap<String,Integer> vals,HashMap<String,Integer> vals_max,int w, int h, Color barColor,Color bg_color) {
 		this.vals = vals;
+		this.previous_vals = new HashMap<String,Integer>();
+		for(String i : vals.keySet()) {
+			this.previous_vals.put(i, vals.get(i));
+		}
 		setPreferredSize(new Dimension(w,h));
 		setBackground(bg_color);
 		setBorder(new EmptyBorder(15, 15, 15, 15));
@@ -70,6 +77,12 @@ public class BarMeter_Panel extends JPanel{
     		updater(i);
     	}
     }
+    public void setBars2(HashMap<String,Integer> newvals) {
+    	this.vals = newvals;
+    	for(int i = 0; i < meters.size();i++) {
+    		updater2(i);
+    	}
+    }
     private void updater(int k) {
     	int cnt = 0;
     	for(String i : vals.keySet()) {
@@ -93,5 +106,52 @@ public class BarMeter_Panel extends JPanel{
 		        }
 			}
     	}).start();
+    }
+    // allows bar to not start from 0
+    private void updater2(int k) {
+    	int cnt = 0;
+    	for(String i : vals.keySet()) {
+    		meter_labels.get(cnt).setText(i);
+    		cnt++;
+    	}
+    	//repaint();
+    	final int i = k;
+    	
+    	if(previous_vals.get(meter_names.get(i)) >= vals.get(meter_names.get(i)) ){
+
+	    	new Thread(new Runnable(){
+				public void run() {
+			    	for(int j=(int) (((double)previous_vals.get(meter_names.get(i)) / vals_max.get(meter_names.get(i)) ) *100); j <= ((double)vals.get(meter_names.get(i)) / vals_max.get(meter_names.get(i)) ) *100;j++) {
+			        	meters.get(i).updateProgress(j);
+			        	//meters.get(i).updateProgress2(lvl.getBase_levels().get(meter_names.get(i)).getExp(),lvl.getBase_levels().get(meter_names.get(i)).getExp_next());
+			        	meters.get(i).repaint();
+			    		previous_vals.put(meter_names.get(i), vals.get(meter_names.get(i)));
+			            try {
+							Thread.sleep(10);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+			        }
+				}
+	    	}).start();
+    	}else {
+	    	new Thread(new Runnable(){
+				public void run() {
+			    	for(int j=(int) (((double)previous_vals.get(meter_names.get(i)) / vals_max.get(meter_names.get(i)) ) *100); j > ((double)vals.get(meter_names.get(i)) / vals_max.get(meter_names.get(i)) ) *100;j--) {
+			        	meters.get(i).updateProgress(j);
+			        	//meters.get(i).updateProgress2(lvl.getBase_levels().get(meter_names.get(i)).getExp(),lvl.getBase_levels().get(meter_names.get(i)).getExp_next());
+			        	meters.get(i).repaint();
+			    		previous_vals.put(meter_names.get(i), vals.get(meter_names.get(i)));
+			            try {
+							Thread.sleep(10);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+			        }
+				}
+	    	}).start();
+    	}
     }
 }

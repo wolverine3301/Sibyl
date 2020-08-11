@@ -28,40 +28,37 @@ public class UFC {
 	private static DataFrame  df;
 	
 	public static void main(String[] args) {
-		Loggers.logHTML(Loggers.df_Logger, Level.FINE);
-		Loggers.logHTML(Loggers.cm_Logger, Level.FINE);
+		//Loggers.logHTML(Loggers.df_Logger, Level.FINE);
+		//Loggers.logHTML(Loggers.cm_Logger, Level.FINE);
 		Loggers.logHTML(Loggers.cv_Logger,Level.FINE);
-		Loggers.logHTML(Loggers.nb_Logger,Level.FINE);
-		Loggers.logHTML(Loggers.score_Logger,Level.FINE);
+		//Loggers.logHTML(Loggers.nb_Logger,Level.FINE);
+		//Loggers.logHTML(Loggers.score_Logger,Level.FINE);
+		/*
+		String file = "testfiles/catTest.txt";
+        df = DataFrame.read_csv(file);
+        df.setColumnType("Color", 'T');//set target column
+        df.setColumnType("Color", 'T');//set target column
+        */
+		// UFC TEST SETUP 
 		String file = "testfiles/preprocessed_data.csv";
         df = DataFrame.read_csv(file);
         String[] arg = {"no_of_rounds", "!=","4"};
         df = DataFrame_Copy.acquire(df, arg);
         df.setColumnType("Winner", 'T');//set target column
         df.setColumnType("no_of_rounds", 'C');
-        //df.setColumnType("no_of_rounds", 'C');
-        //df.setStatistics(2);
         df.setColumnType("no_of_rounds", 'T');
-        //df.convertNANS_mean(); // conevert any NAN's to the mean of column 
-        //df = Standardize.standardize_df(df); //Standardize the DF into z scores
-        //df = df.shuffle(df);
+	
 		NaiveBayes2 nb = new NaiveBayes2();
 		Model model = new KNN();
 		Model con = new Constant();
-        //NR = new NumericRanker(df,0);
-        //System.out.println(NR.getSpearman());
-        //CR = new CategoryRanker(df, 0);
-		//ArrayList<DataFrame> ev = generateRecollection(10,15);
-		//for(DataFrame i : ev) {
-		//CrossValidation cv = new CrossValidation(df,5, model);
+
 		Evaluate ev = new Evaluate(df.target_columns);
 		ev.setMetric(Metric.MCC);
 		Recollection re = new Recollection(df);
 		re.initiallize(true, true, true, true);
 		
-		ReleaseRecollection reco = new ReleaseRecollection(re.generateRecollection(df, 5, 20, 1),nb,ev, 3);
+		ReleaseRecollection reco = new ReleaseRecollection(re.generateRecollection(df, 1, 3, 1),nb,ev, 1);
 		reco.run();
-		//}
        
 
 

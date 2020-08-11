@@ -25,13 +25,14 @@ import logging.TextPaneHandler;
 import ranker.Recollection;
 import scorer.ConfusionMatrix;
 import scorer.CrossValidation;
+import scorer.Evaluate;
 import scorer.Score;
 
 public class Loggers {
 	public static FileHandler logFile;
 	public static TextAreaHandler textarea;
 	public static StreamHandler stream;
-    public static ConsoleHandler ch = new ConsoleHandler();
+    //public static ConsoleHandler ch = new ConsoleHandler();
     
 	public static HTMLFormatter formatterHTML = new HTMLFormatter();
 	public static HTMLFormatter2 formatterHTML2 = new HTMLFormatter2();
@@ -43,6 +44,7 @@ public class Loggers {
     public static Logger cm_Logger = Logger.getLogger(ConfusionMatrix.class.getName());
     public static Logger nb_Logger = Logger.getLogger(NaiveBayes2.class.getName());
     public static Logger recollection_Logger = Logger.getLogger(Recollection.class.getName());
+    public static Logger evaluate_Logger = Logger.getLogger(Evaluate.class.getName());
     //public static Logger model_Logger ... maybe KNN Logger, misc loggers. 
     
     public static void changeLoggerSettings(LoggerSettings settings) {

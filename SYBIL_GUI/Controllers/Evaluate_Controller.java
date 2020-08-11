@@ -2,6 +2,7 @@ package Controllers;
 
 import java.util.List;
 
+import armorment.Armorment;
 import dataframe.DataFrame;
 import machinations.Model;
 import scorer.CrossValidation;
@@ -10,23 +11,14 @@ import scorer.Metric;
 
 public class Evaluate_Controller {
 	
-	private DataFrame df;
-	private int trials;
-	private List<Model> models;
-	private Evaluate evaluation;
+	public static DataFrame df;
+	public static Armorment models;
 	
-	public Evaluate_Controller(DataFrame df) {
-		this.df = df;
-		this.evaluation = new Evaluate(df.target_columns);
+	public static void setDF(DataFrame df) {
+		Evaluate_Controller.df = df;
 	}
-	public void setMetric(Metric m) {
-		evaluation.setMetric(m);
-	}
-	public void setPriorityTargetClass(String targetName,Object klass) {
-		evaluation.setTargetClassPriority(targetName, klass);
-	}
-	public void evaluate(CrossValidation cv) {
-		evaluation.evaluation(cv);
+	public static void setArmorment(Armorment m) {
+		Evaluate_Controller.models = m;
 	}
 
 }

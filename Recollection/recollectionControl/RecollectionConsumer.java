@@ -37,9 +37,18 @@ public class RecollectionConsumer implements Runnable{
                         e.printStackTrace();
                     }
                 }
+        		
+        		//System.out.println(parent.EVALUATION_QUEUE.getLast().getOverall_f1());
                 cv = parent.getNext_Queue();
+
+
                 parent.EVALUATION_QUEUE.notify();
             }
+            System.out.println("RECO CONSUMe:");
+    		//System.out.println(cv.getOverall_f1());
+    		//System.out.println(cv.getOverall_mcc());
+    		//System.out.println(cv.getOverall_precision());
+    		//System.out.println(cv.getOverall_recall());
             parent.evaluate(cv);
         }
     }

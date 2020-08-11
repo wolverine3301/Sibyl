@@ -2,6 +2,7 @@ package logan.sybilGUI;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,26 +18,36 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import org.apache.ibatis.cache.decorators.LoggingCache;
 
+import Controllers.Evaluate_Controller;
+import armorment.Armorment;
 import bayes.NaiveBayes2;
 import dataframe.Column;
 import dataframe.DataFrame;
 import dataframe.DataFrame_Copy;
 import guiComponents.BarMeter_Panel;
+import jdk.internal.org.jline.utils.Display;
 import log.Loggers;
+import machinations.Model;
 import ranker.Chi2Ranker;
 import ranker.Recollection;
 import ranker.Recollection2;
 import recollectionControl.RecollectionControl;
 import recollectionControl.ReleaseRecollection;
+import recollectionControl.ReleaseRecollection2;
 import scorer.CrossValidation;
 import scorer.Evaluate;
 import scorer.Metric;
 
 public class Evaluation_Control_Panel extends Tertiary_View{
-
+	
+	private volatile Thread updatesThread;
+	
 	private HashMap<String,javax.swing.JComboBox> target_classes;
 	private javax.swing.JComboBox priority_metric_button;
 	private Color txtColor;
@@ -67,7 +78,7 @@ public class Evaluation_Control_Panel extends Tertiary_View{
     private DataFrame df;
 	public Evaluation_Control_Panel(int width, int height, Color main_bg_color, Color main_side_color, int side_panel_W) {
 		super(width, height, main_bg_color, main_side_color, side_panel_W);
-
+		
 	}
     private void initConsol() {
     	
@@ -80,7 +91,7 @@ public class Evaluation_Control_Panel extends Tertiary_View{
         ta.setForeground(Color.gray);
         TextAreaOutputStream taos = new TextAreaOutputStream( ta, 30 );
         PrintStream ps = new PrintStream( taos );
-        Loggers.logToStream(Loggers.nb_Logger, Level.FINE, ps);
+        //Loggers.logToStream(Loggers.nb_Logger, Level.FINE, ps);
         //System.setOut( ps );
         //System.setErr( ps );
         middle_panel.add( new JScrollPane( ta ));
@@ -91,17 +102,20 @@ public class Evaluation_Control_Panel extends Tertiary_View{
     	middle_panel = new JPanel();
     	middle_panel.setBackground(main_bg_color);
     	//middle_panel.setMaximumSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
-    	middle_panel.setPreferredSize(new Dimension(300,500));
-    	middle_panel.setMaximumSize(new Dimension(300,500));
+    	middle_panel.setPreferredSize(new Dimension(400,600));
+    	middle_panel.setMaximumSize(new Dimension(400,600));
 
     	JTextPane ta = new JTextPane();
         //ta.setPreferredSize(new Dimension(center_panel.getPreferredSize().width/2,H-50));
-    	ta.setPreferredSize(new Dimension(300,500));
+    	ta.setPreferredSize(new Dimension(400,600));
 
-        ta.setBackground(Color.black);
-        ta.setAutoscrolls(true);
         //ta.setForeground(Color.gray);
-        Loggers.logToTextPane(Loggers.cv_Logger, Level.FINE,ta);
+        Loggers.logToTextPane(Loggers.cv_Logger, Level.INFO,ta);
+        //Loggers.logToTextPane(Loggers.cm_Logger, Level.INFO,ta);
+        //Loggers.logToTextPane(Loggers.recollection_Logger, Level.INFO,ta);
+        //Loggers.logToTextPane(Loggers.nb_Logger, Level.FINE,ta);
+    	ta.setBounds(new Rectangle(400,600));
+        ta.setAutoscrolls(true);
         //System.setOut( ps );
         //System.setErr( ps );
         middle_panel.add( ta );
@@ -334,16 +348,59 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 	    
 	    
     }// </editor-fold>                        
-	private void updateMeters() {
-		meterPanel.setBars(metrics_meter);
+	public void updateMeters(HashMap<String,Integer> vals) {
+		meterPanel.setBars2(vals);
 	}
+	public void lookupAsync(double f1,double mcc,double p,double r) {
+		// Called by event thread, but can be safely
+		// called by any thread.
+
+		metrics_meter.replace("Precision",(int) Math.round(p*100));
+		metrics_meter.replace("Recall",(int)Math.round(r*100));
+		metrics_meter.replace("F1", (int) Math.round(f1*100));
+		metrics_meter.replace("MCC", (int) Math.round(mcc*100));
+		Runnable lookupRun = new Runnable() {
+			public void run() {
+				HashMap<String,Integer> newVals = metrics_meter;
+				setMetersSafely(newVals);
+			}
+		};
+		
+		updatesThread = new Thread(lookupRun, "updateThread");
+		updatesThread.start();
+	}
+	private void setMetersSafely(HashMap<String,Integer> vals) {
+		// Called by lookupThread, but can be safely
+		// called by any thread.
+		final HashMap<String,Integer> newVals = vals;
+		
+		 Runnable r = new Runnable() {
+			 public void run() {
+				 try {
+					 setMeters(newVals);
+				 } catch ( Exception x ) {
+					 x.printStackTrace();
+				 }
+			 }
+		 };
+		
+		 SwingUtilities.invokeLater(r);
+		}
+	private void setMeters(HashMap<String,Integer> vals) {
+		// better be called by event thread!
+		//ensureEventThread();
+		
+			updateMeters(vals);
+		 //cancelB.setEnabled(false);
+		 //searchB.setEnabled(true);
+		 }
 	public void updateModel(double f1,double mcc,double p,double r) {
 		
 		metrics_meter.replace("Precision",(int) Math.round(p*100));
 		metrics_meter.replace("Recall",(int)Math.round(r*100));
 		metrics_meter.replace("F1", (int) Math.round(f1*100));
 		metrics_meter.replace("MCC", (int) Math.round(mcc*100));
-		updateMeters();
+		//updateMeters();
 
 	}
     private void infoGainRanker_checkboxActionPerformed(java.awt.event.ActionEvent evt) {                                                        
@@ -368,57 +425,37 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 		ev.setMetric(selectedMetric);
 		Recollection recollection = new Recollection(df);
 		recollection.initiallize(chi2Ranker_checkbox.isSelected(),infoGainRanker_checkbox.isSelected(), gainRatioRanker_checkbox.isSelected(), giniRanker_checkbox.isSelected());
-		
-		Thread t = new Thread(new Runnable() {
-            public void run() {
-        		ReleaseRecollection reco = new ReleaseRecollection(recollection.generateRecollection(df, 5, 20, 1),nb,ev, 1);
-        		reco.run();
-
-            }
-        });
-		t.start();
-		/*
-		List<ArrayList<DataFrame>> recollection = ree.releaseRecollection(df, 10, 70, (int)stepSize_spinner.getValue());
-		for(ArrayList<DataFrame> i : recollection) {
-			for(DataFrame j : i) {
-				CrossValidation cv = new CrossValidation(j,5, nb);
-				//System.out.println(i.getNumColumns());
-				ev.evaluation(cv);
-				//ev.getBest();
-				metrics_meter.replace("Precision",(int) Math.round(ev.getCurrent_precision()*100));
-				metrics_meter.replace("Recall",(int)Math.round(ev.getCurrent_recall()*100));
-				metrics_meter.replace("F1", (int) Math.round(ev.getCurrent_f1()*100));
-				metrics_meter.replace("MCC", (int) Math.round(ev.getCurrent_mcc()*100));
+		List<ArrayList<DataFrame>> memories = recollection.generateRecollection(df, 5, 60, 1);
+		Thread t0 = new Thread(new Runnable(){
+			Evaluate eve = ev;
+			public void run() {
+				for(Model i : Evaluate_Controller.models.getModels()) {
+					ReleaseRecollection2 reco = new ReleaseRecollection2(memories,i,eve, 1);
+					reco.run();
+					
+				}
 			}
-		}
-		
-		
-		Recollection2 ree = new Recollection2(df);
-		ree.initiallize(chi2Ranker_checkbox.isSelected(),infoGainRanker_checkbox.isSelected(), gainRatioRanker_checkbox.isSelected(), giniRanker_checkbox.isSelected());
-		DataFrame[] re = ree.Chi2Recollection(df, 10, 70, (int)stepSize_spinner.getValue());
-		for(DataFrame i : re) {
-			CrossValidation cv = new CrossValidation(i,5, nb);
-			//System.out.println(i.getNumColumns());
-			ev.evaluation(cv);
-			//ev.getBest();
-			metrics_meter.replace("Precision",(int) Math.round(ev.getCurrent_precision()*100));
-			metrics_meter.replace("Recall",(int)Math.round(ev.getCurrent_recall()*100));
-			metrics_meter.replace("F1", (int) Math.round(ev.getCurrent_f1()*100));
-			metrics_meter.replace("MCC", (int) Math.round(ev.getCurrent_mcc()*100));
-			updateMeters();
-			//Thread.onSpinWait();
-	        //cv.printOverAllMatrix();
-	        //System.out.println();
-		}
-*/
-		//List<ArrayList<DataFrame>> memories = recollection.generateRecollection(df, 10, 50, (int)stepSize_spinner.getValue());
-
+	    });
+		t0.setName("RELEASE");
+		t0.start();
+		/*
+    	while(t0.isAlive()) {
+			System.out.println(ev.getCurrent_f1());
+			System.out.println(ev.getCurrent_mcc());
+			System.out.println(ev.getCurrent_precision());
+			System.out.println(ev.getCurrent_recall());
+    	}
+    	*/
+		middlePanel2();
+	    /*
 
 		metrics_meter.replace("Precision",(int) Math.round(ev.getCurrent_precision()*100));
 		metrics_meter.replace("Recall",(int)Math.round(ev.getCurrent_recall()*100));
 		metrics_meter.replace("F1", (int) Math.round(ev.getCurrent_f1()*100));
 		metrics_meter.replace("MCC", (int) Math.round(ev.getCurrent_mcc()*100));
 		updateMeters();
+		
+		*/
 		/*
                     SwingUtilities.invokeLater(new Runnable() {
     		            public void run() {

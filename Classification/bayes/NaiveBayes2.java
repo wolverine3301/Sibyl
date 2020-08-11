@@ -41,7 +41,7 @@ public class NaiveBayes2 extends Model{
 	 * @param df
 	 */
 	public NaiveBayes2(DataFrame df) {
-		Loggers.nb_Logger.log(Level.CONFIG, "Initialize");
+		Loggers.nb_Logger.log(Level.CONFIG, "Initializing...");
 		super.train(df);
 		this.df = df;
 		this.classes = new HashMap<String,DataFrame[]>();
@@ -65,7 +65,7 @@ public class NaiveBayes2 extends Model{
 		for(Column i : df.target_columns) {
 			this.classes.put(i.getName(),Util.splitOnTarget(df, i));
 		}
-		Loggers.nb_Logger.log(Level.INFO,"=> "+ classes.keySet());
+		Loggers.nb_Logger.log(Level.CONFIG,"=> "+ classes.keySet());
 	}
 	/**
 	 * set the hashmap keys which will act as probability tables

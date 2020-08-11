@@ -2,8 +2,10 @@ package scorer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import dataframe.Column;
+import log.Loggers;
 import logan.sybilGUI.Evaluation_Control_Panel;
 import machinations.Model;
 import recollectionControl.ReleaseRecollection;
@@ -70,6 +72,7 @@ public class Evaluate {
 		}else {
 			this.priority_targets.set(targetPriority, target);
 		}
+		Loggers.evaluate_Logger.log(Level.CONFIG, "Priority Target set to: "+target.getName());
 	}
 	/**
 	 * sets a particular class in a target with higher priority to maximize over others
@@ -78,6 +81,7 @@ public class Evaluate {
 	 * @param klass
 	 */
 	public void setTargetClassPriority(String targetName, Object klass) {
+		Loggers.evaluate_Logger.log(Level.CONFIG, "Priority Class set to: "+klass);
 		priority_classes.put(targetName,klass);
 	}
 	/**
@@ -86,11 +90,15 @@ public class Evaluate {
 	 * @param m
 	 */
 	public void setMetric(Metric m) {
+		Loggers.evaluate_Logger.log(Level.CONFIG, "Priority Metric set to: "+m);
 		this.singular_metric = m;
 	}
 	public void evaluation(CrossValidation cv) {
 		double modelMetric = 0;
-
+		this.current_precision=0;
+		this.current_recall=0;
+		this.current_f1=0;
+		this.current_mcc=0;
 		//if all targets and classes are equally important
 		if(priority_targets.isEmpty() && priority_classes.isEmpty()) {
 			for(String i : cv.overall_recall.keySet()) {
@@ -98,12 +106,14 @@ public class Evaluate {
 				this.current_precision = current_precision + cv.overall_precision.get(i);
 				this.current_f1 = current_f1 + cv.overall_f1.get(i);
 				this.current_mcc = current_mcc + cv.overall_mcc.get(i);
+
 			}
 			this.current_recall = current_recall / cv.overall_recall.keySet().size();
 			this.current_precision = current_precision / cv.overall_precision.keySet().size();
 			this.current_f1 = current_f1 / cv.overall_f1.keySet().size();
 			this.current_mcc = current_mcc / cv.overall_mcc.keySet().size();
-			
+
+
 			if(singular_metric == Metric.RECALL) {
 				modelMetric = current_recall;
 			}else if(singular_metric == Metric.PRECISION) {
@@ -135,6 +145,13 @@ public class Evaluate {
 				}
 			}
 		}
+		/*
+		System.out.println("EVALUATE:");
+		System.out.println(this.current_f1);
+		System.out.println(this.current_mcc);
+		System.out.println(this.current_precision);
+		System.out.println(this.current_recall);
+		*/
 		updateBestModel(cv,modelMetric);
 	}
 	private void updateBestModel(CrossValidation cv, double metric) {
@@ -145,12 +162,17 @@ public class Evaluate {
 			double mcc = this.current_mcc;
 			double prec = this.current_precision;
 			double recall = this.current_recall;
-			Thread t = new Thread(new Runnable() {
-	            public void run() {
-	            	pan.updateModel(f1,mcc,prec,recall);
-	            }
-	        });
-			t.start();
+			//System.out.println("SCORE: "+f1+" "+ mcc+" "+prec+" "+recall);
+			//pan.lookupAsync(f1, mcc,prec,recall);
+			HashMap<String,Integer>metrics = new HashMap<String,Integer>();
+			
+			metrics.put("Precision",(int) Math.round(prec*100) );
+			metrics.put("Recall",(int) Math.round(recall*100) );
+			metrics.put("F1", (int) Math.round(f1*100));
+			metrics.put("MCC",(int) Math.round(mcc*100) );
+			pan.updateMeters(metrics);
+			//pan.updateModel(f1,mcc,prec,recall);
+			getBest();
 		}
 	}
 	public void getBest() {

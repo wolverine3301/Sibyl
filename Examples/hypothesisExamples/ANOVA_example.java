@@ -19,14 +19,14 @@ public class ANOVA_example {
 	    df.setColumnType("species", 'T');//set target column
 	
 		OneWay_ANOVA anova = new OneWay_ANOVA(df);
-	  Logger logger = Logger.getLogger(OneWay_ANOVA.class.getName());
+	  //Logger logger = Logger.getLogger(OneWay_ANOVA.class.getName());
 	  
 	  
 	  // Add ConsoleHandler
 	 
-	  ConsoleHandler consoleHandler = new ConsoleHandler();
+	  //ConsoleHandler consoleHandler = new ConsoleHandler();
 	 
-	  logger.addHandler(consoleHandler);
+	  //logger.addHandler(consoleHandler);
 
         anova.invokeANOVA();
         anova.printResults();
