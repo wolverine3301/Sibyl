@@ -49,7 +49,7 @@ public class Evaluate {
 	private double current_recall=0;
 	private double current_f1=0;
 	private double current_mcc=0;
-	private Evaluation_Control_Panel pan;
+	Evaluation_Control_Panel pan;
 	public Evaluate(ArrayList<Column> targets,Evaluation_Control_Panel pan) {
 		this.pan = pan;
 		this.singular_metric = Metric.OVERALL;
@@ -164,6 +164,7 @@ public class Evaluate {
 			double recall = this.current_recall;
 			//System.out.println("SCORE: "+f1+" "+ mcc+" "+prec+" "+recall);
 			//pan.lookupAsync(f1, mcc,prec,recall);
+			
 			HashMap<String,Integer>metrics = new HashMap<String,Integer>();
 			
 			metrics.put("Precision",(int) Math.round(prec*100) );
@@ -171,6 +172,7 @@ public class Evaluate {
 			metrics.put("F1", (int) Math.round(f1*100));
 			metrics.put("MCC",(int) Math.round(mcc*100) );
 			pan.updateMeters(metrics);
+			//pan.met
 			//pan.updateModel(f1,mcc,prec,recall);
 			getBest();
 		}

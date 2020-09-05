@@ -23,8 +23,6 @@ import particles.StringParticle;
  */
 public class DataFrame {
 	
-	
-	
     /** The name of the data frame. */
     protected String dataFrameName;
     

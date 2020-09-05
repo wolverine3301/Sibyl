@@ -1,5 +1,7 @@
 package matrix;
 
+import math.MathEx;
+
 public class SVD {
 
     /**

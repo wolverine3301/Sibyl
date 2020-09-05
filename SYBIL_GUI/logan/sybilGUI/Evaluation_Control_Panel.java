@@ -110,9 +110,9 @@ public class Evaluation_Control_Panel extends Tertiary_View{
     	ta.setPreferredSize(new Dimension(400,600));
 
         //ta.setForeground(Color.gray);
-        Loggers.logToTextPane(Loggers.cv_Logger, Level.INFO,ta);
+        //Loggers.logToTextPane(Loggers.cv_Logger, Level.INFO,ta);
         //Loggers.logToTextPane(Loggers.cm_Logger, Level.INFO,ta);
-        //Loggers.logToTextPane(Loggers.recollection_Logger, Level.INFO,ta);
+        Loggers.logToTextPane(Loggers.recollection_Logger, Level.INFO,ta);
         //Loggers.logToTextPane(Loggers.nb_Logger, Level.FINE,ta);
     	ta.setBounds(new Rectangle(400,600));
         ta.setAutoscrolls(true);
@@ -349,7 +349,8 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 	    
     }// </editor-fold>                        
 	public void updateMeters(HashMap<String,Integer> vals) {
-		meterPanel.setBars2(vals);
+		//meterPanel.setBars2(vals);
+		meterPanel.setBars(vals);
 	}
 	public void lookupAsync(double f1,double mcc,double p,double r) {
 		// Called by event thread, but can be safely
@@ -425,12 +426,12 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 		ev.setMetric(selectedMetric);
 		Recollection recollection = new Recollection(df);
 		recollection.initiallize(chi2Ranker_checkbox.isSelected(),infoGainRanker_checkbox.isSelected(), gainRatioRanker_checkbox.isSelected(), giniRanker_checkbox.isSelected());
-		List<ArrayList<DataFrame>> memories = recollection.generateRecollection(df, 5, 60, 1);
+		List<ArrayList<DataFrame>> memories = recollection.generateRecollection(df, 5, 20, 1);
 		Thread t0 = new Thread(new Runnable(){
 			Evaluate eve = ev;
 			public void run() {
 				for(Model i : Evaluate_Controller.models.getModels()) {
-					ReleaseRecollection2 reco = new ReleaseRecollection2(memories,i,eve, 1);
+					ReleaseRecollection2 reco = new ReleaseRecollection2(memories,i,ev, 1);
 					reco.run();
 					
 				}
@@ -446,7 +447,7 @@ public class Evaluation_Control_Panel extends Tertiary_View{
 			System.out.println(ev.getCurrent_recall());
     	}
     	*/
-		middlePanel2();
+		//middlePanel2();
 	    /*
 
 		metrics_meter.replace("Precision",(int) Math.round(ev.getCurrent_precision()*100));

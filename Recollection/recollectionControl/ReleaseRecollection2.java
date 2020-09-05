@@ -21,10 +21,10 @@ public class ReleaseRecollection2 {
 		private Model model;
 		
 		/** The evaluation of that model. */
-		private Evaluate evaluate;
+		Evaluate evaluate;
 		
 		/** Indicates whether there is producer threads still producing cross validations. */
-		private boolean producing;
+		Boolean producing;
 		
 		/** Array of producer threads. */
 		Thread[] producers;
@@ -51,28 +51,24 @@ public class ReleaseRecollection2 {
 			BlockingQueue<CrossValidation> EVALUATION_QUEUE = new LinkedBlockingQueue<CrossValidation>();
 			//multiple producers
 	        for (int i = 0; i < producers.length; i++) {
-	            producers[i] = new Thread(new RecollectionProducer2(EVALUATION_QUEUE, producing, memories.get(i), model));
+	            producers[i] = new Thread(new RecollectionProducer2(EVALUATION_QUEUE, memories.get(i), model,this));
 	            producers[i].setName("RecollectionGenerator-"+i);
 	            producers[i].start();
 	        }
-	        consumer = new Thread(new RecollectionConsumer2(EVALUATION_QUEUE,producing,evaluate));
+	        consumer = new Thread(new RecollectionConsumer2(EVALUATION_QUEUE,evaluate,this));
 	        consumer.setName("RecollectionEvaluation");
 	        consumer.start();
 	        for (int i = 0; i < producers.length; i++) {
 	            try {
 	                producers[i].join();
-	                System.out.println("CONFIRMED PRODUCTION");
+	                System.out.println(producing);
+	                consumer.join();
 	            } catch (InterruptedException e) {
 	                System.out.println("Error joining producer thread: ");
 	                e.printStackTrace();
 	            }
 	        }
-	        try {
-	            consumer.join();
-	            System.out.println(consumer.isAlive());
-	        } catch (InterruptedException e) {
-	            System.out.println("Error joining consumer thread: ");
-	            e.printStackTrace();
-	        }
+	        consumer.interrupt();
+			System.out.println(consumer.isAlive());
 		}
 }
