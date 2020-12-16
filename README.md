@@ -1,4 +1,4 @@
-<img src="https://github.com/wolverine3301/Saga/blob/master/logo.png" width="516" height="138">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
 
 # Sibyl
 deep learning
