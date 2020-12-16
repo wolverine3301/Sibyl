@@ -1,7 +1,4 @@
 <img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
-
-# Sibyl
-deep learning
 ## Objective
 The main objectives are to build a system that:
 ▸ Reduces latency;
