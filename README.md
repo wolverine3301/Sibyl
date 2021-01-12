@@ -1,11 +1,14 @@
 <img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
 Educational Project to implement a complete statistical and machine learning pipeline with GUI in java. (On going)
 
-<img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
-<img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
-<img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
-<img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
-<img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/unnamed.png" width="1000" height="700">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/Screenshot%20(2).png" width="1000" height="700">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/Screenshot%20(3).png" width="1000" height="700">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/unnamed.png" width="1000" height="700">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/unnamed.png" width="1000" height="700">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/unnamed.png" width="1000" height="700">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/unnamed.png" width="1000" height="700">
+
 
 # Data Gathering
 raw data from multiple sources. compute any attributes from the raw data before combining it all ito one big data set
