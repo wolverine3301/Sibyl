@@ -8,7 +8,7 @@ Educational Project to implement a complete statistical and machine learning pip
 <img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/Screenshot%20(5).png" width="1000" height="700">
 <img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/Screenshot%20(6).png" width="1000" height="700">
 <img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/Screenshot%20(7).png" width="1000" height="700">
-
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/Screenshot%20(8).png" width="1000" height="700">
 
 # Data Gathering
 raw data from multiple sources. compute any attributes from the raw data before combining it all ito one big data set
