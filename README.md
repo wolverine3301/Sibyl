@@ -4,10 +4,10 @@ Educational Project to implement a complete statistical and machine learning pip
 <img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/unnamed.png" width="1000" height="700">
 <img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/Screenshot%20(2).png" width="1000" height="700">
 <img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/Screenshot%20(3).png" width="1000" height="700">
-<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/unnamed.png" width="1000" height="700">
-<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/unnamed.png" width="1000" height="700">
-<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/unnamed.png" width="1000" height="700">
-<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/unnamed.png" width="1000" height="700">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/Screenshot%20(4).png" width="1000" height="700">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/Screenshot%20(5).png" width="1000" height="700">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/Screenshot%20(6).png" width="1000" height="700">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/sybil_screenShot/Screenshot%20(7).png" width="1000" height="700">
 
 
 # Data Gathering
