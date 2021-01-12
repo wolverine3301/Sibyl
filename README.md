@@ -1,19 +1,11 @@
 <img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
-## Objective
-The main objectives are to build a system that:
-▸ Reduces latency;
+Educational Project to implement a complete statistical and machine learning pipeline with GUI in java. (On going)
 
-▸ Is integrated but loosely coupled with the other parts of the system, e.g. data stores, reporting, graphical user interface;
-
-▸ Can scale both horizontally and vertically;
-
-▸ Is message driven i.e. the system communicates via asynchronous, non-blocking message passing;
-
-▸ Provides efficient computation with regards to workload management;
-
-▸ Is fault-tolerant and self healing i.e. breakdown management;
-
-▸ Supports batch and real-time processing.
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
+<img src="https://github.com/wolverine3301/Sibyl/blob/master/SYBIL_GUI/home_icons/sybilLOGO.png?raw=true" width="516" height="138">
 
 # Data Gathering
 raw data from multiple sources. compute any attributes from the raw data before combining it all ito one big data set
